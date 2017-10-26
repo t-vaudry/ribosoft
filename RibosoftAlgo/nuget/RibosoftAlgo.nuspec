@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>RibosoftAlgo</id>
+    <version>1.0.0</version>
+    <authors>chris</authors>
+    <owners>chris</owners>
+    <licenseUrl>https://github.com/t-vaudry/ribosoft/blob/develop/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/t-vaudry/ribosoft</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Ribosoft algorithm support library</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags></tags>
+    <dependencies></dependencies>
+  </metadata>
+</package>
