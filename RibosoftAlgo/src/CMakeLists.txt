@@ -14,6 +14,13 @@ target_link_libraries(RibosoftAlgo ${LIBRARIES})
 # Mark this directory as a root directory for future includes
 target_include_directories(RibosoftAlgo PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
+# Find NuGet executable
+find_program(NUGET_EXECUTABLE nuget HINTS "${CMAKE_SOURCE_DIR}")
+
+if (NOT NUGET_EXECUTABLE)
+    message(FATAL_ERROR "NuGet not found")
+endif ()
+
 # Copy library to NuGet package
 add_custom_command(TARGET RibosoftAlgo
     POST_BUILD
@@ -26,6 +33,6 @@ add_custom_command(TARGET RibosoftAlgo
 # Pack NuGet
 add_custom_command(TARGET RibosoftAlgo
     POST_BUILD
-    COMMAND "${CMAKE_SOURCE_DIR}/nuget.exe" pack "${NUGET_PACKAGE_DIR}" -OutputDirectory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+    COMMAND "${NUGET_EXECUTABLE}" pack "${NUGET_PACKAGE_DIR}" -OutputDirectory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
     COMMENT "Creating NuGet package"
 )
