@@ -24,9 +24,14 @@ namespace TestCandidateGeneration
 
         public Nucleotide(char symbol)
         {
-            mSymbol = Char.ToUpper(symbol);
             mBases = new List<char>();
-            switch(mSymbol)
+            SetSymbol(symbol);
+        }
+
+        public void SetSymbol(char symbol)
+        {
+            mSymbol = Char.ToUpper(symbol);
+            switch (mSymbol)
             {
                 case 'A':
                     mBases.Add('A');
@@ -97,6 +102,8 @@ namespace TestCandidateGeneration
                     mBases.Add('C');
                     mBases.Add('G');
                     mBases.Add('U');
+                    break;
+                case '-': //For nucleotides that will be set later
                     break;
                 default:
                     Console.WriteLine(String.Format("Nucleotide base {0} was provided.", mSymbol));

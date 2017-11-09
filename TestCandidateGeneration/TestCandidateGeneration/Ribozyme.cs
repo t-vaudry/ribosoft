@@ -16,12 +16,12 @@ namespace TestCandidateGeneration
             mRNALinkIndices = new List<int>();
         }
 
-        public Ribozyme(String seq, String struc, String cutSite)
+        public Ribozyme(String seq, String struc, String cutSite, List<int> indices)
         {
             mSequence = seq;
             mStructure = struc;
             mCutSite = cutSite;
-            mRNALinkIndices = new List<int>();
+            mRNALinkIndices = indices;
         }
     }
 }

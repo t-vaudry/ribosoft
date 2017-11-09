@@ -27,6 +27,15 @@ namespace TestCandidateGeneration
             mNeighbourIndex = neighbourIdx;
         }
 
+        public Node(Node otherNode)
+        {
+            mNucleotide = otherNode.mNucleotide;
+            mParents = otherNode.mParents;
+            mChildren = otherNode.mChildren;
+            mDepth = otherNode.mDepth;
+            mNeighbourIndex = otherNode.mNeighbourIndex;
+        }
+
         public void SetChildren(List<Node> children)
         {
             mChildren = children;
