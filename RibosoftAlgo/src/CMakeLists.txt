@@ -6,10 +6,10 @@ set(SOURCE_FILES
 add_definitions(-DBUILDING_DLL)
 
 # Create the library
-add_library(RibosoftAlgo SHARED ${SOURCE_FILES})
+add_library(RibosoftAlgo SHARED ${SOURCE_FILES} ${VIENNARNA_INCLUDES})
 
 # Link required libraries
-target_link_libraries(RibosoftAlgo ${LIBRARIES})
+target_link_libraries(RibosoftAlgo ${LIBRARIES} ${VIENNARNA_LIBRARY})
 
 # Mark this directory as a root directory for future includes
 target_include_directories(RibosoftAlgo PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
