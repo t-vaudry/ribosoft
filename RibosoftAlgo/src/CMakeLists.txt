@@ -15,10 +15,10 @@ target_link_libraries(RibosoftAlgo ${LIBRARIES})
 target_include_directories(RibosoftAlgo PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Find NuGet executable
-find_program(NUGET_EXECUTABLE nuget HINTS "${CMAKE_SOURCE_DIR}")
+find_program(MONO_EXECUTABLE mono)
 
-if (NOT NUGET_EXECUTABLE)
-    message(FATAL_ERROR "NuGet not found")
+if (NOT MONO_EXECUTABLE)
+    message(FATAL_ERROR "mono not found (install dotnet-sdk)")
 endif ()
 
 # Copy library to NuGet package
@@ -33,6 +33,6 @@ add_custom_command(TARGET RibosoftAlgo
 # Pack NuGet
 add_custom_command(TARGET RibosoftAlgo
     POST_BUILD
-    COMMAND "${NUGET_EXECUTABLE}" pack "${NUGET_PACKAGE_DIR}" -OutputDirectory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+    COMMAND "${MONO_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/nuget.exe" pack "${NUGET_PACKAGE_DIR}" -OutputDirectory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
     COMMENT "Creating NuGet package"
 )
