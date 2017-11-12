@@ -1,0 +1,9 @@
+{
+  "catalog-url": "catalog.json",
+  "packages": [
+    {
+      "name": "viennarna",
+      "version": "2.4.2-606b6cd"
+    }
+  ]
+}
