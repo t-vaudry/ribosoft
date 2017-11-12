@@ -337,7 +337,7 @@ namespace TestCandidateGeneration
 
         static public void GetUserInput()
         {
-            FileStream filestream = new System.IO.FileStream("C:\\Users\\anita\\Desktop\\pistol.txt",
+            FileStream filestream = new System.IO.FileStream("C:\\Users\\anita\\Desktop\\simpleRibozyme.txt",
                                           System.IO.FileMode.Open,
                                           System.IO.FileAccess.Read,
                                           System.IO.FileShare.ReadWrite);
@@ -355,7 +355,8 @@ namespace TestCandidateGeneration
                 else
                     gInputRNALinkIndices.Add(Convert.ToInt16(s));
             }
-            gInputRNASequence = file.ReadLine();
+            while(!file.EndOfStream)
+                gInputRNASequence += file.ReadLine();
         }
 
         static public void CompleteSequencesWithCutSiteInfo()
