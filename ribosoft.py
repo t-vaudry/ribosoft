@@ -2,9 +2,22 @@
 import logging
 import click
 import click_log
+import requests
 import json
 import sys
+import os
+import tempfile
+import hashlib
+import zipfile
+from functools import reduce
 from enum import Enum
+
+root_dir = os.path.dirname(os.path.realpath(__file__))
+
+# Environment setup
+dependency_file_path = os.path.join(root_dir, 'deps.json')
+lock_file_path = os.path.join(root_dir, 'deps.lock')
+install_path = os.path.join(root_dir, '.deps/')
 
 
 class Log(object):
@@ -102,9 +115,6 @@ class DependencyLockFile(object):
 
 
 class DependencyFileParser(object):
-    dependency_filename = 'deps.json'
-    lock_filename = 'deps.lock'
-
     def __init__(self):
         self.__dependency_file = None  # type: DependencyFile
         self.__lock_file = None  # type: DependencyLockFile
@@ -124,8 +134,7 @@ class DependencyFileParser(object):
     def __load_dependency_file(self):
         log.debug('Loading dependency file')
 
-        filename = self.dependency_filename
-        deps = self.__get_dependency_file_data(filename)
+        deps = self.__get_dependency_file_data(dependency_file_path)
         dependency_file = DependencyFile()
 
         if deps is not None:
@@ -142,8 +151,7 @@ class DependencyFileParser(object):
     def __load_lock_file(self):
         log.debug('Loading lock file')
 
-        filename = self.lock_filename
-        lock = self.__get_lock_file_data(filename)
+        lock = self.__get_lock_file_data(lock_file_path)
         lock_file = DependencyLockFile()
 
         if lock is not None:
@@ -230,46 +238,162 @@ class DependencyFileParser(object):
                 raise MalformedFileException('\'version\' value missing for package \'{0}\''.format(package['name']))
 
 
+class Downloader(object):
+    def fetch_catalog(self, url):
+        try:
+            r = requests.get(url)
+            r.raise_for_status()
+            data = r.json()
+        except ConnectionError:
+            log.error('Failure fetching remote catalog: A connection could not be made')
+            raise
+        except requests.HTTPError:
+            log.error('Failure fetching remote catalog: The catalog does not exist')
+            raise
+        except ValueError:
+            log.error('Failure fetching remote catalog: The catalog is invalid')
+            raise
+
+        return Catalog(self, url, data)
+
+    def download_zip(self, destination, url, sha256):
+        log.debug('Downloading \'{0}\' to \'{1}\''.format(url, destination))
+        log.info('  downloading...')
+        r = requests.get(url, stream=True)
+        file_sha256 = hashlib.sha256()
+
+        with tempfile.TemporaryFile() as f:
+            for chunk in r.iter_content(chunk_size=1024):
+                if chunk:
+                    f.write(chunk)
+                    file_sha256.update(chunk)
+
+            log.info('  verifying...')
+            if file_sha256.hexdigest() != sha256:
+                log.error('Download hash mismatch')
+                raise RuntimeError('SHA256 does not match')
+
+            log.debug('Hash OK: {0}'.format(sha256))
+
+            with zipfile.ZipFile(f) as zip_ref:
+                try:
+                    zip_ref.testzip()
+                except RuntimeError:
+                    log.error('Downloaded zipfile is corrupt')
+                    raise
+
+                log.info('  extracting...')
+                zip_ref.extractall(destination)
+
+
+class Catalog(object):
+    def __init__(self, downloader: Downloader, url, data):
+        self.downloader = downloader
+        self.url = url
+        self.data = data
+
+    def download_package(self, package: Dependency):
+        try:
+            meta = reduce(dict.__getitem__,
+                          ['packages', package.name, 'versions', package.version, 'platforms', os_str()],
+                          self.data)
+        except KeyError:
+            log.error('Package does not exist in catalog')
+            return
+
+        location = os.path.join(os.path.dirname(self.url), self.data['archive-root'],
+                                '{0}_{1}_{2}.zip'.format(package.name, package.version, os_str()))
+
+        self.downloader.download_zip(os.path.join(install_path, package.name), location, meta['sha256'])
+
+
 class ActionInstallStrategy(object):
-    def resolve(self, package):
-        pass
+    def resolve(self, catalog: Catalog, package: DependencyAction):
+        log.info('Installing {0}@{1}...'.format(package.name(), package.target_version()))
+        self.__ensure_dest_exists()
+
+        catalog.download_package(package.target)
+
+    def __ensure_dest_exists(self):
+        try:
+            if not os.path.exists(install_path):
+                log.debug('Creating new install directory at {0}'.format(install_path))
+                os.makedirs(install_path)
+        except OSError:
+            log.error('Failure creating dependency install directory \'{0}\''.format(install_path))
+            raise
 
 
 class ActionReplaceStrategy(object):
-    def resolve(self, package):
-        pass
+    def resolve(self, catalog, package: DependencyAction):
+        log.info('Replacing {0}@{1} with {0}@{2}...'.format(package.name(), package.current_version(),
+                                                            package.target_version()))
 
 
 class ActionRemoveStrategy(object):
-    def resolve(self):
-        pass
+    def resolve(self, catalog, package: DependencyAction):
+        log.info('Removing {0}@{1}...'.format(package.name(), package.current_version()))
 
 
 class DependencyResolver(object):
     def __init__(self):
+        self.downloader = Downloader()
         self.file_parser = DependencyFileParser()
 
-    def check_install_status(self):
-        dependencies = self.__analyze_dependencies()
+    def resolve(self):
+        dependencies = self.analyze_dependencies()
+        groups = {Action.INSTALL: [], Action.REPLACE: [], Action.REMOVE: []}
 
         for dep in dependencies:
-            click.echo('{0}: installed = {1}, wanted = {2} '.format(dep.name(), dep.current_version(),
-                                                                    dep.target_version()),
-                       nl=False)
+            if dep.action in groups:
+                groups[dep.action].append(dep)
 
-            if dep.action == Action.INSTALL:
-                click.secho('(install required)', fg='yellow', nl=False)
-            elif dep.action == Action.REPLACE:
-                click.secho('(replace required)', fg='blue', nl=False)
-            elif dep.action == Action.REMOVE:
-                click.secho('(remove required)', fg='red', nl=False)
+        if sum(map(lambda x: len(x), groups.values())) == 0:
+            click.echo('Nothing to do')
+            return
 
+        if len(groups[Action.INSTALL]):
+            click.echo('The following new dependencies will be installed:')
+            for d in groups[Action.INSTALL]:
+                click.secho('  {0}'.format(d.name()), fg='blue', nl=False)
+                click.echo(': {0}'.format(d.target_version()))
             click.echo()
 
-    def resolve(self):
-        pass
+        if len(groups[Action.REPLACE]):
+            click.echo('The following dependencies will be replaced:')
+            for d in groups[Action.REPLACE]:
+                click.secho('  {0}'.format(d.name()), fg='blue', nl=False)
+                click.echo(': {0} -> {1}'.format(d.current_version(), d.target_version()))
+            click.echo()
 
-    def __analyze_dependencies(self):
+        if len(groups[Action.REMOVE]):
+            click.echo('The following dependencies will be removed:')
+            for d in groups[Action.REMOVE]:
+                click.secho('  {0}'.format(d.name()), fg='blue', nl=False)
+                click.echo(': {0}'.format(d.current_version()))
+            click.echo()
+
+        if not click.confirm('Do you want to continue?'):
+            return
+
+        click.echo('Retrieving catalog')
+        catalog = self.downloader.fetch_catalog(self.get_catalog_url())
+
+        for dep in dependencies:
+            resolver = None
+
+            if dep.action == Action.INSTALL:
+                resolver = ActionInstallStrategy()
+            elif dep.action == Action.REPLACE:
+                resolver = ActionReplaceStrategy()
+            elif dep.action == Action.REMOVE:
+                resolver = ActionRemoveStrategy()
+
+            if resolver is not None:
+                resolver.resolve(catalog=catalog, package=dep)
+
+    def analyze_dependencies(self):
+        log.debug('Starting dependency analysis')
         dependencies = self.file_parser.get_dependency_file()
         lock = self.file_parser.get_lock_file()
         result = []  # type: list[DependencyAction]
@@ -298,7 +422,11 @@ class DependencyResolver(object):
             if wanted is None:
                 result.append(DependencyAction(current=l, target=wanted, action=Action.REMOVE))
 
+        log.debug('Finished dependency analysis')
         return result
+
+    def get_catalog_url(self):
+        return self.file_parser.get_dependency_file().catalog_url
 
 
 @click.group()
@@ -317,7 +445,20 @@ def deps():
 def check():
     """Check local package install status"""
     resolver = DependencyResolver()
-    resolver.check_install_status()
+    dependencies = resolver.analyze_dependencies()
+
+    for dep in dependencies:
+        click.secho(dep.name(), fg='blue', nl=False)
+        click.echo(': installed = {0}, wanted = {1} '.format(dep.current_version(), dep.target_version()), nl=False)
+
+        if dep.action == Action.INSTALL:
+            click.secho('(install required)', fg='yellow', nl=False)
+        elif dep.action == Action.REPLACE:
+            click.secho('(replace required)', fg='green', nl=False)
+        elif dep.action == Action.REMOVE:
+            click.secho('(remove required)', fg='red', nl=False)
+
+        click.echo()
 
 
 @deps.command()
