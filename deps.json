@@ -1,5 +1,5 @@
 {
-  "catalog-url": "catalog.json",
+  "catalog-url": "https://ribosoftdeps.blob.core.windows.net/catalog/catalog.json",
   "packages": [
     {
       "name": "viennarna",
