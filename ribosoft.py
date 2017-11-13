@@ -111,7 +111,19 @@ class DependencyLockFile(object):
     packages = []  # type: list[Dependency]
 
     def add_package(self, name, version):
+        # TODO: use Dependency as param
         self.packages.append(Dependency(name=name, version=version))
+
+    def remove_package(self, name):
+        self.packages = [p for p in self.packages if p.name != name]
+
+    def serialize(self):
+        root = {'packages': []}
+
+        for p in self.packages:
+            root['packages'].append(p.__dict__)
+
+        return root
 
 
 class DependencyFileParser(object):
@@ -130,6 +142,10 @@ class DependencyFileParser(object):
             self.__load_lock_file()
 
         return self.__lock_file
+
+    def write_lock_file(self, lock_file: DependencyLockFile):
+        with open(lock_file_path, 'w') as f:
+            json.dump(lock_file.serialize(), f, indent=2)
 
     def __load_dependency_file(self):
         log.debug('Loading dependency file')
@@ -154,7 +170,7 @@ class DependencyFileParser(object):
         lock = self.__get_lock_file_data(lock_file_path)
         lock_file = DependencyLockFile()
 
-        if lock is not None:
+        if lock is not None and 'packages' in lock:
             for package in lock['packages']:
                 lock_file.add_package(package['name'], package['version'])
                 log.debug('Found installed package: {0}@{1}'.format(package['name'], package['version']))
@@ -224,18 +240,17 @@ class DependencyFileParser(object):
                 raise MalformedFileException('\'version\' value missing for package \'{0}\''.format(package['name']))
 
     def __validate_lock_schema(self, root):
-        if 'packages' not in root:
-            raise MalformedFileException('\'packages\' value missing')
+        if 'packages' in root:
+            if not isinstance(root['packages'], list):
+                raise MalformedFileException('\'packages\' is not an array')
 
-        if not isinstance(root['packages'], list):
-            raise MalformedFileException('\'packages\' is not an array')
+            for package in root['packages']:
+                if 'name' not in package:
+                    raise MalformedFileException('\'name\' value missing for package')
 
-        for package in root['packages']:
-            if 'name' not in package:
-                raise MalformedFileException('\'name\' value missing for package')
-
-            if 'version' not in package:
-                raise MalformedFileException('\'version\' value missing for package \'{0}\''.format(package['name']))
+                if 'version' not in package:
+                    raise MalformedFileException(
+                        '\'version\' value missing for package \'{0}\''.format(package['name']))
 
 
 class Downloader(object):
@@ -378,6 +393,9 @@ class DependencyResolver(object):
 
         click.echo('Retrieving catalog')
         catalog = self.downloader.fetch_catalog(self.get_catalog_url())
+        lock = self.file_parser.get_lock_file()
+
+        # TODO: pass touch_lock lambda
 
         for dep in dependencies:
             resolver = None
@@ -391,6 +409,12 @@ class DependencyResolver(object):
 
             if resolver is not None:
                 resolver.resolve(catalog=catalog, package=dep)
+
+                lock.remove_package(dep.name())
+                if dep.action != Action.REMOVE:
+                    lock.add_package(dep.name(), dep.target_version())
+
+        self.file_parser.write_lock_file(lock)
 
     def analyze_dependencies(self):
         log.debug('Starting dependency analysis')
