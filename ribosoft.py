@@ -3,6 +3,8 @@ import logging
 import click
 import click_log
 import json
+import sys
+from enum import Enum
 
 
 class Log(object):
@@ -28,26 +30,75 @@ class Log(object):
 log = Log()
 
 
+class UnsupportedOSException(Exception):
+    pass
+
+
+def os_str():
+    platform = sys.platform
+
+    if platform == 'win32':
+        return 'win'
+    elif platform == 'linux2':
+        return 'linux'
+    elif platform == 'darwin':
+        return 'mac'
+
+    raise UnsupportedOSException()
+
+
 class MalformedFileException(Exception):
     pass
 
 
+class Action(Enum):
+    NONE = 1
+    INSTALL = 2
+    REPLACE = 3
+    REMOVE = 4
+
+
+class Dependency(object):
+    def __init__(self, name: str, version: str):
+        self.name = name
+        self.version = version
+
+
+class DependencyAction(object):
+    def __init__(self, current: Dependency = None, target: Dependency = None, action: Action = Action.NONE):
+        self.current = current
+        self.target = target
+        self.action = action
+
+    def set_action(self, action: Action):
+        self.action = action
+
+    def name(self):
+        return self.current.name if self.current is not None else self.target.name
+
+    def current_version(self):
+        return self.current.version if self.current is not None else None
+
+    def target_version(self):
+        return self.target.version if self.target is not None else None
+
+
 class DependencyFile(object):
     catalog_url = ''
-    packages = []  # type: list[dict[str, str]]
+    packages = []  # type: list[Dependency]
 
     def set_catalog_url(self, catalog_url):
         self.catalog_url = catalog_url
 
     def add_package(self, name, version):
-        self.packages.append({'name': name, 'version': version})
+        self.packages.append(Dependency(name=name, version=version))
 
 
 class DependencyLockFile(object):
-    packages = []  # type: list[dict[str, str]]
+    packages = []  # type: list[Dependency]
 
     def add_package(self, name, version):
-        self.packages.append({'name': name, 'version': version})
+        self.packages.append(Dependency(name=name, version=version))
 
 
 class DependencyFileParser(object):
@@ -179,42 +230,75 @@ class DependencyFileParser(object):
                 raise MalformedFileException('\'version\' value missing for package \'{0}\''.format(package['name']))
 
 
+class ActionInstallStrategy(object):
+    def resolve(self, package):
+        pass
+
+
+class ActionReplaceStrategy(object):
+    def resolve(self, package):
+        pass
+
+
+class ActionRemoveStrategy(object):
+    def resolve(self):
+        pass
+
+
 class DependencyResolver(object):
     def __init__(self):
         self.file_parser = DependencyFileParser()
 
     def check_install_status(self):
-        dependencies = self.file_parser.get_dependency_file()
-        lock = self.file_parser.get_lock_file()
+        dependencies = self.__analyze_dependencies()
 
-        for dep in dependencies.packages:
-            installed_version = None
-            for l in lock.packages:
-                if l['name'] == dep['name']:
-                    installed_version = l['version']
-                    break
-
-            click.echo('{0}: installed = {1}, wanted = {2} '.format(dep['name'], installed_version, dep['version']),
+        for dep in dependencies:
+            click.echo('{0}: installed = {1}, wanted = {2} '.format(dep.name(), dep.current_version(),
+                                                                    dep.target_version()),
                        nl=False)
 
-            if installed_version is None and dep['version'] is not None:
-                click.secho('(install required)', fg='yellow')
-            elif installed_version != dep['version']:
-                click.secho('(replace required)', fg='blue')
-            else:
-                click.echo()
+            if dep.action == Action.INSTALL:
+                click.secho('(install required)', fg='yellow', nl=False)
+            elif dep.action == Action.REPLACE:
+                click.secho('(replace required)', fg='blue', nl=False)
+            elif dep.action == Action.REMOVE:
+                click.secho('(remove required)', fg='red', nl=False)
 
-        for l in lock.packages:
-            depend_version = None
-            for dep in dependencies.packages:
-                if l['name'] == dep['name']:
-                    depend_version = dep['version']
+            click.echo()
+
+    def resolve(self):
+        pass
+
+    def __analyze_dependencies(self):
+        dependencies = self.file_parser.get_dependency_file()
+        lock = self.file_parser.get_lock_file()
+        result = []  # type: list[DependencyAction]
+
+        for dep in dependencies.packages:
+            installed = None
+            for l in lock.packages:
+                if l.name == dep.name:
+                    installed = l
                     break
 
-            if depend_version is None:
-                click.secho('{0}: installed = {1}, wanted = {2} '.format(l['name'], l['version'], depend_version),
-                            nl=False)
-                click.secho('(removal required)', fg='red')
+            if installed is None:
+                result.append(DependencyAction(target=dep, action=Action.INSTALL))
+            elif installed.version != dep.version:
+                result.append(DependencyAction(current=installed, target=dep, action=Action.REPLACE))
+            else:
+                result.append(DependencyAction(current=installed, target=dep, action=Action.NONE))
+
+        for l in lock.packages:
+            wanted = None
+            for dep in dependencies.packages:
+                if l.name == dep.name:
+                    wanted = dep
+                    break
+
+            if wanted is None:
+                result.append(DependencyAction(current=l, target=wanted, action=Action.REMOVE))
+
+        return result
 
 
 @click.group()
@@ -239,7 +323,8 @@ def check():
 @deps.command()
 def install():
     """Install or update packages"""
-    click.echo('install')
+    resolver = DependencyResolver()
+    resolver.resolve()
 
 
 if __name__ == '__main__':
