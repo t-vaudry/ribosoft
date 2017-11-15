@@ -52,7 +52,7 @@ def os_str():
 
     if platform == 'win32':
         return 'win'
-    elif platform == 'linux2':
+    elif platform.startswith('linux'):
         return 'linux'
     elif platform == 'darwin':
         return 'mac'
