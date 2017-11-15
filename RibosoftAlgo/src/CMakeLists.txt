@@ -34,5 +34,6 @@ add_custom_command(TARGET RibosoftAlgo
 add_custom_command(TARGET RibosoftAlgo
     POST_BUILD
     COMMAND "${MONO_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/nuget.exe" pack "${NUGET_PACKAGE_DIR}" -OutputDirectory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+
     COMMENT "Creating NuGet package"
 )
