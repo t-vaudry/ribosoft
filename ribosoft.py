@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import sys
 import logging
 import click
 import click_log
@@ -9,8 +10,13 @@ import os
 import tempfile
 import hashlib
 import zipfile
+import shutil
 from functools import reduce
 from enum import Enum
+
+if sys.version_info[0] != 3 and sys.version_info[1] < 5:
+    print("This script requires Python version 3.5")
+    sys.exit(1)
 
 root_dir = os.path.dirname(os.path.realpath(__file__))
 
@@ -269,7 +275,7 @@ class Downloader(object):
             log.error('Failure fetching remote catalog: The catalog is invalid')
             raise
 
-        return Catalog(self, url, data)
+        return Catalog(url, data)
 
     def download_zip(self, destination, url, sha256):
         log.debug('Downloading \'{0}\' to \'{1}\''.format(url, destination))
@@ -290,46 +296,40 @@ class Downloader(object):
 
             log.debug('Hash OK: {0}'.format(sha256))
 
-            with zipfile.ZipFile(f) as zip_ref:
-                try:
-                    zip_ref.testzip()
-                except RuntimeError:
-                    log.error('Downloaded zipfile is corrupt')
-                    raise
+            self.extract_zip(file=f, destination=destination)
 
-                log.info('  extracting...')
-                zip_ref.extractall(destination)
+    def extract_zip(self, file, destination):
+        with zipfile.ZipFile(file) as zip_ref:
+            try:
+                zip_ref.testzip()
+            except RuntimeError:
+                log.error('Downloaded zipfile is corrupt')
+                raise
+
+            log.info('  extracting...')
+            zip_ref.extractall(destination)
 
 
 class Catalog(object):
-    def __init__(self, downloader: Downloader, url, data):
-        self.downloader = downloader
+    def __init__(self, url, data):
         self.url = url
         self.data = data
 
-    def download_package(self, package: Dependency):
+    def get_package_url(self, package: Dependency):
         try:
             meta = reduce(dict.__getitem__,
                           ['packages', package.name, 'versions', package.version, 'platforms', os_str()],
                           self.data)
         except KeyError:
             log.error('Package does not exist in catalog')
-            return
+            return None, None
 
-        location = os.path.join(os.path.dirname(self.url), self.data['archive-root'],
-                                '{0}_{1}_{2}.zip'.format(package.name, package.version, os_str()))
-
-        self.downloader.download_zip(os.path.join(install_path, package.name), location, meta['sha256'])
+        return os.path.join(os.path.dirname(self.url), self.data['archive-root'],
+                            '{0}_{1}_{2}.zip'.format(package.name, package.version, os_str())), meta['sha256']
 
 
-class ActionInstallStrategy(object):
-    def resolve(self, catalog: Catalog, package: DependencyAction):
-        log.info('Installing {0}@{1}...'.format(package.name(), package.target_version()))
-        self.__ensure_dest_exists()
-
-        catalog.download_package(package.target)
-
-    def __ensure_dest_exists(self):
+class ActionStrategy(object):
+    def _ensure_dest_exists(self):
         try:
             if not os.path.exists(install_path):
                 log.debug('Creating new install directory at {0}'.format(install_path))
@@ -339,15 +339,50 @@ class ActionInstallStrategy(object):
             raise
 
 
-class ActionReplaceStrategy(object):
-    def resolve(self, catalog, package: DependencyAction):
+class ActionInstallStrategy(ActionStrategy):
+    def resolve(self, catalog: Catalog, package: DependencyAction):
+        log.info('Installing {0}@{1}...'.format(package.name(), package.target_version()))
+        self._ensure_dest_exists()
+        downloader = Downloader()
+
+        location, sha256 = catalog.get_package_url(package.target)
+
+        if location is None:
+            return
+
+        dest_path = os.path.join(install_path, package.name())
+        downloader.download_zip(dest_path, location, sha256)
+
+
+class ActionReplaceStrategy(ActionStrategy):
+    def resolve(self, catalog: Catalog, package: DependencyAction):
         log.info('Replacing {0}@{1} with {0}@{2}...'.format(package.name(), package.current_version(),
                                                             package.target_version()))
+        self._ensure_dest_exists()
+        downloader = Downloader()
+
+        location, sha256 = catalog.get_package_url(package.target)
+
+        if location is None:
+            return
+
+        dest_path = os.path.join(install_path, package.name())
+        if os.path.exists(dest_path):
+            log.info('  removing...')
+            shutil.rmtree(dest_path)
+
+        downloader.download_zip(dest_path, location, sha256)
 
 
-class ActionRemoveStrategy(object):
-    def resolve(self, catalog, package: DependencyAction):
+class ActionRemoveStrategy(ActionStrategy):
+    def resolve(self, catalog: Catalog, package: DependencyAction):
         log.info('Removing {0}@{1}...'.format(package.name(), package.current_version()))
+        self._ensure_dest_exists()
+        dest_path = os.path.join(install_path, package.name())
+
+        if os.path.exists(dest_path):
+            log.info('  removing...')
+            shutil.rmtree(dest_path)
 
 
 class DependencyResolver(object):
