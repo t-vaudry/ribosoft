@@ -390,7 +390,7 @@ class DependencyResolver(object):
         self.downloader = Downloader()
         self.file_parser = DependencyFileParser()
 
-    def resolve(self):
+    def resolve(self, prompt=True):
         dependencies = self.analyze_dependencies()
         groups = {Action.INSTALL: [], Action.REPLACE: [], Action.REMOVE: []}
 
@@ -423,7 +423,7 @@ class DependencyResolver(object):
                 click.echo(': {0}'.format(d.current_version()))
             click.echo()
 
-        if not click.confirm('Do you want to continue?'):
+        if prompt and not click.confirm('Do you want to continue?'):
             return
 
         click.echo('Retrieving catalog')
@@ -521,10 +521,11 @@ def check():
 
 
 @deps.command()
-def install():
+@click.option('--yes', '-y', is_flag=True, help='do not prompt for confirmation')
+def install(yes):
     """Install or update packages"""
     resolver = DependencyResolver()
-    resolver.resolve()
+    resolver.resolve(prompt=not yes)
 
 
 if __name__ == '__main__':
