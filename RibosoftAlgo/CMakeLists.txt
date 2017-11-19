@@ -19,4 +19,10 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Use C++11
 set(CMAKE_CXX_STANDARD 11)
 
+# link_directories(lib)
+find_library(VIENNARNA_LIBRARY RNA HINTS lib)
+file(GLOB VIENNARNA_INCLUDES include/ViennaRNA/*.h)
+
+include_directories(include)
+
 add_subdirectory(src)
