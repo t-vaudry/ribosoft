@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.2)
 
 project(RibosoftAlgo)
 
+# Add project dependencies directory to search path
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../.deps")
+
 # Include the project cmake module directory
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
