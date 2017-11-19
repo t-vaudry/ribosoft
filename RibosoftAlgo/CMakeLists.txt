@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.2)
 
 project(RibosoftAlgo)
 
+# Add project dependencies directory to search path
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../.deps")
+
 # Include the project cmake module directory
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -18,11 +21,5 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Use C++11
 set(CMAKE_CXX_STANDARD 11)
-
-# link_directories(lib)
-find_library(VIENNARNA_LIBRARY RNA HINTS lib)
-file(GLOB VIENNARNA_INCLUDES include/ViennaRNA/*.h)
-
-include_directories(include)
 
 add_subdirectory(src)
