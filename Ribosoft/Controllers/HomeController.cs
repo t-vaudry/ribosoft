@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,6 +11,9 @@ namespace Ribosoft.Controllers
 {
     public class HomeController : Controller
     {
+        [DllImport("RibosoftAlgo")]
+        extern static String fold(String seq);
+
         public IActionResult Index()
         {
             return View();
@@ -17,7 +21,9 @@ namespace Ribosoft.Controllers
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
+            String seq = "AUUGCUAGCUAGCAUCGUAGCUGUACUGCAUGACUGAUGGCGGCUAGC";
+            String second_struct = fold(seq);
+            ViewData["Message"] = "Your application description page.\n" + second_struct;
 
             return View();
         }
