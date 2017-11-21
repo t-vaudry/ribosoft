@@ -7,13 +7,12 @@
 
 #include <ViennaRNA/data_structures.h>
 
+#include "functions.h"
+
 extern "C" {
 	vrna_fold_compound_t* vrna_fold_compound(const char*, vrna_md_t*, unsigned int);
 	float vrna_mfe(vrna_fold_compound_t*, char*);
 }
-
-extern "C" DLL_PUBLIC int math_add(int a, int b);
-extern "C" DLL_PUBLIC char* fold(const char* seq);
 
 extern "C"
 {

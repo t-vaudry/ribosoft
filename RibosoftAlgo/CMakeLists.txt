@@ -22,4 +22,11 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Use C++11
 set(CMAKE_CXX_STANDARD 11)
 
+# Catch library
+set(CATCH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include/catch)
+add_library(Catch INTERFACE)
+target_include_directories(Catch INTERFACE ${CATCH_INCLUDE_DIR})
+enable_testing()
+
 add_subdirectory(src)
+add_subdirectory(test)
