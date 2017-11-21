@@ -43,4 +43,4 @@ script:
   - cd $TRAVIS_BUILD_DIR
   - dotnet restore Ribosoft.sln
   - dotnet build Ribosoft.sln
-  # - dotnet test Ribosoft.sln
+  - dotnet test Ribosoft.Tests
