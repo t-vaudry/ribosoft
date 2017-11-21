@@ -29,4 +29,5 @@ target_include_directories(Catch INTERFACE ${CATCH_INCLUDE_DIR})
 enable_testing()
 
 add_subdirectory(src)
+add_subdirectory(nuget)
 add_subdirectory(test)
