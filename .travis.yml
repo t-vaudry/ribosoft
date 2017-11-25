@@ -1,0 +1,46 @@
+language: csharp
+solution: Ribosoft.sln
+
+mono: latest
+dotnet: none
+
+sudo: false
+dist: trusty
+
+env:
+  - DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 DOTNET_CLI_TELEMETRY_OPTOUT=1
+
+addons:
+  apt:
+    sources:
+    # - ubuntu-toolchain-r-test
+    - deadsnakes
+    - sourceline: 'deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main'
+      key_url: 'https://packages.microsoft.com/keys/microsoft.asc'
+    packages:
+    - dotnet-sdk-2.0.3
+    # - g++-7
+    - cmake
+    - python3.6
+    - python3.6-venv
+
+before_install:
+  # - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
+  - python3.6 -m venv venv
+  - source venv/bin/activate
+
+install:
+  - pip install -r requirements.txt
+  - ./ribosoft.py deps install --yes
+
+before_script:
+  - mkdir -p RibosoftAlgo/build && cd RibosoftAlgo/build
+  - cmake ..
+
+script:
+  - make -j2
+  - bin/tests
+  - cd $TRAVIS_BUILD_DIR
+  - dotnet restore Ribosoft.sln
+  - dotnet build Ribosoft.sln
+  - dotnet test Ribosoft.Tests

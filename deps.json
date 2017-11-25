@@ -1,0 +1,9 @@
+{
+  "catalog-url": "https://ribosoftdeps.blob.core.windows.net/catalog/catalog.json",
+  "packages": [
+    {
+      "name": "viennarna",
+      "version": "2.4.2-606b6cd"
+    }
+  ]
+}
