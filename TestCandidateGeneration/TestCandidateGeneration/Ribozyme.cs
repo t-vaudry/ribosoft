@@ -8,20 +8,19 @@ namespace TestCandidateGeneration
     {
         public String mSequence;
         public String mStructure;
-        public String mCutSite;
-        public List<int> mRNALinkIndices;
+        public String mSubstrateSequence;
+        public String mSubstrateStructure;
 
         public Ribozyme()
         {
-            mRNALinkIndices = new List<int>();
         }
 
-        public Ribozyme(String seq, String struc, String cutSite, List<int> indices)
+        public Ribozyme(String seq, String struc, String cutSite, String cutSiteStruc)
         {
             mSequence = seq;
             mStructure = struc;
-            mCutSite = cutSite;
-            mRNALinkIndices = indices;
+            mSubstrateSequence = cutSite;
+            mSubstrateStructure = cutSiteStruc;
         }
     }
 }
