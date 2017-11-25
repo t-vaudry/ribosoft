@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using System.Linq;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -63,21 +62,14 @@ namespace TestCandidateGeneration
             //This is making the assumption that the substrate has no bonds/pseudoknots, only empty or targets
             GenerateStructure(gNodesAtDepthCutSite, gRibozyme.mSubstrateSequence);
 
-            //TODO: Parallelize 3&4
-
             //*********************
-            //3- Traverse sequence tree
+            //3, 4- Traverse ribozyme & substrate trees
             //*********************
 
-            foreach (Node rootNode in gNodesAtDepthSequence[0])
-                TraverseSequence(new Sequence(gRibozyme.mSequence.Length), rootNode);
+            Task t1 = Task.Factory.StartNew(() => TraverseRibozyme());
+            Task t2 = Task.Factory.StartNew(() => TraverseSubstrate());
 
-            //*********************
-            //4- Traverse cut site tree
-            //*********************
-
-            foreach (Node rootNode in gNodesAtDepthCutSite[0])
-                TraverseNoStructure(new Sequence(gRibozyme.mSubstrateSequence.Length), rootNode);
+            Task.WaitAll(t1, t2);
 
             //*********************
             //5- Eliminate potential cut sites that are not found on input RNA
@@ -195,6 +187,17 @@ namespace TestCandidateGeneration
             {
                 Console.WriteLine("Unclosed pseudoknot found '{'. Input may be faulty.");
             }
+        }
+
+        static public void TraverseSubstrate()
+        {
+            foreach (Node rootNode in gNodesAtDepthCutSite[0])
+                TraverseNoStructure(new Sequence(gRibozyme.mSubstrateSequence.Length), rootNode);
+        }
+        static public void TraverseRibozyme()
+        {
+            foreach (Node rootNode in gNodesAtDepthSequence[0])
+                TraverseSequence(new Sequence(gRibozyme.mSequence.Length), rootNode);
         }
 
         static public void TraverseNoStructure(Sequence currentSequence, Node currentNode)

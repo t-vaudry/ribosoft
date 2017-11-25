@@ -24,12 +24,7 @@ namespace TestCandidateGeneration
 
         public Sequence(Sequence otherSequence)
         {
-            mNucleotides = new List<Nucleotide>(otherSequence.mCapacity);
-            foreach (Nucleotide nucleotide in otherSequence.mNucleotides)
-            {
-                Nucleotide ours = new Nucleotide(nucleotide);
-                mNucleotides.Add(ours);
-            }
+            mNucleotides = new List<Nucleotide>(otherSequence.mNucleotides);
         }
 
         public String GetString()
