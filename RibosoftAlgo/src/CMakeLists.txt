@@ -3,8 +3,8 @@ set(SOURCE_FILES
     dll.h
     functions.h
     main.cpp
-	anneal.cpp
-	)
+    anneal.cpp
+    )
 
 add_definitions(-DBUILDING_DLL)
 
