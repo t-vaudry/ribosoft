@@ -1,8 +1,8 @@
 set(TEST_SOURCES
     # Sources here...
-	main.cpp
-    anneal.cpp
-	)
+    main.cpp
+    test_anneal.cpp
+    )
 
 add_executable(tests ${TEST_SOURCES})
 target_link_libraries(tests Catch RibosoftAlgo)

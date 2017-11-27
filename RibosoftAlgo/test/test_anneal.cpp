@@ -9,7 +9,7 @@ TEST_CASE("yG, zC (numerator) of 0; sequence length of 1", "[anneal]") {
 	const char* structure = "0";
 	float na_concentration = 1.0;
 	float temp = anneal(sequence, structure, na_concentration);
-	REQUIRE(fabs(temp-(-330.2)) < DELTA);
+	REQUIRE(fabs(temp-(-740.2)) < DELTA);
 }
 
 TEST_CASE("simple sequence and structure", "[anneal]") {
