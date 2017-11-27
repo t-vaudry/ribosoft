@@ -42,10 +42,24 @@ var app = new Vue({
                     unit: "nM"
                 },
             ],
+            cutSites: [
+            ],
             specificityMethods: [
                 "Cleavage",
                 "Cleavage and Hybridization"
             ]
+        }
+    },
+    methods: {
+        expand: function(title, body) {
+            panelTitle = document.getElementById(title);
+            panelBody = document.getElementById(body);
+
+            panelTitle.classList.toggle("collapsed");
+            panelBody.classList.toggle("collapse");
+        },
+        submit: function() {
+
         }
     }
 });

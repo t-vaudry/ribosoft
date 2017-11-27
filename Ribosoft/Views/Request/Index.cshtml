@@ -5,43 +5,49 @@
 <div class="container body-content" id="app">
     <h2>@ViewData["Title"]</h2>
     <hr/>
-    
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">Sequence Selection</h3>
-        </div>
-        <div class="panel-body">
-            <div class="form-group">
-                <label for="ribo-type">Ribozyme Structure:</label>
-                <select id="ribo-type" class="form-control">
-                    <option v-for="ribozyme in ribozymes">{{ ribozyme }}</option>
-                </select>
+    <form>
+        <div class="panel panel-default">
+            <div class="panel-heading" v-on:click="expand('sequenceTitle', 'sequenceBody')">
+                <h3 id="sequenceTitle" class="panel-title">Sequence Selection</h3>
             </div>
+            <div id="sequenceBody" class="panel-body">
+                <div class="form-group">
+                    <label for="ribo-type">Ribozyme Structure:</label>
+                    <select id="ribo-type" class="form-control">
+                        <option v-for="ribozyme in ribozymes">{{ ribozyme }}</option>
+                    </select>
+                </div>
 
+                <div class="form-group">
+                    <label for="">Input Sequence:</label>
+                    <textarea class="form-control" rows="10" id="inputSequence">
+                    </textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="panel panel-default">
+        <div class="panel-heading" v-on:click="expand('targetRegionTitle', 'targetRegionBody')">
+            <h3 id="targetRegionTitle" class="panel-title collapsed">Regions for Target Design</h3>
+        </div>
+        <div id="targetRegionBody" class="panel-body collapse">
             <div class="form-group">
-                <label for="">Input Sequence:</label>
-                <textarea class="form-control" rows="10" id="inputSequence">
-                </textarea>
+                <label for="targetRegion">Select Target Region:</label>
+                <div id="targetRegion">
+                    <div class="checkbox" v-for="region in targetRegions">
+                        <label><input type="checkbox" value="">{{ region }}</label>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">Regions for Target Design</h3>
+        <div class="panel-heading" v-on:click="expand('targetEnviornmentTitle', 'targetEnviornmentBody')">
+            <h3 id="targetEnviornmentTitle" class="panel-title collapsed">Target Environment</h3>
         </div>
-        <div class="panel-body">
-            <div class="checkbox" v-for="region in targetRegions">
-                <label><input type="checkbox" value="">{{ region }}</label>
-            </div>
-        </div>
-    </div>
-
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">Target Environment</h3>
-        </div>
-        <div class="panel-body">
+        <div id="targetEnviornmentBody" class="panel-body collapse">
              <div class="form-group">
                 <label for="targetEnvironment">Environment:</label>
                 <select id="targetEnvironment" class="form-control">
@@ -61,10 +67,10 @@
     </div>
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">Environment Properties</h3>
+        <div class="panel-heading" v-on:click="expand('propertiesTitle', 'propertiesBody')">
+            <h3 id="propertiesTitle" class="panel-title collapsed">Environment Properties</h3>
         </div>
-        <div class="panel-body">
+        <div id="propertiesBody" class="panel-body collapse">
             <div class="form-group" v-for="v in targetEnvironmentVariables">
                 <label v-bind:for="v.id">{{ v.variable+" ("+v.unit+")" }}:</label>
                 <input v-bind:id="v.id" type="text" class="form-control">
@@ -73,18 +79,24 @@
     </div>
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">Potential Cut Sites</h3>
+        <div class="panel-heading" v-on:click="expand('cutSiteTitle', 'cutSiteBody')">
+            <h3 id="cutSiteTitle" class="panel-title collapsed">Potential Cut Sites</h3>
         </div>
-        <div class="panel-body">            
+        <div id="cutSiteBody" class="panel-body collapse">
+            <div class="form-group">
+                <label for="">Cut Sites:</label>
+                <select multiple class="form-control">
+                    <option v-for="cutSite in cutSites">{{ cutSite }}</option>
+                </select>
+            </div>
         </div>
     </div>
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">Specificity</h3>
+        <div class="panel-heading" v-on:click="expand('specificityTitle', 'specificityBody')">
+            <h3 id="specificityTitle" class="panel-title collapsed">Specificity</h3>
         </div>
-        <div class="panel-body">
+        <div id=specificityBody class="panel-body collapse">
             <div class="form-group">
                 <label for="specificityMethod">Method:</label>
                 <div id="specificityMethod">
@@ -96,31 +108,7 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-4">
-            <!---<form>
-                <div class="form-group">
-                    <label for="exampleInputEmail1">Email address</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Password</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                </div>
-
-                <div class="form-check">
-                    <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input">
-                        Check me out
-                    </label>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>-->
-        </div>
-    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </div>
 
 @section scripts{
