@@ -2,7 +2,9 @@
 
 #include <functions.h>
 
-float DELTA = 0.05000;
+#include <cmath>
+
+float DELTA = 0.05;
 
 TEST_CASE("yG, zC (numerator) of 0; sequence length of 1", "[anneal]") {
 	const char* sequence = "A";

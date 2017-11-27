@@ -24,7 +24,7 @@ extern "C"
 		const float EIGHTEENPOINTFIVE = 18.5;
 		const float FIFTYEIGHTPOINTFOUR = 58.4;
 		const float ELEVENPOINTEIGHT = 11.8;
-		const float EIGHTHUNDREDTWENTY = 820;
+		const float EIGHTHUNDREDTWENTY = 820.0;
 		const float TWO = 2.0;
 
 		std::regex base_regex("[0-9a-zA-Z]+");
@@ -43,7 +43,6 @@ extern "C"
 			substrings.push_back(local_sequence.substr(match.position(), match.length()));
 		}
 
-		int* temps;
 		float temp_sum = 0.0;
 
 		for (int i = 0; i < substrings.size(); i++) {
