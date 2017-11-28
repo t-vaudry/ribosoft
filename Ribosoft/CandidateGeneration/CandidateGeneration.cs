@@ -6,9 +6,9 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace TestCandidateGeneration
+namespace Ribosoft.CandidateGeneration
 {
-    class Program
+    class CandidateGeneration
     {
         public static List<Tuple<int, int>> gNeighboursIndices = new List<Tuple<int, int>>();
 
@@ -29,7 +29,7 @@ namespace TestCandidateGeneration
 
         public static Stack<uint> gOpenBondIndices = new Stack<uint>();
         public static Stack<uint> gOpenPseudoKnotIndices = new Stack<uint>();
-        static void Main(string[] args)
+        static void GenerateCandidates(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
         {
             //*********************
             //
@@ -51,7 +51,7 @@ namespace TestCandidateGeneration
             //1- Get user input
             //*********************
 
-            GetUserInput();
+            GetUserInput(ribozymeSeq, ribozymeStruc, substrateSeq, substrateStruc, rnaInput);
 
             //*********************
             //2- Generate the tree structures
@@ -305,27 +305,14 @@ namespace TestCandidateGeneration
             }
         }
 
-        static public void GetUserInput()
+        static public void GetUserInput(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
         {
-            FileStream filestream = new System.IO.FileStream("C:\\Users\\anita\\Desktop\\pistol_model.txt",
-                                          System.IO.FileMode.Open,
-                                          System.IO.FileAccess.Read,
-                                          System.IO.FileShare.ReadWrite);
-            var file = new System.IO.StreamReader(filestream, System.Text.Encoding.UTF8, true, 128);
-
-            String inputRibozymeSequence = file.ReadLine();
-            String inputRibozymeStructure = file.ReadLine();
-            String inputSubstrateSequence = file.ReadLine();
-            String inputSubstrateStructure = file.ReadLine();
-
-            Debug.Assert(inputRibozymeSequence.Length == inputRibozymeStructure.Length);
-            Debug.Assert(inputSubstrateSequence.Length == inputSubstrateStructure.Length);
+            Debug.Assert(ribozymeSeq.Length == ribozymeStruc.Length);
+            Debug.Assert(substrateSeq.Length == substrateStruc.Length);
 
             //Create ribozyme
-            gRibozyme = new Ribozyme(inputRibozymeSequence, inputRibozymeStructure, inputSubstrateSequence, inputSubstrateStructure);
-
-            while (!file.EndOfStream)
-                gInputRNASequence += file.ReadLine();
+            gRibozyme = new Ribozyme(ribozymeSeq, ribozymeStruc, substrateSeq, substrateStruc);
+            gInputRNASequence = rnaInput;
         }
 
         static public void CompleteSequencesWithCutSiteInfo()
