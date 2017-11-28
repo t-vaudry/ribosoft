@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text;
 
-namespace TestCandidateGeneration
+namespace Ribosoft.CandidateGeneration
 {
     class Sequence
     {
