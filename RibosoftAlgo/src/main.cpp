@@ -9,27 +9,31 @@
 
 #include "functions.h"
 
-extern "C" {
-	vrna_fold_compound_t* vrna_fold_compound(const char*, vrna_md_t*, unsigned int);
-	float vrna_mfe(vrna_fold_compound_t*, char*);
-}
+namespace ribosoft {
 
-extern "C"
-{
-	DLL_PUBLIC int math_add(int a, int b) {
-		return a + b;
-	}
+    extern "C" {
+        vrna_fold_compound_t* vrna_fold_compound(const char*, vrna_md_t*, unsigned int);
+        float vrna_mfe(vrna_fold_compound_t*, char*);
+    }
 
-	DLL_PUBLIC char* fold(const char* seq) {
-		char  *mfe_structure = (char*) malloc(sizeof(char) * (strlen(seq) + 1));
-  		char  *prob_string   = (char*) malloc(sizeof(char) * (strlen(seq) + 1));
+    extern "C"
+    {
+        DLL_PUBLIC int math_add(int a, int b) {
+            return a + b;
+        }
 
-  		/* get a vrna_fold_compound with default settings */
-  		vrna_fold_compound_t *vc = vrna_fold_compound(seq, NULL, VRNA_OPTION_DEFAULT);
+        DLL_PUBLIC char* fold(const char* seq) {
+            char  *mfe_structure = (char*) malloc(sizeof(char) * (strlen(seq) + 1));
+            char  *prob_string   = (char*) malloc(sizeof(char) * (strlen(seq) + 1));
 
-  		/* call MFE function */
-  		double mfe = (double)vrna_mfe(vc, mfe_structure);
+            /* get a vrna_fold_compound with default settings */
+            vrna_fold_compound_t *vc = vrna_fold_compound(seq, NULL, VRNA_OPTION_DEFAULT);
 
-  		return mfe_structure;
-	}
+            /* call MFE function */
+            double mfe = (double)vrna_mfe(vc, mfe_structure);
+
+            return mfe_structure;
+        }
+    }
+
 }
