@@ -17,7 +17,7 @@ R_ERROR validate_sequence(const char* sequence)
         return R_APPLICATION_ERROR::R_INVALID_NUCLEOTIDE;
     }
 
-    return R_SUCCESS::R_OK;
+    return R_SUCCESS::RIBOSOFT_OK;
 }
 
 R_ERROR validate_structure(const char* structure)
@@ -60,5 +60,5 @@ R_ERROR validate_structure(const char* structure)
         return R_APPLICATION_ERROR::R_BAD_PAIR_MATCH;
     }
 
-    return R_SUCCESS::R_OK;
+    return R_SUCCESS::RIBOSOFT_OK;
 }

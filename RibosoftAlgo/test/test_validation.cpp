@@ -3,8 +3,8 @@
 #include <functions.h>
 
 TEST_CASE("Valid sequence", "[validate_sequence]") {
-    REQUIRE(validate_sequence("AUGCGAUAGCUAUGUGCAUG") == R_SUCCESS::R_OK);
-    REQUIRE(validate_sequence("AAAUUUGCGCGAUAUCGGUC") == R_SUCCESS::R_OK);
+    REQUIRE(validate_sequence("AUGCGAUAGCUAUGUGCAUG") == R_SUCCESS::RIBOSOFT_OK);
+    REQUIRE(validate_sequence("AAAUUUGCGCGAUAUCGGUC") == R_SUCCESS::RIBOSOFT_OK);
 }
 
 TEST_CASE("Invalid sequence", "[validate_sequence]") {
@@ -14,9 +14,9 @@ TEST_CASE("Invalid sequence", "[validate_sequence]") {
 }
 
 TEST_CASE("Valid structure", "[validate_structure]") {
-    REQUIRE(validate_structure("...()...") == R_SUCCESS::R_OK);
-    REQUIRE(validate_structure("(){}..") == R_SUCCESS::R_OK);
-    REQUIRE(validate_structure("{()()()...()()()}") == R_SUCCESS::R_OK);
+    REQUIRE(validate_structure("...()...") == R_SUCCESS::RIBOSOFT_OK);
+    REQUIRE(validate_structure("(){}..") == R_SUCCESS::RIBOSOFT_OK);
+    REQUIRE(validate_structure("{()()()...()()()}") == R_SUCCESS::RIBOSOFT_OK);
 }
 
 TEST_CASE("Invalid structure", "[validate_structure]") {

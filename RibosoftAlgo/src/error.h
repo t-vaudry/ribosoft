@@ -4,7 +4,7 @@ typedef signed int R_ERROR;
 
 /* SUCCESS : Range (0)-(1000) */
 enum R_SUCCESS : R_ERROR {
-    R_OK                        =  0,
+    RIBOSOFT_OK                 =  0,
 };
 
 /* APPLICATION ERROR : Range (-1)-(-999) */
