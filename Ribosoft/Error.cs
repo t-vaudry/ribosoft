@@ -11,7 +11,7 @@ namespace Ribosoft
     /* SYSTEM ERROR       : Range (-2000)-(-2999) */
     public enum R_ERROR : int
     {
-        R_OK                        =  0,
+        RIBOSOFT_OK                 =  0,
         R_INVALID_PARAMETER         = -1,
         R_INVALID_NUCLEOTIDE        = -2,
         R_INVALID_STRUCT_ELEMENT    = -3,
