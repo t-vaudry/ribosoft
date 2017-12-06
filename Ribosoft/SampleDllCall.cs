@@ -9,7 +9,7 @@ namespace Ribosoft
         extern static int math_add(int a, int b);
 
         [DllImport("RibosoftAlgo")]
-        extern static R_ERROR validate_sequence(String sequence);
+        extern static R_STATUS validate_sequence(String sequence);
 
         public SampleDllCall()
         {
@@ -20,7 +20,7 @@ namespace Ribosoft
             return math_add(a, b);
         }
 
-        public R_ERROR ValidateSequence(String seq)
+        public R_STATUS ValidateSequence(String seq)
         {
             return validate_sequence(seq);
         }
