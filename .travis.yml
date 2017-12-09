@@ -47,6 +47,10 @@ script:
 
 deploy:
   - provider: script
-    script: .travis/deploy.sh $DEVELOP_DEPLOY_URL
+    script: .travis/deploy.sh "$DEVELOP_DEPLOY_URL" "$TRAVIS_BRANCH"
     on:
       branch: develop
+  - provider: script
+    script: .travis/deploy.sh "$MASTER_DEPLOY_URL" "$TRAVIS_BRANCH"
+    on:
+      branch: master
