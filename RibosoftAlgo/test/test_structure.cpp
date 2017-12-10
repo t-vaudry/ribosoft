@@ -3,16 +3,28 @@
 #include <functions.h>
 
 TEST_CASE("equal structures", "[structure]") {
-    REQUIRE(structure("..", "..") == 0.0f);
-    REQUIRE(structure("()", "()") == 0.0f);
+    float dist;
+    structure("..", "..", dist);
+    REQUIRE(dist == 0.0f);
+
+    structure("()", "()", dist);
+    REQUIRE(dist == 0.0f);
 }
 
 TEST_CASE("not equal structures", "[structure]") {
-    REQUIRE(structure("..()..", "((..))") == 8.0f);
-    REQUIRE(structure("(.().)()", "...()().") == 6.0f);
+    float dist;
+    structure("..()..", "((..))", dist);
+    REQUIRE(dist == 8.0f);
+
+    structure("(.().)()", "...()().", dist);
+    REQUIRE(dist == 6.0f);
 }
 
 TEST_CASE("not equal length structures", "[structure]") {
-    REQUIRE(structure("..()..", "((.))") == -1.0f);
-    REQUIRE(structure("(.().)()", ".()().") == -1.0f);
+    float dist;
+    structure("..()..", "((.))", dist);
+    REQUIRE(dist == -1.0f);
+
+    structure("(.().)()", ".()().", dist);
+    REQUIRE(dist == -1.0f);
 }
