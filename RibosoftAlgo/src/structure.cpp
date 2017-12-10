@@ -10,13 +10,14 @@
 
 extern "C"
 {
-    DLL_PUBLIC float structure(const char* candidate, const char* ideal)
+    DLL_PUBLIC void structure(const char* candidate, const char* ideal, float& distance)
     {
         // TODO: structure validation
 
         if (strlen(candidate) != strlen(ideal)) {
             // TODO: ERROR CODES!
-            return -1.0f;
+            distance = -1.0f;
+            return;
         }
 
         char* xstruc;
@@ -33,10 +34,8 @@ extern "C"
         free(xstruc);
 
         // Calculate distance
-        float dist = tree_edit_distance(T[0], T[1]);
+        distance = tree_edit_distance(T[0], T[1]);
         free_tree(T[0]);
         free_tree(T[1]);
-
-        return dist;
     }
 }
