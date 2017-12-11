@@ -6,10 +6,10 @@ namespace Ribosoft.CandidateGeneration
 {
     class Ribozyme
     {
-        public String mSequence;
-        public String mStructure;
-        public String mSubstrateSequence;
-        public String mSubstrateStructure;
+        public String Sequence { get; set; }
+        public String Structure { get; set; }
+        public String SubstrateSequence { get; set; }
+        public String SubstrateStructure { get; set; }
 
         public Ribozyme()
         {
@@ -17,10 +17,10 @@ namespace Ribosoft.CandidateGeneration
 
         public Ribozyme(String seq, String struc, String cutSite, String cutSiteStruc)
         {
-            mSequence = seq;
-            mStructure = struc;
-            mSubstrateSequence = cutSite;
-            mSubstrateStructure = cutSiteStruc;
+            Sequence = seq;
+            Structure = struc;
+            SubstrateSequence = cutSite;
+            SubstrateStructure = cutSiteStruc;
         }
     }
 }
