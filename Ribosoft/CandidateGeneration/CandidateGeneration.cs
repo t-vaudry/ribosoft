@@ -150,7 +150,9 @@ namespace Ribosoft.CandidateGeneration
                     Node currentNode = new Node(new Nucleotide(baseChar), i, neighbourIndex);
 
                     if (i > 0)
+                    {
                         currentNode.Parents = nodesAtDepth[i - 1];
+                    }
 
                     //Add this node to the nodes at the current depth
                     depth_i.Add(currentNode);
@@ -322,7 +324,9 @@ namespace Ribosoft.CandidateGeneration
             {
                 //If the substrate is not part of the target, continue
                 if (Ribozyme.SubstrateStructure[i] == '.')
+                {
                     continue;
+                }
 
                 //If it is not a '.', we are expecting it to be part of the target
                 Debug.Assert(IsTarget(Ribozyme.SubstrateStructure[i]));
@@ -350,7 +354,7 @@ namespace Ribosoft.CandidateGeneration
                     Sequence newSequence = new Sequence(ribozymeSequence);
                     bool success = true;
 
-                    //For each element in the ribozyme sequence that is part of the traget area, check if it is possible to bond with the substrate
+                    //For each element in the ribozyme sequence that is part of the target area, check if it is possible to bond with the substrate
                     foreach (Tuple<int, int> indexPair in RibozymeSubstrateIndexPairs)
                     {
                         int riboIdx = indexPair.Item1;
@@ -370,7 +374,10 @@ namespace Ribosoft.CandidateGeneration
 
                     //If all target elements can successfully bond, add this sequence to the list
                     if (success)
+                    {
                         SequencesToSend.Add(newSequence);
+                    }
+                    //Else, do nothing: this ribozyme sequence cannot bond with the substrate
                 }
             }
         }
