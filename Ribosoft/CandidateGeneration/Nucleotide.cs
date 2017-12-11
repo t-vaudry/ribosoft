@@ -106,8 +106,7 @@ namespace Ribosoft.CandidateGeneration
                 case '-': //For nucleotides that will be set later
                     break;
                 default:
-                    Console.WriteLine(String.Format("Nucleotide base {0} was provided.", Symbol));
-                    break;
+                    throw new CandidateGenerationException(String.Format("Invalid nucleotide base {0} was provided.", Symbol));
             }
         }
 
@@ -124,8 +123,7 @@ namespace Ribosoft.CandidateGeneration
                 case 'C':
                     return 'G';
                 default:
-                    Console.WriteLine("Cannot get complement of invalid base.");
-                    return 'X';
+                    throw new CandidateGenerationException(String.Format("Cannot get complement of invalid symbol {0}", Symbol));
             }
         }
     }

@@ -39,8 +39,6 @@ namespace Ribosoft.CandidateGeneration
 
         public char GetCharAt(int index)
         {
-            Debug.Assert(index > -1 && index < Nucleotides.Count);
-
             return Nucleotides[index].Symbol;
         }
 
