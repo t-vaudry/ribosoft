@@ -4,8 +4,8 @@
 #include <string.h>
 #include <cmath>
 
-#include <ViennaRNA\data_structures.h>
-#include <ViennaRNA\constraints.h>
+#include <ViennaRNA/data_structures.h>
+#include <ViennaRNA/constraints.h>
 
 #include "functions.h"
 
