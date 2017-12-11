@@ -256,7 +256,7 @@ namespace Ribosoft.CandidateGeneration
                     }
                     if (!found)
                     {
-                        Debug.Assert(false, "Neighbours don't match!");
+                        throw new CandidateGenerationException("Neighbours don't match!");
                     }
                 }
                 else
@@ -281,8 +281,14 @@ namespace Ribosoft.CandidateGeneration
 
         public void GetUserInput(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
         {
-            Debug.Assert(ribozymeSeq.Length == ribozymeStruc.Length);
-            Debug.Assert(substrateSeq.Length == substrateStruc.Length);
+            if (ribozymeSeq.Length != ribozymeStruc.Length)
+            {
+                throw new CandidateGenerationException("Ribozyme sequence length does not match ribozyme structure length.");
+            }
+            if (substrateSeq.Length != substrateStruc.Length)
+            {
+                throw new CandidateGenerationException("Substrate sequence length does not match substrate structure length.");
+            }
 
             //Create ribozyme
             Ribozyme = new Ribozyme(ribozymeSeq, ribozymeStruc, substrateSeq, substrateStruc);
@@ -301,7 +307,10 @@ namespace Ribosoft.CandidateGeneration
                 }
 
                 //If it is not a '.', we are expecting it to be part of the target
-                Debug.Assert(IsTarget(Ribozyme.SubstrateStructure[i]));
+                if (!IsTarget(Ribozyme.SubstrateStructure[i]))
+                {
+                    throw new CandidateGenerationException(String.Format("Unexpected substrate structure character: {0}", Ribozyme.SubstrateStructure[i]));
+                }
 
                 //Now find the base in the input sequence that binds to this (aka has the same struc value)
                 bool foundMatch = false;
@@ -313,7 +322,11 @@ namespace Ribosoft.CandidateGeneration
                         RibozymeSubstrateIndexPairs.Add(Tuple.Create(j, i));
                     }
                 }
-                Debug.Assert(foundMatch);
+
+                if (!foundMatch)
+                {
+                    throw new CandidateGenerationException(String.Format("Substrate structure character not found in ribozyme structure: {0}", Ribozyme.SubstrateStructure[i]));
+                }
             }
 
             //Complete each sequence with the complement of the substrate at the target positions
