@@ -43,5 +43,15 @@ namespace Ribosoft.CandidateGeneration
 
             return Nucleotides[index].Symbol;
         }
+
+        public String GetComplement()
+        {
+            StringBuilder complement = new System.Text.StringBuilder();
+
+            foreach (Nucleotide n in Nucleotides)
+                complement.Append(n.GetComplement());
+
+            return complement.ToString();
+        }
     }
 }

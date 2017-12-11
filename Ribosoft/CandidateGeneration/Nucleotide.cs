@@ -110,5 +110,23 @@ namespace Ribosoft.CandidateGeneration
                     break;
             }
         }
+
+        public char GetComplement()
+        {
+            switch (Symbol)
+            {
+                case 'A':
+                    return 'U';
+                case 'U':
+                    return 'A';
+                case 'G':
+                    return 'C';
+                case 'C':
+                    return 'G';
+                default:
+                    Console.WriteLine("Cannot get complement of invalid base.");
+                    return 'X';
+            }
+        }
     }
 }
