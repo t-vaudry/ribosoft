@@ -10,25 +10,25 @@ namespace Ribosoft.CandidateGeneration
 {
     class CandidateGenerator
     {
-        private List<Tuple<int, int>> mNeighboursIndices = new List<Tuple<int, int>>();
+        private List<Tuple<int, int>> NeighboursIndices = new List<Tuple<int, int>>();
 
-        private Ribozyme mRibozyme;
+        private Ribozyme Ribozyme;
 
-        private List<Sequence> mSequences = new List<Sequence>();
-        private List<Sequence> mSubstrateSequences = new List<Sequence>();
+        private List<Sequence> Sequences = new List<Sequence>();
+        private List<Sequence> SubstrateSequences = new List<Sequence>();
 
         //Holds the index equivalencies of bonding ribozyme/substrate pairs
-        private List<Tuple<int, int>> mRibozymeSubstrateIndexPairs = new List<Tuple<int, int>>();
+        private List<Tuple<int, int>> RibozymeSubstrateIndexPairs = new List<Tuple<int, int>>();
 
-        private List<Sequence> mSequencesToSend = new List<Sequence>();
+        private List<Sequence> SequencesToSend = new List<Sequence>();
 
-        private String mInputRNASequence;
+        private String InputRNASequence;
 
-        private List<List<Node>> mNodesAtDepthSequence = new List<List<Node>>();
-        private List<List<Node>> mNodesAtDepthCutSite = new List<List<Node>>();
+        private List<List<Node>> NodesAtDepthSequence = new List<List<Node>>();
+        private List<List<Node>> NodesAtDepthCutSite = new List<List<Node>>();
 
-        private Stack<uint> mOpenBondIndices = new Stack<uint>();
-        private Stack<uint> mOpenPseudoKnotIndices = new Stack<uint>();
+        private Stack<int> OpenBondIndices = new Stack<int>();
+        private Stack<int> OpenPseudoKnotIndices = new Stack<int>();
         public void GenerateCandidates(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
         {
             //*********************
@@ -57,10 +57,10 @@ namespace Ribosoft.CandidateGeneration
             //2- Generate the tree structures
             //*********************
 
-            GenerateStructure(mNodesAtDepthSequence, mRibozyme.mSequence, mRibozyme.mStructure);
+            GenerateStructure(NodesAtDepthSequence, Ribozyme.Sequence, Ribozyme.Structure);
 
             //This is making the assumption that the substrate has no bonds/pseudoknots, only empty or targets
-            GenerateStructure(mNodesAtDepthCutSite, mRibozyme.mSubstrateSequence);
+            GenerateStructure(NodesAtDepthCutSite, Ribozyme.SubstrateSequence);
 
             //*********************
             //3, 4- Traverse ribozyme & substrate trees
@@ -83,18 +83,18 @@ namespace Ribosoft.CandidateGeneration
             CompleteSequencesWithCutSiteInfo();
 
 
-            Console.WriteLine("Amount of sequences (no cut site): {0}", mSequences.Count);
-            Console.WriteLine("Amount of sequences to send: {0}", mSequencesToSend.Count);
+            //Console.WriteLine("Amount of sequences (no cut site): {0}", Sequences.Count);
+            //Console.WriteLine("Amount of sequences to send: {0}", SequencesToSend.Count);
 
-            Console.WriteLine("\nAccepted cut sites: ");
-            foreach (Sequence cutsite in mSubstrateSequences)
-                Console.WriteLine(cutsite.GetString());
+            //Console.WriteLine("\nAccepted cut sites: ");
+            //foreach (Sequence cutsite in SubstrateSequences)
+            //    Console.WriteLine(cutsite.GetString());
 
             //Console.WriteLine("Sending sequences: ");
-            //foreach (Sequence seq in gSequencesToSend)
+            //foreach (Sequence seq in SequencesToSend)
             //    Console.WriteLine(seq.GetString());
 
-            Console.ReadLine();
+            //Console.ReadLine();
         }
 
         public void GenerateStructure(List<List<Node>> nodesAtDepth, String inputSequence, String inputStructure = null)
@@ -110,7 +110,7 @@ namespace Ribosoft.CandidateGeneration
                 Nucleotide nucleotide = new Nucleotide(inputSequence[i]);
 
                 //The neighbour (of a bond or pseudoknot)
-                uint neighbourIndex = uint.MaxValue;
+                int? neighbourIndex = null;
                 if (inputStructure != null)
                 {
                     char structure = inputStructure[i];
@@ -124,18 +124,18 @@ namespace Ribosoft.CandidateGeneration
                             case '.': //Nothing to do
                                 break;
                             case '(': //Start an open bond
-                                mOpenBondIndices.Push((uint)i);
+                                OpenBondIndices.Push(i);
                                 break;
                             case ')': //Close an open bond
-                                neighbourIndex = mOpenBondIndices.Pop();
-                                mNeighboursIndices.Add(Tuple.Create(i, (int)neighbourIndex));
+                                neighbourIndex = OpenBondIndices.Pop();
+                                NeighboursIndices.Add(Tuple.Create(i, neighbourIndex.GetValueOrDefault()));
                                 break;
                             case '[': //Start a pseudoknot
-                                mOpenPseudoKnotIndices.Push((uint)i);
+                                OpenPseudoKnotIndices.Push(i);
                                 break;
                             case ']': //Close a pseudoknot
-                                neighbourIndex = mOpenPseudoKnotIndices.Pop();
-                                mNeighboursIndices.Add(Tuple.Create(i, (int)neighbourIndex));
+                                neighbourIndex = OpenPseudoKnotIndices.Pop();
+                                NeighboursIndices.Add(Tuple.Create(i, neighbourIndex.GetValueOrDefault()));
                                 break;
                             default: //Should not happen
                                 Console.WriteLine("Unrecognized structure symbol encountered.");
@@ -145,12 +145,12 @@ namespace Ribosoft.CandidateGeneration
                 }
 
                 //Make a node for each possible nucleotide at the current depth (if input is not a base) and set its parents to be all nodes at the previous depth
-                foreach (char baseChar in nucleotide.mBases)
+                foreach (char baseChar in nucleotide.Bases)
                 {
                     Node currentNode = new Node(new Nucleotide(baseChar), i, neighbourIndex);
 
                     if (i > 0)
-                        currentNode.SetParents(nodesAtDepth[i - 1]);
+                        currentNode.Parents = nodesAtDepth[i - 1];
 
                     //Add this node to the nodes at the current depth
                     depth_i.Add(currentNode);
@@ -161,16 +161,16 @@ namespace Ribosoft.CandidateGeneration
                 {
                     foreach (Node node in nodesAtDepth[i - 1])
                     {
-                        node.SetChildren(depth_i);
+                        node.Children = depth_i;
                     }
                 }
 
                 //If we have found the second element of a neighbour pair, set the neighbour index of both nodes in pair
-                if (neighbourIndex != uint.MaxValue)
+                if (neighbourIndex.HasValue)
                 {
                     foreach (Node firstNeighbour in nodesAtDepth[(int)neighbourIndex])
                     {
-                        firstNeighbour.SetNeighbourIndex((uint)i);
+                        firstNeighbour.NeighbourIndex = i;
                     }
                 }
 
@@ -179,11 +179,11 @@ namespace Ribosoft.CandidateGeneration
             }
 
             //Validate that all open parentheses have been closed
-            if (mOpenBondIndices.Count != 0)
+            if (OpenBondIndices.Count != 0)
             {
                 Console.WriteLine("Unclosed bond found '('. Input may be faulty.");
             }
-            if (mOpenPseudoKnotIndices.Count != 0)
+            if (OpenPseudoKnotIndices.Count != 0)
             {
                 Console.WriteLine("Unclosed pseudoknot found '{'. Input may be faulty.");
             }
@@ -191,61 +191,61 @@ namespace Ribosoft.CandidateGeneration
 
         public void TraverseSubstrate()
         {
-            foreach (Node rootNode in mNodesAtDepthCutSite[0])
-                TraverseNoStructure(new Sequence(mRibozyme.mSubstrateSequence.Length), rootNode);
+            foreach (Node rootNode in NodesAtDepthCutSite[0])
+                TraverseNoStructure(new Sequence(Ribozyme.SubstrateSequence.Length), rootNode);
         }
         public void TraverseRibozyme()
         {
-            foreach (Node rootNode in mNodesAtDepthSequence[0])
-                TraverseSequence(new Sequence(mRibozyme.mSequence.Length), rootNode);
+            foreach (Node rootNode in NodesAtDepthSequence[0])
+                TraverseSequence(new Sequence(Ribozyme.Sequence.Length), rootNode);
         }
 
         public void TraverseNoStructure(Sequence currentSequence, Node currentNode)
         {
-            currentSequence.mNucleotides.Add(currentNode.mNucleotide);
+            currentSequence.Nucleotides.Add(currentNode.Nucleotide);
 
-            if (currentNode.mChildren.Count == 0) //Leaf
+            if (currentNode.Children.Count == 0) //Leaf
             {
-                mSubstrateSequences.Add(currentSequence);
+                SubstrateSequences.Add(currentSequence);
             }
             else
             {
-                foreach (Node child in currentNode.mChildren)
+                foreach (Node child in currentNode.Children)
                     TraverseNoStructure(new Sequence(currentSequence), child);
             }
         }
 
         public void TraverseSequence(Sequence currentSequence, Node currentNode)
         {
-            currentSequence.mNucleotides.Add(currentNode.mNucleotide);
+            currentSequence.Nucleotides.Add(currentNode.Nucleotide);
 
             //If leaf, add sequence to list
-            if (currentNode.mChildren.Count == 0) //Leaf
+            if (currentNode.Children.Count == 0) //Leaf
             {
-                if (mSequences.Contains(currentSequence))
+                if (Sequences.Contains(currentSequence))
                 {
                     Console.WriteLine("Inserting duplicate!");
                 }
-                mSequences.Add(currentSequence);
+                Sequences.Add(currentSequence);
             }
             else
             {
                 //If child is going to be linked to RNA, just continue
-                if (IsTarget(mRibozyme.mStructure[currentNode.mDepth + 1]))
+                if (IsTarget(Ribozyme.Structure[currentNode.Depth + 1]))
                 {
-                    Node child = new Node(currentNode.mChildren[0]);
-                    child.mNucleotide.SetSymbol('-');
+                    Node child = new Node(currentNode.Children[0]);
+                    child.Nucleotide.SetSymbol('-');
                     TraverseSequence(new Sequence(currentSequence), child);
                 }
                 //Else if the children have a neighbour (will all be the same, so just check 0) and that neighbour has already been set, we must choose 
-                else if (currentNode.mChildren[0].mNeighbourIndex < currentNode.mDepth + 1)
+                else if (currentNode.Children[0].NeighbourIndex < currentNode.Depth + 1)
                 {
                     //Get the complement of the base at the specified neighbour index in the input string
-                    char requiredBase = GetComplement(currentSequence.GetCharAt((int)currentNode.mChildren[0].mNeighbourIndex));
+                    char requiredBase = GetComplement(currentSequence.GetCharAt((int)currentNode.Children[0].NeighbourIndex));
                     bool found = false;
-                    foreach (Node child in currentNode.mChildren)
+                    foreach (Node child in currentNode.Children)
                     {
-                        if (child.mNucleotide.mSymbol == requiredBase)
+                        if (child.Nucleotide.Symbol == requiredBase)
                         {
                             TraverseSequence(new Sequence(currentSequence), child);
                             found = true;
@@ -259,7 +259,7 @@ namespace Ribosoft.CandidateGeneration
                 }
                 else
                 {
-                    foreach (Node child in currentNode.mChildren)
+                    foreach (Node child in currentNode.Children)
                         TraverseSequence(new Sequence(currentSequence), child);
                 }
             }
@@ -295,12 +295,12 @@ namespace Ribosoft.CandidateGeneration
         public void EliminateCutSites()
         {
             //Eliminate the cut sites that are not found in the input RNA sequence
-            for (int i = mSubstrateSequences.Count - 1; i > -1; i--)
+            for (int i = SubstrateSequences.Count - 1; i > -1; i--)
             {
-                if (mInputRNASequence.IndexOf(mSubstrateSequences[i].GetString()) == -1)
+                if (InputRNASequence.IndexOf(SubstrateSequences[i].GetString()) == -1)
                 {
                     //Console.WriteLine("Eliminating cut site: not found in RNA sequence.");
-                    mSubstrateSequences.RemoveAt(i);
+                    SubstrateSequences.RemoveAt(i);
                 }
             }
         }
@@ -311,55 +311,55 @@ namespace Ribosoft.CandidateGeneration
             Debug.Assert(substrateSeq.Length == substrateStruc.Length);
 
             //Create ribozyme
-            mRibozyme = new Ribozyme(ribozymeSeq, ribozymeStruc, substrateSeq, substrateStruc);
-            mInputRNASequence = rnaInput;
+            Ribozyme = new Ribozyme(ribozymeSeq, ribozymeStruc, substrateSeq, substrateStruc);
+            InputRNASequence = rnaInput;
         }
 
         public void CompleteSequencesWithCutSiteInfo()
         {
             //First, build the mapping between substrate and ribozyme
-            for (int i = 0; i < mRibozyme.mSubstrateStructure.Length; i++)
+            for (int i = 0; i < Ribozyme.SubstrateStructure.Length; i++)
             {
                 //If the substrate is not part of the target, continue
-                if (mRibozyme.mSubstrateStructure[i] == '.')
+                if (Ribozyme.SubstrateStructure[i] == '.')
                     continue;
 
                 //If it is not a '.', we are expecting it to be part of the target
-                Debug.Assert(IsTarget(mRibozyme.mSubstrateStructure[i]));
+                Debug.Assert(IsTarget(Ribozyme.SubstrateStructure[i]));
 
                 //Now find the base in the input sequence that binds to this (aka has the same struc value)
                 bool foundMatch = false;
-                for (int j = 0; j < mRibozyme.mStructure.Length; j++)
+                for (int j = 0; j < Ribozyme.Structure.Length; j++)
                 {
-                    if (mRibozyme.mStructure[j] == mRibozyme.mSubstrateStructure[i])
+                    if (Ribozyme.Structure[j] == Ribozyme.SubstrateStructure[i])
                     {
                         foundMatch = true;
-                        mRibozymeSubstrateIndexPairs.Add(Tuple.Create(j, i));
+                        RibozymeSubstrateIndexPairs.Add(Tuple.Create(j, i));
                     }
                 }
                 Debug.Assert(foundMatch);
             }
 
             //Complete each sequence with the complement of the substrate at the target positions
-            foreach (Sequence substrate in mSubstrateSequences)
+            foreach (Sequence substrate in SubstrateSequences)
             {
                 String substrateComplement = GetComplement(substrate.GetString());
 
-                foreach (Sequence ribozymeSequence in mSequences)
+                foreach (Sequence ribozymeSequence in Sequences)
                 {
                     Sequence newSequence = new Sequence(ribozymeSequence);
                     bool success = true;
 
                     //For each element in the ribozyme sequence that is part of the traget area, check if it is possible to bond with the substrate
-                    foreach (Tuple<int, int> indexPair in mRibozymeSubstrateIndexPairs)
+                    foreach (Tuple<int, int> indexPair in RibozymeSubstrateIndexPairs)
                     {
                         int riboIdx = indexPair.Item1;
                         int substrateIdx = indexPair.Item2;
 
-                        Nucleotide ribozymeNucleotide = new Nucleotide(mRibozyme.mSequence[riboIdx]);
-                        if (ribozymeNucleotide.mBases.Contains(substrateComplement[substrateIdx]))
+                        Nucleotide ribozymeNucleotide = new Nucleotide(Ribozyme.Sequence[riboIdx]);
+                        if (ribozymeNucleotide.Bases.Contains(substrateComplement[substrateIdx]))
                         {
-                            newSequence.mNucleotides[riboIdx] = new Nucleotide(substrateComplement[substrateIdx]);
+                            newSequence.Nucleotides[riboIdx] = new Nucleotide(substrateComplement[substrateIdx]);
                         }
                         else
                         {
@@ -370,7 +370,7 @@ namespace Ribosoft.CandidateGeneration
 
                     //If all target elements can successfully bond, add this sequence to the list
                     if (success)
-                        mSequencesToSend.Add(newSequence);
+                        SequencesToSend.Add(newSequence);
                 }
             }
         }

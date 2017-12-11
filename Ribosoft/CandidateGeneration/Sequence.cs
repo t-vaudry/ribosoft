@@ -7,41 +7,41 @@ namespace Ribosoft.CandidateGeneration
 {
     class Sequence
     {
-        public List<Nucleotide> mNucleotides;
-        public int mCapacity;
+        public List<Nucleotide> Nucleotides { get; set; }
+        public int Capacity;
 
         public Sequence()
         {
-            mCapacity = 0;
-            mNucleotides = new List<Nucleotide>(mCapacity);
+            Capacity = 0;
+            Nucleotides = new List<Nucleotide>(Capacity);
         }
 
         public Sequence(int capacity)
         {
-            mCapacity = capacity;
-            mNucleotides = new List<Nucleotide>(mCapacity);
+            Capacity = capacity;
+            Nucleotides = new List<Nucleotide>(Capacity);
         }
 
         public Sequence(Sequence otherSequence)
         {
-            mNucleotides = new List<Nucleotide>(otherSequence.mNucleotides);
+            Nucleotides = new List<Nucleotide>(otherSequence.Nucleotides);
         }
 
         public String GetString()
         {
             StringBuilder sb = new System.Text.StringBuilder();
 
-            foreach (Nucleotide nucleotide in mNucleotides)
-                sb.Append(nucleotide.mSymbol);
+            foreach (Nucleotide nucleotide in Nucleotides)
+                sb.Append(nucleotide.Symbol);
 
             return sb.ToString();
         }
 
         public char GetCharAt(int index)
         {
-            Debug.Assert(index > -1 && index < mNucleotides.Count);
+            Debug.Assert(index > -1 && index < Nucleotides.Count);
 
-            return mNucleotides[index].mSymbol;
+            return Nucleotides[index].Symbol;
         }
     }
 }

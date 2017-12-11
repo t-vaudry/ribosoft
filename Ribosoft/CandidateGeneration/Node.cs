@@ -6,48 +6,34 @@ namespace Ribosoft.CandidateGeneration
 {
     class Node
     {
-        public Nucleotide mNucleotide;
-        public List<Node> mParents;
-        public List<Node> mChildren;
-        public uint mNeighbourIndex;
-        public int mDepth;
+        public Nucleotide Nucleotide { get; set; }
+        public List<Node> Parents { get; set; }
+        public List<Node> Children { get; set; }
+        public int? NeighbourIndex { get; set; }
+        public int Depth { get; private set; }
         public Node()
         {
-            mDepth = int.MaxValue;
-            mParents = new List<Node>();
-            mChildren = new List<Node>();
+            Depth = -1;
+            Parents = new List<Node>();
+            Children = new List<Node>();
         }
 
-        public Node(Nucleotide nucleotide, int depth, uint neighbourIdx = uint.MaxValue)
+        public Node(Nucleotide nucleotide, int depth, int? neighbourIdx = null)
         {
-            mNucleotide = nucleotide;
-            mParents = new List<Node>();
-            mChildren = new List<Node>();
-            mDepth = depth;
-            mNeighbourIndex = neighbourIdx;
+            Nucleotide = nucleotide;
+            Parents = new List<Node>();
+            Children = new List<Node>();
+            Depth = depth;
+            NeighbourIndex = neighbourIdx;
         }
 
         public Node(Node otherNode)
         {
-            mNucleotide = otherNode.mNucleotide;
-            mParents = otherNode.mParents;
-            mChildren = otherNode.mChildren;
-            mDepth = otherNode.mDepth;
-            mNeighbourIndex = otherNode.mNeighbourIndex;
-        }
-
-        public void SetChildren(List<Node> children)
-        {
-            mChildren = children;
-        }
-        public void SetParents(List<Node> parents)
-        {
-            mParents = parents;
-        }
-
-        public void SetNeighbourIndex(uint idx)
-        {
-            mNeighbourIndex = idx;
+            Nucleotide = otherNode.Nucleotide;
+            Parents = otherNode.Parents;
+            Children = otherNode.Children;
+            Depth = otherNode.Depth;
+            NeighbourIndex = otherNode.NeighbourIndex;
         }
     }
 }

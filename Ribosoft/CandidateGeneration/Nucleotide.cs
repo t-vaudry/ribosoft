@@ -6,9 +6,9 @@ namespace Ribosoft.CandidateGeneration
 {
     class Nucleotide
     {
-        public char mSymbol = 'X';
-        public List<char> mBases;
-        public bool mIsBase = false;
+        public char Symbol { get; set; } = 'X';
+        public List<char> Bases { get; set; }
+        public bool IsBase { get; set; } = false;
 
         public Nucleotide()
         {
@@ -17,96 +17,96 @@ namespace Ribosoft.CandidateGeneration
 
         public Nucleotide(Nucleotide other)
         {
-            mSymbol = other.mSymbol;
-            mBases = other.mBases;
-            mIsBase = other.mIsBase;
+            Symbol = other.Symbol;
+            Bases = other.Bases;
+            IsBase = other.IsBase;
         }
 
         public Nucleotide(char symbol)
         {
-            mBases = new List<char>();
+            Bases = new List<char>();
             SetSymbol(symbol);
         }
 
         public void SetSymbol(char symbol)
         {
-            mSymbol = Char.ToUpper(symbol);
-            switch (mSymbol)
+            Symbol = Char.ToUpper(symbol);
+            switch (Symbol)
             {
                 case 'A':
-                    mBases.Add('A');
-                    mIsBase = true;
+                    Bases.Add('A');
+                    IsBase = true;
                     break;
                 case 'C':
-                    mBases.Add('C');
-                    mIsBase = true;
+                    Bases.Add('C');
+                    IsBase = true;
                     break;
                 case 'G':
-                    mBases.Add('G');
-                    mIsBase = true;
+                    Bases.Add('G');
+                    IsBase = true;
                     break;
                 case 'U':
-                    mBases.Add('U');
-                    mIsBase = true;
+                    Bases.Add('U');
+                    IsBase = true;
                     break;
                 case 'T':
-                    mBases.Add('T');
-                    mIsBase = true;
+                    Bases.Add('T');
+                    IsBase = true;
                     break;
                 case 'W':
-                    mBases.Add('A');
-                    mBases.Add('U');
+                    Bases.Add('A');
+                    Bases.Add('U');
                     break;
                 case 'S':
-                    mBases.Add('C');
-                    mBases.Add('G');
+                    Bases.Add('C');
+                    Bases.Add('G');
                     break;
                 case 'M':
-                    mBases.Add('A');
-                    mBases.Add('C');
+                    Bases.Add('A');
+                    Bases.Add('C');
                     break;
                 case 'K':
-                    mBases.Add('G');
-                    mBases.Add('U');
+                    Bases.Add('G');
+                    Bases.Add('U');
                     break;
                 case 'R':
-                    mBases.Add('A');
-                    mBases.Add('G');
+                    Bases.Add('A');
+                    Bases.Add('G');
                     break;
                 case 'Y':
-                    mBases.Add('C');
-                    mBases.Add('U');
+                    Bases.Add('C');
+                    Bases.Add('U');
                     break;
                 case 'B':
-                    mBases.Add('C');
-                    mBases.Add('G');
-                    mBases.Add('U');
+                    Bases.Add('C');
+                    Bases.Add('G');
+                    Bases.Add('U');
                     break;
                 case 'D':
-                    mBases.Add('A');
-                    mBases.Add('G');
-                    mBases.Add('U');
+                    Bases.Add('A');
+                    Bases.Add('G');
+                    Bases.Add('U');
                     break;
                 case 'H':
-                    mBases.Add('A');
-                    mBases.Add('C');
-                    mBases.Add('U');
+                    Bases.Add('A');
+                    Bases.Add('C');
+                    Bases.Add('U');
                     break;
                 case 'V':
-                    mBases.Add('A');
-                    mBases.Add('C');
-                    mBases.Add('G');
+                    Bases.Add('A');
+                    Bases.Add('C');
+                    Bases.Add('G');
                     break;
                 case 'N':
-                    mBases.Add('A');
-                    mBases.Add('C');
-                    mBases.Add('G');
-                    mBases.Add('U');
+                    Bases.Add('A');
+                    Bases.Add('C');
+                    Bases.Add('G');
+                    Bases.Add('U');
                     break;
                 case '-': //For nucleotides that will be set later
                     break;
                 default:
-                    Console.WriteLine(String.Format("Nucleotide base {0} was provided.", mSymbol));
+                    Console.WriteLine(String.Format("Nucleotide base {0} was provided.", Symbol));
                     break;
             }
         }
