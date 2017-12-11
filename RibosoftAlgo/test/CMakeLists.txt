@@ -1,6 +1,7 @@
 set(TEST_SOURCES
     # Sources here...
-    main.cpp)
+    main.cpp
+    test_accessibility.cpp)
 
 add_executable(tests ${TEST_SOURCES})
 target_link_libraries(tests Catch RibosoftAlgo)
