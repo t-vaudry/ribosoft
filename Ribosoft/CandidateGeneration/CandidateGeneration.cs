@@ -128,14 +128,14 @@ namespace Ribosoft.CandidateGeneration
                                 break;
                             case ')': //Close an open bond
                                 neighbourIndex = OpenBondIndices.Pop();
-                                NeighboursIndices.Add(Tuple.Create(i, neighbourIndex.GetValueOrDefault()));
+                                NeighboursIndices.Add(Tuple.Create(i, neighbourIndex.Value));
                                 break;
                             case '[': //Start a pseudoknot
                                 OpenPseudoKnotIndices.Push(i);
                                 break;
                             case ']': //Close a pseudoknot
                                 neighbourIndex = OpenPseudoKnotIndices.Pop();
-                                NeighboursIndices.Add(Tuple.Create(i, neighbourIndex.GetValueOrDefault()));
+                                NeighboursIndices.Add(Tuple.Create(i, neighbourIndex.Value));
                                 break;
                             default: //Should not happen
                                 Console.WriteLine("Unrecognized structure symbol encountered.");
@@ -170,7 +170,7 @@ namespace Ribosoft.CandidateGeneration
                 //If we have found the second element of a neighbour pair, set the neighbour index of both nodes in pair
                 if (neighbourIndex.HasValue)
                 {
-                    foreach (Node firstNeighbour in nodesAtDepth[(int)neighbourIndex])
+                    foreach (Node firstNeighbour in nodesAtDepth[neighbourIndex.Value])
                     {
                         firstNeighbour.NeighbourIndex = i;
                     }
@@ -240,10 +240,10 @@ namespace Ribosoft.CandidateGeneration
                     TraverseSequence(new Sequence(currentSequence), child);
                 }
                 //Else if the children have a neighbour (will all be the same, so just check 0) and that neighbour has already been set, we must choose 
-                else if (currentNode.Children[0].NeighbourIndex < currentNode.Depth + 1)
+                else if (currentNode.Children[0].NeighbourIndex.HasValue && currentNode.Children[0].NeighbourIndex.Value < currentNode.Depth + 1)
                 {
                     //Get the complement of the base at the specified neighbour index in the input string
-                    char requiredBase = GetComplement(currentSequence.GetCharAt((int)currentNode.Children[0].NeighbourIndex));
+                    char requiredBase = currentSequence.Nucleotides[currentNode.Children[0].NeighbourIndex.Value].GetComplement();
                     bool found = false;
                     foreach (Node child in currentNode.Children)
                     {
@@ -266,34 +266,6 @@ namespace Ribosoft.CandidateGeneration
                 }
             }
         }
-        public char GetComplement(char b)
-        {
-            switch (b)
-            {
-                case 'A':
-                    return 'U';
-                case 'U':
-                    return 'A';
-                case 'G':
-                    return 'C';
-                case 'C':
-                    return 'G';
-                default:
-                    Console.WriteLine("Cannot get complement of invalid base.");
-                    return 'X';
-            }
-        }
-
-        public String GetComplement(String s)
-        {
-            StringBuilder complement = new System.Text.StringBuilder();
-
-            foreach (char c in s)
-                complement.Append(GetComplement(c));
-
-            return complement.ToString();
-        }
-
         public void EliminateCutSites()
         {
             //Eliminate the cut sites that are not found in the input RNA sequence
@@ -347,7 +319,7 @@ namespace Ribosoft.CandidateGeneration
             //Complete each sequence with the complement of the substrate at the target positions
             foreach (Sequence substrate in SubstrateSequences)
             {
-                String substrateComplement = GetComplement(substrate.GetString());
+                String substrateComplement = substrate.GetComplement();
 
                 foreach (Sequence ribozymeSequence in Sequences)
                 {
