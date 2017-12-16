@@ -1,34 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ribosoft.CandidateGeneration
 {
-    class CandidateGenerator
+    public class CandidateGenerator
     {
-        private List<Tuple<int, int>> NeighboursIndices = new List<Tuple<int, int>>();
+        public List<Tuple<int, int>> NeighboursIndices { get; set; }
 
-        private Ribozyme Ribozyme;
+        public Ribozyme Ribozyme { get; set; }
 
-        private List<Sequence> Sequences = new List<Sequence>();
-        private List<Sequence> SubstrateSequences = new List<Sequence>();
+        public List<Sequence> Sequences { get; set; }
+        public List<Sequence> SubstrateSequences { get; set; }
 
         //Holds the index equivalencies of bonding ribozyme/substrate pairs
-        private List<Tuple<int, int>> RibozymeSubstrateIndexPairs = new List<Tuple<int, int>>();
+        public List<Tuple<int, int>> RibozymeSubstrateIndexPairs { get; set; }
 
-        private List<Sequence> SequencesToSend = new List<Sequence>();
+        public List<Sequence> SequencesToSend { get; set; }
 
-        private String InputRNASequence;
+        public String InputRNASequence { get; set; }
 
-        private List<List<Node>> NodesAtDepthSequence = new List<List<Node>>();
-        private List<List<Node>> NodesAtDepthCutSite = new List<List<Node>>();
+        private List<List<Node>> NodesAtDepthSequence;
+        private List<List<Node>> NodesAtDepthCutSite;
 
-        private Stack<int> OpenBondIndices = new Stack<int>();
-        private Stack<int> OpenPseudoKnotIndices = new Stack<int>();
+        private Stack<int> OpenBondIndices { get; set; }
+        private Stack<int> OpenPseudoKnotIndices { get; set; }
+
+        public CandidateGenerator()
+        {
+            NeighboursIndices = new List<Tuple<int, int>>();
+            Sequences = new List<Sequence>();
+            SubstrateSequences = new List<Sequence>();
+            RibozymeSubstrateIndexPairs = new List<Tuple<int, int>>();
+            SequencesToSend = new List<Sequence>();
+            NodesAtDepthSequence = new List<List<Node>>();
+            NodesAtDepthCutSite = new List<List<Node>>();
+            OpenBondIndices = new Stack<int>();
+            OpenPseudoKnotIndices = new Stack<int>();
+        }
+
         public void GenerateCandidates(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
         {
             //*********************
@@ -81,7 +91,6 @@ namespace Ribosoft.CandidateGeneration
             //*********************
 
             CompleteSequencesWithCutSiteInfo();
-
 
             //Console.WriteLine("Amount of sequences (no cut site): {0}", Sequences.Count);
             //Console.WriteLine("Amount of sequences to send: {0}", SequencesToSend.Count);
@@ -138,8 +147,7 @@ namespace Ribosoft.CandidateGeneration
                                 NeighboursIndices.Add(Tuple.Create(i, neighbourIndex.Value));
                                 break;
                             default: //Should not happen
-                                Console.WriteLine("Unrecognized structure symbol encountered.");
-                                break;
+                                throw new CandidateGenerationException("Unrecognized structure symbol encountered.");
                         }
                     }
                 }
@@ -183,11 +191,11 @@ namespace Ribosoft.CandidateGeneration
             //Validate that all open parentheses have been closed
             if (OpenBondIndices.Count != 0)
             {
-                Console.WriteLine("Unclosed bond found '('. Input may be faulty.");
+                throw new CandidateGenerationException("Unclosed bond found '('. Input may be faulty.");
             }
             if (OpenPseudoKnotIndices.Count != 0)
             {
-                Console.WriteLine("Unclosed pseudoknot found '{'. Input may be faulty.");
+                throw new CandidateGenerationException("Unclosed pseudoknot found '{'. Input may be faulty.");
             }
         }
 

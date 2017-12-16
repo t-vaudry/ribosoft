@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Ribosoft.CandidateGeneration
 {
-    class Ribozyme
+    public class Ribozyme
     {
         public String Sequence { get; set; }
         public String Structure { get; set; }
