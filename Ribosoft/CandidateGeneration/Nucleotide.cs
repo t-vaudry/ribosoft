@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Ribosoft.CandidateGeneration
 {
-    class Nucleotide
+    public class Nucleotide
     {
         public char Symbol { get; set; } = 'X';
         public List<char> Bases { get; set; }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Ribosoft.CandidateGeneration
 {
-    class Node
+    public class Node
     {
         public Nucleotide Nucleotide { get; set; }
         public List<Node> Parents { get; set; }

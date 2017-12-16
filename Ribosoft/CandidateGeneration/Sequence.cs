@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ribosoft.CandidateGeneration
 {
-    class Sequence
+    public class Sequence
     {
         public List<Nucleotide> Nucleotides { get; set; }
         public int Capacity;
