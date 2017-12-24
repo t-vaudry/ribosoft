@@ -2,8 +2,10 @@ set(SOURCE_FILES
     # Source files here...
     dll.h
     functions.h
+    error.h
     main.cpp
     anneal.cpp
+    validation.cpp
     )
 
 add_definitions(-DBUILDING_DLL)

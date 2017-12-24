@@ -2,6 +2,7 @@ set(TEST_SOURCES
     # Sources here...
     main.cpp
     test_anneal.cpp
+    test_validation.cpp
     )
 
 add_executable(tests ${TEST_SOURCES})
