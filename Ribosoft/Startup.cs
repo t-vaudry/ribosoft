@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Ribosoft.Data;
 using Ribosoft.Models;
 using Ribosoft.Services;
@@ -27,16 +29,21 @@ namespace Ribosoft
         public void ConfigureServices(IServiceCollection services)
         {
             var entityFrameworkProvider = Configuration.GetValue<string>("EntityFrameworkProvider", "SqlServer");
+            var defaultConnectionString = Configuration.GetConnectionString("DefaultConnection");
 
             if (entityFrameworkProvider == "Npgsql")
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+                    options.UseNpgsql(defaultConnectionString));
+
+                services.AddHangfire(x => x.UsePostgreSqlStorage(defaultConnectionString));
             }
             else
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                    options.UseSqlServer(defaultConnectionString));
+
+                services.AddHangfire(x => x.UseSqlServerStorage(defaultConnectionString));
             }
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -73,6 +80,9 @@ namespace Ribosoft
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            app.UseHangfireServer();
+            app.UseHangfireDashboard();
         }
     }
 }
