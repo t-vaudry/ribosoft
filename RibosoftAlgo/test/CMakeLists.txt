@@ -1,8 +1,8 @@
 set(TEST_SOURCES
     # Sources here...
-    main.cpp
+    test_validation.cpp
     test_structure.cpp
-    )
+    main.cpp)
 
 add_executable(tests ${TEST_SOURCES})
 target_link_libraries(tests Catch RibosoftAlgo)

@@ -9,6 +9,8 @@
 
 #include "functions.h"
 
+RIBOSOFT_NAMESPACE_START
+
 extern "C" {
     vrna_fold_compound_t* vrna_fold_compound(const char*, vrna_md_t*, unsigned int);
     float vrna_mfe(vrna_fold_compound_t*, char*);
@@ -33,3 +35,5 @@ extern "C"
         return mfe_structure;
     }
 }
+
+RIBOSOFT_NAMESPACE_END
