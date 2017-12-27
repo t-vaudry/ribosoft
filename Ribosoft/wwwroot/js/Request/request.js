@@ -104,8 +104,52 @@ var app = new Vue({
 
             reader.readAsText(file)
         },
+        validateSequence: function() {
+            var form = document.getElementById("inputSequenceFormGroup");
+            var sequence = document.getElementById("inputSequence").value;
+            var validInputs = ['A', 'C', 'G', 'T', 'U','R','Y','K','M','S','W','B','D','H','V','N'];
+
+            for (var i = 0; i < sequence.length; i++) {
+                var x = sequence.charAt(i);
+                
+                for (var j = 0; j < validInputs.length; j ++) {
+                    if (x == validInputs[j]) {
+                        break;
+                    }
+                }
+
+                if (j >= validInputs.length) {
+                    if (form.classList.contains('has-success')) {
+                        form.classList.remove('has-success');
+                    }
+
+                    if (!form.classList.contains('has-error')) {
+                        form.classList.add('has-error');
+                    }
+                    return false;
+                }
+            }
+
+            if (form.classList.contains('has-error')) {
+                form.classList.remove('has-error');
+            }
+
+            if (!form.classList.contains('has-success')) {
+                form.classList.add('has-success');
+            }
+
+            return true;
+            
+        },
         submit: function() {
             // TODO: Main vailidation driver
+            var valid = true;
+
+            if (!validateSequence) {
+                valid = false;
+            }
+
+            console.log(valid);
         }
     }
 });
