@@ -8,16 +8,27 @@
 
 #include "functions.h"
 
+RIBOSOFT_NAMESPACE_START
+
 extern "C"
 {
-    DLL_PUBLIC void structure(const char* candidate, const char* ideal, float& distance)
+    DLL_PUBLIC R_STATUS structure(const char* candidate, const char* ideal, /*out*/ float& distance)
     {
-        // TODO: structure validation
+        // Validate candidate structure
+        R_STATUS status = validate_structure(candidate);
+        if (status != R_SUCCESS::R_STATUS_OK) {
+            return status;
+        }
 
+        // Validate ideal structure
+        status = validate_structure(ideal);
+        if (status != R_SUCCESS::R_STATUS_OK) {
+            return status;
+        }
+
+        // Validate equal lengths
         if (strlen(candidate) != strlen(ideal)) {
-            // TODO: ERROR CODES!
-            distance = -1.0f;
-            return;
+            return R_APPLICATION_ERROR::R_STRUCT_LENGTH_DIFFER;
         }
 
         char* xstruc;
@@ -37,5 +48,9 @@ extern "C"
         distance = tree_edit_distance(T[0], T[1]);
         free_tree(T[0]);
         free_tree(T[1]);
+
+        return R_SUCCESS::R_STATUS_OK;
     }
 }
+
+RIBOSOFT_NAMESPACE_END
