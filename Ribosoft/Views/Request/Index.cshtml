@@ -23,11 +23,22 @@
                     <textarea class="form-control" rows="10" id="inputSequence" v-on:change="validateSequence">
                     </textarea>
                 </div>
+
                 <div class="form-group">
-                    <label class="btn btn-default btn-file">
-                        Use FASTA File
-                        <input type="file" v-on:change="processFASTAfile" style="display: none;" id="FASTAfileInput"> <!-- TODO: move style to css -->
-                    </label>
+                    <label for="FASTAfileInput">Input Sequence from FASTA File</label>
+                    <div>
+                        <label class="btn btn-default btn-file">
+                            Use FASTA File
+                            <input type="file" v-on:change="processFASTAfile" style="display: none;" id="FASTAfileInput"> <!-- TODO: move style to css -->
+                        </label>    
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="BLASTinput">Get Sequence from BLAST:</label>
+                    <div id="BLASTinput">
+                        <input type="text"> <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                    </div>
                 </div>
             </div>
         </div>
