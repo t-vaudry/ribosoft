@@ -54,20 +54,20 @@
             <h3 id="targetEnviornmentTitle" class="panel-title collapsed">Target Environment</h3>
         </div>
         <div id="targetEnviornmentBody" class="panel-body collapse">
-             <div class="form-group">
-                <label for="targetEnvironment">Environment:</label>
-                <select id="targetEnvironment" class="form-control">
-                    <option v-for="environment in targetEnvironments">{{ environment }}</option>
-                </select>
-            </div>
-
             <div class="form-group">
                 <label for="targetEnvironmentMethod">Method:</label>
                 <div id="targetEnvironmentMethod">
                     <div class="radio" v-for="method in targetEnvironmentMethods">
-                        <label><input type="radio" name="optradio">{{ method }}</label>
+                        <label><input type="radio" name="optradio" v-on:change="targetEnvironment">{{ method }}</label>
                     </div>
                 </div>
+            </div>
+
+             <div class="form-group" v-if="inVivoSelected">
+                <label for="targetEnvironment">Environment:</label>
+                <select id="targetEnvironment" class="form-control">
+                    <option v-for="environment in targetEnvironments">{{ environment }}</option>
+                </select>
             </div>
         </div>
     </div>
@@ -107,7 +107,7 @@
                 <label for="specificityMethod">Method:</label>
                 <div id="specificityMethod">
                     <div class="radio" v-for="method in specificityMethods">
-                        <label><input type="radio" name="optradio">{{ method }}</label>
+                        <label><input type="radio" name="specificityRadio">{{ method }}</label>
                     </div>
                 </div>
             </div>

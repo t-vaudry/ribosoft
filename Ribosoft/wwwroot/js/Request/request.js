@@ -16,6 +16,7 @@ var app = new Vue({
                 "In-vitro",
                 "In-vivo"
             ],
+            inVivoSelected: false,
             targetEnvironments: [
                 "Mouse",
                 "Human"
@@ -58,7 +59,19 @@ var app = new Vue({
             panelTitle.classList.toggle("collapsed");
             panelBody.classList.toggle("collapse");
         },
-        processFASTAfile: function() { 
+        targetEnvironment: function() {
+            var environment = document.getElementById("targetEnvironmentMethod");
+            var radios = document.getElementsByName("optradio");
+
+            for (var i = 0; i < radios.length; i++) {
+                if (radios[i].checked && radios[i].nextSibling.data == "In-vivo") {
+                    this.inVivoSelected = true;
+                }
+                else this.inVivoSelected = false;
+            }
+            
+        },
+        processFASTAfile: function() {
             var inputField = document.getElementById("inputSequence");
             var file = document.getElementById("FASTAfileInput").files[0];
             var reader = new FileReader();
