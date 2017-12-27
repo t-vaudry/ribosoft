@@ -12,5 +12,12 @@ namespace Ribosoft.Tests
             SampleDllCall sdc = new SampleDllCall();
             Assert.Equal(3, sdc.Add(1, 2));
         }
+
+        [Fact]
+        public void Test2()
+        {
+            SampleDllCall sdc = new SampleDllCall();
+            Assert.Equal(R_STATUS.R_STATUS_OK, sdc.ValidateSequence("AUUGCC"));
+        }
     }
 }

@@ -5,27 +5,30 @@ mono: latest
 dotnet: none
 
 sudo: false
-dist: trusty
+group: travis_latest
 
 env:
-  - DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 DOTNET_CLI_TELEMETRY_OPTOUT=1
+  - ASPNETCORE_ENVIRONMENT=Development DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 DOTNET_CLI_TELEMETRY_OPTOUT=1
 
 addons:
   apt:
     sources:
-    # - ubuntu-toolchain-r-test
+    - ubuntu-toolchain-r-test
     - deadsnakes
     - sourceline: 'deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main'
       key_url: 'https://packages.microsoft.com/keys/microsoft.asc'
     packages:
     - dotnet-sdk-2.0.3
-    # - g++-7
+    - g++-7
     - cmake
     - python3.6
     - python3.6-venv
 
+services:
+  - postgresql
+
 before_install:
-  # - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
   - python3.6 -m venv venv
   - source venv/bin/activate
 
@@ -34,6 +37,8 @@ install:
   - ./ribosoft.py deps install --yes
 
 before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
+  - cp .travis/appsettings.json Ribosoft/appsettings.Development.json
   - mkdir -p RibosoftAlgo/build && cd RibosoftAlgo/build
   - cmake ..
 
@@ -43,4 +48,15 @@ script:
   - cd $TRAVIS_BUILD_DIR
   - dotnet restore Ribosoft.sln
   - dotnet build Ribosoft.sln
+  - cd Ribosoft; dotnet ef database update; cd - > /dev/null
   - dotnet test Ribosoft.Tests
+
+deploy:
+  - provider: script
+    script: .travis/deploy.sh "$DEVELOP_DEPLOY_URL" "$TRAVIS_BRANCH"
+    on:
+      branch: develop
+  - provider: script
+    script: .travis/deploy.sh "$MASTER_DEPLOY_URL" "$TRAVIS_BRANCH"
+    on:
+      branch: master
