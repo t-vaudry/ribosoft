@@ -3,7 +3,7 @@
 #include "dll.h"
 #include "error.h"
 
-#include <stdint.h>
+#include <cstdint>
 
 RIBOSOFT_NAMESPACE_START
 
