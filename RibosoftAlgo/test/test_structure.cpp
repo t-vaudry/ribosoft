@@ -1,6 +1,6 @@
 #include <catch.hpp>
 
-#include <functions.h>
+#include "functions.h"
 
 using namespace ribosoft;
 

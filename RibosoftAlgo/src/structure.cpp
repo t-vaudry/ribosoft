@@ -1,7 +1,7 @@
 #include "dll.h"
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 #include <ViennaRNA/RNAstruct.h>
 #include <ViennaRNA/treedist.h>
