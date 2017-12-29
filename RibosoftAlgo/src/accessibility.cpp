@@ -91,10 +91,10 @@ extern "C"
         unsigned int constraint_options = VRNA_CONSTRAINT_DB_DEFAULT;
         vrna_fold_compound_t* constraintFoldCompound = vrna_fold_compound(subSequence, NULL, VRNA_OPTION_DEFAULT);
         vrna_constraints_add(constraintFoldCompound, (const char *) constraints, constraint_options);
-        float constraintMFE = (float)vrna_mfe(constraintFoldCompound, constraintMFEStructure);
+        float constraintMFE = (float) vrna_mfe(constraintFoldCompound, constraintMFEStructure);
 
         // Get absolute value of delta(MFE)
-        delta = std::abs(constraintMFE - defaultMFE);
+        delta = std::fabs(constraintMFE - defaultMFE);
         return R_SUCCESS::R_STATUS_OK;
     }
 }
