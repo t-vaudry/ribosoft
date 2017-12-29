@@ -1,7 +1,7 @@
 #include "dll.h"
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 #include <cmath>
 
 #include <ViennaRNA/data_structures.h>
@@ -14,29 +14,34 @@ extern "C"
     vrna_fold_compound_t* vrna_fold_compound(const char*, vrna_md_t*, unsigned int);
     float vrna_mfe(vrna_fold_compound_t*, char*);
     void vrna_constraints_add(vrna_fold_compound_t*, const char*, unsigned int);
+}
 
-    DLL_PUBLIC void accessibility(const char* substrateSequence, const char* substrateTemplate, const int cutsiteIndex, const int cutsiteNumber, float& delta)
+RIBOSOFT_NAMESPACE_START
+
+extern "C"
+{
+
+    DLL_PUBLIC R_STATUS accessibility(const char* substrateSequence, const char* substrateTemplate, const int cutsiteIndex, const int cutsiteNumber, /*out*/ float& delta)
     {
-        // TODO: sequence validation
+        R_STATUS status = validate_sequence(substrateSequence);
+        if (status != R_SUCCESS::R_STATUS_OK) {
+        	return status;
+        }
 
         if (cutsiteIndex > strlen(substrateSequence) || cutsiteIndex < 0) {
-            // TODO: error code
-            return;
+            return R_APPLICATION_ERROR::R_OUT_OF_RANGE;
         }
 
         if (cutsiteNumber > strlen(substrateTemplate) || cutsiteNumber < 0) {
-            // TODO: error code
-            return;
+            return R_APPLICATION_ERROR::R_OUT_OF_RANGE;
         }
 
         if (strlen(substrateTemplate) > 200) {
-            // TODO: error code
-            return;
+            return R_APPLICATION_ERROR::R_INVALID_TEMPLATE_LENGTH;
         }
 
-        // TODO: switch to idx_t
-        int subSequenceStart = cutsiteIndex - 100;
-        int subSequenceEnd = cutsiteIndex + 100;
+        idx_t subSequenceStart = cutsiteIndex - 100;
+        idx_t subSequenceEnd = cutsiteIndex + 100;
 
         // If cutsiteIndex is close to the beginning
         if (subSequenceStart < 0) {
@@ -45,10 +50,10 @@ extern "C"
 
         // If cutsiteIndex is close to the end
         if (subSequenceEnd > strlen(substrateSequence)) {
-            subSequenceEnd = (int) strlen(substrateSequence) - 1;
+            subSequenceEnd = (idx_t) strlen(substrateSequence) - 1;
         }
 
-        int length = subSequenceEnd - subSequenceStart;
+        idx_t length = subSequenceEnd - subSequenceStart;
 
         // Copy substring of sequence that will be folded
         char* subSequence = (char*) malloc(sizeof(char) * length);
@@ -58,20 +63,19 @@ extern "C"
         char* constraints = (char*) malloc(sizeof(char) * length);
         memset(constraints, '.', length);
 
-        // TODO: switch to idx_t
         // Set constraints for not folding here
-        int constraintStart = cutsiteIndex - subSequenceStart - cutsiteNumber;
-        int constraintEnd = constraintStart + (int) strlen(substrateTemplate);
+        idx_t constraintStart = cutsiteIndex - subSequenceStart - cutsiteNumber;
+        idx_t constraintEnd = constraintStart + (idx_t) strlen(substrateTemplate);
 
         if (constraintStart < 0) {
             constraintStart = 0;
         }
 
         if (constraintEnd > strlen(subSequence)) {
-            constraintEnd = (int) strlen(subSequence) - 1;
+            constraintEnd = (idx_t) strlen(subSequence) - 1;
         }
 
-        for (int i = constraintStart; i < constraintEnd; ++i) {
+        for (idx_t i = constraintStart; i < constraintEnd; ++i) {
             constraints[i] = 'x';
         }
 
@@ -91,5 +95,8 @@ extern "C"
 
         // Get absolute value of delta(MFE)
         delta = std::abs(constraintMFE - defaultMFE);
+        return R_SUCCESS::R_STATUS_OK;
     }
 }
+
+RIBOSOFT_NAMESPACE_END
