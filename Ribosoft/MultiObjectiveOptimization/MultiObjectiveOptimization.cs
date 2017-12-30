@@ -86,7 +86,7 @@ namespace Ribosoft.MultiObjectiveOptimization {
 
             // If two candidates have different number of fitness values, something went wrong
             if (Victim.FitnessValues.Length != Dominator.FitnessValues.Length) {
-                throw new MultiObjectiveOptimizationException("Candidates have different number of fitness values!");
+                throw new MultiObjectiveOptimizationException(R_STATUS.R_FITNESS_VALUE_LENGTHS_DIFFER, "Candidates have different number of fitness values!");
             }
 
             var Properties = Victim.FitnessValues.Zip(Dominator.FitnessValues, (x, y) => new { Victim = x, Dominator = y });

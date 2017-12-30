@@ -12,23 +12,24 @@ namespace Ribosoft
     public enum R_STATUS : int
     {
         /* SUCCESS */
-        R_STATUS_OK                 =     0,
-        R_SUCCESS_LAST              =  1000,
+        R_STATUS_OK                    =     0,
+        R_SUCCESS_LAST                 =  1000,
 
         /* APPLICATION ERROR */
-        R_INVALID_PARAMETER         =    -1,
-        R_INVALID_NUCLEOTIDE        =    -2,
-        R_INVALID_STRUCT_ELEMENT    =    -3,
-        R_EMPTY_PARAMETER           =    -4,
-        R_BAD_PAIR_MATCH            =    -5,
-        R_APPLICATION_ERROR_LAST    =  -999,
+        R_INVALID_PARAMETER            =    -1,
+        R_INVALID_NUCLEOTIDE           =    -2,
+        R_INVALID_STRUCT_ELEMENT       =    -3,
+        R_EMPTY_PARAMETER              =    -4,
+        R_BAD_PAIR_MATCH               =    -5,
+        R_FITNESS_VALUE_LENGTHS_DIFFER =    -6,
+        R_APPLICATION_ERROR_LAST       =  -999,
 
         /* USER ERROR */
-        R_USER_ERROR_FIRST          = -1000,
-        R_USER_ERROR_LAST           = -1999,
+        R_USER_ERROR_FIRST             = -1000,
+        R_USER_ERROR_LAST              = -1999,
 
         /* SYSTEM ERROR */
-        R_SYSTEM_ERROR_FIRST        = -2000,
-        R_SYSTEM_ERROR_LAST         = -2999,
+        R_SYSTEM_ERROR_FIRST           = -2000,
+        R_SYSTEM_ERROR_LAST            = -2999,
     };
 }
