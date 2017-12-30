@@ -13,13 +13,13 @@ env:
 addons:
   apt:
     sources:
-    # - ubuntu-toolchain-r-test
+    - ubuntu-toolchain-r-test
     - deadsnakes
     - sourceline: 'deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main'
       key_url: 'https://packages.microsoft.com/keys/microsoft.asc'
     packages:
     - dotnet-sdk-2.0.3
-    # - g++-7
+    - g++-7
     - cmake
     - python3.6
     - python3.6-venv
@@ -28,7 +28,7 @@ services:
   - postgresql
 
 before_install:
-  # - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
   - python3.6 -m venv venv
   - source venv/bin/activate
 
