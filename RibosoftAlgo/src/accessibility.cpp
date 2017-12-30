@@ -95,6 +95,16 @@ extern "C"
 
         // Get absolute value of delta(MFE)
         delta = std::fabs(constraintMFE - defaultMFE);
+
+        // Free memory
+        free(subSequence);
+        free(constraints);
+        free(defaultMFEStructure);
+        free(constraintMFEStructure);
+
+        vrna_fold_compound_free(defaultFoldCompound);
+        vrna_fold_compound_free(constraintFoldCompound);
+
         return R_SUCCESS::R_STATUS_OK;
     }
 }
