@@ -143,9 +143,9 @@ namespace Ribosoft.Tests
 
             try {
                 multiObjectiveOptimizer.Optimize(1);
-            } catch (MultiObjectiveOptimization.MultiObjectiveOptimizationException e) {
-                Assert.Equal(e.Code, R_STATUS.R_FITNESS_VALUE_LENGTHS_DIFFER);
-                Assert.Equal(e.Message, "Candidates have different number of fitness values!");
+            } catch (MultiObjectiveOptimization.MultiObjectiveOptimizationException Exception) {
+                Assert.Equal(Exception.Code, R_STATUS.R_FITNESS_VALUE_LENGTHS_DIFFER);
+                Assert.Equal(Exception.Message, "Candidates have different number of fitness values!");
             }
         }
     }

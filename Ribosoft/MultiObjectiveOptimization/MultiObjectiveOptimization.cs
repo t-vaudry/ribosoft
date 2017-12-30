@@ -28,21 +28,15 @@ namespace Ribosoft.MultiObjectiveOptimization {
             foreach (Candidate Victim in Candidates) {
                 bool Dominated = false;
 
-                foreach (Candidate Dominator in Candidates) {
-                    // If the same candidate, continue
-                    if (Dominator == Victim) {
-                        continue;
-                    }
-
+                foreach (Candidate Dominator in Candidates.Where(Candidate => Candidate != Victim)) {
                     // Check for dominance, and break if candidate is dominated
                     try {
-                        if (ParetoDominate(Victim, Dominator))
-                        {
+                        if (ParetoDominate(Victim, Dominator)) {
                             Dominated = true;
                             break;
                         }
-                    } catch (MultiObjectiveOptimizationException e) {
-                        throw e;
+                    } catch (MultiObjectiveOptimizationException Exception) {
+                        throw Exception;
                     }
                 }
 
@@ -89,6 +83,7 @@ namespace Ribosoft.MultiObjectiveOptimization {
                 throw new MultiObjectiveOptimizationException(R_STATUS.R_FITNESS_VALUE_LENGTHS_DIFFER, "Candidates have different number of fitness values!");
             }
 
+            // Merge fitness values for comparison
             var Properties = Victim.FitnessValues.Zip(Dominator.FitnessValues, (x, y) => new { Victim = x, Dominator = y });
             foreach (var Property in Properties) {
                 if (Property.Dominator <= Property.Victim) {
