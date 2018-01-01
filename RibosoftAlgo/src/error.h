@@ -1,7 +1,7 @@
 #include "dll.h"
 
 #define RIBOSOFT_NAMESPACE_START namespace ribosoft {
-#define RIBOSOFT_NAMESPACE_END   }   
+#define RIBOSOFT_NAMESPACE_END   }
 
 RIBOSOFT_NAMESPACE_START
 

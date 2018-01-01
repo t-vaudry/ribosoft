@@ -4,6 +4,7 @@ set(SOURCE_FILES
     functions.h
     error.h
     validation.cpp
+    fold.cpp
     structure.cpp
     main.cpp)
 

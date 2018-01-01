@@ -1,5 +1,6 @@
 set(TEST_SOURCES
     # Sources here...
+    test_fold.cpp
     test_validation.cpp
     test_structure.cpp
     main.cpp)
