@@ -10,9 +10,16 @@ namespace Ribosoft.Controllers
 {
     public class RequestController : Controller
     {
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult Index(RequestViewModel model)
+        {
+            return Content($"Structure: {model.RibozymeStructure}\nSequence: {model.InputSequence}");
         }
     }
 }
