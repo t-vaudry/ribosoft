@@ -18,6 +18,9 @@ extern "C"
 
 RIBOSOFT_NAMESPACE_START
 
+#define MAX_TEMPLATE_LENGTH         200
+#define EXTENDED_CUTSITE_LENGTH     100
+
 extern "C"
 {
 
@@ -36,12 +39,12 @@ extern "C"
             return R_APPLICATION_ERROR::R_OUT_OF_RANGE;
         }
 
-        if (strlen(substrateTemplate) > 200) {
+        if (strlen(substrateTemplate) > MAX_TEMPLATE_LENGTH) {
             return R_APPLICATION_ERROR::R_INVALID_TEMPLATE_LENGTH;
         }
 
-        idx_t subSequenceStart = cutsiteIndex - 100;
-        idx_t subSequenceEnd = cutsiteIndex + 100;
+        idx_t subSequenceStart = cutsiteIndex - EXTENDED_CUTSITE_LENGTH;
+        idx_t subSequenceEnd = cutsiteIndex + EXTENDED_CUTSITE_LENGTH;
 
         // If cutsiteIndex is close to the beginning
         if (subSequenceStart < 0) {
@@ -56,11 +59,11 @@ extern "C"
         idx_t length = subSequenceEnd - subSequenceStart;
 
         // Copy substring of sequence that will be folded
-        char* subSequence = (char*) malloc(sizeof(char) * length);
+        char* subSequence = new char[length + 1];
         strncpy(subSequence, &substrateSequence[subSequenceStart], length);
-        subSequence[length - 1] = '\0';
+        subSequence[length] = '\0';
 
-        char* constraints = (char*) malloc(sizeof(char) * length);
+        char* constraints = new char[length + 1];
         memset(constraints, '.', length);
 
         // Set constraints for not folding here
@@ -71,23 +74,23 @@ extern "C"
             constraintStart = 0;
         }
 
-        if (constraintEnd > strlen(subSequence)) {
-            constraintEnd = (idx_t) strlen(subSequence) - 1;
+        if (constraintEnd > length) {
+            constraintEnd = (idx_t) length - 1;
         }
 
         for (idx_t i = constraintStart; i < constraintEnd; ++i) {
             constraints[i] = 'x';
         }
 
-        constraints[length - 1] = '\0';
+        constraints[length] = '\0';
 
         // Default fold
-        char* defaultMFEStructure = (char*) malloc(sizeof(char) * (strlen(subSequence) + 1));
+        char* defaultMFEStructure = new char[length + 1];
         vrna_fold_compound_t* defaultFoldCompound = vrna_fold_compound(subSequence, NULL, VRNA_OPTION_DEFAULT);
         float defaultMFE = (float) vrna_mfe(defaultFoldCompound, defaultMFEStructure);
 
         // Fold with constraints
-        char* constraintMFEStructure = (char*) malloc(sizeof(char) * (strlen(subSequence) + 1));
+        char* constraintMFEStructure = new char[length + 1];
         unsigned int constraint_options = VRNA_CONSTRAINT_DB_DEFAULT;
         vrna_fold_compound_t* constraintFoldCompound = vrna_fold_compound(subSequence, NULL, VRNA_OPTION_DEFAULT);
         vrna_constraints_add(constraintFoldCompound, (const char *) constraints, constraint_options);
@@ -97,10 +100,10 @@ extern "C"
         delta = std::fabs(constraintMFE - defaultMFE);
 
         // Free memory
-        free(subSequence);
-        free(constraints);
-        free(defaultMFEStructure);
-        free(constraintMFEStructure);
+        delete[] subSequence;
+        delete[] constraints;
+        delete[] defaultMFEStructure;
+        delete[] constraintMFEStructure;
 
         vrna_fold_compound_free(defaultFoldCompound);
         vrna_fold_compound_free(constraintFoldCompound);
