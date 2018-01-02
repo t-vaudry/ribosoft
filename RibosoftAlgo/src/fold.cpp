@@ -38,9 +38,9 @@ extern "C"
         }
 
         size_t length = strlen(sequence);
-        output = (fold_output*) malloc((solution_size) * sizeof(fold_output));
+        output = new fold_output[solution_size];
         for (idx_t i = 0; i < solution_size; i++) {
-            output[i].structure = (char*) malloc((length + 1) * sizeof(char));
+            output[i].structure = new char[length + 1];
             strncpy(output[i].structure, sol[i].structure, length);
             output[i].structure[length] = '\0';
             output[i].energy = sol[i].energy;
