@@ -9,10 +9,10 @@ TEST_CASE("default", "[fold]") {
     fold_output* output;
     R_STATUS status = fold("AUGUCUUAGGUGAUACGUGC", output);
     REQUIRE(status == R_SUCCESS::R_STATUS_OK);
-    REQUIRE(strncmp(output[0].structure, ".((((......)))).....", 20));
+    REQUIRE(strncmp(output[0].structure, ".((((......)))).....", 20) == 0);
     REQUIRE(output[0].energy == -1.60f);
 
-    REQUIRE(strncmp(output[35].structure, "((((..(.....).))))..", 20));
+    REQUIRE(strncmp(output[35].structure, "((((..(.....).))))..", 20) == 0);
     REQUIRE(output[35].energy == 3.00f);
 }
 
