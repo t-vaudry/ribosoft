@@ -1,15 +1,22 @@
 set(SOURCE_FILES
     # Source files here...
-    main.cpp
-    dll.h)
+    dll.h
+    functions.h
+    error.h
+    validation.cpp
+    main.cpp)
 
 add_definitions(-DBUILDING_DLL)
+
+# Find ViennaRNA/RNAlib
+find_package(RNA REQUIRED)
+include_directories(${RNA_INCLUDE_DIR})
 
 # Create the library
 add_library(RibosoftAlgo SHARED ${SOURCE_FILES})
 
 # Link required libraries
-target_link_libraries(RibosoftAlgo ${LIBRARIES})
+target_link_libraries(RibosoftAlgo ${LIBRARIES} ${RNA_LIBRARY})
 
 # Mark this directory as a root directory for future includes
 target_include_directories(RibosoftAlgo PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
