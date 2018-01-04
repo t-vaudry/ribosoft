@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,6 +31,8 @@ namespace Ribosoft.Models
         public int RibozymeId { get; set; }
         [DisplayName("RNA Input")]
         public string RNAInput { get; set; }
+        [ScaffoldColumn(false)]
+        public string HangfireJobId { get; set; }
 
         public virtual ApplicationUser Owner { get; set; }
         public virtual Ribozyme Ribozyme { get; set; }
