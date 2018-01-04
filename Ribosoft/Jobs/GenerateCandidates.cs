@@ -6,6 +6,7 @@ using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Ribosoft.Data;
 using Ribosoft.Models;
+using Ribosoft.Services;
 
 namespace Ribosoft.Jobs
 {
@@ -13,17 +14,20 @@ namespace Ribosoft.Jobs
     {
         private readonly ApplicationDbContext _db;
         private readonly CandidateGeneration.CandidateGenerator _candidateGenerator;
+        private readonly IEmailSender _emailSender;
 
-        public GenerateCandidates(DbContextOptions<ApplicationDbContext> options)
+        public GenerateCandidates(DbContextOptions<ApplicationDbContext> options, IEmailSender emailSender)
         {
             _db =  new ApplicationDbContext(options);
             _candidateGenerator = new CandidateGeneration.CandidateGenerator();
+            _emailSender = emailSender;
         }
 
         [AutomaticRetry(Attempts = 0)]
         public async Task Generate(int jobId, IJobCancellationToken cancellationToken)
         {
             var job = _db.Jobs
+                .Include(j => j.Owner)
                 .Include(j => j.Ribozyme)
                     .ThenInclude(r => r.RibozymeStructures)
                 .Single(j => j.Id == jobId);
@@ -69,6 +73,13 @@ namespace Ribosoft.Jobs
 
             job.JobState = JobState.Completed;
             await _db.SaveChangesAsync();
+
+            await SendJobCompletionEmail(job.Owner);
+        }
+
+        private async Task SendJobCompletionEmail(ApplicationUser user)
+        {
+            await _emailSender.SendEmailAsync(user.Email, "Job completed", "Your Ribosoft job has completed.");
         }
     }
 }

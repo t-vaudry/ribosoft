@@ -10,10 +10,12 @@
     <PackageReference Include="Hangfire.PostgreSql" Version="1.4.8.1" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.1" PrivateAssets="All" />
     <PackageReference Include="RibosoftAlgo" Version="1.0.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.0.0" />
     <PackageReference Include="HangFire" Version="1.6.17" />
+    <PackageReference Include="Sendgrid" Version="9.9.0" />
   </ItemGroup>
 
   <ItemGroup>
