@@ -85,7 +85,10 @@ namespace Ribosoft
             GlobalConfiguration.Configuration.UseActivator(new ServiceProviderActivator(serviceProvider));
 
             app.UseHangfireServer();
-            app.UseHangfireDashboard();
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new DashboardAuthorizationFilter() }
+            });
         }
     }
 }
