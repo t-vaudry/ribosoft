@@ -51,14 +51,19 @@
                 <h3 id="targetRegionTitle" class="panel-title collapsed">Regions for Target Design</h3>
             </div>
             <div id="targetRegionBody" class="panel-body collapse">
-                <div class="form-group">
-                    <!-- TODO: Redo and populate from C# not JS -->
-                    <label asp-for="TargetRegion">Select Target Region:</label>
-                    <div asp-for="TargetRegion" id="targetRegion">
-                        <div class="checkbox" v-for="region in targetRegions">
-                            <label><input type="checkbox" value="">{{ region }}</label>
+                <label asp-for="TargetRegions"></label>
+                <div>
+                    @for (var i = 0; i < Model.TargetRegions.Length; i++)
+                    {
+                        <div class="checkbox">
+                            <label asp-for="@Model.TargetRegions[i].Selected">
+                                <input type="checkbox" asp-for="@Model.TargetRegions[i].Selected">
+                                @Model.TargetRegions[i].Name
+                            </label>
+                            <input type="hidden" asp-for="@Model.TargetRegions[i].Id" />
+                            <input type="hidden" asp-for="@Model.TargetRegions[i].Name" />
                         </div>
-                    </div>
+                    }
                 </div>
             </div>
         </div>

@@ -13,13 +13,20 @@ namespace Ribosoft.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            return View(new RequestViewModel()
+            {
+                TargetRegions = new TargetRegion[] {
+                    new TargetRegion(1, "5'UTR", false),
+                    new TargetRegion(2, "Open Reading Frame (ORF)", false),
+                    new TargetRegion(3, "3'UTR", false)
+                }
+            });
         }
 
         [HttpPost]
         public IActionResult Index(RequestViewModel model)
         {
-            return Content($"Structure: {model.RibozymeStructure}\nSequence: {model.InputSequence}");
+            return Content($"Structure: {model.RibozymeStructure}\nSequence: {model.InputSequence}\nTest: {model.TargetRegions[0].Selected}");
         }
     }
 }
