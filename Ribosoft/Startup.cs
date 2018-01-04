@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Ribosoft.Data;
+using Ribosoft.Jobs;
 using Ribosoft.Models;
 using Ribosoft.Services;
 
@@ -57,7 +58,7 @@ namespace Ribosoft
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -80,6 +81,8 @@ namespace Ribosoft
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            GlobalConfiguration.Configuration.UseActivator(new ServiceProviderActivator(serviceProvider));
 
             app.UseHangfireServer();
             app.UseHangfireDashboard();
