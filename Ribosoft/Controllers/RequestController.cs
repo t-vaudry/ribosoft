@@ -19,7 +19,9 @@ namespace Ribosoft.Controllers
                     new TargetRegion(1, "5'UTR", false),
                     new TargetRegion(2, "Open Reading Frame (ORF)", false),
                     new TargetRegion(3, "3'UTR", false)
-                }
+                },
+                TargetEnvironment = new TargetEnvironmentRadioInput(),
+                Specificity = new SpecificityRadioInput()
             });
         }
 

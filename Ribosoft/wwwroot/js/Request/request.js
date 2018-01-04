@@ -61,10 +61,10 @@ var app = new Vue({
         },
         targetEnvironment: function() {
             var environment = document.getElementById("targetEnvironmentMethod");
-            var radios = document.getElementsByName("optradio");
+            var radios = document.getElementsByName("TargetEnvironment.TargetEnvironment");
 
             for (var i = 0; i < radios.length; i++) {
-                if (radios[i].checked && radios[i].nextSibling.data == "In-vivo") {
+                if (radios[i].checked && radios[i].value == "In-vivo") {
                     this.inVivoSelected = true;
                 }
                 else this.inVivoSelected = false;

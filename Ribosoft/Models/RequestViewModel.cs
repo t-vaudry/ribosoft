@@ -10,12 +10,12 @@ namespace Ribosoft.Models
     {
         [Required]
         [DataType(DataType.Text)]
-        [Display(Name = "Ribozyme Structure")]
+        [Display(Name = "Ribozyme Structure:")]
         public string RibozymeStructure { get; set; }
 
         [Required]
         [DataType(DataType.Text)]
-        [Display(Name = "Input sequnce")]
+        [Display(Name = "Input sequnce:")]
         public string InputSequence { get; set; }
 
         [Required]
@@ -23,37 +23,35 @@ namespace Ribosoft.Models
         public TargetRegion[] TargetRegions { get; set; }
 
         [Required]
-        [DataType(DataType.Text)]
-        [Display(Name = "Target Environment")]
-        public string TargetEnvironment { get; set; }
+        [Display(Name = "Environment:")]
+        public TargetEnvironmentRadioInput TargetEnvironment { get; set; }
 
         [DataType(DataType.Text)]
         [Display(Name = "In-vivo Environment")]
         public string InVivoEnvironment { get; set; }
 
         [Required]
-        [Display(Name = "Temperature")]
+        [Display(Name = "Temperature (℃):")]
         public float Temperature { get; set; }
 
         [Required]
-        [Display(Name = "Na")]
+        [Display(Name = "Na (nM):")]
         public float Na { get; set; }
 
         [Required]
-        [Display(Name = "Mg")]
+        [Display(Name = "Mg (nM):")]
         public float Mg { get; set; }
 
         [Required]
-        [Display(Name = "Oligomer")]
+        [Display(Name = "Oligomer (nM):")]
         public float Oligomer { get; set; }
 
-        [Display(Name = "Cut Sites")]
+        [Display(Name = "Cut Sites:")]
         public string[] CutSites { get; set; }
 
         [Required]
-        [DataType(DataType.Text)]
-        [Display(Name = "Specificity")]
-        public string Specificity { get; set; }
+        [Display(Name = "Method:")]
+        public SpecificityRadioInput Specificity { get; set; }
 
     }
 
@@ -74,5 +72,15 @@ namespace Ribosoft.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public bool Selected { get; set; }
+    }
+
+    public class TargetEnvironmentRadioInput
+    {
+        public string TargetEnvironment { get; set; }
+    }
+
+    public class SpecificityRadioInput
+    {
+        public string Specificity { get; set; }
     }
 }

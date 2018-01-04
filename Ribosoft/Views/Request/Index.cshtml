@@ -14,7 +14,7 @@
             <div id="sequenceBody" class="panel-body">
                 <div class="form-group">
                     <!-- TODO: Redo and populate from C# not JS -->
-                    <label asp-for="RibozymeStructure">Ribozyme Structure:</label>
+                    <label asp-for="RibozymeStructure"></label>
                     <select asp-for="RibozymeStructure" id="ribo-type" class="form-control">
                         <option v-for="ribozyme in ribozymes">{{ ribozyme }}</option>
                     </select>
@@ -22,7 +22,7 @@
                 </div>
 
                 <div class="form-group" id="inputSequenceFormGroup">
-                    <label asp-for="InputSequence">Input Sequence:</label>
+                    <label asp-for="InputSequence"></label>
                     <textarea asp-for="InputSequence" class="form-control" placeholder="Input a Sequence" rows="10" id="inputSequence" v-on:change="validateSequence">
                     </textarea>
                 </div>
@@ -73,17 +73,22 @@
                 <h3 id="targetEnviornmentTitle" class="panel-title collapsed">Target Environment</h3>
             </div>
             <div id="targetEnviornmentBody" class="panel-body collapse">
-                <div class="form-group">
-                    <label asp-for="TargetEnvironment">Method:</label>
-                    <div asp-for="TargetEnvironment" id="targetEnvironmentMethod">
-                        <div class="radio" v-for="method in targetEnvironmentMethods">
-                            <label><input type="radio" name="optradio" v-on:change="targetEnvironment">{{ method }}</label>
-                        </div>
+                <div class="form-group" id="targetEnvironmentMethod">
+                    <label asp-for="TargetEnvironment"></label>
+                    <div class="radio">
+                        <label>
+                            <input asp-for="TargetEnvironment.TargetEnvironment" type="radio" value="In-vitro" v-on:change="targetEnvironment">In-vitro
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input asp-for="TargetEnvironment.TargetEnvironment" type="radio" value="In-vivo" v-on:change="targetEnvironment">In-vivo
+                        </label>
                     </div>
                 </div>
 
                 <div class="form-group" v-if="inVivoSelected">
-                    <label asp-for="InVivoEnvironment">Environment:</label>
+                    <label asp-for="InVivoEnvironment"></label>
                     <select asp-for="InVivoEnvironment" id="targetEnvironment" class="form-control">
                         <option v-for="environment in targetEnvironments">{{ environment }}</option>
                     </select>
@@ -123,10 +128,13 @@
             </div>
             <div id=specificityBody class="panel-body collapse">
                 <div class="form-group">
-                    <label asp-for="Specificity">Method:</label>
+                    <label asp-for="Specificity"></label>
                     <div asp-for="Specificity" id="specificityMethod">
-                        <div class="radio" v-for="method in specificityMethods">
-                            <label><input type="radio" name="specificityRadio">{{ method }}</label>
+                        <div class="radio">
+                            <label><input asp-for="Specificity.Specificity" type="radio" value="Cleavage">Cleavage</label>
+                        </div>
+                        <div class="radio">
+                            <label><input asp-for="Specificity.Specificity" type="radio" value="Cleavage and Hybridization">Cleavage and Hybridization</label>
                         </div>
                     </div>
                 </div>
