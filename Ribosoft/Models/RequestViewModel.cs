@@ -19,9 +19,8 @@ namespace Ribosoft.Models
         public string InputSequence { get; set; }
 
         [Required]
-        [DataType(DataType.Text)]
-        [Display(Name = "Target Region")]
-        public string[] TargetRegion { get; set; }
+        [Display(Name = "Select Target Region:")]
+        public TargetRegion[] TargetRegions { get; set; }
 
         [Required]
         [DataType(DataType.Text)]
@@ -56,5 +55,24 @@ namespace Ribosoft.Models
         [Display(Name = "Specificity")]
         public string Specificity { get; set; }
 
+    }
+
+    public class TargetRegion
+    {
+        public TargetRegion()
+        {
+            this.Id = 0;
+            this.Name = "";
+            this.Selected = false;
+        }
+        public TargetRegion(int Id, string Name, bool Selected)
+        {
+            this.Id = Id;
+            this.Name = Name;
+            this.Selected = Selected;
+        }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public bool Selected { get; set; }
     }
 }
