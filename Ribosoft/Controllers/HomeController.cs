@@ -11,9 +11,6 @@ namespace Ribosoft.Controllers
 {
     public class HomeController : Controller
     {
-        [DllImport("RibosoftAlgo")]
-        extern static String fold(String seq);
-
         public IActionResult Index()
         {
             return View();
@@ -21,10 +18,8 @@ namespace Ribosoft.Controllers
 
         public IActionResult About()
         {
-            String seq = "AUUGCUAGCUAGCAUCGUAGCUGUACUGCAUGACUGAUGGCGGCUAGC";
-            String second_struct = fold(seq);
-            ViewData["Message"] = "Your application description page.\n" + second_struct;
-
+            ViewData["Message"] = "Your application description page.\n";
+                
             return View();
         }
 
