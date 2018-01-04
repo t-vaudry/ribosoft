@@ -15,6 +15,8 @@ namespace Ribosoft
         {
             return builder =>
             {
+                next(builder);
+
                 GlobalConfiguration.Configuration.UseActivator(new ServiceProviderActivator(builder.ApplicationServices));
 
                 builder.UseHangfireServer();
@@ -22,8 +24,6 @@ namespace Ribosoft
                 {
                     Authorization = new[] { new DashboardAuthorizationFilter() }
                 });
-
-                next(builder);
             };
         }
     }
