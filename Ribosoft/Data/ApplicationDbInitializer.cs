@@ -16,8 +16,6 @@ namespace Ribosoft.Data
             using (var context =
                 new ApplicationDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
-                context.Database.EnsureCreated();
-
                 await EnsureRole(serviceProvider, "Administrator");
 
                 SeedDatabase(context);

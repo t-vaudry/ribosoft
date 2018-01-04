@@ -81,14 +81,6 @@ namespace Ribosoft
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            GlobalConfiguration.Configuration.UseActivator(new ServiceProviderActivator(serviceProvider));
-
-            app.UseHangfireServer();
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions
-            {
-                Authorization = new[] { new DashboardAuthorizationFilter() }
-            });
         }
     }
 }

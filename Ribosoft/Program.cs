@@ -16,7 +16,7 @@ namespace Ribosoft
     {
         public static void Main(string[] args)
         {
-            var host = BuildWebHost(args);
+            var host = BuildMainWebHost(args);
 
             using (var scope = host.Services.CreateScope())
             {
@@ -37,6 +37,12 @@ namespace Ribosoft
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>()
+                .Build();
+
+        public static IWebHost BuildMainWebHost(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .ConfigureServices(services => services.AddTransient<IStartupFilter, HangfireStartupFilter>())
                 .UseStartup<Startup>()
                 .Build();
     }
