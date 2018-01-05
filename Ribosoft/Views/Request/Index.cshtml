@@ -7,6 +7,7 @@
     <h2>@ViewData["Title"]</h2>
     <hr/>
     <form method="POST">
+        <!-- Sequence Selection -->
         <div class="panel panel-default">
             <div class="panel-heading" v-on:click="expand('sequenceTitle', 'sequenceBody')">
                 <h3 id="sequenceTitle" class="panel-title">Sequence Selection</h3>
@@ -46,6 +47,7 @@
             </div>
         </div>
 
+        <!-- Regions for Target Design -->
         <div class="panel panel-default">
             <div class="panel-heading" v-on:click="expand('targetRegionTitle', 'targetRegionBody')">
                 <h3 id="targetRegionTitle" class="panel-title collapsed">Regions for Target Design</h3>
@@ -68,6 +70,7 @@
             </div>
         </div>
 
+        <!-- Target Environment -->
         <div class="panel panel-default">
             <div class="panel-heading" v-on:click="expand('targetEnviornmentTitle', 'targetEnviornmentBody')">
                 <h3 id="targetEnviornmentTitle" class="panel-title collapsed">Target Environment</h3>
@@ -96,18 +99,32 @@
             </div>
         </div>
 
+        <!-- Environment Properties -->
         <div class="panel panel-default">
             <div class="panel-heading" v-on:click="expand('propertiesTitle', 'propertiesBody')">
                 <h3 id="propertiesTitle" class="panel-title collapsed">Environment Properties</h3>
             </div>
             <div id="propertiesBody" class="panel-body collapse">
-                <div class="form-group" v-for="v in targetEnvironmentVariables">
-                    <label v-bind:for="v.id">{{ v.variable+" ("+v.unit+")" }}:</label>
-                    <input v-bind:id="v.id" type="text" class="form-control">
+                <div class="form-group">
+                    <label asp-for="Temperature"></label>
+                    <input asp-for="Temperature" type="text" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label asp-for="Na"></label>
+                    <input asp-for="Na" type="text" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label asp-for="Mg"></label>
+                    <input asp-for="Mg" type="text" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label asp-for="Oligomer"></label>
+                    <input asp-for="Oligomer" type="text" class="form-control">
                 </div>
             </div>
         </div>
 
+        <!-- Potential Cut Sites -->
         <div class="panel panel-default">
             <div class="panel-heading" v-on:click="expand('cutSiteTitle', 'cutSiteBody')">
                 <h3 id="cutSiteTitle" class="panel-title collapsed">Potential Cut Sites</h3>
@@ -122,6 +139,7 @@
             </div>
         </div>
 
+        <!-- Specificity -->
         <div class="panel panel-default">
             <div class="panel-heading" v-on:click="expand('specificityTitle', 'specificityBody')">
                 <h3 id="specificityTitle" class="panel-title collapsed">Specificity</h3>
