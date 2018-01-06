@@ -53,11 +53,19 @@ namespace Ribosoft.Jobs
                         ribozymeStructure.SubstrateStructure,
                         job.RNAInput);
                 }
-                catch (CandidateGeneration.CandidateGenerationException)
+                catch (CandidateGeneration.CandidateGenerationException e)
                 {
                     job.JobState = JobState.Errored;
+                    job.StatusMessage = e.Message;
                     await _db.SaveChangesAsync();
-                    throw;
+                    return;
+                }
+                catch (AggregateException e)
+                {
+                    job.JobState = JobState.Errored;
+                    job.StatusMessage = e.InnerExceptions.FirstOrDefault()?.Message ?? e.Message;
+                    await _db.SaveChangesAsync();
+                    return;
                 }
 
                 cancellationToken.ThrowIfCancellationRequested();
