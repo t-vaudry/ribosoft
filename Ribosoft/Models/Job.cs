@@ -25,11 +25,11 @@ namespace Ribosoft.Models
 
         public int Id { get; set; }
         public string OwnerId { get; set; }
-        [DisplayName("Job State")]
+        [Display(Name = "Job State")]
         public JobState JobState { get; set; }
 
         public int RibozymeId { get; set; }
-        [DisplayName("RNA Input")]
+        [Display(Name = "RNA Input")]
         public string RNAInput { get; set; }
         [ScaffoldColumn(false)]
         public string HangfireJobId { get; set; }
