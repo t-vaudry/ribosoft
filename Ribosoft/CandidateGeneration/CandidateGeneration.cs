@@ -79,7 +79,14 @@ namespace Ribosoft.CandidateGeneration
             Task t1 = Task.Factory.StartNew(() => TraverseRibozyme());
             Task t2 = Task.Factory.StartNew(() => TraverseSubstrate());
 
-            Task.WaitAll(t1, t2);
+            try
+            {
+                Task.WaitAll(t1, t2);
+            }
+            catch (AggregateException ae)
+            {
+                throw ae.Flatten();
+            }
 
             //*********************
             //5- Eliminate potential cut sites that are not found on input RNA
