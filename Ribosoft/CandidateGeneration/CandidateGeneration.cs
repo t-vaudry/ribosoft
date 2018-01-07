@@ -264,7 +264,17 @@ namespace Ribosoft.CandidateGeneration
                     }
                     if (!found)
                     {
-                        throw new CandidateGenerationException("Neighbours don't match!");
+                        //If not found, there is the possibility that one of the neighbour's siblings is valid.
+                        //In this case, there is no error: silently discard this sequence
+                        Nucleotide inputNeighbourNucleotide = new Nucleotide(Ribozyme.Sequence[currentNode.Children[0].NeighbourIndex.Value]);
+                        if (inputNeighbourNucleotide.Bases.Contains(requiredBase))
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            throw new CandidateGenerationException("Neighbours don't match!");
+                        }
                     }
                 }
                 else
