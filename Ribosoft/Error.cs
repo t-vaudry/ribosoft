@@ -22,6 +22,7 @@ namespace Ribosoft
         R_EMPTY_PARAMETER              =    -4,
         R_BAD_PAIR_MATCH               =    -5,
         R_FITNESS_VALUE_LENGTHS_DIFFER =    -6,
+        R_EMPTY_CANDIDATE_LIST         =    -7,
         R_APPLICATION_ERROR_LAST       =  -999,
 
         /* USER ERROR */

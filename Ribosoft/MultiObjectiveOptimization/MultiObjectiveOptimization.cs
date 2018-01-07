@@ -7,11 +7,9 @@ namespace Ribosoft.MultiObjectiveOptimization {
     public class MultiObjectiveOptimizer
     {
         public const float Tolerance = 0.05f;
-        public List<Candidate> Candidates { get; set; }
 
         public MultiObjectiveOptimizer()
         {
-            Candidates = null;
         }
 
         /* Optimization using Pareto Ranking
@@ -20,51 +18,52 @@ namespace Ribosoft.MultiObjectiveOptimization {
         ** are ranked, and removed from the list. This happens
         ** recursively until there are no more candidates to rank.
         */
-        public void Optimize(int Rank)
+        public void Optimize(List<Candidate> candidates, int rank)
         {
+            // If candidates are empty, return
+            if (candidates.Count == 0) {
+                throw new MultiObjectiveOptimizationException(R_STATUS.R_EMPTY_CANDIDATE_LIST, "List of Candidates is empty!");
+            }
+
             // List for the current rank
-            List<Candidate> FrontCandidates = new List<Candidate>();
+            List<Candidate> frontCandidates = new List<Candidate>();
 
-            foreach (Candidate Victim in Candidates) {
-                bool Dominated = false;
+            foreach (Candidate victim in candidates) {
+                bool dominated = false;
 
-                foreach (Candidate Dominator in Candidates.Where(Candidate => Candidate != Victim)) {
+                foreach (Candidate dominator in candidates.Where(candidate => candidate != victim)) {
                     // Check for dominance, and break if candidate is dominated
-                    try {
-                        if (ParetoDominate(Victim, Dominator)) {
-                            Dominated = true;
-                            break;
-                        }
-                    } catch (MultiObjectiveOptimizationException Exception) {
-                        throw Exception;
+                    if (ParetoDominate(victim, dominator)) {
+                        dominated = true;
+                        break;
                     }
                 }
 
                 // If not dominated by any other candidate, add to Pareto Front
-                if (!Dominated) {
-                    FrontCandidates.Add(Victim);
+                if (!dominated) {
+                    frontCandidates.Add(victim);
                 }
             }
 
             // Rank non-dominated candidates, and remove from list
             // If all candidates are dominated, rank them all equally
-            if (FrontCandidates.Count != 0) {
-                foreach (Candidate RankedCandidate in FrontCandidates) {
-                    RankedCandidate.Rank = Rank;
-                    Candidates.Remove(RankedCandidate);
+            if (frontCandidates.Count != 0) {
+                foreach (Candidate rankedCandidate in frontCandidates) {
+                    rankedCandidate.Rank = rank;
+                    candidates.Remove(rankedCandidate);
                 }
             } else {
-                foreach (Candidate Candidate in Candidates) {
-                    Candidate.Rank = Rank;
+                foreach (Candidate candidate in candidates) {
+                    candidate.Rank = rank;
                 }
 
-                Candidates.Clear();
+                candidates.Clear();
             }
 
             // Recursively call function to continue ranking
-            if (Candidates.Count != 0) {
-                Rank++;
-                Optimize(Rank);
+            if (candidates.Count != 0) {
+                rank++;
+                Optimize(candidates, rank);
             }
         }
 
@@ -73,30 +72,30 @@ namespace Ribosoft.MultiObjectiveOptimization {
         **   1. If fi(x) <= fi(y) for all i functions of f, and
         **   2. There is at least one i such that fi(x) < fi(y)
         */
-        private bool ParetoDominate(Candidate Victim, Candidate Dominator)
+        private bool ParetoDominate(Candidate victim, Candidate dominator)
         {
-            bool Dominated = true;
-            bool StrictlyDominated = false;
+            bool dominated = true;
+            bool strictlyDominated = false;
 
             // If two candidates have different number of fitness values, something went wrong
-            if (Victim.FitnessValues.Length != Dominator.FitnessValues.Length) {
+            if (victim.FitnessValues.Length != dominator.FitnessValues.Length) {
                 throw new MultiObjectiveOptimizationException(R_STATUS.R_FITNESS_VALUE_LENGTHS_DIFFER, "Candidates have different number of fitness values!");
             }
 
             // Merge fitness values for comparison
-            var Properties = Victim.FitnessValues.Zip(Dominator.FitnessValues, (x, y) => new { Victim = x, Dominator = y });
+            var Properties = victim.FitnessValues.Zip(dominator.FitnessValues, (x, y) => new { Victim = x, Dominator = y });
             foreach (var Property in Properties) {
                 if (Property.Dominator <= Property.Victim) {
                     if (Math.Abs(Property.Dominator - Property.Victim) > Tolerance) {
-                        StrictlyDominated = true;
+                        strictlyDominated = true;
                     }
                 } else {
-                    Dominated = false;
+                    dominated = false;
                     break;
                 }
             }
 
-            return Dominated && StrictlyDominated;
+            return dominated && strictlyDominated;
         }
     }
 }
