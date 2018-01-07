@@ -21,9 +21,7 @@ namespace Ribosoft.Tests
             candidates.Add(one);
             candidates.Add(two);
 
-            multiObjectiveOptimizer.Candidates = candidates;
-
-            multiObjectiveOptimizer.Optimize(1);
+            multiObjectiveOptimizer.Optimize(candidates, 1);
 
             Assert.Equal(1, one.Rank);
             Assert.Equal(1, two.Rank);
@@ -44,9 +42,7 @@ namespace Ribosoft.Tests
             candidates.Add(one);
             candidates.Add(two);
 
-            multiObjectiveOptimizer.Candidates = candidates;
-
-            multiObjectiveOptimizer.Optimize(1);
+            multiObjectiveOptimizer.Optimize(candidates, 1);
 
             Assert.Equal(1, one.Rank);
             Assert.Equal(1, two.Rank);
@@ -67,9 +63,7 @@ namespace Ribosoft.Tests
             candidates.Add(one);
             candidates.Add(two);
 
-            multiObjectiveOptimizer.Candidates = candidates;
-
-            multiObjectiveOptimizer.Optimize(1);
+            multiObjectiveOptimizer.Optimize(candidates, 1);
 
             Assert.Equal(1, one.Rank);
             Assert.Equal(2, two.Rank);
@@ -90,9 +84,7 @@ namespace Ribosoft.Tests
             candidates.Add(one);
             candidates.Add(two);
 
-            multiObjectiveOptimizer.Candidates = candidates;
-
-            multiObjectiveOptimizer.Optimize(1);
+            multiObjectiveOptimizer.Optimize(candidates, 1);
 
             Assert.Equal(1, one.Rank);
             Assert.Equal(2, two.Rank);
@@ -113,16 +105,14 @@ namespace Ribosoft.Tests
             candidates.Add(one);
             candidates.Add(two);
 
-            multiObjectiveOptimizer.Candidates = candidates;
-
-            multiObjectiveOptimizer.Optimize(1);
+            multiObjectiveOptimizer.Optimize(candidates, 1);
 
             Assert.Equal(1, one.Rank);
             Assert.Equal(2, two.Rank);
         }
 
         [Fact]
-        public void InvalidInput()
+        public void InvalidFitnessValues()
         {
             MultiObjectiveOptimization.MultiObjectiveOptimizer multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
 
@@ -139,13 +129,24 @@ namespace Ribosoft.Tests
             candidates.Add(two);
             candidates.Add(three);
 
-            multiObjectiveOptimizer.Candidates = candidates;
-
             try {
-                multiObjectiveOptimizer.Optimize(1);
+                multiObjectiveOptimizer.Optimize(candidates, 1);
             } catch (MultiObjectiveOptimization.MultiObjectiveOptimizationException Exception) {
                 Assert.Equal(Exception.Code, R_STATUS.R_FITNESS_VALUE_LENGTHS_DIFFER);
                 Assert.Equal(Exception.Message, "Candidates have different number of fitness values!");
+            }
+        }
+
+        [Fact]
+        public void InvalidCandidateList()
+        {
+            MultiObjectiveOptimization.MultiObjectiveOptimizer multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
+
+            try {
+                multiObjectiveOptimizer.Optimize(new List<MultiObjectiveOptimization.Candidate>(), 1);
+            } catch (MultiObjectiveOptimization.MultiObjectiveOptimizationException Exception) {
+                Assert.Equal(Exception.Code, R_STATUS.R_EMPTY_CANDIDATE_LIST);
+                Assert.Equal(Exception.Message, "List of Candidates is empty!");
             }
         }
     }
