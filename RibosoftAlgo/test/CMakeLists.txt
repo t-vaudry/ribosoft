@@ -2,6 +2,7 @@ set(TEST_SOURCES
     # Sources here...
     test_validation.cpp
     test_structure.cpp
+    test_accessibility.cpp
     main.cpp)
 
 add_executable(tests ${TEST_SOURCES})

@@ -5,6 +5,7 @@ set(SOURCE_FILES
     error.h
     validation.cpp
     structure.cpp
+    accessibility.cpp
     main.cpp)
 
 add_definitions(-DBUILDING_DLL)
