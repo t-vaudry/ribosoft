@@ -104,6 +104,16 @@ var app = new Vue({
 
             reader.readAsText(file)
         },
+        getFromGenbank: function() {
+            var accesionField = document.getElementById('accesionNumber');
+            var sequenceInputField = document.getElementById("inputSequence");
+            var route = '/Request/GetSequenceFromGenbank?accession='+accesionField.value;
+
+            this.$http.get(route).then((response)=>{
+                sequenceInputField.value = response.body;
+                accesionField.value = "";
+            });
+        },
         validateSequence: function() {
             var form = document.getElementById("inputSequenceFormGroup");
             var sequence = document.getElementById("inputSequence").value;
