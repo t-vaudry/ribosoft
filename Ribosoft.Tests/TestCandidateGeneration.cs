@@ -171,5 +171,21 @@ namespace Ribosoft.Tests
             Assert.Equal("C", candidateGenerator.SequencesToSend[2].GetString());
             Assert.Equal("A", candidateGenerator.SequencesToSend[3].GetString());
         }
+
+        [Fact]
+        public void Generate_Candidates_Variable_First_Neighbour()
+        {
+            CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
+            candidateGenerator.GenerateCandidates(
+                "NR",
+                "()",
+                "UAUACGGC",
+                "........",
+                "UAUACGGCAUUGCAGUAUAAAGCCU");
+
+            Assert.Equal(2, candidateGenerator.SequencesToSend.Count);
+            Assert.Equal("CG", candidateGenerator.SequencesToSend[0].GetString());
+            Assert.Equal("UA", candidateGenerator.SequencesToSend[1].GetString());
+        }
     }
 }

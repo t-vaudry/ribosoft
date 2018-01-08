@@ -166,8 +166,8 @@ namespace Ribosoft.CandidateGeneration
 
                     depth_i.Add(currentNode);
                 }
-                //Case 2: There is no input structure (we are processing substrate) or there is a structure, but this nucleotide does nto bond to the substrate.
-                //In either case, the base will not be determiend by a bond, so develop all possibilities
+                //Case 2: There is no input structure (we are processing substrate) or there is a structure, but this nucleotide does not bond to the substrate.
+                //In either case, the base will not be determined by a bond, so develop all possibilities
                 else
                 {
                     foreach (char baseChar in nucleotide.Bases)
@@ -282,7 +282,17 @@ namespace Ribosoft.CandidateGeneration
                     }
                     if (!found)
                     {
-                        throw new CandidateGenerationException("Neighbours don't match!");
+                        //If not found, there is the possibility that one of the neighbour's siblings is valid.
+                        //In this case, there is no error: silently discard this sequence
+                        Nucleotide inputNeighbourNucleotide = new Nucleotide(Ribozyme.Sequence[currentNode.Children[0].NeighbourIndex.Value]);
+                        if (inputNeighbourNucleotide.Bases.Contains(requiredBase))
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            throw new CandidateGenerationException("Neighbours don't match!");
+                        }
                     }
                 }
                 else
