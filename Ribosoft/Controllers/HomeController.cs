@@ -18,27 +18,7 @@ namespace Ribosoft.Controllers
 
         public IActionResult About()
         {
-            SampleDllCall sdc = new SampleDllCall();
-
-            IntPtr outputPtr = IntPtr.Zero;
-            int size;
-
-            sdc.Fold("AUGUCUUAGGUGAUACGUGC", out outputPtr, out size);
-
-            if (outputPtr == IntPtr.Zero) {
-                // the pointer doesn't point to good memory...
-                ViewData["Message"] = "nullptr";
-                return View();
-            }
-
-            FoldOutput[] decodedData = new FoldOutput[size];
-
-            for (int i = 0; i < size; ++i, outputPtr += i * Marshal.SizeOf<FoldOutput>())
-            {
-                decodedData[i] = Marshal.PtrToStructure<FoldOutput>(outputPtr);
-            }
-
-            ViewData["Message"] = "Your application description page.\n" + decodedData[0].Structure;
+            ViewData["Message"] = "Your application description page.\n";
 
             return View();
         }
