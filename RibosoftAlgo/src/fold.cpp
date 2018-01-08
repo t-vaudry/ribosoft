@@ -16,7 +16,7 @@ RIBOSOFT_NAMESPACE_START
 
 extern "C"
 {
-    DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*out*/ int& size)
+    DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*out*/ size_t& size)
     {
         // validate input sequence
         R_STATUS status = validate_sequence(sequence);
