@@ -41,7 +41,10 @@
                 <div class="form-group">
                     <label for="BLASTinput">Get Sequence from BLAST:</label>
                     <div id="BLASTinput">
-                        <input type="text"> <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                        <input type="text" id="accesionNumber">
+                        <button type="button" class="btn btn-default" v-on:click="getFromGenbank">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
                     </div>
                 </div>
             </div>

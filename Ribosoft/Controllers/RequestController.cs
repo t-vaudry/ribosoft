@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Ribosoft.Models;
+using Ribosoft.GenbankRequests;
 
 namespace Ribosoft.Controllers
 {
@@ -29,6 +30,12 @@ namespace Ribosoft.Controllers
         public IActionResult Index(RequestViewModel model)
         {
             return Content($"Structure: {model.RibozymeStructure}\nSequence: {model.InputSequence}\nTest: {model.TargetRegions[0].Selected}");
+        }
+
+        [HttpGet]
+        public string GetSequenceFromGenbank(string accession)
+        {
+            return GenbankRequest.RunRequest(accession);
         }
     }
 }
