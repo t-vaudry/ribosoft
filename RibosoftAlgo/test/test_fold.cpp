@@ -6,8 +6,9 @@
 using namespace ribosoft;
 
 TEST_CASE("default", "[fold]") {
-    fold_output* output;
-    R_STATUS status = fold("AUGUCUUAGGUGAUACGUGC", output);
+    fold_output* output = nullptr;
+    int size;
+    R_STATUS status = fold("AUGUCUUAGGUGAUACGUGC", output, size);
     REQUIRE(status == R_SUCCESS::R_STATUS_OK);
     REQUIRE(strcmp(output[0].structure, ".((((......)))).....") == 0);
     REQUIRE(output[0].energy == -1.60f);
@@ -17,7 +18,8 @@ TEST_CASE("default", "[fold]") {
 }
 
 TEST_CASE("invalid sequence", "[fold]") {
-    fold_output* output;
-    R_STATUS status = fold("wfef", output);
+    fold_output* output = nullptr;
+    int size;
+    R_STATUS status = fold("wfef", output, size);
     REQUIRE(status == R_APPLICATION_ERROR::R_INVALID_NUCLEOTIDE);
 }

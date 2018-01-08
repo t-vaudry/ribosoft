@@ -16,7 +16,7 @@ RIBOSOFT_NAMESPACE_START
 
 extern "C"
 {
-    DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output)
+    DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*out*/ int& size)
     {
         // validate input sequence
         R_STATUS status = validate_sequence(sequence);
@@ -38,6 +38,7 @@ extern "C"
         }
 
         size_t length = strlen(sequence);
+        size = solution_size;
         output = new fold_output[solution_size];
         for (idx_t i = 0; i < solution_size; i++) {
             output[i].structure = new char[length + 1];
