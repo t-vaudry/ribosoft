@@ -27,9 +27,39 @@ namespace Ribosoft.Tests
 
             Assert.Equal(".((((......)))).....", decodedData[0].Structure);
             Assert.Equal(-1.60f, decodedData[0].Energy);
+
             Assert.Equal("((((..(.....).))))..", decodedData[35].Structure);
             Assert.Equal(3.00f, decodedData[35].Energy);
+            
             Assert.Equal(51, size);
+        }
+
+        [Fact]
+        public void TestFolding_AnotherValid()
+        {
+            SampleDllCall sdc = new SampleDllCall();
+
+            IntPtr outputPtr;
+            int size;
+
+            sdc.Fold("AUUUUAGUGCUGAUGGCCAAUGCGCGAACCCAUCGGCGCUGUGA", out outputPtr, out size);
+
+            Assert.False(outputPtr == IntPtr.Zero);
+
+            FoldOutput[] decodedData = new FoldOutput[size];
+
+            for (int i = 0; i < size; ++i, outputPtr += Marshal.SizeOf<FoldOutput>())
+            {
+                decodedData[i] = Marshal.PtrToStructure<FoldOutput>(outputPtr);
+            }
+
+            Assert.Equal(".((.((((((((((((.............)))))))))))).))", decodedData[1].Structure);
+            Assert.Equal(-16.20f, decodedData[1].Energy);
+
+            Assert.Equal(".....((((((((((((........)...)))))))))))....", decodedData[17].Structure);
+            Assert.Equal(-14.50f, decodedData[17].Energy);
+
+            Assert.Equal(173, size);
         }
     }
 }
