@@ -10,14 +10,19 @@
 
 RIBOSOFT_NAMESPACE_START
 
-float anneal(const char* sequence, const char* structure, float na_concentration) {
-
-	if (sequence.size() != structure.size()) {
-		return R_APPLICATION_ERROR::R_SEQUENCE_STRUCTURE_MISMATCH;
-	}
+R_STATUS anneal(const char* sequence, const char* structure, const float na_concentration, float& temp) {
 
 	std::string local_sequence = sequence;
 	std::string local_structure = structure;
+
+	if (local_sequence.length() != local_structure.length()) {
+		return R_APPLICATION_ERROR::R_SEQUENCE_STRUCTURE_MISMATCH;
+	}
+
+	// TODO: minimum chosen arbitrarily; will change once we have more science info
+	if (na_concentration < 0.0000000001) {
+		return R_APPLICATION_ERROR::R_INVALID_CONCENTRATION;
+	}
 
 	// Constants (these will be renamed once we know where they come from)
 	const float SEVENTYNINEPOINTEIGHT = 79.8;
@@ -33,7 +38,6 @@ float anneal(const char* sequence, const char* structure, float na_concentration
 
 	int num_substrings = distance(substruct_begin, substruct_end);
 
-	//std::string *substrings;
 	std::vector<std::string> substrings;
 
 	int substr_index = 0;
@@ -86,7 +90,7 @@ float anneal(const char* sequence, const char* structure, float na_concentration
 				g_count++;
 				break;
 			default:
-				// printf("Error while counting bases: sequence contains non-base character (must be a, A, u, U, c, C, g, or G");
+				// Error while counting bases: sequence contains non-base character (must be a, A, u, U, c, C, g, or G);
 				return R_APPLICATION_ERROR::R_INVALID_BASE;
 			}
 		}
@@ -95,23 +99,25 @@ float anneal(const char* sequence, const char* structure, float na_concentration
 		xT = float(u_count);
 		zC = float(c_count);
 		yG = float(g_count);
-		float log_concentration = 0.0;
 		
+		float log_concentration;
 		try
 		{
 			log_concentration = log(na_concentration);
 		}
 		catch (const std::exception&)
 		{
-			// printf("Error while calculating log: concentration may be 0 (concentration cannot be 0)");
-			return R_APPLICATION_ERROR::R_INVALID_PARAMETER;
+			// Error while calculating log: concentration may be 0 (concentration cannot be 0);
+			return R_APPLICATION_ERROR::R_INVALID_CONCENTRATION;
 		}
 		
 		// Tm= 79.8 + 18.5*log10([Na+]) + (58.4 * (yG+zC)/(wA+xT+yG+zC)) + (11.8 * ((yG+zC)/(wA+xT+yG+zC))2) - (820/(wA+xT+yG+zC)) 
 		float Tm = SEVENTYNINEPOINTEIGHT + EIGHTEENPOINTFIVE * log_concentration + (FIFTYEIGHTPOINTFOUR * (yG + zC) / (wA + xT + yG + zC)) + (ELEVENPOINTEIGHT * ((yG + zC) / (wA + xT + yG + zC)) * TWO) - (EIGHTHUNDREDTWENTY / (wA + xT + yG + zC));
 		temp_sum += Tm;
 	}
-	return temp_sum;
+
+	temp = temp_sum;
+	return R_SUCCESS::R_STATUS_OK;
 }
 
 RIBOSOFT_NAMESPACE_END
