@@ -49,22 +49,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Designs.First().Rank)
+                @Html.ActionLink("Rank", "Details", new { sortOrder = "rank_asc" })
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Designs.First().Sequence)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Designs.First().TemperatureScore)
+                @Html.ActionLink("Temperature Score", "Details", new { sortOrder = "temp_desc" })
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Designs.First().SpecializationScore)
+                @Html.ActionLink("Specialization Score", "Details", new { sortOrder = "spec_desc" })
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Designs.First().AccessibilityScore)
+                @Html.ActionLink("Accessibility Score", "Details", new { sortOrder = "access_desc" })
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Designs.First().StructureScore)
+                @Html.ActionLink("Structure Score", "Details", new { sortOrder = "struct_desc" })
             </th>
             <th></th>
         </tr>

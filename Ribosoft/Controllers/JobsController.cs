@@ -41,7 +41,7 @@ namespace Ribosoft.Controllers
         }
 
         // GET: Jobs/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, string sortOrder)
         {
             if (id == null)
             {
@@ -61,6 +61,27 @@ namespace Ribosoft.Controllers
             {
                 return NotFound();
             }
+
+            var designs = from d in _context.Designs select d;
+            switch (sortOrder)
+            {
+                case "temp_desc":
+                    designs = designs.OrderByDescending(d => d.TemperatureScore);
+                    break;
+                case "spec_desc":
+                    designs = designs.OrderByDescending(d => d.SpecializationScore);
+                    break;
+                case "access_desc":
+                    designs = designs.OrderByDescending(d => d.AccessibilityScore);
+                    break;
+                case "struct_desc":
+                    designs = designs.OrderByDescending(d => d.StructureScore);
+                    break;
+                default:
+                    designs = designs.OrderBy(d => d.Rank);
+                    break;
+            }
+            job.Designs = designs.ToList();
 
             return View(job);
         }
