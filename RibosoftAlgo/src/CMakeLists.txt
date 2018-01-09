@@ -8,7 +8,6 @@ set(SOURCE_FILES
     validation.cpp
     structure.cpp
     accessibility.cpp
-    main.cpp
     )
 
 add_definitions(-DBUILDING_DLL)
