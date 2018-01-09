@@ -1,6 +1,6 @@
 #include "dll.h"
 
-#include <string.h>
+#include <cstring>
 #include <regex>
 #include <stack>
 

@@ -69,7 +69,7 @@ namespace Ribosoft.Controllers
                     designs = designs.OrderByDescending(d => d.TemperatureScore);
                     break;
                 case "spec_desc":
-                    designs = designs.OrderByDescending(d => d.SpecializationScore);
+                    designs = designs.OrderByDescending(d => d.SpecificityScore);
                     break;
                 case "access_desc":
                     designs = designs.OrderByDescending(d => d.AccessibilityScore);
