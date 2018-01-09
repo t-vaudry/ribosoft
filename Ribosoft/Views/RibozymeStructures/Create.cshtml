@@ -1,0 +1,64 @@
+﻿@model Ribosoft.Models.RibozymeStructure
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+
+<h4>RibozymeStructure</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="RibozymeId" class="control-label"></label>
+                <select asp-for="RibozymeId" class="form-control" asp-items="ViewBag.RibozymeId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cutsite" class="control-label"></label>
+                <input asp-for="Cutsite" class="form-control" />
+                <span asp-validation-for="Cutsite" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Sequence" class="control-label"></label>
+                <input asp-for="Sequence" class="form-control" />
+                <span asp-validation-for="Sequence" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Structure" class="control-label"></label>
+                <input asp-for="Structure" class="form-control" />
+                <span asp-validation-for="Structure" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SubstrateTemplate" class="control-label"></label>
+                <input asp-for="SubstrateTemplate" class="form-control" />
+                <span asp-validation-for="SubstrateTemplate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SubstrateStructure" class="control-label"></label>
+                <input asp-for="SubstrateStructure" class="form-control" />
+                <span asp-validation-for="SubstrateStructure" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="PostProcess" /> @Html.DisplayNameFor(model => model.PostProcess)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

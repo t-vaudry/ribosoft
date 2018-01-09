@@ -16,7 +16,6 @@ using Ribosoft.Services;
 
 namespace Ribosoft.Controllers
 {
-    [Authorize]
     [Route("[controller]/[action]")]
     public class ManageController : Controller
     {
