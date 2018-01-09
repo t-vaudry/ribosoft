@@ -120,12 +120,13 @@ namespace Ribosoft.CandidateGeneration
 
                 //The neighbour (of a bond or pseudoknot)
                 int? neighbourIndex = null;
+                bool isTarget = false;
                 if (inputStructure != null)
                 {
                     char structure = inputStructure[i];
-
+                    isTarget = IsTarget(structure);
                     //If nucleotide is NOT a target
-                    if (!IsTarget(structure))
+                    if (!isTarget)
                     {
                         //Determine if the nucleotide has a neighbour (bond or pseudoknot)
                         switch (structure)
@@ -153,17 +154,34 @@ namespace Ribosoft.CandidateGeneration
                 }
 
                 //Make a node for each possible nucleotide at the current depth (if input is not a base) and set its parents to be all nodes at the previous depth
-                foreach (char baseChar in nucleotide.Bases)
+                //Case 1: The structure is not null (we are processing ribozyme) and the nucloetide is a target. Its base will be determined uniquely by the substrate nucleotide it bonds to
+                if (isTarget && inputStructure != null)
                 {
-                    Node currentNode = new Node(new Nucleotide(baseChar), i, neighbourIndex);
+                    Node currentNode = new Node(new Nucleotide(nucleotide.Symbol), i, neighbourIndex);
 
                     if (i > 0)
                     {
                         currentNode.Parents = nodesAtDepth[i - 1];
                     }
 
-                    //Add this node to the nodes at the current depth
                     depth_i.Add(currentNode);
+                }
+                //Case 2: There is no input structure (we are processing substrate) or there is a structure, but this nucleotide does not bond to the substrate.
+                //In either case, the base will not be determined by a bond, so develop all possibilities
+                else
+                {
+                    foreach (char baseChar in nucleotide.Bases)
+                    {
+                        Node currentNode = new Node(new Nucleotide(baseChar), i, neighbourIndex);
+
+                        if (i > 0)
+                        {
+                            currentNode.Parents = nodesAtDepth[i - 1];
+                        }
+
+                        //Add this node to the nodes at the current depth
+                        depth_i.Add(currentNode);
+                    }
                 }
 
                 //Go to the previous depth and set all nodes' children to nodes of current depth
@@ -264,7 +282,17 @@ namespace Ribosoft.CandidateGeneration
                     }
                     if (!found)
                     {
-                        throw new CandidateGenerationException("Neighbours don't match!");
+                        //If not found, there is the possibility that one of the neighbour's siblings is valid.
+                        //In this case, there is no error: silently discard this sequence
+                        Nucleotide inputNeighbourNucleotide = new Nucleotide(Ribozyme.Sequence[currentNode.Children[0].NeighbourIndex.Value]);
+                        if (inputNeighbourNucleotide.Bases.Contains(requiredBase))
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            throw new CandidateGenerationException("Neighbours don't match!");
+                        }
                     }
                 }
                 else
