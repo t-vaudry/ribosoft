@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using Ribosoft.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -30,16 +35,19 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Jobs" asp-action="Index">Jobs</a></li>
-                    @if (User.IsInRole("Administrator"))
+                    @if (SignInManager.IsSignedIn(User))
                     {
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Ribozymes <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a asp-area="" asp-controller="Ribozymes" asp-action="Index">Ribozymes</a></li>
-                                <li><a asp-area="" asp-controller="RibozymeStructures" asp-action="Index">Structures</a></li>
-                            </ul>
-                        </li>
+                        <li><a asp-area="" asp-controller="Jobs" asp-action="Index">Jobs</a></li>
+                        if (User.IsInRole("Administrator"))
+                        {
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Ribozymes <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a asp-area="" asp-controller="Ribozymes" asp-action="Index">Ribozymes</a></li>
+                                    <li><a asp-area="" asp-controller="RibozymeStructures" asp-action="Index">Structures</a></li>
+                                </ul>
+                            </li>
+                        }
                     }
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")

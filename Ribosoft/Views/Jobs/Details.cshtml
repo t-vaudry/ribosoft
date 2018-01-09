@@ -17,6 +17,12 @@
             @Html.DisplayFor(model => model.JobState)
         </dd>
         <dt>
+            @Html.DisplayNameFor(model => model.StatusMessage)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StatusMessage)
+        </dd>
+        <dt>
             @Html.DisplayNameFor(model => model.RNAInput)
         </dt>
         <dd>
@@ -58,7 +64,7 @@
                 @Html.ActionLink("Temperature Score", "Details", new { sortOrder = "temp_desc" })
             </th>
             <th>
-                @Html.ActionLink("Specialization Score", "Details", new { sortOrder = "spec_desc" })
+                @Html.ActionLink("Specificity Score", "Details", new { sortOrder = "spec_desc" })
             </th>
             <th>
                 @Html.ActionLink("Accessibility Score", "Details", new { sortOrder = "access_desc" })
@@ -83,7 +89,7 @@
                 @Html.DisplayFor(modelItem => item.TemperatureScore)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.SpecializationScore)
+                @Html.DisplayFor(modelItem => item.SpecificityScore)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.AccessibilityScore)
