@@ -62,7 +62,7 @@ namespace Ribosoft.Controllers
                 return NotFound();
             }
 
-            var designs = from d in _context.Designs select d;
+            var designs = from d in job.Designs select d;
             switch (sortOrder)
             {
                 case "temp_desc":
