@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Hangfire;
+using Hangfire.PostgreSql;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Ribosoft.Data;
 using Ribosoft.Models;
 using Ribosoft.Services;
@@ -27,16 +31,21 @@ namespace Ribosoft
         public void ConfigureServices(IServiceCollection services)
         {
             var entityFrameworkProvider = Configuration.GetValue<string>("EntityFrameworkProvider", "SqlServer");
+            var defaultConnectionString = Configuration.GetConnectionString("DefaultConnection");
 
             if (entityFrameworkProvider == "Npgsql")
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+                    options.UseNpgsql(defaultConnectionString));
+
+                services.AddHangfire(x => x.UsePostgreSqlStorage(defaultConnectionString));
             }
             else
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                    options.UseSqlServer(defaultConnectionString));
+
+                services.AddHangfire(x => x.UseSqlServerStorage(defaultConnectionString));
             }
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -46,11 +55,17 @@ namespace Ribosoft
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
-            services.AddMvc();
+            services.AddMvc(config =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                config.Filters.Add(new AuthorizeFilter(policy));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
