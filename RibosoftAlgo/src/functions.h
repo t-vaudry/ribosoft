@@ -23,5 +23,6 @@ extern "C" DLL_PUBLIC R_STATUS validate_structure(const char* structure);
 
 extern "C" DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*out*/ size_t& size);
 extern "C" DLL_PUBLIC R_STATUS structure(const char* candidate, const char* ideal, /*out*/ float& distance);
+extern "C" DLL_PUBLIC R_STATUS accessibility(const char* substrateSequence, const char* substrateTemplate, const int cutsiteIndex, const int cutsiteNumber, /*out*/ float& delta);
 
 RIBOSOFT_NAMESPACE_END
