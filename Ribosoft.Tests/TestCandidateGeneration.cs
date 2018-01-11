@@ -153,5 +153,39 @@ namespace Ribosoft.Tests
                 "987654..3210",
                 "AUUGCAGUAUAAAGCCU"));
         }
+
+        [Fact]
+        public void Generate_Candidates_Multiple_Cutsites()
+        {
+            CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
+            candidateGenerator.GenerateCandidates(
+                "N",
+                "0",
+                "NGU",
+                "0..",
+                "AGUAGUCGUGGUUGU");
+
+            Assert.Equal(4, candidateGenerator.SequencesToSend.Count);
+            Assert.Equal("U", candidateGenerator.SequencesToSend[0].GetString());
+            Assert.Equal("G", candidateGenerator.SequencesToSend[1].GetString());
+            Assert.Equal("C", candidateGenerator.SequencesToSend[2].GetString());
+            Assert.Equal("A", candidateGenerator.SequencesToSend[3].GetString());
+        }
+
+        [Fact]
+        public void Generate_Candidates_Variable_First_Neighbour()
+        {
+            CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
+            candidateGenerator.GenerateCandidates(
+                "NR",
+                "()",
+                "UAUACGGC",
+                "........",
+                "UAUACGGCAUUGCAGUAUAAAGCCU");
+
+            Assert.Equal(2, candidateGenerator.SequencesToSend.Count);
+            Assert.Equal("CG", candidateGenerator.SequencesToSend[0].GetString());
+            Assert.Equal("UA", candidateGenerator.SequencesToSend[1].GetString());
+        }
     }
 }

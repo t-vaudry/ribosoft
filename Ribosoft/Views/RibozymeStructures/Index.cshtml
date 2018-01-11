@@ -1,0 +1,83 @@
+﻿@model IEnumerable<Ribosoft.Models.RibozymeStructure>
+
+@{
+    ViewData["Title"] = "Ribozyme Structures";
+}
+
+<h2>Ribozyme Structures</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Cutsite)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sequence)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Structure)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SubstrateTemplate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SubstrateStructure)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PostProcess)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ribozyme)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cutsite)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sequence)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Structure)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubstrateTemplate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubstrateStructure)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PostProcess)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdatedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ribozyme.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
