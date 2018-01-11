@@ -5,8 +5,6 @@
 #include <cstdlib>
 #include <cstring>
 
-#include <ViennaRNA/data_structures.h>
-
 #include "functions.h"
 
 RIBOSOFT_NAMESPACE_START
