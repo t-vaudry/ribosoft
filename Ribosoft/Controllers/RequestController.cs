@@ -29,7 +29,10 @@ namespace Ribosoft.Controllers
         [HttpPost]
         public IActionResult Index(RequestViewModel model)
         {
-            return Content($"Structure: {model.RibozymeStructure}\nSequence: {model.InputSequence}\nTest: {model.TargetRegions[0].Selected}");
+            if (ModelState.IsValid) {
+                return Content($"Structure: {model.RibozymeStructure}\nSequence: {model.InputSequence}\nTest: {model.TargetRegions[0].Selected}");
+            }
+            return View(model);
         }
 
         [HttpGet]
