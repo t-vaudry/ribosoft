@@ -35,6 +35,14 @@ namespace Ribosoft.Models
         [Display(Name = "Status Message")]
         [DisplayFormat(NullDisplayText =  "None")]
         public string StatusMessage { get; set; }
+        [Display(Name = "Temperature")]
+        public float? Temperature { get; set; }
+        [Display(Name = "Na")]
+        public float? Na { get; set; }
+        [Display(Name = "Mg")]
+        public float? Mg { get; set; }
+        [Display(Name = "Oligomer")]
+        public float? Oligomer { get; set; }
 
         public virtual ApplicationUser Owner { get; set; }
         public virtual Ribozyme Ribozyme { get; set; }
