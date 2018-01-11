@@ -9,11 +9,12 @@ namespace Ribosoft.Models
     public class RequestViewModel
     {
         [Required]
-        [DataType(DataType.Text)]
         [Display(Name = "Ribozyme Structure:")]
         public string RibozymeStructure { get; set; }
 
         [Required]
+        [RegularExpression(@"^['A','C','G','U','R','Y','K','M','S','W','B','D','H','V','N']+$", 
+        ErrorMessage = "Sequence must only contain the following characters: A, C, G, U, R, Y, K, M, S, W, B, D, H, V, N")]
         [DataType(DataType.Text)]
         [Display(Name = "Input sequnce:")]
         public string InputSequence { get; set; }

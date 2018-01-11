@@ -24,8 +24,9 @@
 
                 <div class="form-group" id="inputSequenceFormGroup">
                     <label asp-for="InputSequence"></label>
-                    <textarea asp-for="InputSequence" class="form-control" placeholder="Input a Sequence" rows="10" id="inputSequence" v-on:change="validateSequence">
+                    <textarea asp-for="InputSequence" class="form-control" placeholder="Input a Sequence" rows="10" id="inputSequence">
                     </textarea>
+                    <span asp-validation-for="InputSequence" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
@@ -33,7 +34,7 @@
                     <div>
                         <label class="btn btn-default btn-file">
                             Use FASTA File
-                            <input type="file" v-on:change="processFASTAfile" style="display: none;" id="FASTAfileInput"> <!-- TODO: move style to css -->
+                            <input type="file" v-on:change="processFASTAfile" style="display: none;" id="FASTAfileInput">
                         </label>    
                     </div>
                 </div>
@@ -69,6 +70,7 @@
                             <input type="hidden" asp-for="@Model.TargetRegions[i].Name" />
                         </div>
                     }
+                    <span asp-validation-for="TargetRegions" class="text-danger"></span>
                 </div>
             </div>
         </div>
@@ -91,6 +93,7 @@
                             <input asp-for="TargetEnvironment.TargetEnvironment" type="radio" value="In-vivo" v-on:change="targetEnvironment">In-vivo
                         </label>
                     </div>
+                    <span asp-validation-for="TargetEnvironment" class="text-danger"></span>
                 </div>
 
                 <div class="form-group" v-if="inVivoSelected">
@@ -98,6 +101,7 @@
                     <select asp-for="InVivoEnvironment" id="targetEnvironment" class="form-control">
                         <option v-for="environment in targetEnvironments">{{ environment }}</option>
                     </select>
+                    <span asp-validation-for="InVivoEnvironment" class="text-danger"></span>
                 </div>
             </div>
         </div>
@@ -111,18 +115,22 @@
                 <div class="form-group">
                     <label asp-for="Temperature"></label>
                     <input asp-for="Temperature" type="text" class="form-control">
+                    <span asp-validation-for="Temperature" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Na"></label>
                     <input asp-for="Na" type="text" class="form-control">
+                    <span asp-validation-for="Na" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Mg"></label>
                     <input asp-for="Mg" type="text" class="form-control">
+                    <span asp-validation-for="Mg" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Oligomer"></label>
                     <input asp-for="Oligomer" type="text" class="form-control">
+                    <span asp-validation-for="Oligomer" class="text-danger"></span>
                 </div>
             </div>
         </div>
@@ -158,6 +166,7 @@
                             <label><input asp-for="Specificity.Specificity" type="radio" value="Cleavage and Hybridization">Cleavage and Hybridization</label>
                         </div>
                     </div>
+                    <span asp-validation-for="Specificity" class="text-danger"></span>
                 </div>
             </div>
         </div>
