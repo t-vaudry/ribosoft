@@ -4,16 +4,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ribosoft.Models;
 
 namespace Ribosoft.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : Controller
     {
-        [DllImport("RibosoftAlgo")]
-        extern static String fold(String seq);
-
         public IActionResult Index()
         {
             return View();
@@ -21,9 +20,7 @@ namespace Ribosoft.Controllers
 
         public IActionResult About()
         {
-            String seq = "AUUGCUAGCUAGCAUCGUAGCUGUACUGCAUGACUGAUGGCGGCUAGC";
-            String second_struct = fold(seq);
-            ViewData["Message"] = "Your application description page.\n" + second_struct;
+            ViewData["Message"] = "Your application description page.\n";
 
             return View();
         }

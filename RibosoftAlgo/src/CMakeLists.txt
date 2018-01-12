@@ -6,6 +6,7 @@ set(SOURCE_FILES
     main.cpp
     anneal.cpp
     validation.cpp
+    fold.cpp
     structure.cpp
     accessibility.cpp
     )

@@ -12,9 +12,10 @@ using System;
 namespace Ribosoft.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180104075048_HangfireJobId")]
+    partial class HangfireJobId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,7 +196,7 @@ namespace Ribosoft.Data.Migrations
 
                     b.Property<string>("Sequence");
 
-                    b.Property<float?>("SpecificityScore");
+                    b.Property<float?>("SpecializationScore");
 
                     b.Property<float?>("StructureScore");
 
@@ -226,8 +227,6 @@ namespace Ribosoft.Data.Migrations
                     b.Property<string>("RNAInput");
 
                     b.Property<int>("RibozymeId");
-
-                    b.Property<string>("StatusMessage");
 
                     b.Property<DateTime?>("UpdatedAt");
 
