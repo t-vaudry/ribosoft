@@ -9,14 +9,14 @@ namespace Ribosoft.Tests
         [Fact]
         public void Test1()
         {
-            SampleDllCall sdc = new SampleDllCall();
+            RibosoftAlgo sdc = new RibosoftAlgo();
             Assert.Equal(3, sdc.Add(1, 2));
         }
 
         [Fact]
         public void Test2()
         {
-            SampleDllCall sdc = new SampleDllCall();
+            RibosoftAlgo sdc = new RibosoftAlgo();
             Assert.Equal(R_STATUS.R_STATUS_OK, sdc.ValidateSequence("AUUGCC"));
         }
     }
