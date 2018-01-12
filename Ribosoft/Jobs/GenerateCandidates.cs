@@ -15,12 +15,14 @@ namespace Ribosoft.Jobs
         private readonly ApplicationDbContext _db;
         private readonly CandidateGeneration.CandidateGenerator _candidateGenerator;
         private readonly IEmailSender _emailSender;
+        private readonly RibosoftAlgo _ribosoftAlgo;
 
         public GenerateCandidates(DbContextOptions<ApplicationDbContext> options, IEmailSender emailSender)
         {
             _db =  new ApplicationDbContext(options);
             _candidateGenerator = new CandidateGeneration.CandidateGenerator();
             _emailSender = emailSender;
+            _ribosoftAlgo = new RibosoftAlgo();
         }
 
         [AutomaticRetry(Attempts = 0)]
