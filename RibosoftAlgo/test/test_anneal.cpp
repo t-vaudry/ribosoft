@@ -47,28 +47,18 @@ TEST_CASE("invalid (very small) concentration", "[anneal]") {
 
 TEST_CASE("invalid base", "[anneal]") {
     const char* sequence = "AAU_UCCCCGGGGG";
-    const char* structure = "0123abxyzABXYZ";
+    const char* structure = "0123ABXYZABXYZ";
     const float na_concentration = 1.0;
     float temp;
     R_STATUS status = anneal(sequence, structure, na_concentration, temp);
-    REQUIRE(status == R_APPLICATION_ERROR::R_INVALID_BASE);
+    REQUIRE(status == R_APPLICATION_ERROR::R_INVALID_NUCLEOTIDE);
 }
 
 TEST_CASE("mismatch between sequence and structure lengths", "[anneal]") {
     const char* sequence = "AAUUCCCCGG";
-    const char* structure = "0123abxyzABXYZ";
+    const char* structure = "0123ABXYZABXYZ";
     const float na_concentration = 1.0;
     float temp;
     R_STATUS status = anneal(sequence, structure, na_concentration, temp);
-    REQUIRE(status == R_APPLICATION_ERROR::R_SEQUENCE_STRUCTURE_MISMATCH);
-}
-
-TEST_CASE("structure and sequence including all ignored characters", "[anneal]") {
-    const char* sequence = "AUCG ;:`[]~!@#$%^&*(){}/=\?+|-_AAAAAAAAAAAAAAAUUUUUUUUUUUUUUUCCCCCCCCCCCCCCCGGGGGGGGGGGGGGGAU";
-    const char* structure = "azAZ ;:`[]~!@#$%^&*(){}/=\?+|-_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const float na_concentration = 1.0;
-    float temp;
-    R_STATUS status = anneal(sequence, structure, na_concentration, temp);
-    REQUIRE(status == R_SUCCESS::R_STATUS_OK);
-    REQUIRE(fabs(temp-22.0516) < DELTA);
+    REQUIRE(status == R_APPLICATION_ERROR::R_STRUCT_LENGTH_DIFFER);
 }
