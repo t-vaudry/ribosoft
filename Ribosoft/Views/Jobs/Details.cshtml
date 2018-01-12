@@ -1,0 +1,113 @@
+﻿@model Ribosoft.Models.Job
+
+@{
+    ViewData["Title"] = "Job Details";
+}
+
+<h2>Job Details</h2>
+
+<div>
+    <h4>Job</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.JobState)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.JobState)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.StatusMessage)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StatusMessage)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RNAInput)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RNAInput)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Ribozyme)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Ribozyme.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedAt)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CreatedAt)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.UpdatedAt)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UpdatedAt)
+        </dd>
+    </dl>
+</div>
+
+<h4>Designs</h4>
+<hr />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.ActionLink("Rank", "Details", new { sortOrder = "rank_asc" })
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Designs.First().Sequence)
+            </th>
+            <th>
+                @Html.ActionLink("Temperature Score", "Details", new { sortOrder = "temp_desc" })
+            </th>
+            <th>
+                @Html.ActionLink("Specificity Score", "Details", new { sortOrder = "spec_desc" })
+            </th>
+            <th>
+                @Html.ActionLink("Accessibility Score", "Details", new { sortOrder = "access_desc" })
+            </th>
+            <th>
+                @Html.ActionLink("Structure Score", "Details", new { sortOrder = "struct_desc" })
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Designs)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rank)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sequence)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TemperatureScore)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SpecificityScore)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AccessibilityScore)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StructureScore)
+            </td>
+            <td>
+                <a asp-controller="Designs" asp-action="Details" asp-route-id="@item.Id">Details</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+<div>
+    @if (Model.JobState == JobState.New || Model.JobState == JobState.Started)
+    {
+        <a asp-action="Delete" asp-route-id="@Model.Id">Cancel</a> @:|
+    }
+    <a asp-action="Index">Back to List</a>
+</div>

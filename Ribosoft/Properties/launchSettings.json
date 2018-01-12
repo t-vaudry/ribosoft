@@ -14,7 +14,8 @@
       "launchUrl": "https://localhost:44389/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "use64Bit": true
     },
     "Ribosoft": {
       "commandName": "Project",
