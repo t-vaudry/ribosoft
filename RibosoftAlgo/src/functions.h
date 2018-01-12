@@ -18,6 +18,8 @@ struct fold_output {
 
 extern "C" DLL_PUBLIC int math_add(int a, int b);
 
+extern "C" DLL_PUBLIC R_STATUS anneal(const char* sequence, const char* structure, float na_concentration, float& temp);
+
 extern "C" DLL_PUBLIC R_STATUS validate_sequence(const char* sequence);
 extern "C" DLL_PUBLIC R_STATUS validate_structure(const char* structure);
 

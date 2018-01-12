@@ -23,6 +23,7 @@ enum R_APPLICATION_ERROR : R_STATUS {
     R_STRUCT_LENGTH_DIFFER      =    -6,
     R_OUT_OF_RANGE              =    -7,
     R_INVALID_TEMPLATE_LENGTH   =    -8,
+    R_INVALID_CONCENTRATION     =    -9,
     R_APPLICATION_ERROR_LAST    =  -999,
 };
 
