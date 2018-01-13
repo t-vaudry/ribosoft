@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using System;
+using System.Collections.Generic;
 
-namespace Ribosoft.Data.Migrations
+namespace Ribosoft.Data.Migrations.NpgsqlMigrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -23,20 +21,6 @@ namespace Ribosoft.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserTokens",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(nullable: false),
-                    LoginProvider = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
-                    Value = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
                 });
 
             migrationBuilder.CreateTable(
@@ -65,11 +49,26 @@ namespace Ribosoft.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Ribozymes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    CreatedAt = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    UpdatedAt = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ribozymes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true),
                     RoleId = table.Column<string>(nullable: false)
@@ -90,7 +89,7 @@ namespace Ribosoft.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true),
                     UserId = table.Column<string>(nullable: false)
@@ -150,15 +149,122 @@ namespace Ribosoft.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "RoleNameIndex",
-                table: "AspNetRoles",
-                column: "NormalizedName");
+            migrationBuilder.CreateTable(
+                name: "AspNetUserTokens",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(nullable: false),
+                    LoginProvider = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    Value = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Jobs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    CreatedAt = table.Column<DateTime>(nullable: true),
+                    HangfireJobId = table.Column<string>(nullable: true),
+                    JobState = table.Column<int>(nullable: false),
+                    OwnerId = table.Column<string>(nullable: true),
+                    RNAInput = table.Column<string>(nullable: true),
+                    RibozymeId = table.Column<int>(nullable: false),
+                    StatusMessage = table.Column<string>(nullable: true),
+                    UpdatedAt = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Jobs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Jobs_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Jobs_Ribozymes_RibozymeId",
+                        column: x => x.RibozymeId,
+                        principalTable: "Ribozymes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RibozymeStructures",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    CreatedAt = table.Column<DateTime>(nullable: true),
+                    Cutsite = table.Column<int>(nullable: false),
+                    PostProcess = table.Column<bool>(nullable: false),
+                    RibozymeId = table.Column<int>(nullable: false),
+                    Sequence = table.Column<string>(nullable: true),
+                    Structure = table.Column<string>(nullable: true),
+                    SubstrateStructure = table.Column<string>(nullable: true),
+                    SubstrateTemplate = table.Column<string>(nullable: true),
+                    UpdatedAt = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RibozymeStructures", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RibozymeStructures_Ribozymes_RibozymeId",
+                        column: x => x.RibozymeId,
+                        principalTable: "Ribozymes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Designs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    AccessibilityScore = table.Column<float>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: true),
+                    JobId = table.Column<int>(nullable: false),
+                    Rank = table.Column<int>(nullable: false),
+                    Sequence = table.Column<string>(nullable: true),
+                    SpecificityScore = table.Column<float>(nullable: true),
+                    StructureScore = table.Column<float>(nullable: true),
+                    TemperatureScore = table.Column<float>(nullable: true),
+                    UpdatedAt = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Designs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Designs_Jobs_JobId",
+                        column: x => x.JobId,
+                        principalTable: "Jobs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "RoleNameIndex",
+                table: "AspNetRoles",
+                column: "NormalizedName",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -176,11 +282,6 @@ namespace Ribosoft.Data.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserRoles_UserId",
-                table: "AspNetUserRoles",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
@@ -190,6 +291,26 @@ namespace Ribosoft.Data.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Designs_JobId",
+                table: "Designs",
+                column: "JobId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Jobs_OwnerId",
+                table: "Jobs",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Jobs_RibozymeId",
+                table: "Jobs",
+                column: "RibozymeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RibozymeStructures_RibozymeId",
+                table: "RibozymeStructures",
+                column: "RibozymeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -210,10 +331,22 @@ namespace Ribosoft.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Designs");
+
+            migrationBuilder.DropTable(
+                name: "RibozymeStructures");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Jobs");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Ribozymes");
         }
     }
 }

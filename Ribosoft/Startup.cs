@@ -30,22 +30,31 @@ namespace Ribosoft
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var entityFrameworkProvider = Configuration.GetValue<string>("EntityFrameworkProvider", "SqlServer");
-            var defaultConnectionString = Configuration.GetConnectionString("DefaultConnection");
+            var providerName = Configuration.GetValue("EntityFrameworkProvider", "SqlServer");
+            var connectionString = Configuration.GetConnectionString($"{providerName}Connection");
 
-            if (entityFrameworkProvider == "Npgsql")
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new ArgumentException("Connection string cannot be empty.");
+            }
+
+            if (providerName == "Npgsql")
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseNpgsql(defaultConnectionString));
+                    options.UseNpgsql(connectionString));
 
-                services.AddHangfire(x => x.UsePostgreSqlStorage(defaultConnectionString));
+                services.AddHangfire(x => x.UsePostgreSqlStorage(connectionString));
+            }
+            else if (providerName == "SqlServer")
+            {
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(connectionString));
+
+                services.AddHangfire(x => x.UseSqlServerStorage(connectionString));
             }
             else
             {
-                services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(defaultConnectionString));
-
-                services.AddHangfire(x => x.UseSqlServerStorage(defaultConnectionString));
+                throw new ArgumentException("Entity Framework provider not supported (use SqlServer or Npgsql).");
             }
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
