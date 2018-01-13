@@ -9,13 +9,12 @@ using Ribosoft.Data;
 using Ribosoft.Models;
 using System;
 
-namespace Ribosoft.Data.Migrations
+namespace Ribosoft.Data.Migrations.SqlServerMigrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180106092108_AddJobStatus")]
-    partial class AddJobStatus
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -222,6 +221,12 @@ namespace Ribosoft.Data.Migrations
 
                     b.Property<int>("JobState");
 
+                    b.Property<float?>("Mg");
+
+                    b.Property<float?>("Na");
+
+                    b.Property<float?>("Oligomer");
+
                     b.Property<string>("OwnerId");
 
                     b.Property<string>("RNAInput");
@@ -229,6 +234,8 @@ namespace Ribosoft.Data.Migrations
                     b.Property<int>("RibozymeId");
 
                     b.Property<string>("StatusMessage");
+
+                    b.Property<float?>("Temperature");
 
                     b.Property<DateTime?>("UpdatedAt");
 

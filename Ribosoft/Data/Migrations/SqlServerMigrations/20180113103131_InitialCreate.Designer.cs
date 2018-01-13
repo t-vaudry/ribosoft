@@ -9,11 +9,11 @@ using Ribosoft.Data;
 using Ribosoft.Models;
 using System;
 
-namespace Ribosoft.Data.Migrations
+namespace Ribosoft.Data.Migrations.SqlServerMigrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180104075048_HangfireJobId")]
-    partial class HangfireJobId
+    [Migration("20180113103131_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -196,7 +196,7 @@ namespace Ribosoft.Data.Migrations
 
                     b.Property<string>("Sequence");
 
-                    b.Property<float?>("SpecializationScore");
+                    b.Property<float?>("SpecificityScore");
 
                     b.Property<float?>("StructureScore");
 
@@ -227,6 +227,8 @@ namespace Ribosoft.Data.Migrations
                     b.Property<string>("RNAInput");
 
                     b.Property<int>("RibozymeId");
+
+                    b.Property<string>("StatusMessage");
 
                     b.Property<DateTime?>("UpdatedAt");
 
