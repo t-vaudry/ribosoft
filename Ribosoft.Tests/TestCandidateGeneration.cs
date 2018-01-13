@@ -16,8 +16,8 @@ namespace Ribosoft.Tests
                 "987654..3210",
                 "AUUGCAGUAUAAAGCCU");
 
-            Assert.Equal(1, candidateGenerator.SequencesToSend.Count);
-            Assert.Equal("CGUGGUUAGGGCCACGUUAAAUAGUUAUUUAAGCCCUAAGCGUGCAAU", candidateGenerator.SequencesToSend[0].GetString());
+            Assert.Single(candidateGenerator.Candidates);
+            Assert.Equal("CGUGGUUAGGGCCACGUUAAAUAGUUAUUUAAGCCCUAAGCGUGCAAU", candidateGenerator.Candidates[0].Sequence.GetString());
         }
 
         [Fact]
@@ -116,7 +116,7 @@ namespace Ribosoft.Tests
         {
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
-            Exception ex = Assert.Throws<CandidateGeneration.CandidateGenerationException>(() => candidateGenerator.GenerateCandidates(
+            Exception ex = Assert.Throws<RibosoftException>(() => candidateGenerator.GenerateCandidates(
                 "QGUGGUUAGGGCCACGUUAAAUAGNNNNUUAAGCCCUAAGCGNNNNNN",
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
@@ -165,11 +165,15 @@ namespace Ribosoft.Tests
                 "0..",
                 "AGUAGUCGUGGUUGU");
 
-            Assert.Equal(4, candidateGenerator.SequencesToSend.Count);
-            Assert.Equal("U", candidateGenerator.SequencesToSend[0].GetString());
-            Assert.Equal("G", candidateGenerator.SequencesToSend[1].GetString());
-            Assert.Equal("C", candidateGenerator.SequencesToSend[2].GetString());
-            Assert.Equal("A", candidateGenerator.SequencesToSend[3].GetString());
+            Assert.Equal(4, candidateGenerator.Candidates.Count);
+            Assert.Equal("U", candidateGenerator.Candidates[0].Sequence.GetString());
+            Assert.Equal("G", candidateGenerator.Candidates[1].Sequence.GetString());
+            Assert.Equal("C", candidateGenerator.Candidates[2].Sequence.GetString());
+            Assert.Equal("A", candidateGenerator.Candidates[3].Sequence.GetString());
+
+            Assert.Equal(2, candidateGenerator.Candidates[0].CutsiteIndices.Count);
+            Assert.Equal(0, candidateGenerator.Candidates[0].CutsiteIndices[0]);
+            Assert.Equal(3, candidateGenerator.Candidates[0].CutsiteIndices[1]);
         }
 
         [Fact]
@@ -183,9 +187,9 @@ namespace Ribosoft.Tests
                 "........",
                 "UAUACGGCAUUGCAGUAUAAAGCCU");
 
-            Assert.Equal(2, candidateGenerator.SequencesToSend.Count);
-            Assert.Equal("CG", candidateGenerator.SequencesToSend[0].GetString());
-            Assert.Equal("UA", candidateGenerator.SequencesToSend[1].GetString());
+            Assert.Equal(2, candidateGenerator.Candidates.Count);
+            Assert.Equal("CG", candidateGenerator.Candidates[0].Sequence.GetString());
+            Assert.Equal("UA", candidateGenerator.Candidates[1].Sequence.GetString());
         }
     }
 }

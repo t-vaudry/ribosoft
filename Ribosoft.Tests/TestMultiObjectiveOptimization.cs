@@ -14,12 +14,14 @@ namespace Ribosoft.Tests
             float[] first = { 1.0f, 1.0f };
             float[] second = { 1.0f, 1.0f };
 
-            MultiObjectiveOptimization.Candidate one = new MultiObjectiveOptimization.Candidate(first);
-            MultiObjectiveOptimization.Candidate two = new MultiObjectiveOptimization.Candidate(second);
+            Candidate one = new Candidate { FitnessValues = first };
+            Candidate two = new Candidate { FitnessValues = second };
 
-            List<MultiObjectiveOptimization.Candidate> candidates = new List<MultiObjectiveOptimization.Candidate>();
-            candidates.Add(one);
-            candidates.Add(two);
+            List<Candidate> candidates = new List<Candidate>
+            {
+                one,
+                two
+            };
 
             multiObjectiveOptimizer.Optimize(candidates, 1);
 
@@ -35,12 +37,14 @@ namespace Ribosoft.Tests
             float[] first = { 1.0f, 1.0f };
             float[] second = { 1.05f, 1.0f };
 
-            MultiObjectiveOptimization.Candidate one = new MultiObjectiveOptimization.Candidate(first);
-            MultiObjectiveOptimization.Candidate two = new MultiObjectiveOptimization.Candidate(second);
+            Candidate one = new Candidate { FitnessValues = first };
+            Candidate two = new Candidate { FitnessValues = second };
 
-            List<MultiObjectiveOptimization.Candidate> candidates = new List<MultiObjectiveOptimization.Candidate>();
-            candidates.Add(one);
-            candidates.Add(two);
+            List<Candidate> candidates = new List<Candidate>
+            {
+                one,
+                two
+            };
 
             multiObjectiveOptimizer.Optimize(candidates, 1);
 
@@ -56,12 +60,14 @@ namespace Ribosoft.Tests
             float[] first = { 1.0f, 1.0f };
             float[] second = { 2.0f, 2.0f };
 
-            MultiObjectiveOptimization.Candidate one = new MultiObjectiveOptimization.Candidate(first);
-            MultiObjectiveOptimization.Candidate two = new MultiObjectiveOptimization.Candidate(second);
+            Candidate one = new Candidate { FitnessValues = first };
+            Candidate two = new Candidate { FitnessValues = second };
 
-            List<MultiObjectiveOptimization.Candidate> candidates = new List<MultiObjectiveOptimization.Candidate>();
-            candidates.Add(one);
-            candidates.Add(two);
+            List<Candidate> candidates = new List<Candidate>
+            {
+                one,
+                two
+            };
 
             multiObjectiveOptimizer.Optimize(candidates, 1);
 
@@ -77,12 +83,14 @@ namespace Ribosoft.Tests
             float[] first = { 1.0f, 1.0f, 1.0f };
             float[] second = { 2.0f, 2.0f, 2.0f };
 
-            MultiObjectiveOptimization.Candidate one = new MultiObjectiveOptimization.Candidate(first);
-            MultiObjectiveOptimization.Candidate two = new MultiObjectiveOptimization.Candidate(second);
+            Candidate one = new Candidate { FitnessValues = first };
+            Candidate two = new Candidate { FitnessValues = second };
 
-            List<MultiObjectiveOptimization.Candidate> candidates = new List<MultiObjectiveOptimization.Candidate>();
-            candidates.Add(one);
-            candidates.Add(two);
+            List<Candidate> candidates = new List<Candidate>
+            {
+                one,
+                two
+            };
 
             multiObjectiveOptimizer.Optimize(candidates, 1);
 
@@ -98,12 +106,14 @@ namespace Ribosoft.Tests
             float[] first = { 1.0f, 1.0f, 1.0f, 1.0f };
             float[] second = { 2.0f, 2.0f, 2.0f, 2.0f };
 
-            MultiObjectiveOptimization.Candidate one = new MultiObjectiveOptimization.Candidate(first);
-            MultiObjectiveOptimization.Candidate two = new MultiObjectiveOptimization.Candidate(second);
+            Candidate one = new Candidate { FitnessValues = first };
+            Candidate two = new Candidate { FitnessValues = second };
 
-            List<MultiObjectiveOptimization.Candidate> candidates = new List<MultiObjectiveOptimization.Candidate>();
-            candidates.Add(one);
-            candidates.Add(two);
+            List<Candidate> candidates = new List<Candidate>
+            {
+                one,
+                two
+            };
 
             multiObjectiveOptimizer.Optimize(candidates, 1);
 
@@ -120,20 +130,22 @@ namespace Ribosoft.Tests
             float[] second = { 2.0f, 2.0f, 2.0f };
             float[] third = { 3.0f, 2.0f };
 
-            MultiObjectiveOptimization.Candidate one = new MultiObjectiveOptimization.Candidate(first);
-            MultiObjectiveOptimization.Candidate two = new MultiObjectiveOptimization.Candidate(second);
-            MultiObjectiveOptimization.Candidate three = new MultiObjectiveOptimization.Candidate(third);
+            Candidate one = new Candidate { FitnessValues = first };
+            Candidate two = new Candidate { FitnessValues = second };
+            Candidate three = new Candidate { FitnessValues = third };
 
-            List<MultiObjectiveOptimization.Candidate> candidates = new List<MultiObjectiveOptimization.Candidate>();
-            candidates.Add(one);
-            candidates.Add(two);
-            candidates.Add(three);
+            List<Candidate> candidates = new List<Candidate>
+            {
+                one,
+                two,
+                three
+            };
 
             try {
                 multiObjectiveOptimizer.Optimize(candidates, 1);
             } catch (MultiObjectiveOptimization.MultiObjectiveOptimizationException Exception) {
-                Assert.Equal(Exception.Code, R_STATUS.R_FITNESS_VALUE_LENGTHS_DIFFER);
-                Assert.Equal(Exception.Message, "Candidates have different number of fitness values!");
+                Assert.Equal(R_STATUS.R_FITNESS_VALUE_LENGTHS_DIFFER, Exception.Code);
+                Assert.Equal("Candidates have different number of fitness values!", Exception.Message);
             }
         }
 
@@ -143,10 +155,10 @@ namespace Ribosoft.Tests
             MultiObjectiveOptimization.MultiObjectiveOptimizer multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
 
             try {
-                multiObjectiveOptimizer.Optimize(new List<MultiObjectiveOptimization.Candidate>(), 1);
+                multiObjectiveOptimizer.Optimize(new List<Candidate>(), 1);
             } catch (MultiObjectiveOptimization.MultiObjectiveOptimizationException Exception) {
-                Assert.Equal(Exception.Code, R_STATUS.R_EMPTY_CANDIDATE_LIST);
-                Assert.Equal(Exception.Message, "List of Candidates is empty!");
+                Assert.Equal(R_STATUS.R_EMPTY_CANDIDATE_LIST, Exception.Code);
+                Assert.Equal("List of Candidates is empty!", Exception.Message);
             }
         }
     }

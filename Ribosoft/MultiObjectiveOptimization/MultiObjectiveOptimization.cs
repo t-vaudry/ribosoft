@@ -28,10 +28,10 @@ namespace Ribosoft.MultiObjectiveOptimization {
             // List for the current rank
             List<Candidate> frontCandidates = new List<Candidate>();
 
-            foreach (Candidate victim in candidates) {
+            foreach (Candidate victim in candidates.Where(candidate => !candidate.IsRanked)) {
                 bool dominated = false;
 
-                foreach (Candidate dominator in candidates.Where(candidate => candidate != victim)) {
+                foreach (Candidate dominator in candidates.Where(candidate => candidate != victim && !candidate.IsRanked)) {
                     // Check for dominance, and break if candidate is dominated
                     if (ParetoDominate(victim, dominator)) {
                         dominated = true;
@@ -50,18 +50,21 @@ namespace Ribosoft.MultiObjectiveOptimization {
             if (frontCandidates.Count != 0) {
                 foreach (Candidate rankedCandidate in frontCandidates) {
                     rankedCandidate.Rank = rank;
-                    candidates.Remove(rankedCandidate);
+                    rankedCandidate.IsRanked = true;
                 }
             } else {
                 foreach (Candidate candidate in candidates) {
                     candidate.Rank = rank;
+                    candidate.IsRanked = true;
                 }
-
-                candidates.Clear();
             }
 
             // Recursively call function to continue ranking
-            if (candidates.Count != 0) {
+            int count = 0;
+            foreach (Candidate candidate in candidates.Where(candidate => !candidate.IsRanked)) {
+                count++;
+            }
+            if (count != 0) {
                 rank++;
                 Optimize(candidates, rank);
             }

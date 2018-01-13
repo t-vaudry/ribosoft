@@ -16,7 +16,7 @@ namespace Ribosoft.CandidateGeneration
         //Holds the index equivalencies of bonding ribozyme/substrate pairs
         public List<Tuple<int, int>> RibozymeSubstrateIndexPairs { get; set; }
 
-        public List<Sequence> SequencesToSend { get; set; }
+        public List<Candidate> Candidates { get; set; }
 
         public String InputRNASequence { get; set; }
 
@@ -32,7 +32,7 @@ namespace Ribosoft.CandidateGeneration
             Sequences = new List<Sequence>();
             SubstrateSequences = new List<Sequence>();
             RibozymeSubstrateIndexPairs = new List<Tuple<int, int>>();
-            SequencesToSend = new List<Sequence>();
+            Candidates = new List<Candidate>();
             NodesAtDepthSequence = new List<List<Node>>();
             NodesAtDepthCutSite = new List<List<Node>>();
             OpenBondIndices = new Stack<int>();
@@ -403,7 +403,7 @@ namespace Ribosoft.CandidateGeneration
                     //If all target elements can successfully bond, add this sequence to the list
                     if (success)
                     {
-                        SequencesToSend.Add(newSequence);
+                        Candidates.Add(new Candidate { Sequence = newSequence, CutsiteIndices = AllIndicesOf(InputRNASequence, substrate.GetString()) });
                     }
                     //Else, do nothing: this ribozyme sequence cannot bond with the substrate
                 }
@@ -415,6 +415,26 @@ namespace Ribosoft.CandidateGeneration
             return ((b >= 'a' && b <= 'z') ||
                         (b >= 'A' && b <= 'Z') ||
                         (b >= '0' && b <= '9'));
+        }
+
+        public static List<int> AllIndicesOf(string str, string value)
+        {
+            if (String.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException("the string to find may not be empty", "value");
+            }
+
+            List<int> indices = new List<int>();
+            for (int index = 0; ; index += value.Length)
+            {
+                index = str.IndexOf(value, index);
+                if (index == -1)
+                {
+                    return indices;
+                }
+                    
+                indices.Add(index);
+            }
         }
     }
 }
