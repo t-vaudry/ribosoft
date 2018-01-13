@@ -1,7 +1,7 @@
 #include "dll.h"
 
 #define RIBOSOFT_NAMESPACE_START namespace ribosoft {
-#define RIBOSOFT_NAMESPACE_END   }   
+#define RIBOSOFT_NAMESPACE_END   }
 
 RIBOSOFT_NAMESPACE_START
 
@@ -23,6 +23,7 @@ enum R_APPLICATION_ERROR : R_STATUS {
     R_STRUCT_LENGTH_DIFFER      =    -6,
     R_OUT_OF_RANGE              =    -7,
     R_INVALID_TEMPLATE_LENGTH   =    -8,
+    R_INVALID_CONCENTRATION     =    -9,
     R_APPLICATION_ERROR_LAST    =  -999,
 };
 

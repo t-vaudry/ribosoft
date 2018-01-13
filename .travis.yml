@@ -48,7 +48,7 @@ script:
   - cd $TRAVIS_BUILD_DIR
   - dotnet restore Ribosoft.sln
   - dotnet build Ribosoft.sln
-  - cd Ribosoft; dotnet ef database update; cd - > /dev/null
+  - cd Ribosoft; dotnet ef database update -c NpgsqlDbContext; cd - > /dev/null
   - dotnet test Ribosoft.Tests
 
 deploy:
