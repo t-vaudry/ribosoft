@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ribosoft.CandidateGeneration
+namespace Ribosoft
 {
     public class Nucleotide
     {
@@ -106,7 +106,7 @@ namespace Ribosoft.CandidateGeneration
                 case '-': //For nucleotides that will be set later
                     break;
                 default:
-                    throw new CandidateGenerationException(String.Format("Invalid nucleotide base {0} was provided.", Symbol));
+                    throw new RibosoftException(R_STATUS.R_INVALID_NUCLEOTIDE, String.Format("Invalid nucleotide base {0} was provided.", Symbol));
             }
         }
 
@@ -123,7 +123,7 @@ namespace Ribosoft.CandidateGeneration
                 case 'C':
                     return 'G';
                 default:
-                    throw new CandidateGenerationException(String.Format("Cannot get complement of invalid symbol {0}", Symbol));
+                    throw new RibosoftException(R_STATUS.R_INVALID_NUCLEOTIDE, String.Format("Cannot get complement of invalid symbol {0}", Symbol));
             }
         }
     }
