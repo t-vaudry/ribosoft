@@ -26,7 +26,6 @@ namespace Ribosoft.Models
         public string OwnerId { get; set; }
         [Display(Name = "Job State")]
         public JobState JobState { get; set; }
-
         public int RibozymeId { get; set; }
         [Display(Name = "RNA Input")]
         public string RNAInput { get; set; }
