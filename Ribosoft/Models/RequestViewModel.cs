@@ -10,7 +10,7 @@ namespace Ribosoft.Models
     {
         [Required]
         [Display(Name = "Ribozyme Structure:")]
-        public string RibozymeStructure { get; set; }
+        public int RibozymeStructure { get; set; }
 
         [Required]
         [RegularExpression(@"^['A','C','G','U','R','Y','K','M','S','W','B','D','H','V','N']+$", 
