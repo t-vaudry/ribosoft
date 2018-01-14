@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace Ribosoft.Data.Migrations
+namespace Ribosoft.Data.Migrations.NpgsqlMigrations
 {
-    public partial class AddJobParameters : Migration
+    public partial class AddJobParams : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
