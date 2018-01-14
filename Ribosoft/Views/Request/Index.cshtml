@@ -16,8 +16,9 @@
                 <div class="form-group">
                     <!-- TODO: Redo and populate from C# not JS -->
                     <label asp-for="RibozymeStructure"></label>
-                    <select asp-for="RibozymeStructure" id="ribo-type" class="form-control">
-                        <option v-for="ribozyme in ribozymes">{{ ribozyme }}</option>
+                    <select asp-for="RibozymeStructure"
+                            asp-items="ViewBag.Ribozymes"
+                            class="form-control">
                     </select>
                     <span asp-validation-for="RibozymeStructure" class="text-danger"></span>
                 </div>
@@ -136,7 +137,7 @@
         </div>
 
         <!-- Potential Cut Sites -->
-        <div class="panel panel-default">
+        <!-- <div class="panel panel-default">
             <div class="panel-heading" v-on:click="expand('cutSiteTitle', 'cutSiteBody')">
                 <h3 id="cutSiteTitle" class="panel-title collapsed">Potential Cut Sites</h3>
             </div>
@@ -148,7 +149,7 @@
                     </select>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Specificity -->
         <div class="panel panel-default">
