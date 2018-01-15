@@ -221,6 +221,12 @@ namespace Ribosoft.Data.Migrations.SqlServerMigrations
 
                     b.Property<int>("JobState");
 
+                    b.Property<float?>("Mg");
+
+                    b.Property<float?>("Na");
+
+                    b.Property<float?>("Oligomer");
+
                     b.Property<string>("OwnerId");
 
                     b.Property<string>("RNAInput");
@@ -228,6 +234,8 @@ namespace Ribosoft.Data.Migrations.SqlServerMigrations
                     b.Property<int>("RibozymeId");
 
                     b.Property<string>("StatusMessage");
+
+                    b.Property<float?>("Temperature");
 
                     b.Property<DateTime?>("UpdatedAt");
 

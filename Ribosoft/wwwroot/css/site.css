@@ -1,11 +1,8 @@
-﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
-}
-
-/* Wrapping element */
+﻿/* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {
+    padding-top: 50px;
+    padding-bottom: 20px;
     padding-left: 15px;
     padding-right: 15px;
 }
@@ -32,4 +29,45 @@
     .carousel-caption {
         display: none;
     }
+}
+
+.text-vertical-center {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+/* Landing page elements */
+.landing-page {
+    height: 100vh;
+    width: 100vw;
+    background-image: url("../images/concordia-1.jpg");
+    color: white;
+}
+
+.landing-page h1 {
+    font-size: 5em;
+}
+
+.landing-page h2 {
+    font-size: 3em;
+}
+
+.landing-page .btn {
+    font-size: 1.5em;
+    padding: 10px;
+    margin: 5px;
+    border-color: white;
+}
+
+/* Request design form panels */
+.panel h3:after {
+    font-family:'Glyphicons Halflings';
+    content:"\e114";
+    float: right;
+    color: grey;
+}
+
+.panel-heading h3.collapsed:after {
+    content:"\e080";
 }
