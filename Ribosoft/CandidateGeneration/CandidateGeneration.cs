@@ -16,8 +16,6 @@ namespace Ribosoft.CandidateGeneration
         //Holds the index equivalencies of bonding ribozyme/substrate pairs
         public List<Tuple<int, int>> RibozymeSubstrateIndexPairs { get; set; }
 
-        public List<Candidate> Candidates { get; set; }
-
         public String InputRNASequence { get; set; }
 
         private List<List<Node>> NodesAtDepthSequence;
@@ -32,14 +30,13 @@ namespace Ribosoft.CandidateGeneration
             Sequences = new List<Sequence>();
             SubstrateSequences = new List<Sequence>();
             RibozymeSubstrateIndexPairs = new List<Tuple<int, int>>();
-            Candidates = new List<Candidate>();
             NodesAtDepthSequence = new List<List<Node>>();
             NodesAtDepthCutSite = new List<List<Node>>();
             OpenBondIndices = new Stack<int>();
             OpenPseudoKnotIndices = new Stack<int>();
         }
 
-        public void GenerateCandidates(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
+        public void GenerateCandidates(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput, /*out*/ List<Candidate> candidates)
         {
             //*********************
             //
@@ -97,7 +94,7 @@ namespace Ribosoft.CandidateGeneration
             //6- Finish generating sequences based on cut sites and create list of all permutations of sequences + accepted cut sites
             //*********************
 
-            CompleteSequencesWithCutSiteInfo();
+            CompleteSequencesWithCutSiteInfo(candidates);
 
             //Console.WriteLine("Amount of sequences (no cut site): {0}", Sequences.Count);
             //Console.WriteLine("Amount of sequences to send: {0}", SequencesToSend.Count);
@@ -338,7 +335,7 @@ namespace Ribosoft.CandidateGeneration
             InputRNASequence = rnaInput;
         }
 
-        public void CompleteSequencesWithCutSiteInfo()
+        public void CompleteSequencesWithCutSiteInfo(List<Candidate> candidates)
         {
             //First, build the mapping between substrate and ribozyme
             for (int i = 0; i < Ribozyme.SubstrateStructure.Length; i++)
@@ -403,7 +400,7 @@ namespace Ribosoft.CandidateGeneration
                     //If all target elements can successfully bond, add this sequence to the list
                     if (success)
                     {
-                        Candidates.Add(new Candidate { Sequence = newSequence, CutsiteIndices = AllIndicesOf(InputRNASequence, substrate.GetString()) });
+                        candidates.Add(new Candidate { Sequence = newSequence, CutsiteIndices = AllIndicesOf(InputRNASequence, substrate.GetString()) });
                     }
                     //Else, do nothing: this ribozyme sequence cannot bond with the substrate
                 }
