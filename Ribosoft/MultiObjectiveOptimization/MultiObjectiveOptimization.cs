@@ -18,20 +18,22 @@ namespace Ribosoft.MultiObjectiveOptimization {
         ** are ranked, and removed from the list. This happens
         ** recursively until there are no more candidates to rank.
         */
-        public void Optimize(List<Candidate> candidates, int rank)
+        public IList<Candidate> Optimize(List<Candidate> candidates, int rank)
         {
             // If candidates are empty, return
             if (candidates.Count == 0) {
                 throw new MultiObjectiveOptimizationException(R_STATUS.R_EMPTY_CANDIDATE_LIST, "List of Candidates is empty!");
             }
 
+            List<Candidate> rankedCandidates = new List<Candidate>();
+
             // List for the current rank
             List<Candidate> frontCandidates = new List<Candidate>();
 
-            foreach (Candidate victim in candidates.Where(candidate => !candidate.IsRanked)) {
+            foreach (Candidate victim in candidates) {
                 bool dominated = false;
 
-                foreach (Candidate dominator in candidates.Where(candidate => candidate != victim && !candidate.IsRanked)) {
+                foreach (Candidate dominator in candidates.Where(candidate => candidate != victim)) {
                     // Check for dominance, and break if candidate is dominated
                     if (ParetoDominate(victim, dominator)) {
                         dominated = true;
@@ -50,24 +52,24 @@ namespace Ribosoft.MultiObjectiveOptimization {
             if (frontCandidates.Count != 0) {
                 foreach (Candidate rankedCandidate in frontCandidates) {
                     rankedCandidate.Rank = rank;
-                    rankedCandidate.IsRanked = true;
+                    rankedCandidates.Add(rankedCandidate);
+                    candidates.Remove(rankedCandidate);
                 }
             } else {
                 foreach (Candidate candidate in candidates) {
                     candidate.Rank = rank;
-                    candidate.IsRanked = true;
+                    rankedCandidates.Add(candidate);
+                    candidates.Remove(candidate);
                 }
             }
 
             // Recursively call function to continue ranking
-            int count = 0;
-            foreach (Candidate candidate in candidates.Where(candidate => !candidate.IsRanked)) {
-                count++;
-            }
-            if (count != 0) {
+            if (candidates.Count != 0) {
                 rank++;
-                Optimize(candidates, rank);
+                rankedCandidates.AddRange(Optimize(candidates, rank));
             }
+
+            return rankedCandidates;
         }
 
         /* Pareto Dominance

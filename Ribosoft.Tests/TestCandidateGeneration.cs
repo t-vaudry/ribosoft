@@ -9,15 +9,13 @@ namespace Ribosoft.Tests
         [Fact]
         public void Generate_Candidates_Valid_Input()
         {
-            List<Candidate> candidates = new List<Candidate>();
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
-            candidateGenerator.GenerateCandidates(
+            var candidates = candidateGenerator.GenerateCandidates(
                 "CGUGGUUAGGGCCACGUUAAAUAGNNNNUUAAGCCCUAAGCGNNNNNN",
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU",
-                candidates);
+                "AUUGCAGUAUAAAGCCU");
 
             Assert.Single(candidates);
             Assert.Equal("CGUGGUUAGGGCCACGUUAAAUAGUUAUUUAAGCCCUAAGCGUGCAAU", candidates[0].Sequence.GetString());
@@ -26,7 +24,6 @@ namespace Ribosoft.Tests
         [Fact]
         public void Generate_Candidates_Unequal_Ribozyme_Length()
         {
-            List<Candidate> candidates = new List<Candidate>();
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
             Exception ex = Assert.Throws<CandidateGeneration.CandidateGenerationException>(() => candidateGenerator.GenerateCandidates(
@@ -34,8 +31,7 @@ namespace Ribosoft.Tests
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU",
-                candidates));
+                "AUUGCAGUAUAAAGCCU"));
 
             Assert.Equal("Ribozyme sequence length does not match ribozyme structure length.", ex.Message);
         }
@@ -43,7 +39,6 @@ namespace Ribosoft.Tests
         [Fact]
         public void Generate_Candidates_Unequal_Substrate_Length()
         {
-            List<Candidate> candidates = new List<Candidate>();
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
             Exception ex = Assert.Throws<CandidateGeneration.CandidateGenerationException>(() => candidateGenerator.GenerateCandidates(
@@ -51,8 +46,7 @@ namespace Ribosoft.Tests
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..321",
-                "AUUGCAGUAUAAAGCCU",
-                candidates));
+                "AUUGCAGUAUAAAGCCU"));
 
             Assert.Equal("Substrate sequence length does not match substrate structure length.", ex.Message);
         }
@@ -60,7 +54,6 @@ namespace Ribosoft.Tests
         [Fact]
         public void Generate_Candidates_Invalid_Ribozyme_Structure()
         {
-            List<Candidate> candidates = new List<Candidate>();
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
             Exception ex = Assert.Throws<CandidateGeneration.CandidateGenerationException>(() => candidateGenerator.GenerateCandidates(
@@ -68,8 +61,7 @@ namespace Ribosoft.Tests
                 "((((&[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU",
-                candidates));
+                "AUUGCAGUAUAAAGCCU"));
 
             Assert.Equal("Unrecognized structure symbol encountered.", ex.Message);
         }
@@ -77,7 +69,6 @@ namespace Ribosoft.Tests
         [Fact]
         public void Generate_Candidates_Invalid_Substrate_Structure()
         {
-            List<Candidate> candidates = new List<Candidate>();
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
             Exception ex = Assert.Throws<CandidateGeneration.CandidateGenerationException>(() => candidateGenerator.GenerateCandidates(
@@ -85,8 +76,7 @@ namespace Ribosoft.Tests
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654&.3210",
-                "AUUGCAGUAUAAAGCCU",
-                candidates));
+                "AUUGCAGUAUAAAGCCU"));
 
             Assert.Equal("Unexpected substrate structure character: &", ex.Message);
         }
@@ -94,7 +84,6 @@ namespace Ribosoft.Tests
         [Fact]
         public void Generate_Candidates_Unmatched_Substrate_Structure()
         {
-            List<Candidate> candidates = new List<Candidate>();
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
             Exception ex = Assert.Throws<CandidateGeneration.CandidateGenerationException>(() => candidateGenerator.GenerateCandidates(
@@ -102,8 +91,7 @@ namespace Ribosoft.Tests
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "a87654..3210",
-                "AUUGCAGUAUAAAGCCU",
-                candidates));
+                "AUUGCAGUAUAAAGCCU"));
 
             Assert.Equal("Substrate structure character not found in ribozyme structure: a", ex.Message);
         }
@@ -111,7 +99,6 @@ namespace Ribosoft.Tests
         [Fact]
         public void Generate_Candidates_Unmatched_Neighbour()
         {
-            List<Candidate> candidates = new List<Candidate>();
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
             Exception ex = Assert.Throws<AggregateException>(() => candidateGenerator.GenerateCandidates(
@@ -119,8 +106,7 @@ namespace Ribosoft.Tests
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU",
-                candidates));
+                "AUUGCAGUAUAAAGCCU"));
 
             Assert.Equal(typeof(CandidateGeneration.CandidateGenerationException), ex.InnerException.GetType());
             Assert.Equal("Neighbours don't match!", ex.InnerException.Message);
@@ -129,7 +115,6 @@ namespace Ribosoft.Tests
         [Fact]
         public void Generate_Candidates_Invalid_Nucleotide()
         {
-            List<Candidate> candidates = new List<Candidate>();
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
             Exception ex = Assert.Throws<RibosoftException>(() => candidateGenerator.GenerateCandidates(
@@ -137,8 +122,7 @@ namespace Ribosoft.Tests
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU",
-                candidates));
+                "AUUGCAGUAUAAAGCCU"));
 
             Assert.Equal("Invalid nucleotide base Q was provided.", ex.Message);
         }
@@ -146,7 +130,6 @@ namespace Ribosoft.Tests
         [Fact]
         public void Generate_Candidates_Unclosed_Bond()
         {
-            List<Candidate> candidates = new List<Candidate>();
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
             Exception ex = Assert.Throws<CandidateGeneration.CandidateGenerationException>(() => candidateGenerator.GenerateCandidates(
@@ -154,8 +137,7 @@ namespace Ribosoft.Tests
                 "((((.[[[[[[.))).........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU",
-                candidates));
+                "AUUGCAGUAUAAAGCCU"));
 
             Assert.Equal("Unclosed bond found '('. Input may be faulty.", ex.Message);
         }
@@ -163,7 +145,6 @@ namespace Ribosoft.Tests
         [Fact]
         public void Generate_Candidates_Unopened_Pseudoknot()
         {
-            List<Candidate> candidates = new List<Candidate>();
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
             Exception ex = Assert.Throws<InvalidOperationException>(() => candidateGenerator.GenerateCandidates(
@@ -171,22 +152,19 @@ namespace Ribosoft.Tests
                 "((((.[[[[[..))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU",
-                candidates));
+                "AUUGCAGUAUAAAGCCU"));
         }
 
         [Fact]
         public void Generate_Candidates_Multiple_Cutsites()
         {
-            List<Candidate> candidates = new List<Candidate>();
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
-            candidateGenerator.GenerateCandidates(
+            var candidates = candidateGenerator.GenerateCandidates(
                 "N",
                 "0",
                 "NGU",
                 "0..",
-                "AGUAGUCGUGGUUGU",
-                candidates);
+                "AGUAGUCGUGGUUGU");
 
             Assert.Equal(4, candidates.Count);
             Assert.Equal("U", candidates[0].Sequence.GetString());
@@ -202,15 +180,13 @@ namespace Ribosoft.Tests
         [Fact]
         public void Generate_Candidates_Variable_First_Neighbour()
         {
-            List<Candidate> candidates = new List<Candidate>();
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
-            candidateGenerator.GenerateCandidates(
+            var candidates = candidateGenerator.GenerateCandidates(
                 "NR",
                 "()",
                 "UAUACGGC",
                 "........",
-                "UAUACGGCAUUGCAGUAUAAAGCCU",
-                candidates);
+                "UAUACGGCAUUGCAGUAUAAAGCCU");
 
             Assert.Equal(2, candidates.Count);
             Assert.Equal("CG", candidates[0].Sequence.GetString());

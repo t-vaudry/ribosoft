@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using Ribosoft.Biology;
+
 namespace Ribosoft.CandidateGeneration
 {
     public class CandidateGenerator
@@ -36,7 +38,7 @@ namespace Ribosoft.CandidateGeneration
             OpenPseudoKnotIndices = new Stack<int>();
         }
 
-        public void GenerateCandidates(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput, /*out*/ List<Candidate> candidates)
+        public IList<Candidate> GenerateCandidates(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
         {
             //*********************
             //
@@ -94,7 +96,7 @@ namespace Ribosoft.CandidateGeneration
             //6- Finish generating sequences based on cut sites and create list of all permutations of sequences + accepted cut sites
             //*********************
 
-            CompleteSequencesWithCutSiteInfo(candidates);
+            return CompleteSequencesWithCutSiteInfo();
 
             //Console.WriteLine("Amount of sequences (no cut site): {0}", Sequences.Count);
             //Console.WriteLine("Amount of sequences to send: {0}", SequencesToSend.Count);
@@ -335,8 +337,10 @@ namespace Ribosoft.CandidateGeneration
             InputRNASequence = rnaInput;
         }
 
-        public void CompleteSequencesWithCutSiteInfo(List<Candidate> candidates)
+        public IList<Candidate> CompleteSequencesWithCutSiteInfo()
         {
+            List<Candidate> candidates = new List<Candidate>();
+
             //First, build the mapping between substrate and ribozyme
             for (int i = 0; i < Ribozyme.SubstrateStructure.Length; i++)
             {
@@ -405,6 +409,8 @@ namespace Ribosoft.CandidateGeneration
                     //Else, do nothing: this ribozyme sequence cannot bond with the substrate
                 }
             }
+
+            return candidates;
         }
 
         public bool IsTarget(char b)
