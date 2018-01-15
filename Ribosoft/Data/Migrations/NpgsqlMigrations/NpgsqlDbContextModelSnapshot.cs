@@ -9,18 +9,17 @@ using Ribosoft.Data;
 using Ribosoft.Models;
 using System;
 
-namespace Ribosoft.Data.Migrations
+namespace Ribosoft.Data.Migrations.NpgsqlMigrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180104055846_StructurePostProcess")]
-    partial class StructurePostProcess
+    [DbContext(typeof(NpgsqlDbContext))]
+    partial class NpgsqlDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
+                .HasAnnotation("ProductVersion", "2.0.1-rtm-125");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -40,8 +39,7 @@ namespace Ribosoft.Data.Migrations
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                        .HasName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
                 });
@@ -175,8 +173,7 @@ namespace Ribosoft.Data.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                        .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -196,7 +193,7 @@ namespace Ribosoft.Data.Migrations
 
                     b.Property<string>("Sequence");
 
-                    b.Property<float?>("SpecializationScore");
+                    b.Property<float?>("SpecificityScore");
 
                     b.Property<float?>("StructureScore");
 
@@ -218,6 +215,8 @@ namespace Ribosoft.Data.Migrations
 
                     b.Property<DateTime?>("CreatedAt");
 
+                    b.Property<string>("HangfireJobId");
+
                     b.Property<int>("JobState");
 
                     b.Property<string>("OwnerId");
@@ -225,6 +224,8 @@ namespace Ribosoft.Data.Migrations
                     b.Property<string>("RNAInput");
 
                     b.Property<int>("RibozymeId");
+
+                    b.Property<string>("StatusMessage");
 
                     b.Property<DateTime?>("UpdatedAt");
 
