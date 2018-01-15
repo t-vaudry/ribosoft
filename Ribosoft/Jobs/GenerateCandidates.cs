@@ -47,8 +47,12 @@ namespace Ribosoft.Jobs
 
             var ribozyme = job.Ribozyme;
 
+            List<Candidate> candidates = new List<Candidate>();
+
             foreach (var ribozymeStructure in ribozyme.RibozymeStructures)
             {
+                List<Candidate> current = new List<Candidate>();
+                
                 // Candidate Generation
                 try
                 {
@@ -57,7 +61,8 @@ namespace Ribosoft.Jobs
                         ribozymeStructure.Structure,
                         ribozymeStructure.SubstrateTemplate,
                         ribozymeStructure.SubstrateStructure,
-                        job.RNAInput);
+                        job.RNAInput,
+                        current);
                 }
                 catch (CandidateGeneration.CandidateGenerationException e)
                 {
@@ -76,12 +81,12 @@ namespace Ribosoft.Jobs
 
                 // TODO: fix ideal somewhere?
                 Regex pattern = new Regex(@"[^.^(^)]");
-                string ideal = pattern.Replace(ribozymeStructure.Structure, "."); 
+                string ideal = pattern.Replace(ribozymeStructure.Structure, ".");
 
                 // Algorithms
                 try
                 {
-                    foreach (var candidate in _candidateGenerator.Candidates)
+                    foreach (var candidate in current)
                     {
                         candidate.FitnessValues[0] = _ribosoftAlgo.Accessibility(candidate, job.RNAInput, ribozymeStructure.SubstrateTemplate, ribozymeStructure.Cutsite); // ACCESSIBILITY
                         candidate.FitnessValues[1] = 0.0f; // NO SPECIFICITY!
@@ -97,36 +102,38 @@ namespace Ribosoft.Jobs
                     return;
                 }
 
-                // Multi-Objective Optimization
-                try
-                {
-                    _multiObjectiveOptimizer.Optimize(
-                        _candidateGenerator.Candidates,
-                        1);
-                }
-                catch (MultiObjectiveOptimization.MultiObjectiveOptimizationException e)
-                {
-                    job.JobState = JobState.Errored;
-                    job.StatusMessage = e.Message;
-                    await _db.SaveChangesAsync();
-                    return;
-                }
+                candidates.AddRange(current);
+            }
 
-                cancellationToken.ThrowIfCancellationRequested();
+            // Multi-Objective Optimization
+            try
+            {
+                _multiObjectiveOptimizer.Optimize(
+                    candidates,
+                    1);
+            }
+            catch (MultiObjectiveOptimization.MultiObjectiveOptimizationException e)
+            {
+                job.JobState = JobState.Errored;
+                job.StatusMessage = e.Message;
+                await _db.SaveChangesAsync();
+                return;
+            }
 
-                foreach (var candidate in _candidateGenerator.Candidates)
+            cancellationToken.ThrowIfCancellationRequested();
+
+            foreach (var candidate in candidates)
+            {
+                var design = new Design
                 {
-                    var design = new Design
-                        {
-                            Sequence = candidate.Sequence.GetString(),
-                            Rank = candidate.Rank,
-                            AccessibilityScore = candidate.FitnessValues[0],
-                            SpecificityScore = candidate.FitnessValues[1],
-                            StructureScore = candidate.FitnessValues[2],
-                            TemperatureScore = candidate.FitnessValues[3]
-                        };
-                    job.Designs.Add(design);
-                }
+                    Sequence = candidate.Sequence.GetString(),
+                    Rank = candidate.Rank,
+                    AccessibilityScore = candidate.FitnessValues[0],
+                    SpecificityScore = candidate.FitnessValues[1],
+                    StructureScore = candidate.FitnessValues[2],
+                    TemperatureScore = candidate.FitnessValues[3]
+                };
+                job.Designs.Add(design);
             }
 
             cancellationToken.ThrowIfCancellationRequested();
