@@ -51,18 +51,16 @@ namespace Ribosoft.Jobs
 
             foreach (var ribozymeStructure in ribozyme.RibozymeStructures)
             {
-                List<Candidate> current = new List<Candidate>();
-                
+                IList<Candidate> current;
                 // Candidate Generation
                 try
                 {
-                    _candidateGenerator.GenerateCandidates(
+                    current = _candidateGenerator.GenerateCandidates(
                         ribozymeStructure.Sequence,
                         ribozymeStructure.Structure,
                         ribozymeStructure.SubstrateTemplate,
                         ribozymeStructure.SubstrateStructure,
-                        job.RNAInput,
-                        current);
+                        job.RNAInput);
                 }
                 catch (CandidateGeneration.CandidateGenerationException e)
                 {
@@ -88,6 +86,8 @@ namespace Ribosoft.Jobs
                 {
                     foreach (var candidate in current)
                     {
+                        cancellationToken.ThrowIfCancellationRequested();
+
                         candidate.FitnessValues[0] = _ribosoftAlgo.Accessibility(candidate, job.RNAInput, ribozymeStructure.SubstrateTemplate, ribozymeStructure.Cutsite); // ACCESSIBILITY
                         candidate.FitnessValues[1] = 0.0f; // NO SPECIFICITY!
                         candidate.FitnessValues[2] = _ribosoftAlgo.Structure(candidate, ideal); // STRUCTURE
@@ -106,11 +106,10 @@ namespace Ribosoft.Jobs
             }
 
             // Multi-Objective Optimization
+            IList<Candidate> rankedCandidates;
             try
             {
-                _multiObjectiveOptimizer.Optimize(
-                    candidates,
-                    1);
+                rankedCandidates = _multiObjectiveOptimizer.Optimize(candidates, 1);
             }
             catch (MultiObjectiveOptimization.MultiObjectiveOptimizationException e)
             {
@@ -122,12 +121,12 @@ namespace Ribosoft.Jobs
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            foreach (var candidate in candidates)
+            foreach (var candidate in rankedCandidates)
             {
                 var design = new Design
                 {
                     Sequence = candidate.Sequence.GetString(),
-                    Rank = candidate.Rank,
+                    Rank = candidate.Rank ?? default(int),
                     AccessibilityScore = candidate.FitnessValues[0],
                     SpecificityScore = candidate.FitnessValues[1],
                     StructureScore = candidate.FitnessValues[2],

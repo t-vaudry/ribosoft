@@ -72,13 +72,13 @@ namespace Ribosoft
             return accessibilityScore;
         }
 
-        public float Anneal(Candidate candidate, string sequence /*RNA target*/, string structure, float naConcentration)
+        public float Anneal(Candidate candidate, string targetSequence, string structure, float naConcentration)
         {
             float temperatureScore = 0.0f;
 
             foreach (var cutsiteIndex in candidate.CutsiteIndices)
             {
-                string subSequence = sequence.Substring(cutsiteIndex, structure.Length);
+                string subSequence = targetSequence.Substring(cutsiteIndex, structure.Length);
                 R_STATUS status = anneal(subSequence, structure, naConcentration, out float delta);
 
                 if (status != R_STATUS.R_STATUS_OK)
