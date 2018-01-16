@@ -8,6 +8,7 @@
     <hr/>
     <form method="POST">
         <!-- Sequence Selection -->
+        <div asp-validation-summary="All" class="text-danger"></div>
         <div class="panel panel-default">
             <div class="panel-heading" v-on:click="expand('sequenceTitle', 'sequenceBody')">
                 <h3 id="sequenceTitle" class="panel-title">Sequence Selection</h3>
