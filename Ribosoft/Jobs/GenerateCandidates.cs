@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Ribosoft.Data;
@@ -15,12 +16,16 @@ namespace Ribosoft.Jobs
         private readonly ApplicationDbContext _db;
         private readonly CandidateGeneration.CandidateGenerator _candidateGenerator;
         private readonly IEmailSender _emailSender;
+        private readonly RibosoftAlgo _ribosoftAlgo;
+        private readonly MultiObjectiveOptimization.MultiObjectiveOptimizer _multiObjectiveOptimizer;
 
         public GenerateCandidates(DbContextOptions<ApplicationDbContext> options, IEmailSender emailSender)
         {
             _db =  new ApplicationDbContext(options);
             _candidateGenerator = new CandidateGeneration.CandidateGenerator();
             _emailSender = emailSender;
+            _ribosoftAlgo = new RibosoftAlgo();
+            _multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
         }
 
         [AutomaticRetry(Attempts = 0)]
@@ -42,11 +47,15 @@ namespace Ribosoft.Jobs
 
             var ribozyme = job.Ribozyme;
 
+            List<Candidate> candidates = new List<Candidate>();
+
             foreach (var ribozymeStructure in ribozyme.RibozymeStructures)
             {
+                IList<Candidate> current;
+                // Candidate Generation
                 try
                 {
-                    _candidateGenerator.GenerateCandidates(
+                    current = _candidateGenerator.GenerateCandidates(
                         ribozymeStructure.Sequence,
                         ribozymeStructure.Structure,
                         ribozymeStructure.SubstrateTemplate,
@@ -68,13 +77,62 @@ namespace Ribosoft.Jobs
                     return;
                 }
 
-                cancellationToken.ThrowIfCancellationRequested();
+                // TODO: fix ideal somewhere?
+                Regex pattern = new Regex(@"[^.^(^)]");
+                string ideal = pattern.Replace(ribozymeStructure.Structure, ".");
 
-                foreach (var sequence in _candidateGenerator.SequencesToSend)
+                // Algorithms
+                try
                 {
-                    var design = new Design { Sequence = sequence.GetString() };
-                    job.Designs.Add(design);
+                    foreach (var candidate in current)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        candidate.FitnessValues[0] = _ribosoftAlgo.Accessibility(candidate, job.RNAInput, ribozymeStructure.SubstrateTemplate, ribozymeStructure.Cutsite); // ACCESSIBILITY
+                        candidate.FitnessValues[1] = 0.0f; // NO SPECIFICITY!
+                        candidate.FitnessValues[2] = _ribosoftAlgo.Structure(candidate, ideal); // STRUCTURE
+                        candidate.FitnessValues[3] = _ribosoftAlgo.Anneal(candidate, job.RNAInput, ribozymeStructure.SubstrateTemplate, 1.0f); // TEMPERATURE
+                    }
                 }
+                catch (RibosoftAlgoException e)
+                {
+                    job.JobState = JobState.Errored;
+                    job.StatusMessage = e.Code.ToString();
+                    await _db.SaveChangesAsync();
+                    return;
+                }
+
+                candidates.AddRange(current);
+            }
+
+            // Multi-Objective Optimization
+            IList<Candidate> rankedCandidates;
+            try
+            {
+                rankedCandidates = _multiObjectiveOptimizer.Optimize(candidates, 1);
+            }
+            catch (MultiObjectiveOptimization.MultiObjectiveOptimizationException e)
+            {
+                job.JobState = JobState.Errored;
+                job.StatusMessage = e.Message;
+                await _db.SaveChangesAsync();
+                return;
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            foreach (var candidate in rankedCandidates)
+            {
+                var design = new Design
+                {
+                    Sequence = candidate.Sequence.GetString(),
+                    Rank = candidate.Rank ?? default(int),
+                    AccessibilityScore = candidate.FitnessValues[0],
+                    SpecificityScore = candidate.FitnessValues[1],
+                    StructureScore = candidate.FitnessValues[2],
+                    TemperatureScore = candidate.FitnessValues[3]
+                };
+                job.Designs.Add(design);
             }
 
             cancellationToken.ThrowIfCancellationRequested();

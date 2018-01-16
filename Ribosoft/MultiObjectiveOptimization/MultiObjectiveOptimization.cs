@@ -18,12 +18,14 @@ namespace Ribosoft.MultiObjectiveOptimization {
         ** are ranked, and removed from the list. This happens
         ** recursively until there are no more candidates to rank.
         */
-        public void Optimize(List<Candidate> candidates, int rank)
+        public IList<Candidate> Optimize(List<Candidate> candidates, int rank)
         {
             // If candidates are empty, return
             if (candidates.Count == 0) {
                 throw new MultiObjectiveOptimizationException(R_STATUS.R_EMPTY_CANDIDATE_LIST, "List of Candidates is empty!");
             }
+
+            List<Candidate> rankedCandidates = new List<Candidate>();
 
             // List for the current rank
             List<Candidate> frontCandidates = new List<Candidate>();
@@ -50,21 +52,24 @@ namespace Ribosoft.MultiObjectiveOptimization {
             if (frontCandidates.Count != 0) {
                 foreach (Candidate rankedCandidate in frontCandidates) {
                     rankedCandidate.Rank = rank;
+                    rankedCandidates.Add(rankedCandidate);
                     candidates.Remove(rankedCandidate);
                 }
             } else {
                 foreach (Candidate candidate in candidates) {
                     candidate.Rank = rank;
+                    rankedCandidates.Add(candidate);
+                    candidates.Remove(candidate);
                 }
-
-                candidates.Clear();
             }
 
             // Recursively call function to continue ranking
             if (candidates.Count != 0) {
                 rank++;
-                Optimize(candidates, rank);
+                rankedCandidates.AddRange(Optimize(candidates, rank));
             }
+
+            return rankedCandidates;
         }
 
         /* Pareto Dominance

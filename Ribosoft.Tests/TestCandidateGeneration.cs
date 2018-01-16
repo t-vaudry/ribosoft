@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Ribosoft.Tests
@@ -9,15 +10,15 @@ namespace Ribosoft.Tests
         public void Generate_Candidates_Valid_Input()
         {
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
-            candidateGenerator.GenerateCandidates(
+            var candidates = candidateGenerator.GenerateCandidates(
                 "CGUGGUUAGGGCCACGUUAAAUAGNNNNUUAAGCCCUAAGCGNNNNNN",
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
                 "AUUGCAGUAUAAAGCCU");
 
-            Assert.Equal(1, candidateGenerator.SequencesToSend.Count);
-            Assert.Equal("CGUGGUUAGGGCCACGUUAAAUAGUUAUUUAAGCCCUAAGCGUGCAAU", candidateGenerator.SequencesToSend[0].GetString());
+            Assert.Single(candidates);
+            Assert.Equal("CGUGGUUAGGGCCACGUUAAAUAGUUAUUUAAGCCCUAAGCGUGCAAU", candidates[0].Sequence.GetString());
         }
 
         [Fact]
@@ -116,7 +117,7 @@ namespace Ribosoft.Tests
         {
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
-            Exception ex = Assert.Throws<CandidateGeneration.CandidateGenerationException>(() => candidateGenerator.GenerateCandidates(
+            Exception ex = Assert.Throws<RibosoftException>(() => candidateGenerator.GenerateCandidates(
                 "QGUGGUUAGGGCCACGUUAAAUAGNNNNUUAAGCCCUAAGCGNNNNNN",
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
@@ -158,34 +159,38 @@ namespace Ribosoft.Tests
         public void Generate_Candidates_Multiple_Cutsites()
         {
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
-            candidateGenerator.GenerateCandidates(
+            var candidates = candidateGenerator.GenerateCandidates(
                 "N",
                 "0",
                 "NGU",
                 "0..",
                 "AGUAGUCGUGGUUGU");
 
-            Assert.Equal(4, candidateGenerator.SequencesToSend.Count);
-            Assert.Equal("U", candidateGenerator.SequencesToSend[0].GetString());
-            Assert.Equal("G", candidateGenerator.SequencesToSend[1].GetString());
-            Assert.Equal("C", candidateGenerator.SequencesToSend[2].GetString());
-            Assert.Equal("A", candidateGenerator.SequencesToSend[3].GetString());
+            Assert.Equal(4, candidates.Count);
+            Assert.Equal("U", candidates[0].Sequence.GetString());
+            Assert.Equal("G", candidates[1].Sequence.GetString());
+            Assert.Equal("C", candidates[2].Sequence.GetString());
+            Assert.Equal("A", candidates[3].Sequence.GetString());
+
+            Assert.Equal(2, candidates[0].CutsiteIndices.Count);
+            Assert.Equal(0, candidates[0].CutsiteIndices[0]);
+            Assert.Equal(3, candidates[0].CutsiteIndices[1]);
         }
 
         [Fact]
         public void Generate_Candidates_Variable_First_Neighbour()
         {
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
-            candidateGenerator.GenerateCandidates(
+            var candidates = candidateGenerator.GenerateCandidates(
                 "NR",
                 "()",
                 "UAUACGGC",
                 "........",
                 "UAUACGGCAUUGCAGUAUAAAGCCU");
 
-            Assert.Equal(2, candidateGenerator.SequencesToSend.Count);
-            Assert.Equal("CG", candidateGenerator.SequencesToSend[0].GetString());
-            Assert.Equal("UA", candidateGenerator.SequencesToSend[1].GetString());
+            Assert.Equal(2, candidates.Count);
+            Assert.Equal("CG", candidates[0].Sequence.GetString());
+            Assert.Equal("UA", candidates[1].Sequence.GetString());
         }
     }
 }
