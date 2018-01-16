@@ -31,14 +31,13 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
 </div>
 
 <h4>Structures</h4>
 <hr />
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-controller="RibozymeStructures" asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -50,22 +49,10 @@
                 @Html.DisplayNameFor(model => model.RibozymeStructures.First().Sequence)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RibozymeStructures.First().Structure)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.RibozymeStructures.First().SubstrateTemplate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RibozymeStructures.First().SubstrateStructure)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.RibozymeStructures.First().PostProcess)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RibozymeStructures.First().CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RibozymeStructures.First().UpdatedAt)
             </th>
             <th></th>
         </tr>
@@ -74,36 +61,35 @@
         @foreach (var item in Model.RibozymeStructures)
         {
             <tr>
-                <td>
+                <td rowspan="2">
                     @Html.DisplayFor(modelItem => item.Cutsite)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Sequence)
+                    <code>@Html.DisplayFor(modelItem => item.Sequence)</code>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Structure)
+                    <code>@Html.DisplayFor(modelItem => item.SubstrateTemplate)</code>
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SubstrateTemplate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SubstrateStructure)
-                </td>
-                <td>
+                <td rowspan="2">
                     @Html.DisplayFor(modelItem => item.PostProcess)
                 </td>
+                <td rowspan="2">
+                    <a asp-controller="RibozymeStructures" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-controller="RibozymeStructures" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-controller="RibozymeStructures" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+            <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CreatedAt)
+                    <code>@Html.DisplayFor(modelItem => item.Structure)</code>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.UpdatedAt)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <code>@Html.DisplayFor(modelItem => item.SubstrateStructure)</code>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
