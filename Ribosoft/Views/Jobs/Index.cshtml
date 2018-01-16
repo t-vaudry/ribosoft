@@ -37,7 +37,7 @@
                 @Html.DisplayFor(modelItem => item.JobState)
             </td>
             <td>
-                <code>@Html.DisplayFor(modelItem => item.RNAInput)</code>
+                <code>@(item.RNAInput.Length > 50 ? item.RNAInput.Substring(0, 50) + "..." : item.RNAInput)</code>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Ribozyme.Name)
@@ -52,7 +52,8 @@
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a>
                 @if (item.JobState == JobState.New || item.JobState == JobState.Started)
                 {
-                    @:| <a asp-action="Delete" asp-route-id="@item.Id">Cancel</a>
+                    @:|
+                    <a asp-action="Delete" asp-route-id="@item.Id">Cancel</a>
                 }
             </td>
         </tr>
