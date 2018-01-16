@@ -9,15 +9,16 @@ namespace Ribosoft.Tests
         public void Generate_Candidates_Valid_Input()
         {
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
-            candidateGenerator.GenerateCandidates(
+            CandidateGeneration.CandidateGenerationResult result = candidateGenerator.GenerateCandidates(
                 "CGUGGUUAGGGCCACGUUAAAUAGNNNNUUAAGCCCUAAGCGNNNNNN",
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
                 "AUUGCAGUAUAAAGCCU");
 
-            Assert.Equal(1, candidateGenerator.SequencesToSend.Count);
-            Assert.Equal("CGUGGUUAGGGCCACGUUAAAUAGUUAUUUAAGCCCUAAGCGUGCAAU", candidateGenerator.SequencesToSend[0].GetString());
+            Assert.Equal(result.Status, R_STATUS.R_STATUS_OK);
+            Assert.Equal(1, result.RibozymCandidates.Count);
+            Assert.Equal("CGUGGUUAGGGCCACGUUAAAUAGUUAUUUAAGCCCUAAGCGUGCAAU", result.RibozymCandidates[0].GetString());
         }
 
         [Fact]
@@ -55,14 +56,14 @@ namespace Ribosoft.Tests
         {
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
-            Exception ex = Assert.Throws<CandidateGeneration.CandidateGenerationException>(() => candidateGenerator.GenerateCandidates(
+            CandidateGeneration.CandidateGenerationResult result = candidateGenerator.GenerateCandidates(
                 "CGUGGUUAGGGCCACGUUAAAUAGNNNNUUAAGCCCUAAGCGNNNNNN",
                 "((((&[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU"));
+                "AUUGCAGUAUAAAGCCU");
 
-            Assert.Equal("Unrecognized structure symbol encountered.", ex.Message);
+            Assert.Equal(result.Status, R_STATUS.R_INVALID_STRUCT_ELEMENT);
         }
 
         [Fact]
@@ -70,14 +71,14 @@ namespace Ribosoft.Tests
         {
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
-            Exception ex = Assert.Throws<CandidateGeneration.CandidateGenerationException>(() => candidateGenerator.GenerateCandidates(
+            CandidateGeneration.CandidateGenerationResult result = candidateGenerator.GenerateCandidates(
                 "CGUGGUUAGGGCCACGUUAAAUAGNNNNUUAAGCCCUAAGCGNNNNNN",
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654&.3210",
-                "AUUGCAGUAUAAAGCCU"));
+                "AUUGCAGUAUAAAGCCU");
 
-            Assert.Equal("Unexpected substrate structure character: &", ex.Message);
+            Assert.Equal(result.Status, R_STATUS.R_INVALID_STRUCT_ELEMENT);
         }
 
         [Fact]
@@ -115,15 +116,14 @@ namespace Ribosoft.Tests
         public void Generate_Candidates_Invalid_Nucleotide()
         {
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
-
-            Exception ex = Assert.Throws<CandidateGeneration.CandidateGenerationException>(() => candidateGenerator.GenerateCandidates(
+            CandidateGeneration.CandidateGenerationResult result = candidateGenerator.GenerateCandidates(
                 "QGUGGUUAGGGCCACGUUAAAUAGNNNNUUAAGCCCUAAGCGNNNNNN",
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU"));
+                "AUUGCAGUAUAAAGCCU");
 
-            Assert.Equal("Invalid nucleotide base Q was provided.", ex.Message);
+            Assert.Equal(result.Status, R_STATUS.R_INVALID_NUCLEOTIDE);
         }
 
         [Fact]
@@ -131,14 +131,14 @@ namespace Ribosoft.Tests
         {
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
-            Exception ex = Assert.Throws<CandidateGeneration.CandidateGenerationException>(() => candidateGenerator.GenerateCandidates(
+            CandidateGeneration.CandidateGenerationResult result = candidateGenerator.GenerateCandidates(
                 "CGUGGUUAGGGCCACGUUAAAUAGNNNNUUAAGCCCUAAGCGNNNNNN",
                 "((((.[[[[[[.))).........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU"));
+                "AUUGCAGUAUAAAGCCU");
 
-            Assert.Equal("Unclosed bond found '('. Input may be faulty.", ex.Message);
+            Assert.Equal(result.Status, R_STATUS.R_BAD_PAIR_MATCH);
         }
 
         [Fact]
@@ -146,46 +146,50 @@ namespace Ribosoft.Tests
         {
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => candidateGenerator.GenerateCandidates(
+            CandidateGeneration.CandidateGenerationResult result = candidateGenerator.GenerateCandidates(
                 "CGUGGUUAGGGCCACGUUAAAUAGNNNNUUAAGCCCUAAGCGNNNNNN",
                 "((((.[[[[[..))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU"));
+                "AUUGCAGUAUAAAGCCU");
+
+            Assert.Equal(result.Status, R_STATUS.R_BAD_PAIR_MATCH);
         }
 
         [Fact]
         public void Generate_Candidates_Multiple_Cutsites()
         {
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
-            candidateGenerator.GenerateCandidates(
+            CandidateGeneration.CandidateGenerationResult result = candidateGenerator.GenerateCandidates(
                 "N",
                 "0",
                 "NGU",
                 "0..",
                 "AGUAGUCGUGGUUGU");
 
-            Assert.Equal(4, candidateGenerator.SequencesToSend.Count);
-            Assert.Equal("U", candidateGenerator.SequencesToSend[0].GetString());
-            Assert.Equal("G", candidateGenerator.SequencesToSend[1].GetString());
-            Assert.Equal("C", candidateGenerator.SequencesToSend[2].GetString());
-            Assert.Equal("A", candidateGenerator.SequencesToSend[3].GetString());
+            Assert.Equal(result.Status, R_STATUS.R_STATUS_OK);
+            Assert.Equal(4, result.RibozymCandidates.Count);
+            Assert.Equal("U", result.RibozymCandidates[0].GetString());
+            Assert.Equal("G", result.RibozymCandidates[1].GetString());
+            Assert.Equal("C", result.RibozymCandidates[2].GetString());
+            Assert.Equal("A", result.RibozymCandidates[3].GetString());
         }
 
         [Fact]
         public void Generate_Candidates_Variable_First_Neighbour()
         {
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
-            candidateGenerator.GenerateCandidates(
+            CandidateGeneration.CandidateGenerationResult result = candidateGenerator.GenerateCandidates(
                 "NR",
                 "()",
                 "UAUACGGC",
                 "........",
                 "UAUACGGCAUUGCAGUAUAAAGCCU");
 
-            Assert.Equal(2, candidateGenerator.SequencesToSend.Count);
-            Assert.Equal("CG", candidateGenerator.SequencesToSend[0].GetString());
-            Assert.Equal("UA", candidateGenerator.SequencesToSend[1].GetString());
+            Assert.Equal(result.Status, R_STATUS.R_STATUS_OK);
+            Assert.Equal(2, result.RibozymCandidates.Count);
+            Assert.Equal("CG", result.RibozymCandidates[0].GetString());
+            Assert.Equal("UA", result.RibozymCandidates[1].GetString());
         }
     }
 }

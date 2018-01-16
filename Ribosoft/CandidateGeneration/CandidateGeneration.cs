@@ -16,7 +16,7 @@ namespace Ribosoft.CandidateGeneration
         //Holds the index equivalencies of bonding ribozyme/substrate pairs
         public List<Tuple<int, int>> RibozymeSubstrateIndexPairs { get; set; }
 
-        public List<Sequence> SequencesToSend { get; set; }
+        public CandidateGenerationResult CandidateGenerationDesign { get; set; }
 
         public String InputRNASequence { get; set; }
 
@@ -32,14 +32,14 @@ namespace Ribosoft.CandidateGeneration
             Sequences = new List<Sequence>();
             SubstrateSequences = new List<Sequence>();
             RibozymeSubstrateIndexPairs = new List<Tuple<int, int>>();
-            SequencesToSend = new List<Sequence>();
+            CandidateGenerationDesign = new CandidateGenerationResult();
             NodesAtDepthSequence = new List<List<Node>>();
             NodesAtDepthCutSite = new List<List<Node>>();
             OpenBondIndices = new Stack<int>();
             OpenPseudoKnotIndices = new Stack<int>();
         }
 
-        public void GenerateCandidates(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
+        public CandidateGenerationResult GenerateCandidates(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
         {
             //*********************
             //
@@ -61,7 +61,12 @@ namespace Ribosoft.CandidateGeneration
             //1- Get user input
             //*********************
 
-            GetUserInput(ribozymeSeq, ribozymeStruc, substrateSeq, substrateStruc, rnaInput);
+            BuildDataFromUserInput(ribozymeSeq, ribozymeStruc, substrateSeq, substrateStruc, rnaInput);
+
+            ValidateUserInput();
+
+            if (CandidateGenerationDesign.Status != R_STATUS.R_STATUS_OK)
+                return CandidateGenerationDesign;
 
             //*********************
             //2- Generate the tree structures
@@ -100,17 +105,19 @@ namespace Ribosoft.CandidateGeneration
             CompleteSequencesWithCutSiteInfo();
 
             //Console.WriteLine("Amount of sequences (no cut site): {0}", Sequences.Count);
-            //Console.WriteLine("Amount of sequences to send: {0}", SequencesToSend.Count);
+            //Console.WriteLine("Amount of sequences to send: {0}", CandidateGenerationDesign.RibozymCandidates.Count);
 
             //Console.WriteLine("\nAccepted cut sites: ");
             //foreach (Sequence cutsite in SubstrateSequences)
             //    Console.WriteLine(cutsite.GetString());
 
             //Console.WriteLine("Sending sequences: ");
-            //foreach (Sequence seq in SequencesToSend)
+            //foreach (Sequence seq in CandidateGenerationDesign.RibozymCandidates)
             //    Console.WriteLine(seq.GetString());
 
             //Console.ReadLine();
+
+            return CandidateGenerationDesign;
         }
 
         public void GenerateStructure(List<List<Node>> nodesAtDepth, String inputSequence, String inputStructure = null)
@@ -131,7 +138,7 @@ namespace Ribosoft.CandidateGeneration
                 if (inputStructure != null)
                 {
                     char structure = inputStructure[i];
-                    isTarget = IsTarget(structure);
+                    isTarget = Validation.IsTarget(structure);
                     //If nucleotide is NOT a target
                     if (!isTarget)
                     {
@@ -266,7 +273,7 @@ namespace Ribosoft.CandidateGeneration
             else
             {
                 //If child is going to be linked to RNA, just continue
-                if (IsTarget(Ribozyme.Structure[currentNode.Depth + 1]))
+                if (Validation.IsTarget(Ribozyme.Structure[currentNode.Depth + 1]))
                 {
                     Node child = new Node(currentNode.Children[0]);
                     child.Nucleotide.SetSymbol('-');
@@ -322,7 +329,7 @@ namespace Ribosoft.CandidateGeneration
             }
         }
 
-        public void GetUserInput(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
+        public void BuildDataFromUserInput(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
         {
             if (ribozymeSeq.Length != ribozymeStruc.Length)
             {
@@ -338,6 +345,36 @@ namespace Ribosoft.CandidateGeneration
             InputRNASequence = rnaInput;
         }
 
+        public void ValidateUserInput()
+        {
+            // Validate ribozyme nucleotides
+            CandidateGenerationDesign.Status = Validation.ValidateSequence(Ribozyme.Sequence, false);
+
+            if (CandidateGenerationDesign.Status < R_STATUS.R_STATUS_OK)
+            {
+                return;
+            }
+
+            // Validate ribozyme structure
+            CandidateGenerationDesign.Status = Validation.ValidateStructure(Ribozyme.Structure, true);
+
+            if (CandidateGenerationDesign.Status < R_STATUS.R_STATUS_OK)
+            {
+                return;
+            }
+
+            // Validate substrate nucleotides
+            CandidateGenerationDesign.Status = Validation.ValidateSequence(Ribozyme.SubstrateSequence, false);
+
+            if (CandidateGenerationDesign.Status < R_STATUS.R_STATUS_OK)
+            {
+                return;
+            }
+
+            // Validate substrate structure
+            CandidateGenerationDesign.Status = Validation.ValidateStructure(Ribozyme.SubstrateStructure, true);
+        }
+
         public void CompleteSequencesWithCutSiteInfo()
         {
             //First, build the mapping between substrate and ribozyme
@@ -350,7 +387,7 @@ namespace Ribosoft.CandidateGeneration
                 }
 
                 //If it is not a '.', we are expecting it to be part of the target
-                if (!IsTarget(Ribozyme.SubstrateStructure[i]))
+                if (!Validation.IsTarget(Ribozyme.SubstrateStructure[i]))
                 {
                     throw new CandidateGenerationException(String.Format("Unexpected substrate structure character: {0}", Ribozyme.SubstrateStructure[i]));
                 }
@@ -403,18 +440,11 @@ namespace Ribosoft.CandidateGeneration
                     //If all target elements can successfully bond, add this sequence to the list
                     if (success)
                     {
-                        SequencesToSend.Add(newSequence);
+                        CandidateGenerationDesign.RibozymCandidates.Add(newSequence);
                     }
                     //Else, do nothing: this ribozyme sequence cannot bond with the substrate
                 }
             }
-        }
-
-        public bool IsTarget(char b)
-        {
-            return ((b >= 'a' && b <= 'z') ||
-                        (b >= 'A' && b <= 'Z') ||
-                        (b >= '0' && b <= '9'));
         }
     }
 }
