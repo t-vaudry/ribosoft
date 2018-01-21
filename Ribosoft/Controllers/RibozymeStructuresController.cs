@@ -65,7 +65,7 @@ namespace Ribosoft.Controllers
             {
                 _context.Add(ribozymeStructure);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Ribozymes", new {id = ribozymeStructure.RibozymeId});
             }
             ViewData["RibozymeId"] = new SelectList(_context.Ribozymes, "Id", "Name", ribozymeStructure.RibozymeId);
             return View(ribozymeStructure);
@@ -118,7 +118,7 @@ namespace Ribosoft.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Ribozymes", new { id = ribozymeStructure.RibozymeId });
             }
             ViewData["RibozymeId"] = new SelectList(_context.Ribozymes, "Id", "Name", ribozymeStructure.RibozymeId);
             return View(ribozymeStructure);
@@ -151,7 +151,7 @@ namespace Ribosoft.Controllers
             var ribozymeStructure = await _context.RibozymeStructures.SingleOrDefaultAsync(m => m.Id == id);
             _context.RibozymeStructures.Remove(ribozymeStructure);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", "Ribozymes", new { id = ribozymeStructure.RibozymeId });
         }
 
         private bool RibozymeStructureExists(int id)

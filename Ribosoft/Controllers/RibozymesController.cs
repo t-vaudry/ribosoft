@@ -36,7 +36,9 @@ namespace Ribosoft.Controllers
             }
 
             var ribozyme = await _context.Ribozymes
+                .Include(r => r.RibozymeStructures)
                 .SingleOrDefaultAsync(m => m.Id == id);
+
             if (ribozyme == null)
             {
                 return NotFound();
@@ -56,7 +58,7 @@ namespace Ribosoft.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Ribozyme ribozyme)
+        public async Task<IActionResult> Create([Bind("Name")] Ribozyme ribozyme)
         {
             if (ModelState.IsValid)
             {
