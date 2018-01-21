@@ -77,10 +77,6 @@ namespace Ribosoft.Jobs
                     return;
                 }
 
-                // TODO: fix ideal somewhere?
-                Regex pattern = new Regex(@"[^.^(^)]");
-                string ideal = pattern.Replace(ribozymeStructure.Structure, ".");
-
                 // Algorithms
                 try
                 {
@@ -88,10 +84,13 @@ namespace Ribosoft.Jobs
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
-                        candidate.FitnessValues[0] = _ribosoftAlgo.Accessibility(candidate, job.RNAInput, ribozymeStructure.SubstrateTemplate, ribozymeStructure.Cutsite); // ACCESSIBILITY
+                        Regex pattern = new Regex(@"[^.^(^)]");
+                        string ideal = pattern.Replace(candidate.Structure, ".");
+
+                        candidate.FitnessValues[0] = _ribosoftAlgo.Accessibility(candidate, job.RNAInput, ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset); // ACCESSIBILITY
                         candidate.FitnessValues[1] = 0.0f; // NO SPECIFICITY!
                         candidate.FitnessValues[2] = _ribosoftAlgo.Structure(candidate, ideal); // STRUCTURE
-                        candidate.FitnessValues[3] = _ribosoftAlgo.Anneal(candidate, job.RNAInput, ribozymeStructure.SubstrateTemplate, 1.0f); // TEMPERATURE
+                        candidate.FitnessValues[3] = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence, candidate.SubstrateStructure, 1.0f); // TEMPERATURE
                     }
                 }
                 catch (RibosoftAlgoException e)
