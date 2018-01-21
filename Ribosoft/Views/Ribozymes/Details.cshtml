@@ -31,6 +31,65 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+</div>
+
+<h4>Structures</h4>
+<hr />
+<p>
+    <a asp-controller="RibozymeStructures" asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.RibozymeStructures.First().Cutsite)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RibozymeStructures.First().Sequence)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RibozymeStructures.First().SubstrateTemplate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RibozymeStructures.First().PostProcess)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.RibozymeStructures)
+        {
+            <tr>
+                <td rowspan="2">
+                    @Html.DisplayFor(modelItem => item.Cutsite)
+                </td>
+                <td>
+                    <code>@Html.DisplayFor(modelItem => item.Sequence)</code>
+                </td>
+                <td>
+                    <code>@Html.DisplayFor(modelItem => item.SubstrateTemplate)</code>
+                </td>
+                <td rowspan="2">
+                    @Html.DisplayFor(modelItem => item.PostProcess)
+                </td>
+                <td rowspan="2">
+                    <a asp-controller="RibozymeStructures" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-controller="RibozymeStructures" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-controller="RibozymeStructures" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code>@Html.DisplayFor(modelItem => item.Structure)</code>
+                </td>
+                <td>
+                    <code>@Html.DisplayFor(modelItem => item.SubstrateStructure)</code>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
     <a asp-action="Index">Back to List</a>
 </div>

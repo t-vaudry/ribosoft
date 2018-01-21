@@ -1,0 +1,182 @@
+@model Ribosoft.Models.RequestViewModel;
+@{
+    ViewData["Title"] = "Request Design Page";
+}
+
+<div class="container body-content" id="app">
+    <h2>@ViewData["Title"]</h2>
+    <hr/>
+    <form method="POST">
+        <!-- Sequence Selection -->
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="panel panel-default">
+            <div class="panel-heading" v-on:click="expand('sequenceTitle', 'sequenceBody')">
+                <h3 id="sequenceTitle" class="panel-title">Sequence Selection</h3>
+            </div>
+            <div id="sequenceBody" class="panel-body">
+                <div class="form-group">
+                    <!-- TODO: Redo and populate from C# not JS -->
+                    <label asp-for="RibozymeStructure"></label>
+                    <select asp-for="RibozymeStructure"
+                            asp-items="ViewBag.Ribozymes"
+                            class="form-control">
+                    </select>
+                    <span asp-validation-for="RibozymeStructure" class="text-danger"></span>
+                </div>
+
+                <div class="form-group" id="inputSequenceFormGroup">
+                    <label asp-for="InputSequence"></label>
+                    <textarea asp-for="InputSequence" class="form-control" placeholder="Input a Sequence" rows="10" id="inputSequence">
+                    </textarea>
+                    <span asp-validation-for="InputSequence" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="FASTAfileInput">Input Sequence from FASTA File</label>
+                    <div>
+                        <label class="btn btn-default btn-file">
+                            Use FASTA File
+                            <input type="file" v-on:change="processFASTAfile" style="display: none;" id="FASTAfileInput">
+                        </label>    
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="BLASTinput">Get Sequence from GenBank:</label>
+                    <div id="BLASTinput">
+                        <input type="text" id="accesionNumber">
+                        <button type="button" class="btn btn-default" v-on:click="getFromGenbank">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Regions for Target Design -->
+        <div class="panel panel-default">
+            <div class="panel-heading" v-on:click="expand('targetRegionTitle', 'targetRegionBody')">
+                <h3 id="targetRegionTitle" class="panel-title collapsed">Regions for Target Design</h3>
+            </div>
+            <div id="targetRegionBody" class="panel-body collapse">
+                <label asp-for="TargetRegions"></label>
+                <div>
+                    @for (var i = 0; i < Model.TargetRegions.Length; i++)
+                    {
+                        <div class="checkbox">
+                            <label asp-for="@Model.TargetRegions[i].Selected">
+                                <input type="checkbox" asp-for="@Model.TargetRegions[i].Selected">
+                                @Model.TargetRegions[i].Name
+                            </label>
+                            <input type="hidden" asp-for="@Model.TargetRegions[i].Id" />
+                            <input type="hidden" asp-for="@Model.TargetRegions[i].Name" />
+                        </div>
+                    }
+                    <span asp-validation-for="TargetRegions" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Target Environment -->
+        <div class="panel panel-default">
+            <div class="panel-heading" v-on:click="expand('targetEnviornmentTitle', 'targetEnviornmentBody')">
+                <h3 id="targetEnviornmentTitle" class="panel-title collapsed">Target Environment</h3>
+            </div>
+            <div id="targetEnviornmentBody" class="panel-body collapse">
+                <div class="form-group" id="targetEnvironmentMethod">
+                    <label asp-for="TargetEnvironment"></label>
+                    <div class="radio">
+                        <label>
+                            <input asp-for="TargetEnvironment.TargetEnvironment" type="radio" value="In-vitro" v-on:change="targetEnvironment">In-vitro
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input asp-for="TargetEnvironment.TargetEnvironment" type="radio" value="In-vivo" v-on:change="targetEnvironment">In-vivo
+                        </label>
+                    </div>
+                    <span asp-validation-for="TargetEnvironment" class="text-danger"></span>
+                </div>
+
+                <div class="form-group" v-if="inVivoSelected">
+                    <label asp-for="InVivoEnvironment"></label>
+                    <select asp-for="InVivoEnvironment" id="targetEnvironment" class="form-control">
+                        <option v-for="environment in targetEnvironments">{{ environment }}</option>
+                    </select>
+                    <span asp-validation-for="InVivoEnvironment" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Environment Properties -->
+        <div class="panel panel-default">
+            <div class="panel-heading" v-on:click="expand('propertiesTitle', 'propertiesBody')">
+                <h3 id="propertiesTitle" class="panel-title collapsed">Environment Properties</h3>
+            </div>
+            <div id="propertiesBody" class="panel-body collapse">
+                <div class="form-group">
+                    <label asp-for="Temperature"></label>
+                    <input asp-for="Temperature" type="text" class="form-control">
+                    <span asp-validation-for="Temperature" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Na"></label>
+                    <input asp-for="Na" type="text" class="form-control">
+                    <span asp-validation-for="Na" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Mg"></label>
+                    <input asp-for="Mg" type="text" class="form-control">
+                    <span asp-validation-for="Mg" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Oligomer"></label>
+                    <input asp-for="Oligomer" type="text" class="form-control">
+                    <span asp-validation-for="Oligomer" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Potential Cut Sites -->
+        <!-- <div class="panel panel-default">
+            <div class="panel-heading" v-on:click="expand('cutSiteTitle', 'cutSiteBody')">
+                <h3 id="cutSiteTitle" class="panel-title collapsed">Potential Cut Sites</h3>
+            </div>
+            <div id="cutSiteBody" class="panel-body collapse">
+                <div class="form-group">
+                    <label asp-for="CutSites">Cut Sites:</label>
+                    <select multiple asp-for="CutSites" class="form-control">
+                        <option v-for="cutSite in cutSites">{{ cutSite }}</option>
+                    </select>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- Specificity -->
+        <div class="panel panel-default">
+            <div class="panel-heading" v-on:click="expand('specificityTitle', 'specificityBody')">
+                <h3 id="specificityTitle" class="panel-title collapsed">Specificity</h3>
+            </div>
+            <div id=specificityBody class="panel-body collapse">
+                <div class="form-group">
+                    <label asp-for="Specificity"></label>
+                    <div asp-for="Specificity" id="specificityMethod">
+                        <div class="radio">
+                            <label><input asp-for="Specificity.Specificity" type="radio" value="Cleavage">Cleavage</label>
+                        </div>
+                        <div class="radio">
+                            <label><input asp-for="Specificity.Specificity" type="radio" value="Cleavage and Hybridization">Cleavage and Hybridization</label>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Specificity" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <input type="submit" class="btn btn-primary" />
+    </form>
+</div>
+
+@section scripts{
+    <script src="~/js/Request/request.js"></script>
+}

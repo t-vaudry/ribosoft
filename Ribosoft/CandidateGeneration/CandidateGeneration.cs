@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Text;
 
+using Ribosoft.Biology;
+
 namespace Ribosoft.CandidateGeneration
 {
     public class CandidateGenerator
@@ -17,8 +19,6 @@ namespace Ribosoft.CandidateGeneration
 
         //Holds the index equivalencies of bonding ribozyme/substrate pairs
         public List<Tuple<int, int>> RibozymeSubstrateIndexPairs { get; set; }
-
-        public List<Sequence> SequencesToSend { get; set; }
 
         public String InputRNASequence { get; set; }
 
@@ -38,7 +38,6 @@ namespace Ribosoft.CandidateGeneration
             Sequences = new List<Sequence>();
             SubstrateInfo = new List<Tuple<Sequence, String>>();
             RibozymeSubstrateIndexPairs = new List<Tuple<int, int>>();
-            SequencesToSend = new List<Sequence>();
             NodesAtDepthSequence = new List<List<Node>>();
             NodesAtDepthCutSite = new List<List<Node>>();
             OpenBondIndices = new Stack<int>();
@@ -47,7 +46,7 @@ namespace Ribosoft.CandidateGeneration
             RepeatRegions = new List<Tuple<int, int>>();
         }
 
-        public void GenerateCandidates(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
+        public IList<Candidate> GenerateCandidates(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
         {
             //*********************
             //
@@ -121,7 +120,7 @@ namespace Ribosoft.CandidateGeneration
             //7- Finish generating sequences based on cut sites and create list of all permutations of sequences + accepted cut sites
             //*********************
 
-            CompleteSequencesWithCutSiteInfo();
+            return CompleteSequencesWithCutSiteInfo();
 
 
 
@@ -449,9 +448,10 @@ namespace Ribosoft.CandidateGeneration
 
             SubstrateBaseStructure = baseStructure.ToString();
         }
-
-        public void CompleteSequencesWithCutSiteInfo()
+        public IList<Candidate> CompleteSequencesWithCutSiteInfo()
         {
+            List<Candidate> candidates = new List<Candidate>();
+
             //First, build the mapping between substrate and ribozyme
             for (int i = 0; i < Ribozyme.SubstrateStructure.Length; i++)
             {
@@ -526,11 +526,13 @@ namespace Ribosoft.CandidateGeneration
                     {
                         //Remove the nucleotides that are not part of the sequence (due to repeat notation)
                         newSequence.Nucleotides.RemoveAll(IsInvalidNucleotide);
-                        SequencesToSend.Add(newSequence);
+                        candidates.Add(new Candidate { Sequence = newSequence, CutsiteIndices = AllIndicesOf(InputRNASequence, substrateInfo.Item1.GetString()) });
                     }
                     //Else, do nothing: this ribozyme sequence cannot bond with the substrate
                 }
             }
+
+            return candidates;
         }
 
         private bool IsInvalidNucleotide(Nucleotide n)
@@ -599,6 +601,26 @@ namespace Ribosoft.CandidateGeneration
             return ((b >= 'a' && b <= 'z') ||
                         (b >= 'A' && b <= 'Z') ||
                         (b >= '0' && b <= '9'));
+        }
+
+        public static List<int> AllIndicesOf(string str, string value)
+        {
+            if (String.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException("the string to find may not be empty", "value");
+            }
+
+            List<int> indices = new List<int>();
+            for (int index = 0; ; index += value.Length)
+            {
+                index = str.IndexOf(value, index);
+                if (index == -1)
+                {
+                    return indices;
+                }
+                    
+                indices.Add(index);
+            }
         }
     }
 }

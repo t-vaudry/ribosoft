@@ -26,7 +26,7 @@
             @Html.DisplayNameFor(model => model.RNAInput)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.RNAInput)
+            <textarea rows="4" cols="80" readonly="readonly">@Model.RNAInput</textarea>
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Ribozyme)
@@ -83,7 +83,7 @@
                 @Html.DisplayFor(modelItem => item.Rank)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Sequence)
+                <code>@Html.DisplayFor(modelItem => item.Sequence)</code>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.TemperatureScore)

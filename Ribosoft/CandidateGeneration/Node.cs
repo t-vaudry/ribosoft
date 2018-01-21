@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using Ribosoft.Biology;
+
 namespace Ribosoft.CandidateGeneration
 {
     public class Node

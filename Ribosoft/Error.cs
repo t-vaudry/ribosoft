@@ -33,4 +33,20 @@ namespace Ribosoft
         R_SYSTEM_ERROR_FIRST           = -2000,
         R_SYSTEM_ERROR_LAST            = -2999,
     };
+
+    public class RibosoftException : Exception
+    {
+        public R_STATUS Code { get; set; }
+
+        public RibosoftException(R_STATUS code, string message)
+            : base(message)
+        {
+            this.Code = code;
+        }
+
+        public RibosoftException()
+            : this(R_STATUS.R_APPLICATION_ERROR_LAST, "")
+        {
+        }
+    }
 }
