@@ -91,7 +91,7 @@ namespace Ribosoft.Jobs
                         candidate.FitnessValues[0] = _ribosoftAlgo.Accessibility(candidate, job.RNAInput, ribozymeStructure.SubstrateTemplate, ribozymeStructure.Cutsite); // ACCESSIBILITY
                         candidate.FitnessValues[1] = 0.0f; // NO SPECIFICITY!
                         candidate.FitnessValues[2] = _ribosoftAlgo.Structure(candidate, ideal); // STRUCTURE
-                        candidate.FitnessValues[3] = _ribosoftAlgo.Anneal(candidate, job.RNAInput, ribozymeStructure.SubstrateTemplate, 1.0f); // TEMPERATURE
+                        candidate.FitnessValues[3] = _ribosoftAlgo.Anneal(candidate, job.RNAInput, ribozymeStructure.SubstrateTemplate, 1.0f, 0.05f); // TEMPERATURE
                     }
                 }
                 catch (RibosoftAlgoException e)

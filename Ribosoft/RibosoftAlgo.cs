@@ -26,7 +26,7 @@ namespace Ribosoft
         private static extern R_STATUS accessibility(string substrateSequence, string substrateTemplate, int cutsiteIndex, int cutsiteNumber, out float delta);
 
         [DllImport("RibosoftAlgo")]
-        private static extern R_STATUS anneal(string sequence, string structure, float na_concentration, out float temp);
+        private static extern R_STATUS anneal(string sequence, string structure, float na_concentration, float probe_concentration, out float temp);
 
         [DllImport("RibosoftAlgo")]
         private static extern R_STATUS fold(string sequence, out IntPtr output, out int size);
@@ -72,14 +72,14 @@ namespace Ribosoft
             return accessibilityScore;
         }
 
-        public float Anneal(Candidate candidate, string targetSequence, string structure, float naConcentration)
+        public float Anneal(Candidate candidate, string targetSequence, string structure, float naConcentration, float probeConcentration)
         {
             float temperatureScore = 0.0f;
 
             foreach (var cutsiteIndex in candidate.CutsiteIndices)
             {
                 string subSequence = targetSequence.Substring(cutsiteIndex, structure.Length);
-                R_STATUS status = anneal(subSequence, structure, naConcentration, out float delta);
+                R_STATUS status = anneal(subSequence, structure, naConcentration, probeConcentration, out float delta);
 
                 if (status != R_STATUS.R_STATUS_OK)
                 {
