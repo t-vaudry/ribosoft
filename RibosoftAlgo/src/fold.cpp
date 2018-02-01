@@ -1,7 +1,6 @@
 #include "dll.h"
 
 #include <cstdlib>
-#include <cstring>
 
 #include <ViennaRNA/data_structures.h>
 #include <ViennaRNA/subopt.h>
