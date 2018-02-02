@@ -51,5 +51,15 @@ namespace Ribosoft.Biology
 
             return complement.ToString();
         }
+
+        public int GetLength()
+        {
+            return Nucleotides.Count;
+        }
+
+        public void Insert(int idx, Nucleotide nucleotide)
+        {
+            Nucleotides.Insert(idx, nucleotide);
+        }
     }
 }
