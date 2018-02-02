@@ -230,10 +230,10 @@ namespace Ribosoft.Tests
             Exception ex = Assert.Throws<CandidateGeneration.CandidateGenerationException>(() => candidateGenerator.GenerateCandidates(
                 "CGUGGUUAGGGCCACGUUAAAUAGnnNNUUAAGCCCUAAGCGNNNNnn",
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
-                "nnNNNNGNNNnn",
-                "987654..3210",
+                "nnNNNNnNNNnn",
+                "987654a.3210",
                 "AUUGCAGUAUAAAGCCU"));
-            Assert.Equal("Multiple repeat regions are not supported.", ex.Message);
+            Assert.Equal("More than 2 repeat regions are not supported.", ex.Message);
         }
 
         [Fact]
@@ -268,6 +268,28 @@ namespace Ribosoft.Tests
             Assert.Equal("GUA", candidates[0].Sequence.GetString());
             Assert.Equal("GAA", candidates[1].Sequence.GetString());
             Assert.Equal("GAUA", candidates[2].Sequence.GetString());
+        }
+
+        [Fact]
+        public void Generate_Candidates_StartEnd_Repeat()
+        {
+            CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
+            var candidates = candidateGenerator.GenerateCandidates(
+                "nGNn",
+                "0.12",
+                "nNn",
+                "210",
+                "AUG");
+
+            Assert.Equal(8, candidates.Count);
+            Assert.Equal("GU", candidates[0].Sequence.GetString());
+            Assert.Equal("GC", candidates[1].Sequence.GetString());
+            Assert.Equal("GA", candidates[2].Sequence.GetString());
+            Assert.Equal("GAU", candidates[3].Sequence.GetString());
+            Assert.Equal("GCA", candidates[4].Sequence.GetString());
+            Assert.Equal("AGC", candidates[5].Sequence.GetString());
+            Assert.Equal("UGCA", candidates[6].Sequence.GetString());
+            Assert.Equal("UGA", candidates[7].Sequence.GetString());
         }
     }
 }
