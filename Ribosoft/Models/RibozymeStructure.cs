@@ -14,14 +14,18 @@ namespace Ribosoft.Models
         [Required]
         [DataType(DataType.Text)]
         [RepeatNotations(5)]
+        [Nucleotide]
         public string Sequence { get; set; }
         [Required]
         public string Structure { get; set; }
         [Required]
         [Display(Name = "Substrate Template")]
+        [Nucleotide]
         public string SubstrateTemplate { get; set; }
         [Required]
         [Display(Name = "Substrate Structure")]
+        [RegularExpression(@"^[\.a-z0-9]+$",
+        ErrorMessage = "Subtrate structure must only contain ., letters, or numbers")]
         public string SubstrateStructure { get; set; }
         [Display(Name = "Post Process")]
         public bool PostProcess { get; set; }
