@@ -46,7 +46,7 @@ namespace Ribosoft.CandidateGeneration
             RepeatRegions = new List<Tuple<int, int>>();
         }
 
-        public IList<Candidate> GenerateCandidates(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
+        public IEnumerable<Candidate> GenerateCandidates(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
         {
             //*********************
             //
@@ -93,36 +93,20 @@ namespace Ribosoft.CandidateGeneration
             //3, 4- Traverse ribozyme & substrate trees
             //*********************
 
-            Task t1 = Task.Factory.StartNew(() => TraverseRibozyme());
-            Task t2 = Task.Factory.StartNew(() => TraverseSubstrate());
-
-            try
-            {
-                Task.WaitAll(t1, t2);
-            }
-            catch (AggregateException ae)
-            {
-                throw ae.Flatten();
-            }
+            TraverseRibozyme();
+            TraverseSubstrate();
 
             //*********************
-            //5- Eliminate potential cut sites that are not found on input RNA
-            //*********************
-            EliminateCutSites(SubstrateInfo);
-
-            //*********************
-            //6- Handle repeat notations at extremities
+            //5- Handle repeat notations at extremities
             //*********************
 
             HandleExtremityRepeats();
 
             //*********************
-            //7- Finish generating sequences based on cut sites and create list of all permutations of sequences + accepted cut sites
+            //6- Finish generating sequences based on cut sites and create list of all permutations of sequences + accepted cut sites
             //*********************
 
             return CompleteSequencesWithCutSiteInfo();
-
-
 
             //Console.WriteLine("Amount of sequences (no cut site): {0}", Sequences.Count);
             //Console.WriteLine("Amount of sequences to send: {0}", SequencesToSend.Count);
@@ -283,7 +267,12 @@ namespace Ribosoft.CandidateGeneration
 
             if (currentNode.Children.Count == 0) //Leaf
             {
-                SubstrateInfo.Add(new SubstrateInfo(currentSequence, SubstrateBaseStructure));
+                //Eliminate the cut sites that are not found in the input RNA sequence
+                if (InputRNASequence.IndexOf(currentSequence.GetString(), StringComparison.Ordinal) >= 0)
+                {
+                    //Console.WriteLine("Eliminating cut site: not found in RNA sequence.");
+                    SubstrateInfo.Add(new SubstrateInfo(currentSequence, SubstrateBaseStructure));
+                }
             }
             else
             {
@@ -348,18 +337,6 @@ namespace Ribosoft.CandidateGeneration
                 {
                     foreach (Node child in currentNode.Children)
                         TraverseSequence(new Sequence(currentSequence), child);
-                }
-            }
-        }
-        public void EliminateCutSites(List<SubstrateInfo> cutsites)
-        {
-            //Eliminate the cut sites that are not found in the input RNA sequence
-            for (int i = cutsites.Count - 1; i > -1; i--)
-            {
-                if (InputRNASequence.IndexOf(cutsites[i].Sequence.GetString()) == -1)
-                {
-                    //Console.WriteLine("Eliminating cut site: not found in RNA sequence.");
-                    cutsites.RemoveAt(i);
                 }
             }
         }
@@ -454,10 +431,9 @@ namespace Ribosoft.CandidateGeneration
 
             SubstrateBaseStructure = baseStructure.ToString();
         }
-        public IList<Candidate> CompleteSequencesWithCutSiteInfo()
-        {
-            List<Candidate> candidates = new List<Candidate>();
 
+        public IEnumerable<Candidate> CompleteSequencesWithCutSiteInfo()
+        {
             //First, build the mapping between substrate and ribozyme
             for (int i = 0; i < Ribozyme.SubstrateStructure.Length; i++)
             {
@@ -533,13 +509,11 @@ namespace Ribosoft.CandidateGeneration
                         //Remove the nucleotides that are not part of the sequence (due to repeat notation)
                         String newStructure = Ribozyme.Structure;
                         RemoveUnusedRepeats(ref newStructure, newSequence);
-                        candidates.Add(new Candidate { Sequence = newSequence, Structure = newStructure, SubstrateSequence = substrateInfo.Sequence.GetString(), SubstrateStructure = substrateInfo.Structure, CutsiteNumberOffset = substrateInfo.CutsiteOffset, CutsiteIndices = AllIndicesOf(InputRNASequence, substrateInfo.Sequence.GetString()) });
+                        yield return new Candidate { Sequence = newSequence, Structure = newStructure, SubstrateSequence = substrateInfo.Sequence.GetString(), SubstrateStructure = substrateInfo.Structure, CutsiteNumberOffset = substrateInfo.CutsiteOffset, CutsiteIndices = AllIndicesOf(InputRNASequence, substrateInfo.Sequence.GetString()) };
                     }
                     //Else, do nothing: this ribozyme sequence cannot bond with the substrate
                 }
             }
-
-            return candidates;
         }
 
         private void RemoveUnusedRepeats(ref String structure, Sequence sequence)
@@ -553,17 +527,18 @@ namespace Ribosoft.CandidateGeneration
                 }
             }
         }
+
         public void HandleExtremityRepeats()
         {
             foreach (Tuple<int, int> repeatRegion in RepeatRegions)
             {
                 //Always base off of the current list
                 //If this isn't the first repeat region, this will base off of the no repeat versions as well as all the ones with the other repeat region
-                List<SubstrateInfo> sequencesToBaseOffOf = new List<SubstrateInfo>(SubstrateInfo);
+                IList<SubstrateInfo> sequencesToBaseOffOf = new List<SubstrateInfo>(SubstrateInfo);
 
                 int currentCount = 0;
 
-                List<SubstrateInfo> newSubstrateSequences = new List<SubstrateInfo>();
+                IList<SubstrateInfo> newSubstrateSequences = new List<SubstrateInfo>();
 
                 bool startRepeat = (repeatRegion.Item1 == 0);
                 bool endRepeat = (repeatRegion.Item2 == Ribozyme.SubstrateSequence.Length - 1);
@@ -593,12 +568,14 @@ namespace Ribosoft.CandidateGeneration
                             String newStructure = additionalStructure + seq.Structure;
 
                             int offset = startRepeat ? (currentCount + 1) : 0; //If there is a repeat at the beginning, the cutsite number should be shifted
-                            newSubstrateSequences.Add(new SubstrateInfo(newSeq, newStructure, offset));
+
+                            //Keep only cutsites that are found in RNA
+                            if (InputRNASequence.IndexOf(newSeq.GetString(), StringComparison.Ordinal) >= 0)
+                            {
+                                newSubstrateSequences.Add(new SubstrateInfo(newSeq, newStructure, offset));
+                            }
                         }
                     }
-
-                    //Keep only cutsites that are found in RNA
-                    EliminateCutSites(newSubstrateSequences);
 
                     //Add valid cutsites to list
                     SubstrateInfo.AddRange(newSubstrateSequences);
