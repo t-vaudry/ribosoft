@@ -268,7 +268,13 @@ namespace Ribosoft.CandidateGeneration
         public void TraverseRibozyme()
         {
             foreach (Node rootNode in NodesAtDepthSequence[0])
+            {
+                if (IsTarget(Ribozyme.Structure[0]))
+                {
+                    rootNode.Nucleotide.SetSymbol('-');
+                }
                 TraverseSequence(new Sequence(Ribozyme.Sequence.Length), rootNode);
+            }
         }
 
         public void TraverseNoStructure(Sequence currentSequence, Node currentNode)
@@ -422,9 +428,9 @@ namespace Ribosoft.CandidateGeneration
             }
 
             //Check if multiple repeat regions. This case isn't handled yet
-            if (RepeatRegions.Count > 1)
+            if (RepeatRegions.Count > 2)
             {
-                throw new CandidateGenerationException("Multiple repeat regions are not supported.");
+                throw new CandidateGenerationException("More than 2 repeat regions are not supported.");
             }
 
             //Check if any repeat regions aren't at either extremity. This case isn't handled yet.
@@ -549,24 +555,24 @@ namespace Ribosoft.CandidateGeneration
         }
         public void HandleExtremityRepeats()
         {
-            if (RepeatRegions.Count == 0)
-                return;
-
             foreach (Tuple<int, int> repeatRegion in RepeatRegions)
             {
+                //Always base off of the current list
+                //If this isn't the first repeat region, this will base off of the no repeat versions as well as all the ones with the other repeat region
+                List<SubstrateInfo> sequencesToBaseOffOf = new List<SubstrateInfo>(SubstrateInfo);
+
                 int currentCount = 0;
 
                 List<SubstrateInfo> newSubstrateSequences = new List<SubstrateInfo>();
-                List<SubstrateInfo> sequencesToBaseOffOf = new List<SubstrateInfo>(SubstrateInfo);
+
+                bool startRepeat = (repeatRegion.Item1 == 0);
+                bool endRepeat = (repeatRegion.Item2 == Ribozyme.SubstrateSequence.Length - 1);
 
                 while (currentCount <= (repeatRegion.Item2 - repeatRegion.Item1))
                 {
                     int beginIdx = -1;
                     int insertIdx = -1;
 
-                    bool startRepeat = (repeatRegion.Item1 == 0);
-                    bool endRepeat = (repeatRegion.Item2 == Ribozyme.SubstrateSequence.Length - 1);
-                    
                     if (!startRepeat && !endRepeat)
                     {
                         throw new CandidateGenerationException("Repeat notation not located at beginning or end of substrate sequence. Case not supported.");
