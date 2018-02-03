@@ -273,7 +273,7 @@ namespace Ribosoft.CandidateGeneration
                 {
                     rootNode.Nucleotide.SetSymbol('-');
                 }
-                    TraverseSequence(new Sequence(Ribozyme.Sequence.Length), rootNode);
+                TraverseSequence(new Sequence(Ribozyme.Sequence.Length), rootNode);
             }
         }
 
@@ -555,10 +555,6 @@ namespace Ribosoft.CandidateGeneration
         }
         public void HandleExtremityRepeats()
         {
-            if (RepeatRegions.Count == 0)
-                return;
-
-            
             foreach (Tuple<int, int> repeatRegion in RepeatRegions)
             {
                 //Always base off of the current list
@@ -568,14 +564,14 @@ namespace Ribosoft.CandidateGeneration
                 int currentCount = 0;
 
                 List<SubstrateInfo> newSubstrateSequences = new List<SubstrateInfo>();
-                
+
+                bool startRepeat = (repeatRegion.Item1 == 0);
+                bool endRepeat = (repeatRegion.Item2 == Ribozyme.SubstrateSequence.Length - 1);
+
                 while (currentCount <= (repeatRegion.Item2 - repeatRegion.Item1))
                 {
                     int beginIdx = -1;
                     int insertIdx = -1;
-
-                    bool startRepeat = (repeatRegion.Item1 == 0);
-                    bool endRepeat = (repeatRegion.Item2 == Ribozyme.SubstrateSequence.Length - 1);
 
                     if (!startRepeat && !endRepeat)
                     {
