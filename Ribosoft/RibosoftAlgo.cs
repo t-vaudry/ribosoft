@@ -53,13 +53,13 @@ namespace Ribosoft
             return validate_structure(structure);
         }
 
-        public float Accessibility(Candidate candidate, string substrateSequence, string substrateTemplate, int cutsiteNumber)
+        public float Accessibility(Candidate candidate, string rnaInput, int cutsiteNumber)
         {
             float accessibilityScore = 0.0f;
 
             foreach (var cutsiteIndex in candidate.CutsiteIndices)
             {
-                R_STATUS status = accessibility(substrateSequence, substrateTemplate, cutsiteIndex, cutsiteNumber, out float delta);
+                R_STATUS status = accessibility(rnaInput, candidate.SubstrateSequence, cutsiteIndex, cutsiteNumber, out float delta);
 
                 if (status != R_STATUS.R_STATUS_OK)
                 {
@@ -76,18 +76,14 @@ namespace Ribosoft
         {
             float temperatureScore = 0.0f;
 
-            foreach (var cutsiteIndex in candidate.CutsiteIndices)
+            R_STATUS status = anneal(targetSequence, structure, naConcentration, probeConcentration, out float delta);
+
+            if (status != R_STATUS.R_STATUS_OK)
             {
-                string subSequence = targetSequence.Substring(cutsiteIndex, structure.Length);
-                R_STATUS status = anneal(subSequence, structure, naConcentration, probeConcentration, out float delta);
-
-                if (status != R_STATUS.R_STATUS_OK)
-                {
-                    throw new RibosoftAlgoException(status);
-                }
-
-                temperatureScore += delta;
+                throw new RibosoftAlgoException(status);
             }
+
+            temperatureScore += delta;
 
             return temperatureScore;
         }

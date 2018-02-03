@@ -1,7 +1,6 @@
 #include "dll.h"
 
 #include <cstdlib>
-#include <cstring>
 
 #include <ViennaRNA/data_structures.h>
 #include <ViennaRNA/subopt.h>
@@ -33,26 +32,25 @@ extern "C"
 
         // initialize output
         size_t solution_size = 0;
-        while(sol[solution_size].structure) {
+        while(sol[solution_size].structure != nullptr) {
             solution_size++;
         }
 
         size_t length = strlen(sequence);
         size = solution_size;
         output = new fold_output[solution_size];
-        for (idx_t i = 0; i < solution_size; i++) {
+        for (size_t i = 0; i < solution_size; ++i) {
             output[i].structure = new char[length + 1];
             strncpy(output[i].structure, sol[i].structure, length);
             output[i].structure[length] = '\0';
             output[i].energy = sol[i].energy;
+
+            free(sol[i].structure);
         }
 
         // free memory
-        vrna_fold_compound_free(vc);
-        for (idx_t i = 0; i < solution_size; i++) {
-            free(sol[i].structure);
-        }
         free(sol);
+        vrna_fold_compound_free(vc);
 
         return R_SUCCESS::R_STATUS_OK;
     }

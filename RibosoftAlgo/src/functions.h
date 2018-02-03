@@ -4,6 +4,7 @@
 #include "error.h"
 
 #include <cstdint>
+#include <cstring>
 
 RIBOSOFT_NAMESPACE_START
 
