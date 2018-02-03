@@ -24,22 +24,22 @@ RIBOSOFT_NAMESPACE_START
 extern "C"
 {
 
-    DLL_PUBLIC R_STATUS accessibility(const char* substrateSequence, const char* substrateTemplate, const int cutsiteIndex, const int cutsiteNumber, /*out*/ float& delta)
+    DLL_PUBLIC R_STATUS accessibility(const char* rna, const char* substrateSequence, const int cutsiteIndex, const int cutsiteNumber, /*out*/ float& delta)
     {
-        R_STATUS status = validate_sequence(substrateSequence);
+        R_STATUS status = validate_sequence(rna);
         if (status != R_SUCCESS::R_STATUS_OK) {
         	return status;
         }
 
-        if (cutsiteIndex > strlen(substrateSequence) || cutsiteIndex < 0) {
+        if (cutsiteIndex > strlen(rna) || cutsiteIndex < 0) {
             return R_APPLICATION_ERROR::R_OUT_OF_RANGE;
         }
 
-        if (cutsiteNumber > strlen(substrateTemplate) || cutsiteNumber < 0) {
+        if (cutsiteNumber > strlen(substrateSequence) || cutsiteNumber < 0) {
             return R_APPLICATION_ERROR::R_OUT_OF_RANGE;
         }
 
-        if (strlen(substrateTemplate) > MAX_TEMPLATE_LENGTH) {
+        if (strlen(substrateSequence) > MAX_TEMPLATE_LENGTH) {
             return R_APPLICATION_ERROR::R_INVALID_TEMPLATE_LENGTH;
         }
 
@@ -52,15 +52,15 @@ extern "C"
         }
 
         // If cutsiteIndex is close to the end
-        if (subSequenceEnd > strlen(substrateSequence)) {
-            subSequenceEnd = (idx_t) strlen(substrateSequence) - 1;
+        if (subSequenceEnd > strlen(rna)) {
+            subSequenceEnd = (idx_t) strlen(rna) - 1;
         }
 
         idx_t length = subSequenceEnd - subSequenceStart;
 
         // Copy substring of sequence that will be folded
         char* subSequence = new char[length + 1];
-        strncpy(subSequence, &substrateSequence[subSequenceStart], length);
+        strncpy(subSequence, &rna[subSequenceStart], length);
         subSequence[length] = '\0';
 
         char* constraints = new char[length + 1];
@@ -68,7 +68,7 @@ extern "C"
 
         // Set constraints for not folding here
         idx_t constraintStart = cutsiteIndex - subSequenceStart - cutsiteNumber;
-        idx_t constraintEnd = constraintStart + (idx_t) strlen(substrateTemplate);
+        idx_t constraintEnd = constraintStart + (idx_t) strlen(substrateSequence);
 
         if (constraintStart < 0) {
             constraintStart = 0;

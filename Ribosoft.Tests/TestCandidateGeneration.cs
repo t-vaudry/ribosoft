@@ -192,5 +192,104 @@ namespace Ribosoft.Tests
             Assert.Equal("CG", candidates[0].Sequence.GetString());
             Assert.Equal("UA", candidates[1].Sequence.GetString());
         }
+
+        [Fact]
+        public void Generate_Candidates_Middle_Repeat()
+        {
+            CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
+
+            Exception ex = Assert.Throws<CandidateGeneration.CandidateGenerationException>(() => candidateGenerator.GenerateCandidates(
+                "CGUGGUUAGGGCCACGUUAAAUAGNNNNUUAAGCCCUAAGCGnnNNNN",
+                "((((.[[[[[..))))........0123.....]]]]]]...456789",
+                "NNNNnnGUNNNN",
+                "987654..3210",
+                "AUUGCAGUAUAAAGCCU"));
+
+            Assert.Equal("Repeat notation not located at beginning or end of substrate sequence. Case not supported.", ex.Message);
+        }
+
+        [Fact]
+        public void Generate_Candidates_No_Target_Repeat()
+        {
+            CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
+
+            Exception ex = Assert.Throws<CandidateGeneration.CandidateGenerationException>(() => candidateGenerator.GenerateCandidates(
+                "CGUGGUUAGGGCCACGUUAAAUAGNNNNUUAAGCCCUAAGCGNNNNNN",
+                "((((.[[[[[..))))........0123.....]]]]]]...456789",
+                "NNNNNNGnNNNN",
+                "987654..3210",
+                "AUUGCAGUAUAAAGCCU"));
+            Assert.Equal("Repeat notation is not on target. Unhandled case.", ex.Message);
+        }
+
+        [Fact]
+        public void Generate_Candidates_Multiple_Repeat_Regions()
+        {
+            CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
+
+            Exception ex = Assert.Throws<CandidateGeneration.CandidateGenerationException>(() => candidateGenerator.GenerateCandidates(
+                "CGUGGUUAGGGCCACGUUAAAUAGnnNNUUAAGCCCUAAGCGNNNNnn",
+                "((((.[[[[[[.))))........0123.....]]]]]]...456789",
+                "nnNNNNnNNNnn",
+                "987654a.3210",
+                "AUUGCAGUAUAAAGCCU"));
+            Assert.Equal("More than 2 repeat regions are not supported.", ex.Message);
+        }
+
+        [Fact]
+        public void Generate_Candidates_End_Repeat()
+        {
+            CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
+            var candidates = candidateGenerator.GenerateCandidates(
+                "GnNA",
+                ".01.",
+                "Nn",
+                "10",
+                "AU");
+
+            Assert.Equal(3, candidates.Count);
+            Assert.Equal("GUA", candidates[0].Sequence.GetString());
+            Assert.Equal("GAA", candidates[1].Sequence.GetString());
+            Assert.Equal("GUAA", candidates[2].Sequence.GetString());
+        }
+
+        [Fact]
+        public void Generate_Candidates_Start_Repeat()
+        {
+            CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
+            var candidates = candidateGenerator.GenerateCandidates(
+                "GNnA",
+                ".01.",
+                "nN",
+                "10",
+                "AU");
+
+            Assert.Equal(3, candidates.Count);
+            Assert.Equal("GUA", candidates[0].Sequence.GetString());
+            Assert.Equal("GAA", candidates[1].Sequence.GetString());
+            Assert.Equal("GAUA", candidates[2].Sequence.GetString());
+        }
+
+        [Fact]
+        public void Generate_Candidates_StartEnd_Repeat()
+        {
+            CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
+            var candidates = candidateGenerator.GenerateCandidates(
+                "nGNn",
+                "0.12",
+                "nNn",
+                "210",
+                "AUG");
+
+            Assert.Equal(8, candidates.Count);
+            Assert.Equal("GU", candidates[0].Sequence.GetString());
+            Assert.Equal("GC", candidates[1].Sequence.GetString());
+            Assert.Equal("GA", candidates[2].Sequence.GetString());
+            Assert.Equal("GAU", candidates[3].Sequence.GetString());
+            Assert.Equal("GCA", candidates[4].Sequence.GetString());
+            Assert.Equal("AGC", candidates[5].Sequence.GetString());
+            Assert.Equal("UGCA", candidates[6].Sequence.GetString());
+            Assert.Equal("UGA", candidates[7].Sequence.GetString());
+        }
     }
 }
