@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ribosoft.Models
 {
+    [ValidateRibozymeStructure]
     public class RibozymeStructure : BaseEntity
     {
         public int Id { get; set; }
