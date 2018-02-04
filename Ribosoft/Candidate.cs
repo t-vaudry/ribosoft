@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-
 using Ribosoft.Biology;
+using Ribosoft.MultiObjectiveOptimization;
 
 namespace Ribosoft {
 
-    public class Candidate
+    public class Candidate : IRankable<float>
     {
         public Sequence Sequence { get; set; }
         public String Structure { get; set; }
@@ -15,7 +15,7 @@ namespace Ribosoft {
         public int CutsiteNumberOffset { get; set; }
         public List<int> CutsiteIndices { get; set; }
         public float[] FitnessValues { get; set; }
-        public int? Rank { get; set; }
+        public int Rank { get; set; }
 
         public Candidate()
         {
@@ -25,7 +25,9 @@ namespace Ribosoft {
             CutsiteNumberOffset = 0;
             CutsiteIndices = null;
             FitnessValues = new float[4];
-            Rank = null;
+            Rank = 0;
         }
+
+        public IEnumerable<float> Comparables => FitnessValues;
     }
 }

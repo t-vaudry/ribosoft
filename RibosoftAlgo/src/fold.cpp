@@ -54,6 +54,18 @@ extern "C"
 
         return R_SUCCESS::R_STATUS_OK;
     }
+
+	DLL_PUBLIC void fold_output_free(fold_output* output, size_t size)
+	{
+		if (output) {
+			for (int i = 0; i < size; ++i) {
+				delete[] output[i].structure;
+				output[i].structure = nullptr;
+			}
+
+			delete[] output;
+		}
+	}
 }
 
 RIBOSOFT_NAMESPACE_END
