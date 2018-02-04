@@ -18,6 +18,9 @@ namespace Ribosoft.Models
         [Nucleotide]
         public string Sequence { get; set; }
         [Required]
+        [RegularExpression(@"^[.()\[\]a-z0-9]+$",
+        ErrorMessage = "Sequence structure must only contain ., (, ), [, ], letters, or numbers")]
+        [ValidStructure]
         public string Structure { get; set; }
         [Required]
         [Display(Name = "Substrate Template")]
