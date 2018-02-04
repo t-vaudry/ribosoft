@@ -32,6 +32,9 @@ namespace Ribosoft
         private static extern R_STATUS fold(string sequence, out IntPtr output, out int size);
 
         [DllImport("RibosoftAlgo")]
+        private static extern void fold_output_free(IntPtr output, int size);
+
+        [DllImport("RibosoftAlgo")]
         private static extern R_STATUS structure(string candidate, string ideal, out float distance);
 
         public RibosoftAlgo()
@@ -97,12 +100,16 @@ namespace Ribosoft
                 throw new RibosoftAlgoException(status);
             }
 
+            var currentPtr = outputPtr;
             var foldOutputs = new FoldOutput[size];
+            var foldOutputSize = Marshal.SizeOf<FoldOutput>();
 
-            for (int i = 0; i < size; ++i, outputPtr += Marshal.SizeOf<FoldOutput>())
+            for (int i = 0; i < size; ++i, currentPtr += foldOutputSize)
             {
-                foldOutputs[i] = Marshal.PtrToStructure<FoldOutput>(outputPtr);
+                foldOutputs[i] = Marshal.PtrToStructure<FoldOutput>(currentPtr);
             }
+
+            fold_output_free(outputPtr, size);
 
             return foldOutputs;
         }
