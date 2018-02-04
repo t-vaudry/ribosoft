@@ -13,14 +13,17 @@ namespace Ribosoft.Jobs
 {
     public class GenerateCandidates
     {
-        private readonly ApplicationDbContext _db;
+        private readonly DbContextOptions<ApplicationDbContext> _dbOptions;
         private readonly CandidateGeneration.CandidateGenerator _candidateGenerator;
         private readonly IEmailSender _emailSender;
         private readonly RibosoftAlgo _ribosoftAlgo;
         private readonly MultiObjectiveOptimization.MultiObjectiveOptimizer _multiObjectiveOptimizer;
 
+        private ApplicationDbContext _db;
+
         public GenerateCandidates(DbContextOptions<ApplicationDbContext> options, IEmailSender emailSender)
         {
+            _dbOptions = options;
             _db =  new ApplicationDbContext(options);
             _candidateGenerator = new CandidateGeneration.CandidateGenerator();
             _emailSender = emailSender;
@@ -31,11 +34,7 @@ namespace Ribosoft.Jobs
         [AutomaticRetry(Attempts = 0)]
         public async Task Generate(int jobId, IJobCancellationToken cancellationToken)
         {
-            var job = _db.Jobs
-                .Include(j => j.Owner)
-                .Include(j => j.Ribozyme)
-                    .ThenInclude(r => r.RibozymeStructures)
-                .Single(j => j.Id == jobId);
+            var job = GetJob(jobId);
 
             if (job.JobState != JobState.New)
             {
@@ -45,17 +44,44 @@ namespace Ribosoft.Jobs
             job.JobState = JobState.Started;
             await _db.SaveChangesAsync();
 
-            var ribozyme = job.Ribozyme;
+            await RunCandidateGenerator(job, cancellationToken);
+            await MultiObjectiveOptimize(job, cancellationToken);
 
-            List<Candidate> candidates = new List<Candidate>();
+            job.JobState = JobState.Completed;
+            await _db.SaveChangesAsync();
 
-            foreach (var ribozymeStructure in ribozyme.RibozymeStructures)
+            await SendJobCompletionEmail(job.Owner);
+        }
+
+        private void RecreateDbContext()
+        {
+            _db = new ApplicationDbContext(_dbOptions);
+        }
+
+        private Job GetJob(int jobId)
+        {
+            return _db.Jobs
+                .Include(j => j.Owner)
+                .Include(j => j.Ribozyme)
+                    .ThenInclude(r => r.RibozymeStructures)
+                .Single(j => j.Id == jobId);
+        }
+
+        private async Task RunCandidateGenerator(Job job, IJobCancellationToken cancellationToken)
+        {
+            uint batchCount = 0;
+            var idealStructurePattern = new Regex(@"[^.^(^)]");
+
+            foreach (var ribozymeStructure in job.Ribozyme.RibozymeStructures)
             {
-                IList<Candidate> current;
-                // Candidate Generation
+                cancellationToken.ThrowIfCancellationRequested();
+
+                IEnumerable<Candidate> candidates;
+
                 try
                 {
-                    current = _candidateGenerator.GenerateCandidates(
+                    // Candidate Generation
+                    candidates = _candidateGenerator.GenerateCandidates(
                         ribozymeStructure.Sequence,
                         ribozymeStructure.Structure,
                         ribozymeStructure.SubstrateTemplate,
@@ -69,77 +95,74 @@ namespace Ribosoft.Jobs
                     await _db.SaveChangesAsync();
                     return;
                 }
-                catch (AggregateException e)
-                {
-                    job.JobState = JobState.Errored;
-                    job.StatusMessage = e.InnerExceptions.FirstOrDefault()?.Message ?? e.Message;
-                    await _db.SaveChangesAsync();
-                    return;
-                }
 
                 // Algorithms
                 try
                 {
-                    foreach (var candidate in current)
+                    _db.ChangeTracker.AutoDetectChangesEnabled = false;
+
+                    foreach (var candidate in candidates)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
-                        Regex pattern = new Regex(@"[^.^(^)]");
-                        string ideal = pattern.Replace(candidate.Structure, ".");
+                        string ideal = idealStructurePattern.Replace(candidate.Structure, ".");
 
-                        candidate.FitnessValues[0] = _ribosoftAlgo.Accessibility(candidate, job.RNAInput, ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset); // ACCESSIBILITY
-                        candidate.FitnessValues[1] = 0.0f; // NO SPECIFICITY!
-                        candidate.FitnessValues[2] = _ribosoftAlgo.Structure(candidate, ideal); // STRUCTURE
-                        candidate.FitnessValues[3] = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence, candidate.SubstrateStructure, 1.0f, 0.05f); // TEMPERATURE
+                        var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
+                            ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset);
+                        var specificityScore = 0.0f; // TODO
+                        var structureScore = _ribosoftAlgo.Structure(candidate, ideal);
+                        var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
+                            candidate.SubstrateStructure, 1.0f, 0.05f);
+
+                        _db.Designs.Add(new Design
+                        {
+                            JobId = job.Id,
+
+                            Sequence = candidate.Sequence.GetString(),
+                            AccessibilityScore = accessibilityScore,
+                            SpecificityScore = specificityScore,
+                            StructureScore = structureScore,
+                            TemperatureScore = temperatureScore
+                        });
+
+                        if (batchCount % 100 == 0)
+                        {
+                            await _db.SaveChangesAsync();
+                            RecreateDbContext();
+                            _db.ChangeTracker.AutoDetectChangesEnabled = false;
+                            batchCount = 0;
+                        }
                     }
                 }
                 catch (RibosoftAlgoException e)
                 {
                     job.JobState = JobState.Errored;
                     job.StatusMessage = e.Code.ToString();
-                    await _db.SaveChangesAsync();
                     return;
                 }
-
-                candidates.AddRange(current);
+                finally
+                {
+                    _db.ChangeTracker.AutoDetectChangesEnabled = true;
+                    _db.Jobs.Attach(job);
+                    await _db.SaveChangesAsync();
+                }
             }
+        }
 
-            // Multi-Objective Optimization
-            IList<Candidate> rankedCandidates;
+        private async Task MultiObjectiveOptimize(Job job, IJobCancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
             try
             {
-                rankedCandidates = _multiObjectiveOptimizer.Optimize(candidates, 1);
+                _multiObjectiveOptimizer.Optimize(_db.Designs.Where(j => j.JobId == job.Id).ToList(), 1);
             }
             catch (MultiObjectiveOptimization.MultiObjectiveOptimizationException e)
             {
                 job.JobState = JobState.Errored;
                 job.StatusMessage = e.Message;
                 await _db.SaveChangesAsync();
-                return;
             }
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            foreach (var candidate in rankedCandidates)
-            {
-                var design = new Design
-                {
-                    Sequence = candidate.Sequence.GetString(),
-                    Rank = candidate.Rank ?? default(int),
-                    AccessibilityScore = candidate.FitnessValues[0],
-                    SpecificityScore = candidate.FitnessValues[1],
-                    StructureScore = candidate.FitnessValues[2],
-                    TemperatureScore = candidate.FitnessValues[3]
-                };
-                job.Designs.Add(design);
-            }
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            job.JobState = JobState.Completed;
-            await _db.SaveChangesAsync();
-
-            await SendJobCompletionEmail(job.Owner);
         }
 
         private async Task SendJobCompletionEmail(ApplicationUser user)
