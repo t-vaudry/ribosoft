@@ -51,14 +51,14 @@ R_STATUS anneal(const char* sequence, const char* structure, const float na_conc
         substrings.push_back(local_sequence.substr(match.position(), match.length()));
     }
 
-    float temp_sum = 0.0;
+    double temp_sum = 0.0;
 
     for (int i = 0; i < substrings.size(); i++) {
 
-        temp_sum += (float) melting(substrings[i].c_str(), na_concentration, probe_concentration);
+        temp_sum += melting(substrings[i].c_str(), na_concentration, probe_concentration);
     }
 
-    temp = temp_sum;
+    temp = static_cast<float>(temp_sum);
     return status;
 }
 
