@@ -17,11 +17,15 @@ add_definitions(-DBUILDING_DLL)
 find_package(RNA REQUIRED)
 include_directories(${RNA_INCLUDE_DIR})
 
+# Find MELTING V4.3
+find_package(MELTING REQUIRED)
+include_directories(${MELTING_INCLUDE_DIR})
+
 # Create the library
 add_library(RibosoftAlgo SHARED ${SOURCE_FILES})
 
 # Link required libraries
-target_link_libraries(RibosoftAlgo ${LIBRARIES} ${RNA_LIBRARY})
+target_link_libraries(RibosoftAlgo ${LIBRARIES} ${RNA_LIBRARY} ${MELTING_LIBRARY})
 
 # Mark this directory as a root directory for future includes
 target_include_directories(RibosoftAlgo PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

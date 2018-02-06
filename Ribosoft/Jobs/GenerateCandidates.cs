@@ -112,7 +112,7 @@ namespace Ribosoft.Jobs
                         var specificityScore = 0.0f; // TODO
                         var structureScore = _ribosoftAlgo.Structure(candidate, ideal);
                         var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
-                            candidate.SubstrateStructure, 1.0f);
+                            candidate.SubstrateStructure, 1.0f, 0.05f);
 
                         _db.Designs.Add(new Design
                         {

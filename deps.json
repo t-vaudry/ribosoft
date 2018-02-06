@@ -4,6 +4,10 @@
     {
       "name": "viennarna",
       "version": "2.4.3-0e9fbd4"
+    },
+    {
+      "name": "melting",
+      "version": "4.3-87f0ff7"
     }
   ]
 }

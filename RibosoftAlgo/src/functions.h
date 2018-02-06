@@ -23,7 +23,7 @@ extern "C" DLL_PUBLIC R_STATUS validate_sequence(const char* sequence);
 extern "C" DLL_PUBLIC R_STATUS validate_structure(const char* structure);
 
 extern "C" DLL_PUBLIC R_STATUS accessibility(const char* substrateSequence, const char* substrateTemplate, const int cutsiteIndex, const int cutsiteNumber, /*out*/ float& delta);
-extern "C" DLL_PUBLIC R_STATUS anneal(const char* sequence, const char* structure, float na_concentration, float& temp);
+extern "C" DLL_PUBLIC R_STATUS anneal(const char* sequence, const char* structure, const float na_concentration, const float probe_concentration, float& temp);
 extern "C" DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*out*/ size_t& size);
 extern "C" DLL_PUBLIC void fold_output_free(fold_output* output, size_t size);
 extern "C" DLL_PUBLIC R_STATUS structure(const char* candidate, const char* ideal, /*out*/ float& distance);
