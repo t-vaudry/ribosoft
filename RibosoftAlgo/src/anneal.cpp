@@ -5,12 +5,15 @@
 #include <iterator>
 #include <cmath>
 #include <vector>
+#include <mutex>
 
 #include "functions.h"
 
 #include <melting.h>
 
 RIBOSOFT_NAMESPACE_START
+
+std::mutex melting_mutex;
 
 R_STATUS anneal(const char* sequence, const char* structure, const float na_concentration, const float probe_concentration, float& temp)
 {
@@ -54,7 +57,9 @@ R_STATUS anneal(const char* sequence, const char* structure, const float na_conc
     double temp_sum = 0.0;
 
     for (int i = 0; i < substrings.size(); i++) {
-
+        // Calculate melting temperature
+        // a lock is needed as melting's melting is not threadsafe
+        std::lock_guard<std::mutex> lock(melting_mutex);
         temp_sum += melting(substrings[i].c_str(), na_concentration, probe_concentration);
     }
 
