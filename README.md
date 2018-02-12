@@ -1,1 +1,1 @@
-[![codecov](https://codecov.io/gh/t-vaudry/ribosoft/branch/develop/graph/badge.svg?token=nExWlRXew4)](https://codecov.io/gh/t-vaudry/ribosoft)
+[![codecov](https://codecov.io/gh/t-vaudry/ribosoft/branch/codecov/graph/badge.svg?token=nExWlRXew4)](https://codecov.io/gh/t-vaudry/ribosoft)
