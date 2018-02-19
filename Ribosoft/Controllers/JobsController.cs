@@ -65,8 +65,11 @@ namespace Ribosoft.Controllers
             var designs = from d in job.Designs select d;
             switch (sortOrder)
             {
-                case "temp_desc":
-                    designs = designs.OrderByDescending(d => d.TemperatureScore);
+                case "desired_temp_desc":
+                    designs = designs.OrderByDescending(d => d.DesiredTemperatureScore);
+                    break;
+                case "high_temp_desc":
+                    designs = designs.OrderByDescending(d => d.HighestTemperatureScore);
                     break;
                 case "spec_desc":
                     designs = designs.OrderByDescending(d => d.SpecificityScore);

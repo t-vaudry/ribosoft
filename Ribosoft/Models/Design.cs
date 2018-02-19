@@ -14,8 +14,10 @@ namespace Ribosoft.Models
         public string Sequence { get; set; }
         public int Rank { get; set; }
 
-        [Display(Name = "Temperature Score")]
-        public float? TemperatureScore { get; set; }
+        [Display(Name = "Desired Temperature Score")]
+        public float? DesiredTemperatureScore { get; set; }
+        [Display(Name = "Highest Temperature Score")]
+        public float? HighestTemperatureScore { get; set; }
         [Display(Name = "Specificity Score")]
         public float? SpecificityScore { get; set; }
         [Display(Name = "Accessibility Score")]
@@ -27,7 +29,8 @@ namespace Ribosoft.Models
 
         public IEnumerable<float> Comparables => new []
         {
-            TemperatureScore.GetValueOrDefault(),
+            DesiredTemperatureScore.GetValueOrDefault(),
+            HighestTemperatureScore.GetValueOrDefault(),
             SpecificityScore.GetValueOrDefault(),
             AccessibilityScore.GetValueOrDefault(),
             StructureScore.GetValueOrDefault()
