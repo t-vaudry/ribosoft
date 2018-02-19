@@ -29,6 +29,10 @@ namespace Ribosoft.Models
         public int RibozymeId { get; set; }
         [Display(Name = "RNA Input")]
         public string RNAInput { get; set; }
+        [Display(Name = "Open Reading Frame Start Index")]
+        public int OpenReadingFrameStart { get; set; }
+        [Display(Name = "Open Reading Frame End Index")]
+        public int OpenReadingFrameEnd { get; set; }
         [ScaffoldColumn(false)]
         public string HangfireJobId { get; set; }
         [Display(Name = "Status Message")]
@@ -38,10 +42,10 @@ namespace Ribosoft.Models
         public float? Temperature { get; set; }
         [Display(Name = "Na")]
         public float? Na { get; set; }
-        [Display(Name = "Mg")]
-        public float? Mg { get; set; }
-        [Display(Name = "Oligomer")]
-        public float? Oligomer { get; set; }
+        [Display(Name = "Probe")]
+        public float? Probe { get; set; }
+        [Display(Name = "Target Regions")]
+        public TargetRegion[] TargetRegions { get; set; }
 
         public virtual ApplicationUser Owner { get; set; }
         public virtual Ribozyme Ribozyme { get; set; }

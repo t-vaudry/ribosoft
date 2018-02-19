@@ -23,10 +23,16 @@
             @Html.DisplayFor(model => model.Rank)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.TemperatureScore)
+            @Html.DisplayNameFor(model => model.DesiredTemperatureScore)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.TemperatureScore)
+            @Html.DisplayFor(model => model.DesiredTemperatureScore)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.HighestTemperatureScore)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.HighestTemperatureScore)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.SpecificityScore)
@@ -64,7 +70,7 @@
             Download
         </dt>
         <dd>
-            @Html.ActionLink("FASTA File", "DownloadFile", new { jobID=Model.JobId, rank=Model.Rank, temperatureScore=Model.TemperatureScore, specificityScore=Model.SpecificityScore, accessibilityScore=Model.AccessibilityScore, structureScore=Model.StructureScore, createdAt=Model.CreatedAt, updatedAt=Model.UpdatedAt, sequence=Model.Sequence})
+            @Html.ActionLink("FASTA File", "DownloadFile", new { jobID=Model.JobId, rank=Model.Rank, desiredTemperatureScore=Model.DesiredTemperatureScore, HighestTemperatureScore=Model.HighestTemperatureScore, specificityScore=Model.SpecificityScore, accessibilityScore=Model.AccessibilityScore, structureScore=Model.StructureScore, createdAt=Model.CreatedAt, updatedAt=Model.UpdatedAt, sequence=Model.Sequence})
         </dd>
     </dl>
 </div>

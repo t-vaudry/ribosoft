@@ -112,7 +112,7 @@ namespace Ribosoft.Jobs
                         var specificityScore = 0.0f; // TODO
                         var structureScore = _ribosoftAlgo.Structure(candidate, ideal);
                         var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
-                            candidate.SubstrateStructure, 1.0f, 0.05f);
+                            candidate.SubstrateStructure, job.Na.GetValueOrDefault(), job.Probe.GetValueOrDefault());
 
                         _db.Designs.Add(new Design
                         {
@@ -122,7 +122,8 @@ namespace Ribosoft.Jobs
                             AccessibilityScore = accessibilityScore,
                             SpecificityScore = specificityScore,
                             StructureScore = structureScore,
-                            TemperatureScore = temperatureScore
+                            HighestTemperatureScore = temperatureScore,
+                            DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())
                         });
 
                         if (batchCount % 100 == 0)

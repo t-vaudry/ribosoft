@@ -54,10 +54,12 @@ namespace Ribosoft.Controllers
                 _context.Add(job);
                 job.RibozymeId = model.RibozymeStructure;
                 job.RNAInput = model.InputSequence;
+                job.OpenReadingFrameStart = model.OpenReadingFrameStart;
+                job.OpenReadingFrameEnd = model.OpenReadingFrameEnd;
                 job.Temperature = model.Temperature;
                 job.Na = model.Na;
-                job.Mg = model.Mg;
-                job.Oligomer = model.Oligomer;
+                job.Probe = model.Probe;
+                job.TargetRegions = model.TargetRegions;
                 job.OwnerId = user.Id;
                 job.JobState = JobState.New;
                 await _context.SaveChangesAsync();
