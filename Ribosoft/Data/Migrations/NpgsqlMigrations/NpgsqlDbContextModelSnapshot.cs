@@ -187,6 +187,10 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
 
                     b.Property<DateTime?>("CreatedAt");
 
+                    b.Property<float?>("DesiredTemperatureScore");
+
+                    b.Property<float?>("HighestTemperatureScore");
+
                     b.Property<int>("JobId");
 
                     b.Property<int>("Rank");
@@ -196,8 +200,6 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
                     b.Property<float?>("SpecificityScore");
 
                     b.Property<float?>("StructureScore");
-
-                    b.Property<float?>("TemperatureScore");
 
                     b.Property<DateTime?>("UpdatedAt");
 
@@ -215,17 +217,23 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
 
                     b.Property<DateTime?>("CreatedAt");
 
+                    b.Property<bool>("FivePrime");
+
                     b.Property<string>("HangfireJobId");
 
                     b.Property<int>("JobState");
 
-                    b.Property<float?>("Mg");
-
                     b.Property<float?>("Na");
 
-                    b.Property<float?>("Oligomer");
+                    b.Property<bool>("OpenReadingFrame");
+
+                    b.Property<int>("OpenReadingFrameEnd");
+
+                    b.Property<int>("OpenReadingFrameStart");
 
                     b.Property<string>("OwnerId");
+
+                    b.Property<float?>("Probe");
 
                     b.Property<string>("RNAInput");
 
@@ -234,6 +242,8 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
                     b.Property<string>("StatusMessage");
 
                     b.Property<float?>("Temperature");
+
+                    b.Property<bool>("ThreePrime");
 
                     b.Property<DateTime?>("UpdatedAt");
 
