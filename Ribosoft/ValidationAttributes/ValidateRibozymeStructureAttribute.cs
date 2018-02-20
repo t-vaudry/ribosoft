@@ -6,11 +6,11 @@ using Ribosoft.Models;
 public class ValidateRibozymeStructureAttribute : ValidationAttribute
 {
     private bool _isValid;
-    string _ErrorMessage;
+    string _errorMessage;
     public ValidateRibozymeStructureAttribute()
     {
         _isValid = true;
-        _ErrorMessage = "";
+        _errorMessage = "";
     }
 
     public override bool IsValid(object value)
@@ -18,34 +18,34 @@ public class ValidateRibozymeStructureAttribute : ValidationAttribute
         RibozymeStructure model = (RibozymeStructure) value;
         // Reset boolean and error message for second pass of validation
         _isValid = true;
-        _ErrorMessage = "";
+        _errorMessage = "";
 
         // Validate Cutsite is within Substrate Template
         if (model.Cutsite > model.SubstrateTemplate.Length)
         {
             _isValid = false;
-            _ErrorMessage += "Cutsite position must not exceed the Substrate Template length\n";
+            _errorMessage += "Cutsite position must not exceed the Substrate Template length\n";
         }
 
         // Validate Sequence length matches Structure length
         if (model.Sequence.Length != model.Structure.Length)
         {
             _isValid = false;
-            _ErrorMessage += "Sequence template and structure must contain the same amount of elements\n";
+            _errorMessage += "Sequence template and structure must contain the same amount of elements\n";
         }
 
         // Validate Substrate Template length matches Substrate Structure length
         if (model.SubstrateTemplate.Length != model.SubstrateStructure.Length)
         {
             _isValid = false;
-            _ErrorMessage += "Substrate template and structure must contain the same amount of elements\n";
+            _errorMessage += "Substrate template and structure must contain the same amount of elements\n";
         }
 
         // Validate Structure and Substrate Structure alphanums are equivalent
         if (!matchingAlphaNumerics(model.Structure, model.SubstrateStructure))
         {
             _isValid = false;
-            _ErrorMessage += "Alphanumerics within Sequence Structure and Substrate Structure do not match";
+            _errorMessage += "Alphanumerics within Sequence Structure and Substrate Structure do not match";
         }
 
         return _isValid;
@@ -53,7 +53,7 @@ public class ValidateRibozymeStructureAttribute : ValidationAttribute
 
     public override string FormatErrorMessage(string name)
     {
-        return String.Format(CultureInfo.CurrentCulture, _ErrorMessage, name);
+        return String.Format(CultureInfo.CurrentCulture, _errorMessage, name);
     }
 
     public bool matchingAlphaNumerics(string sequenceStructure, string substrateStructure)

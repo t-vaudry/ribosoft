@@ -6,18 +6,18 @@ using System.Text.RegularExpressions;
 public class ValidStructureAttribute : ValidationAttribute
 {
     private bool _isValid;
-    private string _ErrorMessage;
+    private string _errorMessage;
     public ValidStructureAttribute()
     {
         _isValid = true;
-        _ErrorMessage = "";
+        _errorMessage = "";
     }
 
     public override bool IsValid(object value)
     {
         // Reset boolean and error message for second pass of validation
         _isValid = true;
-        _ErrorMessage = "";
+        _errorMessage = "";
 
         string structure = value.ToString();        
         uint OpenDoubleBondCount = 0;       // (
@@ -39,7 +39,7 @@ public class ValidStructureAttribute : ValidationAttribute
                     else
                     {
                         _isValid = false;
-                        _ErrorMessage += "Structure contains closing double bond without matching opening bond\n";
+                        _errorMessage += "Structure contains closing double bond without matching opening bond\n";
                     }
                     break;
                 case '[':
@@ -53,12 +53,11 @@ public class ValidStructureAttribute : ValidationAttribute
                     else
                     {
                         _isValid = false;
-                        _ErrorMessage += "Structure contains closing pseudo knot without matching opening pseudo knot\n";
+                        _errorMessage += "Structure contains closing pseudo knot without matching opening pseudo knot\n";
                     }
                     break;
                 default:
                     break;
-
             }
         }
 
@@ -66,14 +65,14 @@ public class ValidStructureAttribute : ValidationAttribute
         if (OpenDoubleBondCount != 0)
         {
             _isValid = false;
-            _ErrorMessage += "Mismatching double bond pairs\n";
+            _errorMessage += "Mismatching double bond pairs\n";
         }
 
         // Verify there are no unclosed pseudo knots
         if (OpenPseudoKnotCount != 0)
         {
             _isValid = false;
-            _ErrorMessage += "Mismatching pseudo knot pairs\n";
+            _errorMessage += "Mismatching pseudo knot pairs\n";
         }
 
         return _isValid;
@@ -81,6 +80,6 @@ public class ValidStructureAttribute : ValidationAttribute
 
     public override string FormatErrorMessage(string name)
     {
-        return String.Format(CultureInfo.CurrentCulture, _ErrorMessage, name);
+        return String.Format(CultureInfo.CurrentCulture, _errorMessage, name);
     }
 }
