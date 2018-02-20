@@ -10,7 +10,7 @@ public class ValidStructureAttribute : ValidationAttribute
     public ValidStructureAttribute()
     {
         _isValid = true;
-        _errorMessage = "";
+        _errorMessage = "Invalid structure format, ensure all bonds and pseudo knots have matching closing symbols";
     }
 
     public override bool IsValid(object value)
@@ -39,7 +39,6 @@ public class ValidStructureAttribute : ValidationAttribute
                     else
                     {
                         _isValid = false;
-                        _errorMessage += "Structure contains closing double bond without matching opening bond\n";
                     }
                     break;
                 case '[':
@@ -53,7 +52,6 @@ public class ValidStructureAttribute : ValidationAttribute
                     else
                     {
                         _isValid = false;
-                        _errorMessage += "Structure contains closing pseudo knot without matching opening pseudo knot\n";
                     }
                     break;
                 default:
@@ -65,14 +63,12 @@ public class ValidStructureAttribute : ValidationAttribute
         if (OpenDoubleBondCount != 0)
         {
             _isValid = false;
-            _errorMessage += "Mismatching double bond pairs\n";
         }
 
         // Verify there are no unclosed pseudo knots
         if (OpenPseudoKnotCount != 0)
         {
             _isValid = false;
-            _errorMessage += "Mismatching pseudo knot pairs\n";
         }
 
         return _isValid;
