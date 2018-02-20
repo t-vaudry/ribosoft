@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Ribosoft.Data;
 using Ribosoft.Models;
 using Ribosoft.Services;
@@ -14,6 +15,7 @@ namespace Ribosoft.Jobs
     public class GenerateCandidates
     {
         private readonly DbContextOptions<ApplicationDbContext> _dbOptions;
+        private readonly ILogger<GenerateCandidates> _logger;
         private readonly CandidateGeneration.CandidateGenerator _candidateGenerator;
         private readonly IEmailSender _emailSender;
         private readonly RibosoftAlgo _ribosoftAlgo;
@@ -21,10 +23,11 @@ namespace Ribosoft.Jobs
 
         private ApplicationDbContext _db;
 
-        public GenerateCandidates(DbContextOptions<ApplicationDbContext> options, IEmailSender emailSender)
+        public GenerateCandidates(DbContextOptions<ApplicationDbContext> options, IEmailSender emailSender, ILogger<GenerateCandidates> logger)
         {
             _dbOptions = options;
             _db =  new ApplicationDbContext(options);
+            _logger = logger;
             _candidateGenerator = new CandidateGeneration.CandidateGenerator();
             _emailSender = emailSender;
             _ribosoftAlgo = new RibosoftAlgo();
@@ -92,6 +95,7 @@ namespace Ribosoft.Jobs
                 {
                     job.JobState = JobState.Errored;
                     job.StatusMessage = e.Message;
+                    _logger.LogError(e, "Exception occurred during Candidate Generation.");
                     await _db.SaveChangesAsync();
                     return;
                 }
@@ -138,6 +142,7 @@ namespace Ribosoft.Jobs
                 {
                     job.JobState = JobState.Errored;
                     job.StatusMessage = e.Code.ToString();
+                    _logger.LogError(e, "Exception occurred during Ribosoft Algorithms.");
                     return;
                 }
                 finally
@@ -161,6 +166,7 @@ namespace Ribosoft.Jobs
             {
                 job.JobState = JobState.Errored;
                 job.StatusMessage = e.Message;
+                _logger.LogError(e, "Exception occurred during Multi Objective Optimization.");
                 await _db.SaveChangesAsync();
             }
         }
