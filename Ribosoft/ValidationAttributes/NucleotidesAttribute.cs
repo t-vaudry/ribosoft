@@ -7,7 +7,7 @@ public class NucleotideAttribute : ValidationAttribute
     private string _pattern;
     public NucleotideAttribute()
     {
-        _pattern = @"^['A','C','G','U','R','Y','K','M','S','W','B','D','H','V','N','n']+$";
+        _pattern = @"^['A','C','G','U','R','Y','K','M','S','W','B','D','H','V','N','a','c','g','u','r','y','k','m','s','w','b','d','h','v','n']+$";
     }
 
     public override bool IsValid(object value)
@@ -20,6 +20,6 @@ public class NucleotideAttribute : ValidationAttribute
 
     public override string FormatErrorMessage(string name)
     {
-        return String.Format(CultureInfo.CurrentCulture, name+" must only contain the following characters: A, C, G, U, R, Y, K, M, S, W, B, D, H, V, N, n", name);
+        return String.Format(CultureInfo.CurrentCulture, name+" must only contain the following upper or lower case values: A, C, G, U, R, Y, K, M, S, W, B, D, H, V, N", name);
     }
 }
