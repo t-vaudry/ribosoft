@@ -20,6 +20,7 @@ namespace Ribosoft.Models
         [Required]
         [RegularExpression(@"^[.()\[\]a-z0-9]+$",
         ErrorMessage = "Sequence structure must only contain ., (, ), [, ], letters, or numbers")]
+        [UniqueAlphaNumericStructure]
         [ValidStructure]
         public string Structure { get; set; }
         [Required]
@@ -30,6 +31,7 @@ namespace Ribosoft.Models
         [Display(Name = "Substrate Structure")]
         [RegularExpression(@"^[\.a-z0-9]+$",
         ErrorMessage = "Subtrate structure must only contain ., letters, or numbers")]
+        [UniqueAlphaNumericStructure]
         public string SubstrateStructure { get; set; }
         [Display(Name = "Post Process")]
         public bool PostProcess { get; set; }
