@@ -14,7 +14,7 @@ namespace Ribosoft.Jobs
     public class GenerateCandidates
     {
         private readonly DbContextOptions<ApplicationDbContext> _dbOptions;
-        private readonly CandidateGeneration.CandidateGenerator _candidateGenerator;
+        private readonly CandidateGeneration.CandidateGenerator[] _candidateGenerators;
         private readonly IEmailSender _emailSender;
         private readonly RibosoftAlgo _ribosoftAlgo;
         private readonly MultiObjectiveOptimization.MultiObjectiveOptimizer _multiObjectiveOptimizer;
@@ -25,7 +25,9 @@ namespace Ribosoft.Jobs
         {
             _dbOptions = options;
             _db =  new ApplicationDbContext(options);
-            _candidateGenerator = new CandidateGeneration.CandidateGenerator();
+            _candidateGenerators = new CandidateGeneration.CandidateGenerator[2];
+            _candidateGenerators[0] = new CandidateGeneration.CandidateGenerator();
+            _candidateGenerators[1] = new CandidateGeneration.CandidateGenerator();
             _emailSender = emailSender;
             _ribosoftAlgo = new RibosoftAlgo();
             _multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
@@ -72,81 +74,126 @@ namespace Ribosoft.Jobs
             uint batchCount = 0;
             var idealStructurePattern = new Regex(@"[^.^(^)]");
 
-            foreach (var ribozymeStructure in job.Ribozyme.RibozymeStructures)
+            List<string> RNAInputs = new List<string>();
+
+            if (job.FivePrime && job.OpenReadingFrame && job.ThreePrime)
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                RNAInputs.Add(job.RNAInput);
+            }
+            else if (job.FivePrime && job.OpenReadingFrame)
+            {
+                RNAInputs.Add(job.RNAInput.Substring(0, job.OpenReadingFrameEnd));
+            }
+            else if (job.OpenReadingFrame && job.ThreePrime)
+            {
+                RNAInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameStart, job.RNAInput.Length - job.OpenReadingFrameStart - 1));
+            }
+            else if (job.FivePrime && job.ThreePrime)
+            {
+                RNAInputs.Add(job.RNAInput.Substring(0, job.OpenReadingFrameStart));
+                RNAInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameEnd, job.RNAInput.Length - job.OpenReadingFrameEnd - 1));
+            }
+            else if (job.FivePrime)
+            {
+                RNAInputs.Add(job.RNAInput.Substring(0, job.OpenReadingFrameStart));
+            }
+            else if (job.OpenReadingFrame)
+            {
+                RNAInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameStart, job.OpenReadingFrameEnd - job.OpenReadingFrameStart - 1));
+            }
+            else if (job.ThreePrime)
+            {
+                RNAInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameEnd, job.RNAInput.Length - job.OpenReadingFrameEnd - 1));
+            }
+            else
+            {
+                job.JobState = JobState.Errored;
+                job.StatusMessage = "No Target Region Selected!";
+                await _db.SaveChangesAsync();
+                return;
+            }
 
-                IEnumerable<Candidate> candidates;
-
-                try
+            int generatorIndex = 0;
+            foreach (var rnaInput in RNAInputs)
+            {
+                foreach (var ribozymeStructure in job.Ribozyme.RibozymeStructures)
                 {
-                    // Candidate Generation
-                    candidates = _candidateGenerator.GenerateCandidates(
-                        ribozymeStructure.Sequence,
-                        ribozymeStructure.Structure,
-                        ribozymeStructure.SubstrateTemplate,
-                        ribozymeStructure.SubstrateStructure,
-                        job.RNAInput);
-                }
-                catch (CandidateGeneration.CandidateGenerationException e)
-                {
-                    job.JobState = JobState.Errored;
-                    job.StatusMessage = e.Message;
-                    await _db.SaveChangesAsync();
-                    return;
-                }
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                // Algorithms
-                try
-                {
-                    _db.ChangeTracker.AutoDetectChangesEnabled = false;
+                    IEnumerable<Candidate> candidates;
 
-                    foreach (var candidate in candidates)
+                    try
                     {
-                        cancellationToken.ThrowIfCancellationRequested();
+                        // Candidate Generation
+                        candidates = _candidateGenerators[generatorIndex].GenerateCandidates(
+                            ribozymeStructure.Sequence,
+                            ribozymeStructure.Structure,
+                            ribozymeStructure.SubstrateTemplate,
+                            ribozymeStructure.SubstrateStructure,
+                            job.RNAInput);
+                    }
+                    catch (CandidateGeneration.CandidateGenerationException e)
+                    {
+                        job.JobState = JobState.Errored;
+                        job.StatusMessage = e.Message;
+                        await _db.SaveChangesAsync();
+                        return;
+                    }
 
-                        string ideal = idealStructurePattern.Replace(candidate.Structure, ".");
+                    // Algorithms
+                    try
+                    {
+                        _db.ChangeTracker.AutoDetectChangesEnabled = false;
 
-                        var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
-                            ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset);
-                        var specificityScore = 0.0f; // TODO
-                        var structureScore = _ribosoftAlgo.Structure(candidate, ideal);
-                        var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
-                            candidate.SubstrateStructure, job.Na.GetValueOrDefault(), job.Probe.GetValueOrDefault());
-
-                        _db.Designs.Add(new Design
+                        foreach (var candidate in candidates)
                         {
-                            JobId = job.Id,
+                            cancellationToken.ThrowIfCancellationRequested();
 
-                            Sequence = candidate.Sequence.GetString(),
-                            AccessibilityScore = accessibilityScore,
-                            SpecificityScore = specificityScore,
-                            StructureScore = structureScore,
-                            HighestTemperatureScore = temperatureScore,
-                            DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())
-                        });
+                            string ideal = idealStructurePattern.Replace(candidate.Structure, ".");
 
-                        if (batchCount % 100 == 0)
-                        {
-                            await _db.SaveChangesAsync();
-                            RecreateDbContext();
-                            _db.ChangeTracker.AutoDetectChangesEnabled = false;
-                            batchCount = 0;
+                            var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
+                                ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset);
+                            var specificityScore = 0.0f; // TODO
+                            var structureScore = _ribosoftAlgo.Structure(candidate, ideal);
+                            var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
+                                candidate.SubstrateStructure, job.Na.GetValueOrDefault(), job.Probe.GetValueOrDefault());
+
+                            _db.Designs.Add(new Design
+                            {
+                                JobId = job.Id,
+
+                                Sequence = candidate.Sequence.GetString(),
+                                AccessibilityScore = accessibilityScore,
+                                SpecificityScore = specificityScore,
+                                StructureScore = structureScore,
+                                HighestTemperatureScore = temperatureScore,
+                                DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())
+                            });
+
+                            if (batchCount % 100 == 0)
+                            {
+                                await _db.SaveChangesAsync();
+                                RecreateDbContext();
+                                _db.ChangeTracker.AutoDetectChangesEnabled = false;
+                                batchCount = 0;
+                            }
                         }
                     }
+                    catch (RibosoftAlgoException e)
+                    {
+                        job.JobState = JobState.Errored;
+                        job.StatusMessage = e.Code.ToString();
+                        return;
+                    }
+                    finally
+                    {
+                        _db.ChangeTracker.AutoDetectChangesEnabled = true;
+                        _db.Jobs.Attach(job);
+                        await _db.SaveChangesAsync();
+                    }
                 }
-                catch (RibosoftAlgoException e)
-                {
-                    job.JobState = JobState.Errored;
-                    job.StatusMessage = e.Code.ToString();
-                    return;
-                }
-                finally
-                {
-                    _db.ChangeTracker.AutoDetectChangesEnabled = true;
-                    _db.Jobs.Attach(job);
-                    await _db.SaveChangesAsync();
-                }
+
+                generatorIndex++;
             }
         }
 

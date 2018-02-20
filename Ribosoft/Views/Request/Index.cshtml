@@ -29,11 +29,16 @@
                     <textarea asp-for="InputSequence" class="form-control" placeholder="Input a Sequence" rows="10" id="inputSequence">
                     </textarea>
                     <span asp-validation-for="InputSequence" class="text-danger"></span>
+                </div>
+
+                <div class="form-group" id="openFrameIndicesFormGroup">
                     <label asp-for="OpenReadingFrameStart"></label>
                     <textarea asp-for="OpenReadingFrameStart" class="form-control" id="openReadingFrameStart">
+                    </textarea>
                     <span asp-validation-for="InputSequence" class="text-danger"></span>
                     <label asp-for="OpenReadingFrameEnd"></label>
                     <textarea asp-for="OpenReadingFrameEnd" class="form-control" id="openReadingFrameEnd">
+                    </textarea>
                 </div>
 
                 <div class="form-group">
