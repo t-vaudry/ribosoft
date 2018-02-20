@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 public class NucleotideAttribute : ValidationAttribute
 {
-    string _pattern;
+    private string _pattern;
     public NucleotideAttribute()
     {
         _pattern = @"^['A','C','G','U','R','Y','K','M','S','W','B','D','H','V','N','n']+$";
