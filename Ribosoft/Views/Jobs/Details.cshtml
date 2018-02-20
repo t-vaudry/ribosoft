@@ -51,6 +51,26 @@
 
 <h4>Designs</h4>
 <hr />
+<span class="hide" id="showFilterOptions"><button class="btn btn-primary" id="refineResults">Refine Results</button></span>
+<div class="hide" id="filterOptions">
+    <select id="filterParam">
+        <option value="Rank">Rank</option>
+        <option value="TemperatureScore">TemperatureScore</option>
+        <option value="SpecificityScore">SpecificityScore</option>
+        <option value="AcessibilityScore">AcessibilityScore</option>
+        <option value="StructureScore">StructureScore</option>
+    </select>
+    <select id="filterCondition">
+        <option value="gteq">>=</option>
+        <option value="lteq"><=</option>
+        <option value="eq">=</option>
+    </select>
+    <input type="text" id="filterValue">
+    <button class="btn btn-primary" id="filterSubmit">
+        <span class="glyphicon glyphicon-filter"></span>
+    </button>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -111,3 +131,7 @@
     }
     <a asp-action="Index">Back to List</a>
 </div>
+
+@section scripts{
+    <script src="~/js/Jobs/details.js"></script>
+}
