@@ -57,9 +57,9 @@ namespace Ribosoft.Controllers
                 job.Temperature = model.Temperature;
                 job.Na = model.Na;
                 job.Probe = model.Probe;
-                job.FivePrime = model.TargetRegions.Any(tr => tr.Id == 1);
-                job.OpenReadingFrame = model.TargetRegions.Any(tr => tr.Id == 2);
-                job.ThreePrime = model.TargetRegions.Any(tr => tr.Id == 3);
+                job.FivePrime = model.TargetRegions.Any(tr => tr.Id == 1 && tr.Selected);
+                job.OpenReadingFrame = model.TargetRegions.Any(tr => tr.Id == 2 && tr.Selected);
+                job.ThreePrime = model.TargetRegions.Any(tr => tr.Id == 3 && tr.Selected);
                 job.OpenReadingFrameStart = model.OpenReadingFrameStart;
                 job.OpenReadingFrameEnd = model.OpenReadingFrameEnd;
                 job.OwnerId = user.Id;
@@ -79,8 +79,21 @@ namespace Ribosoft.Controllers
         [HttpGet]
         public string GetSequenceFromGenbank(string accession)
         {
-            return GenbankRequest.RunRequest(accession);
+            return GenbankRequest.RunSequenceRequest(accession);
         }
+
+        [HttpGet]
+        public string GetStartIndexFromGenbank(string accession)
+        {
+            return GenbankRequest.RunStartIndexRequest(accession);
+        }
+
+        [HttpGet]
+        public string GetEndIndexFromGenbank(string accession)
+        {
+            return GenbankRequest.RunEndIndexRequest(accession);
+        }
+
         private async Task<ApplicationUser> GetUser()
         {
             var user = await _userManager.GetUserAsync(User);

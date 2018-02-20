@@ -71,11 +71,24 @@ var app = new Vue({
         getFromGenbank: function() {
             var accesionField = document.getElementById('accesionNumber');
             var sequenceInputField = document.getElementById("inputSequence");
-            var route = '/Request/GetSequenceFromGenbank?accession='+accesionField.value;
+            var startIndexField = document.getElementById("openReadingFrameStart");
+            var endIndexField = document.getElementById("openReadingFrameEnd");
 
-            this.$http.get(route).then((response)=>{
+            var seqRoute = '/Request/GetSequenceFromGenbank?accession=' + accesionField.value;
+            var startRoute = '/Request/GetStartIndexFromGenbank?accession=' + accesionField.value;
+            var endRoute = '/Request/GetEndIndexFromGenbank?accession=' + accesionField.value;
+
+            this.$http.get(seqRoute).then((response)=>{
                 sequenceInputField.value = response.body;
                 accesionField.value = "";
+            });
+
+            this.$http.get(startRoute).then((response) => {
+                startIndexField.value = response.body;
+            });
+
+            this.$http.get(endRoute).then((response) => {
+                endIndexField.value = response.body;
             });
         }
     }
