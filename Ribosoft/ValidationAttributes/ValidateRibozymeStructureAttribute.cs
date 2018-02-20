@@ -15,7 +15,7 @@ public class ValidateRibozymeStructureAttribute : ValidationAttribute
 
     public override bool IsValid(object value)
     {
-        RibozymeStructure model = (RibozymeStructure) value;
+        RibozymeStructure model = value as RibozymeStructure;
         // Reset boolean and error message for second pass of validation
         _isValid = true;
         _errorMessage = "";

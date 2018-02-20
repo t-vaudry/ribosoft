@@ -1,9 +1,11 @@
 using System;
 using System.Globalization;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 public class RepeatNotationsAttribute : ValidationAttribute
 {
     private int _maxRepeats;
+    private char[] _repeatNotations = {'a', 'c', 'g', 'u', 'r', 'y', 'k', 'm', 's', 'w', 'b', 'd', 'h', 'v', 'n'};
     public RepeatNotationsAttribute(int MaxRepeats)
     {
         _maxRepeats = MaxRepeats;
@@ -16,7 +18,7 @@ public class RepeatNotationsAttribute : ValidationAttribute
         
         foreach (char c in sequence)
         {
-            if (c == 'n') 
+            if (_repeatNotations.Contains(c))
             {
                 count++;
             }
