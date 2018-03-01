@@ -14,7 +14,6 @@ namespace Ribosoft.Jobs
     public class GenerateCandidates
     {
         private readonly DbContextOptions<ApplicationDbContext> _dbOptions;
-        private readonly CandidateGeneration.CandidateGenerator[] _candidateGenerators;
         private readonly IEmailSender _emailSender;
         private readonly RibosoftAlgo _ribosoftAlgo;
         private readonly MultiObjectiveOptimization.MultiObjectiveOptimizer _multiObjectiveOptimizer;
@@ -25,9 +24,6 @@ namespace Ribosoft.Jobs
         {
             _dbOptions = options;
             _db =  new ApplicationDbContext(options);
-            _candidateGenerators = new CandidateGeneration.CandidateGenerator[2];
-            _candidateGenerators[0] = new CandidateGeneration.CandidateGenerator();
-            _candidateGenerators[1] = new CandidateGeneration.CandidateGenerator();
             _emailSender = emailSender;
             _ribosoftAlgo = new RibosoftAlgo();
             _multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
@@ -113,9 +109,10 @@ namespace Ribosoft.Jobs
                 return;
             }
 
-            int generatorIndex = 0;
             foreach (var rnaInput in RNAInputs)
             {
+                CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
+
                 foreach (var ribozymeStructure in job.Ribozyme.RibozymeStructures)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -125,7 +122,7 @@ namespace Ribosoft.Jobs
                     try
                     {
                         // Candidate Generation
-                        candidates = _candidateGenerators[generatorIndex].GenerateCandidates(
+                        candidates = candidateGenerator.GenerateCandidates(
                             ribozymeStructure.Sequence,
                             ribozymeStructure.Structure,
                             ribozymeStructure.SubstrateTemplate,
@@ -166,7 +163,7 @@ namespace Ribosoft.Jobs
                                 AccessibilityScore = accessibilityScore,
                                 SpecificityScore = specificityScore,
                                 StructureScore = structureScore,
-                                HighestTemperatureScore = temperatureScore,
+                                HighestTemperatureScore = -1.0f * temperatureScore,
                                 DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())
                             });
 
@@ -192,8 +189,6 @@ namespace Ribosoft.Jobs
                         await _db.SaveChangesAsync();
                     }
                 }
-
-                generatorIndex++;
             }
         }
 

@@ -10,6 +10,7 @@
     <h4>Design</h4>
     <hr />
     <dl class="dl-horizontal">
+
         <dt>
             @Html.DisplayNameFor(model => model.Sequence)
         </dt>
@@ -32,7 +33,8 @@
             @Html.DisplayNameFor(model => model.HighestTemperatureScore)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.HighestTemperatureScore)
+            @{ float? HighestTemperatureScore = -1.0f * Model.HighestTemperatureScore; }
+            @Html.DisplayFor(model => HighestTemperatureScore)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.SpecificityScore)
@@ -70,7 +72,7 @@
             Download
         </dt>
         <dd>
-            @Html.ActionLink("FASTA File", "DownloadFile", new { jobID=Model.JobId, rank=Model.Rank, desiredTemperatureScore=Model.DesiredTemperatureScore, HighestTemperatureScore=Model.HighestTemperatureScore, specificityScore=Model.SpecificityScore, accessibilityScore=Model.AccessibilityScore, structureScore=Model.StructureScore, createdAt=Model.CreatedAt, updatedAt=Model.UpdatedAt, sequence=Model.Sequence})
+            @Html.ActionLink("FASTA File", "DownloadFile", new { jobID=Model.JobId, rank=Model.Rank, desiredTemperatureScore=Model.DesiredTemperatureScore, highestTemperatureScore=-1.0f*Model.HighestTemperatureScore, specificityScore=Model.SpecificityScore, accessibilityScore=Model.AccessibilityScore, structureScore=Model.StructureScore, createdAt=Model.CreatedAt, updatedAt=Model.UpdatedAt, sequence=Model.Sequence})
         </dd>
     </dl>
 </div>
