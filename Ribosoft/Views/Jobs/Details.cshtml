@@ -81,6 +81,7 @@
     <tbody>
         @foreach (var item in Model.Designs)
         {
+        float? HighestTemperatureScore = -1.0f * item.HighestTemperatureScore;
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Rank)
@@ -92,7 +93,7 @@
                 @Html.DisplayFor(modelItem => item.DesiredTemperatureScore)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.HighestTemperatureScore)
+                @Html.DisplayFor(modelItem => HighestTemperatureScore)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.SpecificityScore)
