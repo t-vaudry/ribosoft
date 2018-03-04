@@ -1,4 +1,4 @@
-﻿@model Ribosoft.Models.Job
+﻿@model Ribosoft.Models.JobsViewModels.JobDetailsViewModel
 
 @{
     ViewData["Title"] = "Job Details";
@@ -11,40 +11,40 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.JobState)
+            @Html.DisplayNameFor(model => model.Job.JobState)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.JobState)
+            @Html.DisplayFor(model => model.Job.JobState)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.StatusMessage)
+            @Html.DisplayNameFor(model => model.Job.StatusMessage)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.StatusMessage)
+            @Html.DisplayFor(model => model.Job.StatusMessage)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.RNAInput)
+            @Html.DisplayNameFor(model => model.Job.RNAInput)
         </dt>
         <dd>
-            <textarea rows="4" cols="80" readonly="readonly">@Model.RNAInput</textarea>
+            <textarea rows="4" cols="80" readonly="readonly">@Model.Job.RNAInput</textarea>
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Ribozyme)
+            @Html.DisplayNameFor(model => model.Job.Ribozyme)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Ribozyme.Name)
+            @Html.DisplayFor(model => model.Job.Ribozyme.Name)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.CreatedAt)
+            @Html.DisplayNameFor(model => model.Job.CreatedAt)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.CreatedAt)
+            @Html.DisplayFor(model => model.Job.CreatedAt)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.UpdatedAt)
+            @Html.DisplayNameFor(model => model.Job.UpdatedAt)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.UpdatedAt)
+            @Html.DisplayFor(model => model.Job.UpdatedAt)
         </dd>
     </dl>
 </div>
@@ -55,31 +55,31 @@
     <thead>
         <tr>
             <th>
-                @Html.ActionLink("Rank", "Details", new { sortOrder = "rank_asc" })
+                @Html.ActionLink("Rank", "Details", new { sortOrder = "rank_asc", pageNumber = @Model.Designs.PageNumber })
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Designs.First().Sequence)
+                @Html.DisplayNameFor(model => model.Designs.Data.First().Sequence)
             </th>
             <th>
-                @Html.ActionLink("Desired Temperature Score", "Details", new { sortOrder = "desired_temp_desc" })
+                @Html.ActionLink("Desired Temperature Score", "Details", new { sortOrder = "desired_temp_desc", pageNumber = @Model.Designs.PageNumber })
             </th>
             <th>
-                @Html.ActionLink("Highest Temperature Score", "Details", new { sortOrder = "high_temp_desc" })
+                @Html.ActionLink("Highest Temperature Score", "Details", new { sortOrder = "high_temp_desc", pageNumber = @Model.Designs.PageNumber })
             </th>
             <th>
-                @Html.ActionLink("Specificity Score", "Details", new { sortOrder = "spec_desc" })
+                @Html.ActionLink("Specificity Score", "Details", new { sortOrder = "spec_desc", pageNumber = @Model.Designs.PageNumber })
             </th>
             <th>
-                @Html.ActionLink("Accessibility Score", "Details", new { sortOrder = "access_desc" })
+                @Html.ActionLink("Accessibility Score", "Details", new { sortOrder = "access_desc", pageNumber = @Model.Designs.PageNumber })
             </th>
             <th>
-                @Html.ActionLink("Structure Score", "Details", new { sortOrder = "struct_desc" })
+                @Html.ActionLink("Structure Score", "Details", new { sortOrder = "struct_desc", pageNumber = @Model.Designs.PageNumber })
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Designs)
+        @foreach (var item in Model.Designs.Data)
         {
         float? HighestTemperatureScore = -1.0f * item.HighestTemperatureScore;
         <tr>
@@ -111,10 +111,20 @@
         }
     </tbody>
 </table>
+
+<cs-pager cs-paging-pagesize="@Model.Designs.PageSize"
+    cs-paging-pagenumber="@Model.Designs.PageNumber"
+    cs-paging-totalitems="@Model.Designs.TotalItems"
+    asp-action="Details"
+    asp-controller="Jobs"
+    asp-route-id="@Model.Job.Id"
+    asp-route-sortOrder="@Model.SortOrder"
+    cs-pagenumber-param="pageNumber"></cs-pager>
+
 <div>
-    @if (Model.JobState == JobState.New || Model.JobState == JobState.Started)
+    @if (Model.Job.JobState == JobState.New || Model.Job.JobState == JobState.Started)
     {
-        <a asp-action="Delete" asp-route-id="@Model.Id">Cancel</a> @:|
+        <a asp-action="Delete" asp-route-id="@Model.Job.Id">Cancel</a> @:|
     }
     <a asp-action="Index">Back to List</a>
 </div>
