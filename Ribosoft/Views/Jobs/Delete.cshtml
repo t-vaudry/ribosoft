@@ -2,11 +2,12 @@
 
 @{
     ViewData["Title"] = "Cancel Job";
+    var shouldCancel = Model.JobState == JobState.New || Model.JobState == JobState.Started;
 }
 
-<h2>Cancel Job</h2>
+<h2>@(shouldCancel ? "Cancel" : "Delete") Job</h2>
 
-<h3>Are you sure you want to cancel this job?</h3>
+<h3>Are you sure you want to @(shouldCancel ? "cancel" : "delete") this job?</h3>
 <div>
     <h4>Job</h4>
     <hr />
@@ -21,7 +22,7 @@
             @Html.DisplayNameFor(model => model.RNAInput)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.RNAInput)
+            <textarea rows="4" cols="80" readonly="readonly">@Model.RNAInput</textarea>
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Ribozyme)
@@ -45,7 +46,7 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Cancel" class="btn btn-default" /> |
+        <input type="submit" value="@(shouldCancel ? "Cancel" : "Delete")" class="btn btn-default" /> |
         <a asp-action="Index">Back to List</a>
     </form>
 </div>

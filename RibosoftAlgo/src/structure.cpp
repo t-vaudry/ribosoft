@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <mutex>
 
 #include <ViennaRNA/RNAstruct.h>
 #include <ViennaRNA/treedist.h>
@@ -9,6 +10,8 @@
 #include "functions.h"
 
 RIBOSOFT_NAMESPACE_START
+
+std::mutex tree_edit_distance_mutex;
 
 extern "C"
 {
@@ -45,7 +48,12 @@ extern "C"
         free(xstruc);
 
         // Calculate distance
-        distance = tree_edit_distance(T[0], T[1]);
+        {
+            // a lock is needed as vrna's tree_edit_distance is not threadsafe
+            std::lock_guard<std::mutex> lock(tree_edit_distance_mutex);
+            distance = tree_edit_distance(T[0], T[1]);
+        }
+
         free_tree(T[0]);
         free_tree(T[1]);
 
