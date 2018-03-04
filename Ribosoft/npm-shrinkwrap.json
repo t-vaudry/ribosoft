@@ -3387,6 +3387,25 @@
       "integrity": "sha512-Ubldcmxp5np52/ENotGxlLe6aGMvmF4R8S6tZjsP6Knsaxd/xp3Zrh50cG93lR6nPXyUFwzN3ZSOQI0wRJNdGg==",
       "dev": true
     },
+    "jquery-validation": {
+      "version": "1.17.0",
+      "resolved": "https://registry.npmjs.org/jquery-validation/-/jquery-validation-1.17.0.tgz",
+      "integrity": "sha512-XddiAwhGdWhcIJ+W3ri3KG8uTPMua4TPYuUIC8/E7lOyqdScG5xHuy9YishlKc0c/lIQai77EX7hxMdTSYCEjA==",
+      "dev": true,
+      "requires": {
+        "jquery": "3.3.1"
+      }
+    },
+    "jquery-validation-unobtrusive": {
+      "version": "3.2.6",
+      "resolved": "https://registry.npmjs.org/jquery-validation-unobtrusive/-/jquery-validation-unobtrusive-3.2.6.tgz",
+      "integrity": "sha1-D4dnxUYuMLSldD0SRh6AV9p1cuU=",
+      "dev": true,
+      "requires": {
+        "jquery": "3.3.1",
+        "jquery-validation": "1.17.0"
+      }
+    },
     "js-base64": {
       "version": "2.4.3",
       "resolved": "https://registry.npmjs.org/js-base64/-/js-base64-2.4.3.tgz",

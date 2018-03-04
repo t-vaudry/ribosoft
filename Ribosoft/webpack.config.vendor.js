@@ -22,6 +22,8 @@ module.exports = (env) => {
                 'event-source-polyfill',
                 'isomorphic-fetch',
                 'jquery',
+                'jquery-validation',
+                'jquery-validation-unobtrusive',
                 'vue'
             ],
         },
