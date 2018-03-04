@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using cloudscribe.Pagination.Models;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Ribosoft.Data;
 using Ribosoft.Jobs;
 using Ribosoft.Models;
+using Ribosoft.Models.JobsViewModels;
 
 namespace Ribosoft.Controllers
 {
@@ -41,7 +43,7 @@ namespace Ribosoft.Controllers
         }
 
         // GET: Jobs/Details/5
-        public async Task<IActionResult> Details(int? id, string sortOrder)
+        public async Task<IActionResult> Details(int? id, string sortOrder, int pageNumber)
         {
             if (id == null)
             {
@@ -53,7 +55,6 @@ namespace Ribosoft.Controllers
             var job = await _context.Jobs
                 .Include(j => j.Owner)
                 .Include(j => j.Ribozyme)
-                .Include(j => j.Designs)
                 .Where(j => j.OwnerId == user.Id)
                 .SingleOrDefaultAsync(m => m.Id == id);
 
@@ -62,7 +63,11 @@ namespace Ribosoft.Controllers
                 return NotFound();
             }
 
-            var designs = from d in job.Designs select d;
+            int pageSize = 20;
+            pageNumber = Math.Max(pageNumber, 1);
+            int offset = (pageSize * pageNumber) - pageSize;
+
+            var designs = from d in _context.Designs where d.JobId == job.Id select d;
             switch (sortOrder)
             {
                 case "desired_temp_desc":
@@ -80,13 +85,22 @@ namespace Ribosoft.Controllers
                 case "struct_desc":
                     designs = designs.OrderByDescending(d => d.StructureScore);
                     break;
+                case "rank_asc":
                 default:
                     designs = designs.OrderBy(d => d.Rank);
                     break;
             }
-            job.Designs = designs.ToList();
 
-            return View(job);
+            var vm = new JobDetailsViewModel();
+
+            vm.Job = job;
+            vm.SortOrder = sortOrder;
+            vm.Designs.Data = await designs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
+            vm.Designs.TotalItems = await _context.Designs.Where(d => d.JobId == job.Id).CountAsync();
+            vm.Designs.PageNumber = pageNumber;
+            vm.Designs.PageSize = pageSize;
+
+            return View(vm);
         }
 
         // GET: Jobs/Create
