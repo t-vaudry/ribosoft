@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
@@ -8,6 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Ribosoft.Data;
 using Ribosoft.Models;
 using Ribosoft.Services;
+using Ribosoft.Blast;
+using Microsoft.Extensions.Configuration;
+using System.Text;
 
 namespace Ribosoft.Jobs
 {
@@ -17,16 +21,20 @@ namespace Ribosoft.Jobs
         private readonly IEmailSender _emailSender;
         private readonly RibosoftAlgo _ribosoftAlgo;
         private readonly MultiObjectiveOptimization.MultiObjectiveOptimizer _multiObjectiveOptimizer;
+        private readonly IConfiguration _configuration;
+        private readonly Blaster _blaster;
 
         private ApplicationDbContext _db;
 
-        public GenerateCandidates(DbContextOptions<ApplicationDbContext> options, IEmailSender emailSender)
+        public GenerateCandidates(DbContextOptions<ApplicationDbContext> options, IEmailSender emailSender, IConfiguration configuration)
         {
             _dbOptions = options;
             _db =  new ApplicationDbContext(options);
             _emailSender = emailSender;
             _ribosoftAlgo = new RibosoftAlgo();
             _multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
+            _configuration = configuration;
+            _blaster = new Blaster();
         }
 
         [AutomaticRetry(Attempts = 0)]
@@ -39,10 +47,19 @@ namespace Ribosoft.Jobs
                 return;
             }
 
+            // check if blastn is available; if it isn't, ignore specificity
+            bool shouldCalculateSpecificity = _blaster.IsAvailable();
+
             job.JobState = JobState.Started;
             await _db.SaveChangesAsync();
 
             await RunCandidateGenerator(job, cancellationToken);
+
+            if (shouldCalculateSpecificity)
+            {
+                await RunBlast(job, cancellationToken);
+            }
+
             await MultiObjectiveOptimize(job, cancellationToken);
 
             job.JobState = JobState.Completed;
@@ -51,8 +68,9 @@ namespace Ribosoft.Jobs
             await SendJobCompletionEmail(job.Owner);
         }
 
-        private void RecreateDbContext()
+        private async Task RecreateDbContext()
         {
+            await _db.SaveChangesAsync();
             _db = new ApplicationDbContext(_dbOptions);
         }
 
@@ -67,7 +85,6 @@ namespace Ribosoft.Jobs
 
         private async Task RunCandidateGenerator(Job job, IJobCancellationToken cancellationToken)
         {
-            uint batchCount = 0;
             var idealStructurePattern = new Regex(@"[^.^(^)]");
 
             List<string> RNAInputs = new List<string>();
@@ -140,6 +157,7 @@ namespace Ribosoft.Jobs
                     // Algorithms
                     try
                     {
+                        uint batchCount = 0;
                         _db.ChangeTracker.AutoDetectChangesEnabled = false;
 
                         foreach (var candidate in candidates)
@@ -150,7 +168,6 @@ namespace Ribosoft.Jobs
 
                             var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
                                 ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset);
-                            var specificityScore = 0.0f; // TODO
                             var structureScore = _ribosoftAlgo.Structure(candidate, ideal);
                             var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
                                 candidate.SubstrateStructure, job.Na.GetValueOrDefault(), job.Probe.GetValueOrDefault());
@@ -160,21 +177,25 @@ namespace Ribosoft.Jobs
                                 JobId = job.Id,
 
                                 Sequence = candidate.Sequence.GetString(),
+                                CutsiteIndex = candidate.CutsiteIndices.First(),
+                                SubstrateSequenceLength = candidate.SubstrateSequence.Length,
+
                                 AccessibilityScore = accessibilityScore,
-                                SpecificityScore = specificityScore,
                                 StructureScore = structureScore,
                                 HighestTemperatureScore = -1.0f * temperatureScore,
                                 DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())
                             });
 
-                            if (batchCount % 100 == 0)
+                            if (++batchCount % 100 == 0)
                             {
                                 await _db.SaveChangesAsync();
-                                RecreateDbContext();
+                                await RecreateDbContext();
                                 _db.ChangeTracker.AutoDetectChangesEnabled = false;
                                 batchCount = 0;
                             }
                         }
+
+                        await RecreateDbContext();
                     }
                     catch (RibosoftAlgoException e)
                     {
@@ -204,8 +225,78 @@ namespace Ribosoft.Jobs
             {
                 job.JobState = JobState.Errored;
                 job.StatusMessage = e.Message;
+            }
+            finally
+            {
                 await _db.SaveChangesAsync();
             }
+        }
+
+        private async Task RunBlast(Job job, IJobCancellationToken cancellationToken)
+        {
+            var designs = _db.Designs
+                             .Where(d => d.JobId == job.Id)
+                             .GroupBy(d => new { d.CutsiteIndex, d.SubstrateSequenceLength });
+
+            foreach (var designGroup in designs)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var design = designGroup.First();
+                var substrateSequence = job.RNAInput.Substring(design.CutsiteIndex, design.SubstrateSequenceLength);
+                var sb = new StringBuilder();
+                sb.AppendFormat(">{0}{1}", design.Id, Environment.NewLine);
+                sb.AppendFormat("{0}{1}", substrateSequence, Environment.NewLine);
+                var blastParameters = BlastParametersForQuery(substrateSequence);
+                blastParameters.Query = sb.ToString();
+                var output = _blaster.Run(blastParameters);
+
+                var specificityScore = 0.0f;
+
+                foreach (var line in output.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    var fields = line.Split('\t');
+
+                    // filter out X_ predictions
+                    //if (fields[1].StartsWith('X'))
+                    //{
+                    //    continue;
+                    //}
+
+                    specificityScore += float.Parse(fields[2]) * float.Parse(fields[3]) / 10000;
+                }
+
+                designGroup.All(x => { x.SpecificityScore = specificityScore; return true; });
+            }
+
+            await _db.SaveChangesAsync();
+        }
+
+        private BlastParameters BlastParametersForQuery(string query)
+        {
+            var regularBlastParameters = new BlastParameters
+            {
+                BlastDbPath = _configuration.GetValue("Blast:BLASTDB", string.Empty),
+                Database = "9606/genomic 9606/rna",
+                UseIndex = true,
+                LowercaseMasking = true,
+                OutputFormat = "6 qseqid saccver pident qcovs",
+                NumThreads = 4,
+            };
+
+            var shortBlastParameters = new BlastParameters
+            {
+                BlastDbPath = _configuration.GetValue("Blast:BLASTDB", string.Empty),
+                Database = "9606/genomic 9606/rna",
+                UseIndex = true,
+                LowercaseMasking = true,
+                OutputFormat = "6 qseqid saccver pident qcovs",
+                NumThreads = 4,
+                Task = BlastParameters.BlastTask.blastn_short,
+                ExpectValue = 1000.0f,
+            };
+
+            return query.Length <= 30 ? shortBlastParameters : regularBlastParameters;
         }
 
         private async Task SendJobCompletionEmail(ApplicationUser user)
