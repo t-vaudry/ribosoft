@@ -12,7 +12,7 @@ public class UniqueAlphaNumericStructureAttribute : ValidationAttribute
     public UniqueAlphaNumericStructureAttribute()
     {
         _isValid = true;
-        _errorMessage = "Alphanumerics within the structure must only occure once";
+        _errorMessage = "Alphanumerics within the structure must only occur once";
     }
 
     public override bool IsValid(object value)
