@@ -133,7 +133,6 @@ namespace Ribosoft.Controllers
                 .Include(j => j.Owner)
                 .Include(j => j.Ribozyme)
                 .Where(j => j.OwnerId == user.Id)
-                .Where(j => j.JobState == JobState.New || j.JobState == JobState.Started)
                 .SingleOrDefaultAsync(m => m.Id == id);
 
             if (job == null)
@@ -153,7 +152,6 @@ namespace Ribosoft.Controllers
 
             var job = await _context.Jobs
                 .Where(j => j.OwnerId == user.Id)
-                .Where(j => j.JobState == JobState.New || j.JobState == JobState.Started)
                 .SingleOrDefaultAsync(m => m.Id == id);
 
             if (job == null)
@@ -161,13 +159,22 @@ namespace Ribosoft.Controllers
                 return NotFound();
             }
 
-            job.JobState = JobState.Cancelled;
-            await _context.SaveChangesAsync();
-
-            if (job.HangfireJobId != null)
+            if (job.JobState == JobState.New || job.JobState == JobState.Started)
             {
-                BackgroundJob.Delete(job.HangfireJobId);
+                job.JobState = JobState.Cancelled;
+
+                if (job.HangfireJobId != null)
+                {
+                    BackgroundJob.Delete(job.HangfireJobId);
+                    job.HangfireJobId = null;
+                }
             }
+            else
+            {
+                _context.Jobs.Remove(job);
+            }
+
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }

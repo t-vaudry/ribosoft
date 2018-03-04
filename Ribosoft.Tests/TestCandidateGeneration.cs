@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace Ribosoft.Tests
@@ -15,7 +16,7 @@ namespace Ribosoft.Tests
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU");
+                "AUUGCAGUAUAAAGCCU").ToList();
 
             Assert.Single(candidates);
             Assert.Equal("CGUGGUUAGGGCCACGUUAAAUAGUUAUUUAAGCCCUAAGCGUGCAAU", candidates[0].Sequence.GetString());
@@ -31,7 +32,7 @@ namespace Ribosoft.Tests
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU"));
+                "AUUGCAGUAUAAAGCCU").ToList());
 
             Assert.Equal("Ribozyme sequence length does not match ribozyme structure length.", ex.Message);
         }
@@ -46,7 +47,7 @@ namespace Ribosoft.Tests
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..321",
-                "AUUGCAGUAUAAAGCCU"));
+                "AUUGCAGUAUAAAGCCU").ToList());
 
             Assert.Equal("Substrate sequence length does not match substrate structure length.", ex.Message);
         }
@@ -61,7 +62,7 @@ namespace Ribosoft.Tests
                 "((((&[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU"));
+                "AUUGCAGUAUAAAGCCU").ToList());
 
             Assert.Equal("Unrecognized structure symbol encountered.", ex.Message);
         }
@@ -76,7 +77,7 @@ namespace Ribosoft.Tests
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654&.3210",
-                "AUUGCAGUAUAAAGCCU"));
+                "AUUGCAGUAUAAAGCCU").ToList());
 
             Assert.Equal("Unexpected substrate structure character: &", ex.Message);
         }
@@ -91,7 +92,7 @@ namespace Ribosoft.Tests
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "a87654..3210",
-                "AUUGCAGUAUAAAGCCU"));
+                "AUUGCAGUAUAAAGCCU").ToList());
 
             Assert.Equal("Substrate structure character not found in ribozyme structure: a", ex.Message);
         }
@@ -101,15 +102,14 @@ namespace Ribosoft.Tests
         {
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
-            Exception ex = Assert.Throws<AggregateException>(() => candidateGenerator.GenerateCandidates(
+            Exception ex = Assert.Throws<CandidateGeneration.CandidateGenerationException>(() => candidateGenerator.GenerateCandidates(
                 "CGUGGUUAGGGCCACCUUAAAUAGNNNNUUAAGCCCUAAGCGNNNNNN",
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU"));
+                "AUUGCAGUAUAAAGCCU").ToList());
 
-            Assert.Equal(typeof(CandidateGeneration.CandidateGenerationException), ex.InnerException.GetType());
-            Assert.Equal("Neighbours don't match!", ex.InnerException.Message);
+            Assert.Equal("Neighbours don't match!", ex.Message);
         }
 
         [Fact]
@@ -122,7 +122,7 @@ namespace Ribosoft.Tests
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU"));
+                "AUUGCAGUAUAAAGCCU").ToList());
 
             Assert.Equal("Invalid nucleotide base Q was provided.", ex.Message);
         }
@@ -137,7 +137,7 @@ namespace Ribosoft.Tests
                 "((((.[[[[[[.))).........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU"));
+                "AUUGCAGUAUAAAGCCU").ToList());
 
             Assert.Equal("Unclosed bond found '('. Input may be faulty.", ex.Message);
         }
@@ -152,7 +152,7 @@ namespace Ribosoft.Tests
                 "((((.[[[[[..))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU"));
+                "AUUGCAGUAUAAAGCCU").ToList());
         }
 
         [Fact]
@@ -164,7 +164,7 @@ namespace Ribosoft.Tests
                 "0",
                 "NGU",
                 "0..",
-                "AGUAGUCGUGGUUGU");
+                "AGUAGUCGUGGUUGU").ToList();
 
             Assert.Equal(4, candidates.Count);
             Assert.Equal("U", candidates[0].Sequence.GetString());
@@ -186,7 +186,7 @@ namespace Ribosoft.Tests
                 "()",
                 "UAUACGGC",
                 "........",
-                "UAUACGGCAUUGCAGUAUAAAGCCU");
+                "UAUACGGCAUUGCAGUAUAAAGCCU").ToList();
 
             Assert.Equal(2, candidates.Count);
             Assert.Equal("CG", candidates[0].Sequence.GetString());
@@ -203,7 +203,7 @@ namespace Ribosoft.Tests
                 "((((.[[[[[..))))........0123.....]]]]]]...456789",
                 "NNNNnnGUNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU"));
+                "AUUGCAGUAUAAAGCCU").ToList());
 
             Assert.Equal("Repeat notation not located at beginning or end of substrate sequence. Case not supported.", ex.Message);
         }
@@ -218,7 +218,7 @@ namespace Ribosoft.Tests
                 "((((.[[[[[..))))........0123.....]]]]]]...456789",
                 "NNNNNNGnNNNN",
                 "987654..3210",
-                "AUUGCAGUAUAAAGCCU"));
+                "AUUGCAGUAUAAAGCCU").ToList());
             Assert.Equal("Repeat notation is not on target. Unhandled case.", ex.Message);
         }
 
@@ -230,10 +230,10 @@ namespace Ribosoft.Tests
             Exception ex = Assert.Throws<CandidateGeneration.CandidateGenerationException>(() => candidateGenerator.GenerateCandidates(
                 "CGUGGUUAGGGCCACGUUAAAUAGnnNNUUAAGCCCUAAGCGNNNNnn",
                 "((((.[[[[[[.))))........0123.....]]]]]]...456789",
-                "nnNNNNGNNNnn",
-                "987654..3210",
-                "AUUGCAGUAUAAAGCCU"));
-            Assert.Equal("Multiple repeat regions are not supported.", ex.Message);
+                "nnNNNNnNNNnn",
+                "987654a.3210",
+                "AUUGCAGUAUAAAGCCU").ToList());
+            Assert.Equal("More than 2 repeat regions are not supported.", ex.Message);
         }
 
         [Fact]
@@ -245,7 +245,7 @@ namespace Ribosoft.Tests
                 ".01.",
                 "Nn",
                 "10",
-                "AU");
+                "AU").ToList();
 
             Assert.Equal(3, candidates.Count);
             Assert.Equal("GUA", candidates[0].Sequence.GetString());
@@ -262,12 +262,34 @@ namespace Ribosoft.Tests
                 ".01.",
                 "nN",
                 "10",
-                "AU");
+                "AU").ToList();
 
             Assert.Equal(3, candidates.Count);
             Assert.Equal("GUA", candidates[0].Sequence.GetString());
             Assert.Equal("GAA", candidates[1].Sequence.GetString());
             Assert.Equal("GAUA", candidates[2].Sequence.GetString());
+        }
+
+        [Fact]
+        public void Generate_Candidates_StartEnd_Repeat()
+        {
+            CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
+            var candidates = candidateGenerator.GenerateCandidates(
+                "nGNn",
+                "0.12",
+                "nNn",
+                "210",
+                "AUG").ToList();
+
+            Assert.Equal(8, candidates.Count);
+            Assert.Equal("GU", candidates[0].Sequence.GetString());
+            Assert.Equal("GC", candidates[1].Sequence.GetString());
+            Assert.Equal("GA", candidates[2].Sequence.GetString());
+            Assert.Equal("GAU", candidates[3].Sequence.GetString());
+            Assert.Equal("GCA", candidates[4].Sequence.GetString());
+            Assert.Equal("AGC", candidates[5].Sequence.GetString());
+            Assert.Equal("UGCA", candidates[6].Sequence.GetString());
+            Assert.Equal("UGA", candidates[7].Sequence.GetString());
         }
     }
 }

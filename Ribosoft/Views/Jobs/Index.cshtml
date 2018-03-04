@@ -31,7 +31,10 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
+        var deleteButtonText = item.JobState == JobState.New || item.JobState == JobState.Started ? "Cancel" : "Delete";
+
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.JobState)
@@ -49,14 +52,10 @@
                 @Html.DisplayFor(modelItem => item.UpdatedAt)
             </td>
             <td>
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                @if (item.JobState == JobState.New || item.JobState == JobState.Started)
-                {
-                    @:|
-                    <a asp-action="Delete" asp-route-id="@item.Id">Cancel</a>
-                }
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">@deleteButtonText</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>

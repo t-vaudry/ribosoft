@@ -26,10 +26,13 @@ namespace Ribosoft
         private static extern R_STATUS accessibility(string substrateSequence, string substrateTemplate, int cutsiteIndex, int cutsiteNumber, out float delta);
 
         [DllImport("RibosoftAlgo")]
-        private static extern R_STATUS anneal(string sequence, string structure, float na_concentration, out float temp);
+        private static extern R_STATUS anneal(string sequence, string structure, float na_concentration, float probe_concentration, out float temp);
 
         [DllImport("RibosoftAlgo")]
         private static extern R_STATUS fold(string sequence, out IntPtr output, out int size);
+
+        [DllImport("RibosoftAlgo")]
+        private static extern void fold_output_free(IntPtr output, int size);
 
         [DllImport("RibosoftAlgo")]
         private static extern R_STATUS structure(string candidate, string ideal, out float distance);
@@ -72,11 +75,11 @@ namespace Ribosoft
             return accessibilityScore;
         }
 
-        public float Anneal(Candidate candidate, string targetSequence, string structure, float naConcentration)
+        public float Anneal(Candidate candidate, string targetSequence, string structure, float naConcentration, float probeConcentration)
         {
             float temperatureScore = 0.0f;
 
-            R_STATUS status = anneal(targetSequence, structure, naConcentration, out float delta);
+            R_STATUS status = anneal(targetSequence, structure, naConcentration, probeConcentration, out float delta);
 
             if (status != R_STATUS.R_STATUS_OK)
             {
@@ -97,12 +100,16 @@ namespace Ribosoft
                 throw new RibosoftAlgoException(status);
             }
 
+            var currentPtr = outputPtr;
             var foldOutputs = new FoldOutput[size];
+            var foldOutputSize = Marshal.SizeOf<FoldOutput>();
 
-            for (int i = 0; i < size; ++i, outputPtr += Marshal.SizeOf<FoldOutput>())
+            for (int i = 0; i < size; ++i, currentPtr += foldOutputSize)
             {
-                foldOutputs[i] = Marshal.PtrToStructure<FoldOutput>(outputPtr);
+                foldOutputs[i] = Marshal.PtrToStructure<FoldOutput>(currentPtr);
             }
+
+            fold_output_free(outputPtr, size);
 
             return foldOutputs;
         }
