@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Ribosoft.Models
@@ -59,7 +60,17 @@ namespace Ribosoft.Models
         public virtual Ribozyme Ribozyme { get; set; }
 
         public virtual ICollection<Design> Designs { get; set; }
-        
-        
+
+        public static Expression<Func<Job, bool>> InProgress() =>
+            j => j.JobState == JobState.New
+                 || j.JobState == JobState.Started
+                 || j.JobState == JobState.CandidateGenerator
+                 || j.JobState == JobState.Specificity
+                 || j.JobState == JobState.MultiObjectiveOptimization;
+
+        public static Expression<Func<Job, bool>> Completed() =>
+            j => j.JobState == JobState.Completed
+                 || j.JobState == JobState.Errored
+                 || j.JobState == JobState.Cancelled;
     }
 }

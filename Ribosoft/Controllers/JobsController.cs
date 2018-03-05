@@ -45,9 +45,10 @@ namespace Ribosoft.Controllers
                 .Where(j => j.OwnerId == user.Id)
                 .OrderByDescending(j => j.CreatedAt);
 
-            var completedJobs = jobs.Where(j => j.JobState != JobState.New && j.JobState != JobState.Started);
+            var inProgressJobs = jobs.Where(Job.InProgress());
+            var completedJobs = jobs.Where(Job.Completed());
 
-            vm.InProgress = jobs.Where(j => j.JobState == JobState.New || j.JobState == JobState.Started);
+            vm.InProgress = inProgressJobs;
             vm.Completed.Data = await completedJobs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
             vm.Completed.TotalItems = await completedJobs.CountAsync();
             vm.Completed.PageNumber = pageNumber;
