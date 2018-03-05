@@ -47,6 +47,7 @@ namespace Ribosoft.Controllers
         [ValidateAntiForgeryToken]
         public  async Task<IActionResult> Index(RequestViewModel model)
         {
+            this.ViewData["Ribozymes"] = new SelectList(_context.Ribozymes, "Id", "Name");
             var user = await GetUser();
             Job job = new Job();
             
