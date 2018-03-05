@@ -10,7 +10,7 @@ namespace Ribosoft.Models
     public enum JobState
     {
         New,
-        Started,
+        Started, // UNUSED
         Completed,
         Cancelled,
         Errored,
@@ -60,6 +60,16 @@ namespace Ribosoft.Models
         public virtual Ribozyme Ribozyme { get; set; }
 
         public virtual ICollection<Design> Designs { get; set; }
+
+        public bool IsInProgress()
+        {
+            return InProgress().Compile()(this);
+        }
+        
+        public bool IsCompleted()
+        {
+            return Completed().Compile()(this);
+        }
 
         public static Expression<Func<Job, bool>> InProgress() =>
             j => j.JobState == JobState.New
