@@ -30,8 +30,8 @@ namespace Ribosoft.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            this.ViewData["Ribozymes"] = new SelectList(_context.Ribozymes, "Id", "Name");
-            return View(new RequestViewModel()
+            ViewData["Ribozymes"] = new SelectList(_context.Ribozymes, "Id", "Name");
+            return View(new RequestViewModel
             {
                 TargetRegions = new TargetRegion[] {
                     new TargetRegion(1, "5'UTR", false),
@@ -73,6 +73,8 @@ namespace Ribosoft.Controllers
 
                 //return Content($"Structure: {model.RibozymeStructure}\nSequence: {model.InputSequence}\nTest: {model.TargetRegions[0].Selected}");
             }
+            
+            ViewData["Ribozymes"] = new SelectList(_context.Ribozymes, "Id", "Name");
             return View(model);
         }
 

@@ -1,4 +1,5 @@
-@model Ribosoft.Models.RequestViewModel;
+@model Ribosoft.Models.RequestViewModel
+
 @{
     ViewData["Title"] = "Create a new search";
 }
@@ -8,6 +9,11 @@
 <div id="app">
     <form method="post">
         
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="All" class="my-3 p-3 bg-white rounded box-shadow text-danger"></div>
+        }
+
         <!-- Sequence Selection -->
         <div class="my-3 p-3 bg-white rounded box-shadow">
             <h6 class="border-bottom border-gray pb-2">RNA sequence</h6>
@@ -26,8 +32,6 @@
                 </div>
             }*@
 
-            <div asp-validation-summary="All" class="text-danger"></div>
-
             <div class="form-group">
                 <!-- TODO: Redo and populate from C# not JS -->
                 <label asp-for="RibozymeStructure"></label>
@@ -43,7 +47,7 @@
                 <textarea asp-for="InputSequence" class="form-control" placeholder="RNA..." rows="6" id="inputSequence"></textarea>
                 <span asp-validation-for="InputSequence" class="text-danger"></span>
             </div>
-            
+
             <div class="form-group form-inline">
                 <label class="btn btn-sm btn-secondary" for="FASTAfileInput">Upload a FASTA file</label>
                 <input type="file" class="form-control-file d-none" value="Use FASTA file" v-on:change="processFASTAfile" id="FASTAfileInput">
@@ -59,7 +63,7 @@
                     <input asp-for="OpenReadingFrameStart" class="form-control" min="0">
                     <span asp-validation-for="OpenReadingFrameStart" class="text-danger"></span>
                 </div>
-            
+
                 <div class="form-group col-md-6">
                     <label asp-for="OpenReadingFrameEnd"></label>
                     <input asp-for="OpenReadingFrameEnd" class="form-control" min="0">
@@ -71,7 +75,7 @@
         <!-- Regions for Target Design -->
         <div class="my-3 p-3 bg-white rounded box-shadow">
             <h6 class="border-bottom border-gray pb-2">Target regions</h6>
-            
+
             <div class="form-group mb-0">
                 @for (var i = 0; i < Model.TargetRegions.Length; i++)
                 {
@@ -89,7 +93,7 @@
         <!-- Target Environment -->
         <div class="my-3 p-3 bg-white rounded box-shadow">
             <h6 class="border-bottom border-gray pb-2">Target environment</h6>
-            
+
             <div class="form-group mb-0" id="targetEnvironmentMethod">
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" asp-for="TargetEnvironment.TargetEnvironment" type="radio" value="In-vitro" v-on:change="targetEnvironment" id="targetEnvironmentInVitro" checked="checked">
@@ -109,7 +113,7 @@
                 </select>
                 <span asp-validation-for="InVivoEnvironment" class="text-danger"></span>
             </div>
-            
+
             <div class="form-group mb-0" v-if="inVivoSelected">
                 <label asp-for="Specificity"></label>
                 <div class="form-check form-check-inline">
@@ -127,7 +131,7 @@
         <!-- Environment Properties -->
         <div class="my-3 p-3 bg-white rounded box-shadow">
             <h6 class="border-bottom border-gray pb-2">Environment properties</h6>
-            
+
             <div class="form-group">
                 <label asp-for="Temperature"></label>
                 <input asp-for="Temperature" type="text" class="form-control">
@@ -160,7 +164,7 @@
         @*     </div> *@
         @* </div> *@
 
-        <input type="submit" class="btn btn-primary"/>
+        <input type="submit" class="btn btn-primary btn-block">
     </form>
 </div>
 

@@ -9,30 +9,30 @@ namespace Ribosoft.Models
     public class RequestViewModel
     {
         [Required]
-        [Display(Name = "Ribozyme Structure:")]
+        [Display(Name = "Ribozyme Structure")]
         public int RibozymeStructure { get; set; }
 
         [Required]
         [RegularExpression(@"^['A','C','G','U','R','Y','K','M','S','W','B','D','H','V','N']+$", 
         ErrorMessage = "Sequence must only contain the following characters: A, C, G, U, R, Y, K, M, S, W, B, D, H, V, N")]
         [DataType(DataType.Text)]
-        [Display(Name = "Input sequnce:")]
+        [Display(Name = "Input Sequence")]
         public string InputSequence { get; set; }
 
         [Required]
-        [Display(Name = "Open Reading Frame Start Index:")]
+        [Display(Name = "Open Reading Frame Start Index")]
         public int OpenReadingFrameStart { get; set; }
 
         [Required]
-        [Display(Name = "Open Reading Frame End Index:")]
+        [Display(Name = "Open Reading Frame End Index")]
         public int OpenReadingFrameEnd { get; set; }
 
         [Required]
-        [Display(Name = "Select Target Region:")]
+        [Display(Name = "Select Target Region")]
         public TargetRegion[] TargetRegions { get; set; }
 
         [Required]
-        [Display(Name = "Environment:")]
+        [Display(Name = "Environment")]
         public TargetEnvironmentRadioInput TargetEnvironment { get; set; }
 
         [DataType(DataType.Text)]
@@ -40,22 +40,21 @@ namespace Ribosoft.Models
         public string InVivoEnvironment { get; set; }
 
         [Required]
-        [Display(Name = "Temperature (℃):")]
+        [Display(Name = "Temperature (℃)")]
         public float Temperature { get; set; }
 
         [Required]
-        [Display(Name = "Na (nM):")]
+        [Display(Name = "Na (nM)")]
         public float Na { get; set; }
 
         [Required]
-        [Display(Name = "Probe (nM):")]
+        [Display(Name = "Probe (nM)")]
         public float Probe { get; set; }
 
-        [Display(Name = "Cut Sites:")]
+        [Display(Name = "Cut Sites")]
         public string[] CutSites { get; set; }
 
-        [Required]
-        [Display(Name = "Method:")]
+        [Display(Name = "Method")]
         public SpecificityRadioInput Specificity { get; set; }
 
     }

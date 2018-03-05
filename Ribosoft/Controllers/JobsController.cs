@@ -191,7 +191,7 @@ namespace Ribosoft.Controllers
                 return NotFound();
             }
 
-            if (job.JobState == JobState.New || job.JobState == JobState.Started)
+            if (job.IsInProgress())
             {
                 job.JobState = JobState.Cancelled;
 
