@@ -12,7 +12,11 @@ namespace Ribosoft.Models
         Started,
         Completed,
         Cancelled,
-        Errored
+        Errored,
+        
+        CandidateGenerator,
+        MultiObjectiveOptimization,
+        Specificity,
     }
 
     public class Job : BaseEntity
@@ -55,5 +59,7 @@ namespace Ribosoft.Models
         public virtual Ribozyme Ribozyme { get; set; }
 
         public virtual ICollection<Design> Designs { get; set; }
+        
+        
     }
 }
