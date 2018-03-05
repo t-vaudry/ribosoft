@@ -42,30 +42,35 @@ namespace Ribosoft.Jobs
         {
             var job = GetJob(jobId);
 
-            if (job.JobState != JobState.New)
-            {
-                return;
-            }
-
-            // check if blastn is available; if it isn't, ignore specificity
-            bool shouldCalculateSpecificity = _blaster.IsAvailable();
-
-            job.JobState = JobState.Started;
-            await _db.SaveChangesAsync();
-
-            await RunCandidateGenerator(job, cancellationToken);
-
-            if (shouldCalculateSpecificity)
-            {
-                await RunBlast(job, cancellationToken);
-            }
-
-            await MultiObjectiveOptimize(job, cancellationToken);
+            await DoStage(job, JobState.CandidateGenerator, j => j.JobState == JobState.New || j.JobState == JobState.CandidateGenerator, RunCandidateGenerator, cancellationToken);
+            await DoStage(job, JobState.Specificity, j => j.JobState == JobState.CandidateGenerator, RunBlast, cancellationToken);
+            await DoStage(job, JobState.MultiObjectiveOptimization, j => j.JobState == JobState.Specificity, MultiObjectiveOptimize, cancellationToken);
 
             job.JobState = JobState.Completed;
             await _db.SaveChangesAsync();
 
             await SendJobCompletionEmail(job.Owner);
+        }
+
+        private async Task DoStage(Job job, JobState state, Func<Job, bool> acceptFunc, Func<Job, IJobCancellationToken, Task> func, IJobCancellationToken cancellationToken)
+        {
+            if (!acceptFunc(job))
+            {
+                // don't do anything if the stage can't handle this type of job
+                // this also catches errored jobs, etc.
+                return;
+            }
+            
+            cancellationToken.ThrowIfCancellationRequested();
+            
+            // set the job to this stage's state
+            if (job.JobState != state)
+            {
+                job.JobState = state;
+                await _db.SaveChangesAsync();
+            }
+
+            await func(job, cancellationToken);
         }
 
         private async Task RecreateDbContext()
@@ -87,36 +92,36 @@ namespace Ribosoft.Jobs
         {
             var idealStructurePattern = new Regex(@"[^.^(^)]");
 
-            List<string> RNAInputs = new List<string>();
+            List<string> rnaInputs = new List<string>();
 
             if (job.FivePrime && job.OpenReadingFrame && job.ThreePrime)
             {
-                RNAInputs.Add(job.RNAInput);
+                rnaInputs.Add(job.RNAInput);
             }
             else if (job.FivePrime && job.OpenReadingFrame)
             {
-                RNAInputs.Add(job.RNAInput.Substring(0, job.OpenReadingFrameEnd));
+                rnaInputs.Add(job.RNAInput.Substring(0, job.OpenReadingFrameEnd));
             }
             else if (job.OpenReadingFrame && job.ThreePrime)
             {
-                RNAInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameStart, job.RNAInput.Length - job.OpenReadingFrameStart - 1));
+                rnaInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameStart, job.RNAInput.Length - job.OpenReadingFrameStart - 1));
             }
             else if (job.FivePrime && job.ThreePrime)
             {
-                RNAInputs.Add(job.RNAInput.Substring(0, job.OpenReadingFrameStart));
-                RNAInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameEnd, job.RNAInput.Length - job.OpenReadingFrameEnd - 1));
+                rnaInputs.Add(job.RNAInput.Substring(0, job.OpenReadingFrameStart));
+                rnaInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameEnd, job.RNAInput.Length - job.OpenReadingFrameEnd - 1));
             }
             else if (job.FivePrime)
             {
-                RNAInputs.Add(job.RNAInput.Substring(0, job.OpenReadingFrameStart));
+                rnaInputs.Add(job.RNAInput.Substring(0, job.OpenReadingFrameStart));
             }
             else if (job.OpenReadingFrame)
             {
-                RNAInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameStart, job.OpenReadingFrameEnd - job.OpenReadingFrameStart - 1));
+                rnaInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameStart, job.OpenReadingFrameEnd - job.OpenReadingFrameStart - 1));
             }
             else if (job.ThreePrime)
             {
-                RNAInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameEnd, job.RNAInput.Length - job.OpenReadingFrameEnd - 1));
+                rnaInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameEnd, job.RNAInput.Length - job.OpenReadingFrameEnd - 1));
             }
             else
             {
@@ -126,7 +131,7 @@ namespace Ribosoft.Jobs
                 return;
             }
 
-            foreach (var rnaInput in RNAInputs)
+            foreach (var rnaInput in rnaInputs)
             {
                 CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
@@ -144,7 +149,7 @@ namespace Ribosoft.Jobs
                             ribozymeStructure.Structure,
                             ribozymeStructure.SubstrateTemplate,
                             ribozymeStructure.SubstrateStructure,
-                            job.RNAInput);
+                            rnaInput);
                     }
                     catch (CandidateGeneration.CandidateGenerationException e)
                     {
@@ -234,6 +239,12 @@ namespace Ribosoft.Jobs
 
         private async Task RunBlast(Job job, IJobCancellationToken cancellationToken)
         {
+            // check if blastn is available; if it isn't, ignore specificity
+            if (!_blaster.IsAvailable())
+            {
+                return;
+            }
+            
             var designs = _db.Designs
                              .Where(d => d.JobId == job.Id)
                              .GroupBy(d => new { d.CutsiteIndex, d.SubstrateSequenceLength });
@@ -244,6 +255,12 @@ namespace Ribosoft.Jobs
 
                 var design = designGroup.First();
                 var substrateSequence = job.RNAInput.Substring(design.CutsiteIndex, design.SubstrateSequenceLength);
+
+                if (string.IsNullOrEmpty(substrateSequence))
+                {
+                    continue;
+                }
+                
                 var sb = new StringBuilder();
                 sb.AppendFormat(">{0}{1}", design.Id, Environment.NewLine);
                 sb.AppendFormat("{0}{1}", substrateSequence, Environment.NewLine);
@@ -281,7 +298,7 @@ namespace Ribosoft.Jobs
                 UseIndex = true,
                 LowercaseMasking = true,
                 OutputFormat = "6 qseqid saccver pident qcovs",
-                NumThreads = 4,
+                NumThreads = 7,
             };
 
             var shortBlastParameters = new BlastParameters
@@ -291,7 +308,7 @@ namespace Ribosoft.Jobs
                 UseIndex = true,
                 LowercaseMasking = true,
                 OutputFormat = "6 qseqid saccver pident qcovs",
-                NumThreads = 4,
+                NumThreads = 7,
                 Task = BlastParameters.BlastTask.blastn_short,
                 ExpectValue = 1000.0f,
             };

@@ -16,14 +16,19 @@ namespace Ribosoft.Models
 
         // fitness values
         [Display(Name = "Desired Temperature Score")]
+        [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? DesiredTemperatureScore { get; set; }
         [Display(Name = "Highest Temperature Score")]
+        [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? HighestTemperatureScore { get; set; }
         [Display(Name = "Specificity Score")]
+        [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? SpecificityScore { get; set; }
         [Display(Name = "Accessibility Score")]
+        [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? AccessibilityScore { get; set; }
         [Display(Name = "Structure Score")]
+        [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? StructureScore { get; set; }
 
         // substrate sequence

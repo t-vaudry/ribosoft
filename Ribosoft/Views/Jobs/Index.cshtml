@@ -9,8 +9,11 @@
 <div class="my-3 p-3 bg-white rounded box-shadow">
     <h6 class="border-bottom border-gray pb-2 mb-0">In progress</h6>
 
+    @{ var empty = true;}
+    
     @foreach (var item in Model.InProgress)
     {
+        empty = false;
         <div class="d-flex justify-content-between align-items-center pt-3 border-bottom border-gray">
             <p class="pb-3 mb-0 small lh-125">
                 <span class="d-block"><strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong> <span class="text-muted">on @item.CreatedAt</span></span>
@@ -22,13 +25,20 @@
             </div>
         </div>
     }
+    
+    @if (empty)
+    {
+        <p class="mt-2 mb-0">You have no jobs in progress.</p>
+    }
 </div>
 
 <div class="my-3 p-3 bg-white rounded box-shadow">
     <h6 class="border-bottom border-gray pb-2 mb-0">Completed</h6>
-
+    
+    @{ empty = true;}
     @foreach (var item in Model.Completed.Data)
     {
+        empty = false;
         <div class="d-flex justify-content-between align-items-center pt-3 border-bottom border-gray">
             <p class="pb-3 mb-0 small lh-125">
                 <span class="d-block"><strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong> <span class="text-muted">on @item.CreatedAt</span></span>
@@ -41,17 +51,24 @@
         </div>
     }
 
-    <cs-pager cs-paging-pagesize="@Model.Completed.PageSize"
-        cs-paging-pagenumber="@Model.Completed.PageNumber"
-        cs-paging-totalitems="@Model.Completed.TotalItems"
-        asp-action="Index"
-        asp-controller="Jobs"
-        cs-pagenumber-param="pageNumber"
-        cs-pager-li-current-class="page-item active"
-        cs-pager-li-other-class="page-item"
-        cs-pager-li-non-active-class="page-item disabled"
-        cs-pager-link-current-class="page-link"
-        cs-pager-link-other-class="page-link"></cs-pager>
+    <div class="mt-2 mb-0">
+        <cs-pager cs-paging-pagesize="@Model.Completed.PageSize"
+                  cs-paging-pagenumber="@Model.Completed.PageNumber"
+                  cs-paging-totalitems="@Model.Completed.TotalItems"
+                  asp-action="Index"
+                  asp-controller="Jobs"
+                  cs-pagenumber-param="pageNumber"
+                  cs-pager-li-current-class="page-item active"
+                  cs-pager-li-other-class="page-item"
+                  cs-pager-li-non-active-class="page-item disabled"
+                  cs-pager-link-current-class="page-link"
+                  cs-pager-link-other-class="page-link"></cs-pager>
+    </div>
+    
+    @if (empty)
+    {
+        <p class="mt-2 mb-0">You have no completed jobs.</p>
+    }
 </div>
 
 @*<table class="table">

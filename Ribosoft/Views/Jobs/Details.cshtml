@@ -4,127 +4,163 @@
     ViewData["Title"] = "Job Details";
 }
 
-<h2>Job Details</h2>
+<h1>Job details</h1>
 
-<div>
-    <h4>Job</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Job.JobState)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Job.JobState)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Job.StatusMessage)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Job.StatusMessage)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Job.RNAInput)
-        </dt>
-        <dd>
-            <textarea rows="4" cols="80" readonly="readonly">@Model.Job.RNAInput</textarea>
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Job.Ribozyme)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Job.Ribozyme.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Job.CreatedAt)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Job.CreatedAt)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Job.UpdatedAt)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Job.UpdatedAt)
-        </dd>
-    </dl>
+<div class="card my-3 box-shadow">
+    <div class="card-body">
+        <h5 class="card-title border-bottom border-gray pb-2">Request information</h5>
+        <dl class="row mb-0">
+            <dt class="col-2">
+                @Html.DisplayNameFor(model => model.Job.StatusMessage)
+            </dt>
+            <dd class="col-10">
+                @Html.DisplayFor(model => model.Job.StatusMessage)
+            </dd>
+            <dt class="col-2">
+                @Html.DisplayNameFor(model => model.Job.RNAInput)
+            </dt>
+            <dd class="col-10">
+                <textarea class="form-control" rows="4" cols="80" readonly="readonly">@Model.Job.RNAInput</textarea>
+            </dd>
+            <dt class="col-2">
+                @Html.DisplayNameFor(model => model.Job.Ribozyme)
+            </dt>
+            <dd class="col-10">
+                @Html.DisplayFor(model => model.Job.Ribozyme.Name)
+            </dd>
+            <dt class="col-2">
+                @Html.DisplayNameFor(model => model.Job.CreatedAt)
+            </dt>
+            <dd class="col-10">
+                @Html.DisplayFor(model => model.Job.CreatedAt)
+            </dd>
+        </dl>
+    </div>
 </div>
 
-<h4>Designs</h4>
-<hr />
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.ActionLink("Rank", "Details", new { sortOrder = "rank_asc", pageNumber = @Model.Designs.PageNumber })
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Designs.Data.First().Sequence)
-            </th>
-            <th>
-                @Html.ActionLink("Desired Temperature Score", "Details", new { sortOrder = "desired_temp_desc", pageNumber = @Model.Designs.PageNumber })
-            </th>
-            <th>
-                @Html.ActionLink("Highest Temperature Score", "Details", new { sortOrder = "high_temp_desc", pageNumber = @Model.Designs.PageNumber })
-            </th>
-            <th>
-                @Html.ActionLink("Specificity Score", "Details", new { sortOrder = "spec_desc", pageNumber = @Model.Designs.PageNumber })
-            </th>
-            <th>
-                @Html.ActionLink("Accessibility Score", "Details", new { sortOrder = "access_desc", pageNumber = @Model.Designs.PageNumber })
-            </th>
-            <th>
-                @Html.ActionLink("Structure Score", "Details", new { sortOrder = "struct_desc", pageNumber = @Model.Designs.PageNumber })
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Designs.Data)
-        {
-        float? HighestTemperatureScore = -1.0f * item.HighestTemperatureScore;
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rank)
-            </td>
-            <td>
-                <code>@Html.DisplayFor(modelItem => item.Sequence)</code>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DesiredTemperatureScore)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => HighestTemperatureScore)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SpecificityScore)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AccessibilityScore)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StructureScore)
-            </td>
-            <td>
-                <a asp-controller="Designs" asp-action="Details" asp-route-id="@item.Id">Details</a>
-            </td>
-        </tr>
-        }
-    </tbody>
-</table>
+<div class="card my-3 box-shadow">
+    <div class="card-body">
+        <h5 class="card-title">Progress</h5>
+        <div class="progress" style="height: 30px;">
+            @if (Model.Job.JobState == JobState.New || Model.Job.JobState == JobState.Started)
+            {
+                <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>    
+                <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
+                <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
+            }
+            else if (Model.Job.JobState == JobState.CandidateGenerator)
+            {
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>    
+                <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
+                <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
+            }
+            else if (Model.Job.JobState == JobState.Specificity)
+            {
+                <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>    
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
+                <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
+            }
+            else if (Model.Job.JobState == JobState.MultiObjectiveOptimization)
+            {
+                <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>    
+                <div class="progress-bar bg-success" role="progressbar" style="width: 34%" aria-valuenow="34" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
+            }
+            else if (Model.Job.JobState == JobState.Errored)
+            {
+                <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Errored</div>
+            }
+            else if (Model.Job.JobState == JobState.Completed)
+            {
+                <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Completed</div>
+            }
+        </div>
+    </div>
+</div>
 
-<cs-pager cs-paging-pagesize="@Model.Designs.PageSize"
-    cs-paging-pagenumber="@Model.Designs.PageNumber"
-    cs-paging-totalitems="@Model.Designs.TotalItems"
-    asp-action="Details"
-    asp-controller="Jobs"
-    asp-route-id="@Model.Job.Id"
-    asp-route-sortOrder="@Model.SortOrder"
-    cs-pagenumber-param="pageNumber"
-    cs-pager-li-current-class="page-item active"
-    cs-pager-li-other-class="page-item"
-    cs-pager-li-non-active-class="page-item disabled"
-    cs-pager-link-current-class="page-link"
-    cs-pager-link-other-class="page-link"></cs-pager>
+<div class="card my-3 box-shadow">
+    <div class="card-body">
+        <h5 class="card-title">Designs</h5>
+        
+        <div class="table-responsive mb-2">
+            <table class="table table-hover mb-0">
+                <thead>
+                <tr>
+                    <th>
+                        @Html.ActionLink("Rank", "Details", new {sortOrder = "rank_asc", pageNumber = @Model.Designs.PageNumber})
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Designs.Data.First().Sequence)
+                    </th>
+                    <th>
+                        @Html.ActionLink("Desired Temperature Score", "Details", new {sortOrder = "desired_temp_desc", pageNumber = @Model.Designs.PageNumber})
+                    </th>
+                    <th>
+                        @Html.ActionLink("Highest Temperature Score", "Details", new {sortOrder = "high_temp_desc", pageNumber = @Model.Designs.PageNumber})
+                    </th>
+                    <th>
+                        @Html.ActionLink("Specificity Score", "Details", new {sortOrder = "spec_desc", pageNumber = @Model.Designs.PageNumber})
+                    </th>
+                    <th>
+                        @Html.ActionLink("Accessibility Score", "Details", new {sortOrder = "access_desc", pageNumber = @Model.Designs.PageNumber})
+                    </th>
+                    <th>
+                        @Html.ActionLink("Structure Score", "Details", new {sortOrder = "struct_desc", pageNumber = @Model.Designs.PageNumber})
+                    </th>
+                    @* <th></th> *@
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Designs.Data)
+                {
+                    float? HighestTemperatureScore = -1.0f * item.HighestTemperatureScore;
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Rank)
+                        </td>
+                        <td>
+                            <code style="word-break: break-all;">@Html.DisplayFor(modelItem => item.Sequence)</code>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DesiredTemperatureScore)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => HighestTemperatureScore)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SpecificityScore)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AccessibilityScore)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StructureScore)
+                        </td>
+                        @* <td> *@
+                        @*     <a asp-controller="Designs" asp-action="Details" asp-route-id="@item.Id">Details</a> *@
+                        @* </td> *@
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    
+        <cs-pager cs-paging-pagesize="@Model.Designs.PageSize"
+                  cs-paging-pagenumber="@Model.Designs.PageNumber"
+                  cs-paging-totalitems="@Model.Designs.TotalItems"
+                  asp-action="Details"
+                  asp-controller="Jobs"
+                  asp-route-id="@Model.Job.Id"
+                  asp-route-sortOrder="@Model.SortOrder"
+                  cs-pagenumber-param="pageNumber"
+                  cs-pager-ul-class="pagination mb-0"
+                  cs-pager-li-current-class="page-item active"
+                  cs-pager-li-other-class="page-item"
+                  cs-pager-li-non-active-class="page-item disabled"
+                  cs-pager-link-current-class="page-link"
+                  cs-pager-link-other-class="page-link"></cs-pager>
+    </div>
+</div>
 
 <div>
     @if (Model.Job.JobState == JobState.New || Model.Job.JobState == JobState.Started)
