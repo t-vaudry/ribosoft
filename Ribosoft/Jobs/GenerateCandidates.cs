@@ -45,11 +45,7 @@ namespace Ribosoft.Jobs
             await DoStage(job, JobState.CandidateGenerator, j => j.JobState == JobState.New || j.JobState == JobState.CandidateGenerator, RunCandidateGenerator, cancellationToken);
             await DoStage(job, JobState.Specificity, j => j.JobState == JobState.CandidateGenerator, RunBlast, cancellationToken);
             await DoStage(job, JobState.MultiObjectiveOptimization, j => j.JobState == JobState.Specificity, MultiObjectiveOptimize, cancellationToken);
-
-            job.JobState = JobState.Completed;
-            await _db.SaveChangesAsync();
-
-            await SendJobCompletionEmail(job.Owner);
+            await DoStage(job, JobState.Completed, j => j.JobState == JobState.MultiObjectiveOptimization, CompleteJob, cancellationToken);
         }
 
         private async Task DoStage(Job job, JobState state, Func<Job, bool> acceptFunc, Func<Job, IJobCancellationToken, Task> func, IJobCancellationToken cancellationToken)
@@ -314,6 +310,11 @@ namespace Ribosoft.Jobs
             };
 
             return query.Length <= 30 ? shortBlastParameters : regularBlastParameters;
+        }
+
+        private async Task CompleteJob(Job job, IJobCancellationToken cancellationToken)
+        {
+            await SendJobCompletionEmail(job.Owner);
         }
 
         private async Task SendJobCompletionEmail(ApplicationUser user)
