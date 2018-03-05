@@ -7,10 +7,10 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
+        <li class="nav-item" is-active-route asp-controller="Manage">
             <a asp-controller="Manage" asp-action="Index" title="Manage" class="nav-link">Hello @UserManager.GetUserName(User)!</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" is-active-route asp-controller="Account" asp-action="Logout">
             <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="form-inline my-2 my-lg-0">
                 <button type="submit" class="btn btn-sm btn-link nav-link my-2 my-sm-0">Log out</button>
             </form>
