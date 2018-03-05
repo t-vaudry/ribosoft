@@ -119,7 +119,12 @@
     asp-controller="Jobs"
     asp-route-id="@Model.Job.Id"
     asp-route-sortOrder="@Model.SortOrder"
-    cs-pagenumber-param="pageNumber"></cs-pager>
+    cs-pagenumber-param="pageNumber"
+    cs-pager-li-current-class="page-item active"
+    cs-pager-li-other-class="page-item"
+    cs-pager-li-non-active-class="page-item disabled"
+    cs-pager-link-current-class="page-link"
+    cs-pager-link-other-class="page-link"></cs-pager>
 
 <div>
     @if (Model.Job.JobState == JobState.New || Model.Job.JobState == JobState.Started)

@@ -3,11 +3,11 @@
 
 @inject SignInManager<ApplicationUser> SignInManager
 
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>@ViewData["Title"] - Ribosoft</title>
 
     <link rel="stylesheet" href="~/dist/vendor.css" asp-append-version="true" />
@@ -15,40 +15,45 @@
         <link rel="stylesheet" href="~/dist/site.css" asp-append-version="true" />
     </environment>
 </head>
-<body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+<body class="bg-light">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Ribosoft</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
+            <a asp-controller="Home" asp-action="Index" class="navbar-brand">Ribosoft</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
                     @if (SignInManager.IsSignedIn(User))
                     {
-                        <li><a asp-area="" asp-controller="Jobs" asp-action="Index">Jobs</a></li>
+                        <li class="nav-item">
+                            <a asp-controller="Request" asp-action="Index" class="nav-link">New request</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a asp-controller="Jobs" asp-action="Index" class="nav-link">Jobs <span class="sr-only">(current)</span></a>
+                        </li>
                         if (User.IsInRole("Administrator"))
                         {
-                            <li><a asp-area="" asp-controller="Ribozymes" asp-action="Index">Ribozymes</a></li>
+                            <li class="nav-item">
+                                <a asp-controller="Ribozymes" asp-action="Index" class="nav-link">Ribozymes</a>
+                            </li>
                         }
                     }
                 </ul>
-                @await Html.PartialAsync("_LoginPartial")
             </div>
+
+            @await Html.PartialAsync("_LoginPartial")
         </div>
     </nav>
-    <div class="container body-content">
+
+    <div class="container body-content" role="main">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2017 - Ribosoft</p>
-        </footer>
     </div>
+
+    <footer class="container">
+        <p class="text-muted">&copy; 2018 - Ribosoft</p>
+    </footer>
 
     <script src="~/dist/vendor.js" asp-append-version="true"></script>
     <script src="~/dist/main.js" asp-append-version="true"></script>
