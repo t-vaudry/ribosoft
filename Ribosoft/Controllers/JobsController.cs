@@ -29,17 +29,31 @@ namespace Ribosoft.Controllers
         }
 
         // GET: Jobs
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageNumber)
         {
             var user = await GetUser();
 
-            var applicationDbContext = _context.Jobs
+            int pageSize = 20;
+            pageNumber = Math.Max(pageNumber, 1);
+            int offset = (pageSize * pageNumber) - pageSize;
+
+            var vm = new JobIndexViewModel();
+
+            var jobs = _context.Jobs
                 .Include(j => j.Owner)
                 .Include(j => j.Ribozyme)
                 .Where(j => j.OwnerId == user.Id)
                 .OrderByDescending(j => j.CreatedAt);
 
-            return View(await applicationDbContext.ToListAsync());
+            var completedJobs = jobs.Where(j => j.JobState != JobState.New && j.JobState != JobState.Started);
+
+            vm.InProgress = jobs.Where(j => j.JobState == JobState.New || j.JobState == JobState.Started);
+            vm.Completed.Data = await completedJobs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
+            vm.Completed.TotalItems = await completedJobs.CountAsync();
+            vm.Completed.PageNumber = pageNumber;
+            vm.Completed.PageSize = pageSize;
+
+            return View(vm);
         }
 
         // GET: Jobs/Details/5

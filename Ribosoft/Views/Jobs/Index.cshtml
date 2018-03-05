@@ -1,15 +1,60 @@
-﻿@model IEnumerable<Ribosoft.Models.Job>
+﻿@model Ribosoft.Models.JobsViewModels.JobIndexViewModel
 
 @{
     ViewData["Title"] = "Jobs";
 }
 
-<h2>Jobs</h2>
+<h1>Jobs</h1>
 
-<p>
-    <a asp-controller="Request">Create New</a>
-</p>
-<table class="table">
+<div class="my-3 p-3 bg-white rounded box-shadow">
+    <h6 class="border-bottom border-gray pb-2 mb-0">In progress</h6>
+
+    @foreach (var item in Model.InProgress)
+    {
+        <div class="d-flex justify-content-between align-items-center pt-3 border-bottom border-gray">
+            <p class="pb-3 mb-0 small lh-125">
+                <span class="d-block"><strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong> <span class="text-muted">on @item.CreatedAt</span></span>
+                @(item.RNAInput.Length > 50 ? item.RNAInput.Substring(0, 50) + "..." : item.RNAInput)
+            </p>
+            <div class="pb-3 mb-0">
+                <a role="button" class="btn btn-sm btn-primary" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                <a role="button" class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Cancel</a>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="my-3 p-3 bg-white rounded box-shadow">
+    <h6 class="border-bottom border-gray pb-2 mb-0">Completed</h6>
+
+    @foreach (var item in Model.Completed.Data)
+    {
+        <div class="d-flex justify-content-between align-items-center pt-3 border-bottom border-gray">
+            <p class="pb-3 mb-0 small lh-125">
+                <span class="d-block"><strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong> <span class="text-muted">on @item.CreatedAt</span></span>
+                @(item.RNAInput.Length > 50 ? item.RNAInput.Substring(0, 50) + "..." : item.RNAInput)
+            </p>
+            <div class="pb-3 mb-0">
+                <a role="button" class="btn btn-sm btn-primary" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                <a role="button" class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </div>
+        </div>
+    }
+
+    <cs-pager cs-paging-pagesize="@Model.Completed.PageSize"
+        cs-paging-pagenumber="@Model.Completed.PageNumber"
+        cs-paging-totalitems="@Model.Completed.TotalItems"
+        asp-action="Index"
+        asp-controller="Jobs"
+        cs-pagenumber-param="pageNumber"
+        cs-pager-li-current-class="page-item active"
+        cs-pager-li-other-class="page-item"
+        cs-pager-li-non-active-class="page-item disabled"
+        cs-pager-link-current-class="page-link"
+        cs-pager-link-other-class="page-link"></cs-pager>
+</div>
+
+@*<table class="table">
     <thead>
         <tr>
             <th>
@@ -59,3 +104,4 @@
     }
     </tbody>
 </table>
+*@
