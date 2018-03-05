@@ -15,13 +15,13 @@
     {
         empty = false;
         <div class="d-flex justify-content-between align-items-center pt-3 border-bottom border-gray">
-            <p class="pb-3 mb-0 small lh-125">
+            <p class="pb-3 mb-0 lh-125">
                 <span class="d-block"><strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong> <span class="text-muted">on @item.CreatedAt</span></span>
-                @(item.RNAInput.Length > 50 ? item.RNAInput.Substring(0, 50) + "..." : item.RNAInput)
+                <code>@(item.RNAInput.Length > 80 ? item.RNAInput.Substring(0, 80) + "..." : item.RNAInput)</code>
             </p>
             <div class="pb-3 mb-0">
-                <a role="button" class="btn btn-sm btn-primary" asp-action="Details" asp-route-id="@item.Id">Details</a>
-                <a role="button" class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Cancel</a>
+                <a role="button" class="btn btn-primary" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                <a role="button" class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Cancel</a>
             </div>
         </div>
     }
@@ -40,13 +40,16 @@
     {
         empty = false;
         <div class="d-flex justify-content-between align-items-center pt-3 border-bottom border-gray">
-            <p class="pb-3 mb-0 small lh-125">
-                <span class="d-block"><strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong> <span class="text-muted">on @item.CreatedAt</span></span>
-                @(item.RNAInput.Length > 50 ? item.RNAInput.Substring(0, 50) + "..." : item.RNAInput)
+            <p class="pb-3 mb-0 lh-125">
+                <span class="d-block">
+                    @Html.Partial("JobStateBadge", item.JobState)
+                    <strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong> <span class="text-muted">on @item.CreatedAt</span>
+                </span>
+                <code>@(item.RNAInput.Length > 80 ? item.RNAInput.Substring(0, 80) + "..." : item.RNAInput)</code>
             </p>
             <div class="pb-3 mb-0">
-                <a role="button" class="btn btn-sm btn-primary" asp-action="Details" asp-route-id="@item.Id">Details</a>
-                <a role="button" class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a role="button" class="btn btn-primary" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                <a role="button" class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </div>
         </div>
     }
