@@ -76,8 +76,8 @@ var app = new Vue({
         getFromGenbank: function() {
             var accesionField = document.getElementById('accesionNumber');
             var sequenceInputField = document.getElementById("inputSequence");
-            var startIndexField = document.getElementById("openReadingFrameStart");
-            var endIndexField = document.getElementById("openReadingFrameEnd");
+            var startIndexField = document.getElementById("OpenReadingFrameStart");
+            var endIndexField = document.getElementById("OpenReadingFrameEnd");
 
             var seqRoute = '/Request/GetSequenceFromGenbank?accession=' + accesionField.value;
             var startRoute = '/Request/GetStartIndexFromGenbank?accession=' + accesionField.value;
