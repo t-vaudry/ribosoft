@@ -114,7 +114,7 @@
                 @foreach (var item in Model.Designs.Data)
                 {
                     float? HighestTemperatureScore = -1.0f * item.HighestTemperatureScore;
-                    <tr>
+                    <tr class="clickable-row" data-href="@Url.Action("Details", "Designs", new { id = item.Id })">
                         <td>
                             @Html.DisplayFor(modelItem => item.Rank)
                         </td>
@@ -169,3 +169,14 @@
     }
     <a asp-action="Index">Back to List</a>
 </div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            $(".clickable-row").click(function() {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
+}
