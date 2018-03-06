@@ -291,5 +291,25 @@ namespace Ribosoft.Tests
             Assert.Equal("UGCA", candidates[6].Sequence.GetString());
             Assert.Equal("UGA", candidates[7].Sequence.GetString());
         }
+
+        [Fact]
+        public void Generate_Candidates_Yarrowia()
+        {
+            CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
+            var candidates = candidateGenerator.GenerateCandidates(
+                "NNNNNNNCCUGAUGAGAACAAACCCNNNNNNNNCGUCGAAACNNnnnnnnnnnnn",
+                "01234567.......((........89abcdef..))...ghijklmnopqrstu",
+                "nnnnnnnnnnnNNGUCGNNNNNNNNNNNNNNN",
+                "utsrqponmlkjihg.76543210fedcba98",
+                "AUGUCGGUCGAUAUGCUAGCUAGCUAGAGUC").ToList();
+
+            Assert.Equal(6, candidates.Count);
+            Assert.Equal("AUGUCGGUCGAUAUGCUAGCUA", candidates[0].SubstrateSequence);
+            Assert.Equal("CGGUCGAUAUGCUAGCUAGCUA", candidates[1].SubstrateSequence);
+            Assert.Equal("UCGGUCGAUAUGCUAGCUAGCUA", candidates[2].SubstrateSequence);
+            Assert.Equal("GUCGGUCGAUAUGCUAGCUAGCUA", candidates[3].SubstrateSequence);
+            Assert.Equal("UGUCGGUCGAUAUGCUAGCUAGCUA", candidates[4].SubstrateSequence);
+            Assert.Equal("AUGUCGGUCGAUAUGCUAGCUAGCUA", candidates[5].SubstrateSequence);
+        }
     }
 }
