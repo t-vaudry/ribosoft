@@ -108,3 +108,7 @@ html, body {
     opacity: 0.3;
     overflow: hidden;
 }
+
+tr.clickable-row {
+    cursor: pointer; 
+}
