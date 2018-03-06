@@ -43,7 +43,10 @@ namespace Ribosoft
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseNpgsql(connectionString));
 
-                services.AddHangfire(x => x.UsePostgreSqlStorage(connectionString));
+                services.AddHangfire(x => x.UsePostgreSqlStorage(connectionString, new PostgreSqlStorageOptions
+                {
+                    InvisibilityTimeout = TimeSpan.FromDays(1)
+                }));
             }
             else if (providerName == "SqlServer")
             {
