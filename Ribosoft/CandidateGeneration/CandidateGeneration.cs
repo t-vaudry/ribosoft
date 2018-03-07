@@ -344,7 +344,7 @@ namespace Ribosoft.CandidateGeneration
                 Sequence sequence = new Sequence();
 
                 //If the index in the RNA is such that the substrate won't fit around it, ignore it
-                if (idxInRNA < lengthBefore || (InputRNASequence.Length - idxInRNA) < lengthAfter)
+                if (idxInRNA < lengthBefore || (InputRNASequence.Length - idxInRNA) < lengthAfter + length)
                     continue;
 
                 bool found = true;
@@ -378,7 +378,7 @@ namespace Ribosoft.CandidateGeneration
                 //Add the elements after the specified portion
                 for (int i = 0; i < lengthAfter; i++)
                 {
-                    Nucleotide substrate = new Nucleotide(Ribozyme.SubstrateSequence[SmallestSubstarteInfo.EndIndex]);
+                    Nucleotide substrate = new Nucleotide(Ribozyme.SubstrateSequence[SmallestSubstarteInfo.EndIndex + i]);
 
                     if (substrate.Bases.Contains(InputRNASequence[idxInRNA + length + i]))
                     {
