@@ -376,7 +376,7 @@ namespace Ribosoft.CandidateGeneration
                 }
 
                 //Add the elements after the specified portion
-                for (int i = 0; i <= lengthAfter; i++)
+                for (int i = 0; i < lengthAfter; i++)
                 {
                     Nucleotide substrate = new Nucleotide(Ribozyme.SubstrateSequence[SmallestSubstarteInfo.EndIndex]);
 
