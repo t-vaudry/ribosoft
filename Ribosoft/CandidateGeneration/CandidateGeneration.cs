@@ -686,14 +686,13 @@ namespace Ribosoft.CandidateGeneration
                 while (currentCount <= (repeatRegion.Item2 - repeatRegion.Item1))
                 {
                     int beginIdx = -1;
-                    int insertIdx = -1;
 
                     if (!startRepeat && !endRepeat)
                     {
                         throw new CandidateGenerationException("Repeat notation not located at beginning or end of substrate sequence. Case not supported.");
                     }
 
-                    beginIdx = startRepeat ? (repeatRegion.Item1 + currentCount) : (repeatRegion.Item2 - currentCount);
+                    beginIdx = startRepeat ? (repeatRegion.Item2 - currentCount) : (repeatRegion.Item1 + currentCount);
 
                     Nucleotide newBeginning = new Nucleotide(Ribozyme.SubstrateSequence[beginIdx]);
                     char additionalStructure = Ribozyme.SubstrateStructure[beginIdx];
@@ -703,9 +702,9 @@ namespace Ribosoft.CandidateGeneration
                         foreach (SubstrateInfo seq in sequencesToBaseOffOf)
                         {
                             Sequence newSeq = new Sequence(seq.Sequence);
-                            insertIdx = startRepeat ? 0 : newSeq.GetLength();
+                            int insertIdx = startRepeat ? 0 : newSeq.GetLength();
                             newSeq.Insert(insertIdx, new Nucleotide(baseSymbol));
-                            String newStructure = additionalStructure + seq.Structure;
+                            String newStructure = startRepeat ? additionalStructure + seq.Structure : seq.Structure + additionalStructure;
 
                             int offset = startRepeat ? (currentCount + 1) : 0; //If there is a repeat at the beginning, the cutsite number should be shifted
 
