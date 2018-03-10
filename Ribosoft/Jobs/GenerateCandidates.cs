@@ -42,10 +42,31 @@ namespace Ribosoft.Jobs
         {
             var job = GetJob(jobId);
 
+            // run candidate generator
             await DoStage(job, JobState.CandidateGenerator, j => j.JobState == JobState.New || j.JobState == JobState.CandidateGenerator, RunCandidateGenerator, cancellationToken);
-            await DoStage(job, JobState.Specificity, j => j.JobState == JobState.CandidateGenerator, RunBlast, cancellationToken);
+            
+            // queue phase 2 job (blast)
+            await DoStage(job, JobState.Specificity, j => j.JobState == JobState.CandidateGenerator, (j, c) =>
+                {
+                    BackgroundJob.Enqueue<GenerateCandidates>(x => x.Blast(j.Id, c));
+                    return Task.CompletedTask;
+                }, cancellationToken);
+        }
+
+        [Queue("blast")]
+        [AutomaticRetry(Attempts = 0)]
+        public async Task Blast(int jobId, IJobCancellationToken cancellationToken)
+        {
+            var job = GetJob(jobId);
+
+            // run blast to calculate specificity
+            await DoStage(job, JobState.Specificity, j => j.JobState == JobState.Specificity, RunBlast, cancellationToken);
+            
+            // run multi-objective optimization
             await DoStage(job, JobState.MultiObjectiveOptimization, j => j.JobState == JobState.Specificity, MultiObjectiveOptimize, cancellationToken);
-            await DoStage(job, JobState.Completed, j => j.JobState == JobState.MultiObjectiveOptimization, CompleteJob, cancellationToken);
+            
+            // complete job
+            await DoStage(job, JobState.Completed, j => j.JobState == JobState.MultiObjectiveOptimization, CompleteJob, cancellationToken); 
         }
 
         private async Task DoStage(Job job, JobState state, Func<Job, bool> acceptFunc, Func<Job, IJobCancellationToken, Task> func, IJobCancellationToken cancellationToken)
@@ -294,7 +315,7 @@ namespace Ribosoft.Jobs
                 UseIndex = true,
                 LowercaseMasking = true,
                 OutputFormat = "6 qseqid saccver pident qcovs",
-                NumThreads = 7,
+                NumThreads = _configuration.GetValue("Blast:NumThreads", 4)
             };
 
             var shortBlastParameters = new BlastParameters
@@ -304,9 +325,9 @@ namespace Ribosoft.Jobs
                 UseIndex = true,
                 LowercaseMasking = true,
                 OutputFormat = "6 qseqid saccver pident qcovs",
-                NumThreads = 7,
+                NumThreads = _configuration.GetValue("Blast:NumThreads", 4),
                 Task = BlastParameters.BlastTask.blastn_short,
-                ExpectValue = 1000.0f,
+                ExpectValue = 1000.0f
             };
 
             return query.Length <= 30 ? shortBlastParameters : regularBlastParameters;
