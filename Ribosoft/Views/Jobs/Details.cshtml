@@ -17,16 +17,64 @@
                 @Html.DisplayFor(model => model.Job.StatusMessage)
             </dd>
             <dt class="col-2">
+                @Html.DisplayNameFor(model => model.Job.Ribozyme)
+            </dt>
+            <dd class="col-10">
+                @Html.DisplayFor(model => model.Job.Ribozyme.Name)
+            </dd>
+            <dt class="col-2">
                 @Html.DisplayNameFor(model => model.Job.RNAInput)
             </dt>
             <dd class="col-10">
                 <textarea class="form-control" rows="4" cols="80" readonly="readonly">@Model.Job.RNAInput</textarea>
             </dd>
+            <dt class="col-4">
+                @Html.DisplayNameFor(model => model.Job.OpenReadingFrameStart)
+            </dt>
+            <dd class="col-2">
+                @Html.DisplayFor(model => model.Job.OpenReadingFrameStart)
+            </dd>
+            <dt class="col-4">
+                @Html.DisplayNameFor(model => model.Job.OpenReadingFrameEnd)
+            </dt>
+            <dd class="col-2">
+                @Html.DisplayFor(model => model.Job.OpenReadingFrameEnd)
+            </dd>
+            <dt class="col-3">
+                @Html.DisplayNameFor(model => model.Job.FivePrime)
+            </dt>
+            <dd class="col-1">
+                @Html.DisplayFor(model => model.Job.ThreePrime)
+            </dd>
+            <dt class="col-3">
+                @Html.DisplayNameFor(model => model.Job.OpenReadingFrame)
+            </dt>
+            <dd class="col-1">
+                @Html.DisplayFor(model => model.Job.OpenReadingFrame)
+            </dd>
+            <dt class="col-3">
+                @Html.DisplayNameFor(model => model.Job.ThreePrime)
+            </dt>
+            <dd class="col-1">
+                @Html.DisplayFor(model => model.Job.ThreePrime)
+            </dd>
             <dt class="col-2">
-                @Html.DisplayNameFor(model => model.Job.Ribozyme)
+                @Html.DisplayNameFor(model => model.Job.Temperature)
             </dt>
             <dd class="col-10">
-                @Html.DisplayFor(model => model.Job.Ribozyme.Name)
+                @Html.DisplayFor(model => model.Job.Temperature)
+            </dd>
+            <dt class="col-2">
+                @Html.DisplayNameFor(model => model.Job.Na)
+            </dt>
+            <dd class="col-10">
+                @Html.DisplayFor(model => model.Job.Na)
+            </dd>
+            <dt class="col-2">
+                @Html.DisplayNameFor(model => model.Job.Probe)
+            </dt>
+            <dd class="col-10">
+                @Html.DisplayFor(model => model.Job.Probe)
             </dd>
             <dt class="col-2">
                 @Html.DisplayNameFor(model => model.Job.CreatedAt)
