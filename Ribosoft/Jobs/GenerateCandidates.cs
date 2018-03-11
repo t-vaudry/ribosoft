@@ -38,32 +38,58 @@ namespace Ribosoft.Jobs
         }
 
         [AutomaticRetry(Attempts = 0)]
-        public async Task Generate(int jobId, IJobCancellationToken cancellationToken)
+        public async Task Phase1(int jobId, IJobCancellationToken cancellationToken)
         {
             var job = GetJob(jobId);
 
+            // TODO - temporarily catch retried jobs
+            await DoStage(job, JobState.Errored, j => j.JobState != JobState.New, async (j, c) => {}, cancellationToken);
+
             // run candidate generator
-            await DoStage(job, JobState.CandidateGenerator, j => j.JobState == JobState.New || j.JobState == JobState.CandidateGenerator, RunCandidateGenerator, cancellationToken);
+            await DoStage(job, JobState.CandidateGenerator, j => j.JobState == JobState.New, RunCandidateGenerator, cancellationToken);
             
-            // queue phase 2 job (blast)
-            await DoStage(job, JobState.Specificity, j => j.JobState == JobState.CandidateGenerator, (j, c) =>
+            // queue phase 2 job for in-vivo runs (blast)
+            await DoStage(job, JobState.QueuedPhase2, j => j.JobState == JobState.CandidateGenerator && j.TargetEnvironment == TargetEnvironment.InVivo, async (j, c) =>
                 {
-                    BackgroundJob.Enqueue<GenerateCandidates>(x => x.Blast(j.Id, c));
-                    return Task.CompletedTask;
+                    BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase2(j.Id, c));
                 }, cancellationToken);
+            
+            // queue phase 3 job for in-vitro runs, skipping phase 2 (MOO)
+            await DoStage(job, JobState.QueuedPhase3, j => j.JobState == JobState.CandidateGenerator && j.TargetEnvironment == TargetEnvironment.InVitro, async (j, c) =>
+            {
+                BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase3(j.Id, c));
+            }, cancellationToken);
         }
 
         [Queue("blast")]
         [AutomaticRetry(Attempts = 0)]
-        public async Task Blast(int jobId, IJobCancellationToken cancellationToken)
+        public async Task Phase2(int jobId, IJobCancellationToken cancellationToken)
         {
             var job = GetJob(jobId);
+            
+            // TODO - temporarily catch retried jobs
+            await DoStage(job, JobState.Errored, j => j.JobState != JobState.QueuedPhase2, async (j, c) => {}, cancellationToken);
 
             // run blast to calculate specificity
-            await DoStage(job, JobState.Specificity, j => j.JobState == JobState.Specificity, RunBlast, cancellationToken);
+            await DoStage(job, JobState.Specificity, j => j.JobState == JobState.QueuedPhase2, RunBlast, cancellationToken);
             
+            // queue phase 3 job (MOO)
+            await DoStage(job, JobState.QueuedPhase3, j => j.JobState == JobState.Specificity, async (j, c) =>
+            {
+                BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase3(j.Id, c));
+            }, cancellationToken);
+        }
+        
+        [AutomaticRetry(Attempts = 0)]
+        public async Task Phase3(int jobId, IJobCancellationToken cancellationToken)
+        {
+            var job = GetJob(jobId);
+            
+            // TODO - temporarily catch retried jobs
+            await DoStage(job, JobState.Errored, j => j.JobState != JobState.QueuedPhase3, async (j, c) => {}, cancellationToken);
+
             // run multi-objective optimization
-            await DoStage(job, JobState.MultiObjectiveOptimization, j => j.JobState == JobState.Specificity, MultiObjectiveOptimize, cancellationToken);
+            await DoStage(job, JobState.MultiObjectiveOptimization, j => j.JobState == JobState.QueuedPhase3, MultiObjectiveOptimize, cancellationToken);
             
             // complete job
             await DoStage(job, JobState.Completed, j => j.JobState == JobState.MultiObjectiveOptimization, CompleteJob, cancellationToken); 
@@ -100,6 +126,7 @@ namespace Ribosoft.Jobs
         {
             return _db.Jobs
                 .Include(j => j.Owner)
+                .Include(j => j.Assembly)
                 .Include(j => j.Ribozyme)
                     .ThenInclude(r => r.RibozymeStructures)
                 .Single(j => j.Id == jobId);
@@ -281,7 +308,7 @@ namespace Ribosoft.Jobs
                 var sb = new StringBuilder();
                 sb.AppendFormat(">{0}{1}", design.Id, Environment.NewLine);
                 sb.AppendFormat("{0}{1}", substrateSequence, Environment.NewLine);
-                var blastParameters = BlastParametersForQuery(substrateSequence);
+                var blastParameters = BlastParametersForQuery(job.Assembly.Path, substrateSequence);
                 blastParameters.Query = sb.ToString();
                 var output = _blaster.Run(blastParameters);
 
@@ -306,31 +333,27 @@ namespace Ribosoft.Jobs
             await _db.SaveChangesAsync();
         }
 
-        private BlastParameters BlastParametersForQuery(string query)
+        private BlastParameters BlastParametersForQuery(string database, string query)
         {
-            var regularBlastParameters = new BlastParameters
+            var blastParameters = new BlastParameters
             {
                 BlastDbPath = _configuration.GetValue("Blast:BLASTDB", string.Empty),
-                Database = "9606/genomic 9606/rna",
-                UseIndex = true,
-                LowercaseMasking = true,
-                OutputFormat = "6 qseqid saccver pident qcovs",
-                NumThreads = _configuration.GetValue("Blast:NumThreads", 4)
-            };
-
-            var shortBlastParameters = new BlastParameters
-            {
-                BlastDbPath = _configuration.GetValue("Blast:BLASTDB", string.Empty),
-                Database = "9606/genomic 9606/rna",
+                Database = database,
                 UseIndex = true,
                 LowercaseMasking = true,
                 OutputFormat = "6 qseqid saccver pident qcovs",
                 NumThreads = _configuration.GetValue("Blast:NumThreads", 4),
-                Task = BlastParameters.BlastTask.blastn_short,
-                ExpectValue = 1000.0f
+                MaxTargetSequences = 200
             };
 
-            return query.Length <= 30 ? shortBlastParameters : regularBlastParameters;
+            if (query.Length <= 30)
+            {
+                // adjust parameters for a short query (as NCBI does it)
+                blastParameters.Task = BlastParameters.BlastTask.blastn_short;
+                blastParameters.ExpectValue = 1000.0f;
+            }
+
+            return blastParameters;
         }
 
         private async Task CompleteJob(Job job, IJobCancellationToken cancellationToken)
