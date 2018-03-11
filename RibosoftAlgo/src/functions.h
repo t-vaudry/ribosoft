@@ -13,7 +13,7 @@ typedef uint8_t idx_t;
 #pragma pack(push, 8)
 struct fold_output {
     char* structure;
-    float energy;
+    float probability;
 };
 #pragma pack(pop)
 
