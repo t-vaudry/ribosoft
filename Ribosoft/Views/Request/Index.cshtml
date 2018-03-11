@@ -31,6 +31,18 @@
                     <span asp-validation-for="InputSequence" class="text-danger"></span>
                 </div>
 
+                <div class="form-group" id="openFrameIndicesStartFormGroup">
+                    <label asp-for="OpenReadingFrameStart"></label>
+                    <input type="number" asp-for="OpenReadingFrameStart" class="form-control" id="openReadingFrameStart">
+                    <span asp-validation-for="OpenReadingFrameStart" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group" id="openFrameIndicesEndFormGroup">
+                    <label asp-for="OpenReadingFrameEnd"></label>
+                    <input type="number" asp-for="OpenReadingFrameEnd" class="form-control" id="openReadingFrameEnd">
+                    <span asp-validation-for="OpenReadingFrameEnd" class="text-danger"></span>
+                </div>
+
                 <div class="form-group">
                     <label for="FASTAfileInput">Input Sequence from FASTA File</label>
                     <div>
@@ -125,14 +137,9 @@
                     <span asp-validation-for="Na" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Mg"></label>
-                    <input asp-for="Mg" type="text" class="form-control">
-                    <span asp-validation-for="Mg" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Oligomer"></label>
-                    <input asp-for="Oligomer" type="text" class="form-control">
-                    <span asp-validation-for="Oligomer" class="text-danger"></span>
+                    <label asp-for="Probe"></label>
+                    <input asp-for="Probe" type="text" class="form-control">
+                    <span asp-validation-for="Probe" class="text-danger"></span>
                 </div>
             </div>
         </div>

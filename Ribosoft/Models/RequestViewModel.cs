@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ribosoft.Models
 {
+    [ValidateRequest]
     public class RequestViewModel
     {
         [Required]
@@ -18,6 +19,16 @@ namespace Ribosoft.Models
         [DataType(DataType.Text)]
         [Display(Name = "Input sequnce:")]
         public string InputSequence { get; set; }
+
+        [Required]
+        [OpenReadingFrame]
+        [Display(Name = "Open Reading Frame Start Index:")]
+        public int OpenReadingFrameStart { get; set; }
+
+        [Required]
+        [OpenReadingFrame]
+        [Display(Name = "Open Reading Frame End Index:")]
+        public int OpenReadingFrameEnd { get; set; }
 
         [Required]
         [Display(Name = "Select Target Region:")]
@@ -40,12 +51,8 @@ namespace Ribosoft.Models
         public float Na { get; set; }
 
         [Required]
-        [Display(Name = "Mg (nM):")]
-        public float Mg { get; set; }
-
-        [Required]
-        [Display(Name = "Oligomer (nM):")]
-        public float Oligomer { get; set; }
+        [Display(Name = "Probe (nM):")]
+        public float Probe { get; set; }
 
         [Display(Name = "Cut Sites:")]
         public string[] CutSites { get; set; }
