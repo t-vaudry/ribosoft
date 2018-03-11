@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
@@ -12,6 +11,7 @@ using Ribosoft.Services;
 using Ribosoft.Blast;
 using Microsoft.Extensions.Configuration;
 using System.Text;
+using Ribosoft.Biology;
 
 namespace Ribosoft.Jobs
 {
@@ -304,33 +304,52 @@ namespace Ribosoft.Jobs
                 {
                     continue;
                 }
+
+                // calculate the substrate specificity score, which is common to all designs in this group
+                var substrateSpecificityScore = CalculateSpecificity(substrateSequence, job.Assembly.Path);
                 
-                var sb = new StringBuilder();
-                sb.AppendFormat(">{0}{1}", design.Id, Environment.NewLine);
-                sb.AppendFormat("{0}{1}", substrateSequence, Environment.NewLine);
-                var blastParameters = BlastParametersForQuery(job.Assembly.Path, substrateSequence);
-                blastParameters.Query = sb.ToString();
-                var output = _blaster.Run(blastParameters);
-
-                var specificityScore = 0.0f;
-
-                foreach (var line in output.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+                if (job.SpecificityMethod == SpecificityMethod.CleavageAndHybridization)
                 {
-                    var fields = line.Split('\t');
-
-                    // filter out X_ predictions
-                    //if (fields[1].StartsWith('X'))
-                    //{
-                    //    continue;
-                    //}
-
-                    specificityScore += float.Parse(fields[2]) * float.Parse(fields[3]) / 10000;
+                    // if we're doing hybridization specificity, also compute the score for the design sequence complement
+                    foreach (var d in designGroup)
+                    {
+                        d.SpecificityScore = substrateSpecificityScore + CalculateSpecificity(new Sequence(d.Sequence).GetComplement(), job.Assembly.Path);
+                    }
                 }
-
-                designGroup.All(x => { x.SpecificityScore = specificityScore; return true; });
+                else
+                {
+                    // for cleavage-only specificity, only use the substrate specificity score
+                    foreach (var d in designGroup)
+                    {
+                        d.SpecificityScore = substrateSpecificityScore;
+                    }
+                }                
             }
 
             await _db.SaveChangesAsync();
+        }
+
+        private float CalculateSpecificity(string sequence, string database)
+        {
+            var specificityScore = 0.0f;
+            var blastParameters = BlastParametersForQuery(database, sequence);
+            blastParameters.Query = sequence;
+            var output = _blaster.Run(blastParameters);
+
+            foreach (var line in output.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries))
+            {
+                var fields = line.Split('\t');
+
+                // filter out X_ predictions
+                //if (fields[1].StartsWith('X'))
+                //{
+                //    continue;
+                //}
+
+                specificityScore += float.Parse(fields[2]) * float.Parse(fields[3]) / 10000;
+            }
+
+            return specificityScore;
         }
 
         private BlastParameters BlastParametersForQuery(string database, string query)
