@@ -8,7 +8,7 @@ namespace Ribosoft
     public struct FoldOutput
     {
         public string Structure;
-        public float Energy;
+        public float Probability;
     }
 
     public class RibosoftAlgo
@@ -129,7 +129,7 @@ namespace Ribosoft
                     throw new RibosoftAlgoException(status);
                 }
 
-                structureScore += distance * output.Energy;
+                structureScore += distance * output.Probability;
             }
 
             return structureScore;

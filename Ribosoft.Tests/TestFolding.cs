@@ -16,10 +16,10 @@ namespace Ribosoft.Tests
             Assert.False(data == null);
 
             Assert.Equal(".((((......)))).....", data[0].Structure);
-            Assert.Equal(-1.60f, data[0].Energy);
+            Assert.Equal(0.66907f, data[0].Probability, 5);
 
             Assert.Equal("((((..(.....).))))..", data[35].Structure);
-            Assert.Equal(3.00f, data[35].Energy);
+            Assert.Equal(0.00038f, data[35].Probability, 5);
             
             Assert.Equal(51, data.Count);
         }
@@ -34,10 +34,10 @@ namespace Ribosoft.Tests
             Assert.False(data == null);
 
             Assert.Equal(".((.((((((((((((.............)))))))))))).))", data[1].Structure);
-            Assert.Equal(-16.20f, data[1].Energy);
+            Assert.Equal(0.11585f, data[1].Probability, 5);
 
             Assert.Equal(".....((((((((((((........)...)))))))))))....", data[17].Structure);
-            Assert.Equal(-14.50f, data[17].Energy);
+            Assert.Equal(0.00734f, data[17].Probability, 5);
 
             Assert.Equal(173, data.Count);
         }
