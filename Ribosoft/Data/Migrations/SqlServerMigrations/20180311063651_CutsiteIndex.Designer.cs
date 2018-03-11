@@ -12,9 +12,10 @@ using System;
 namespace Ribosoft.Data.Migrations.SqlServerMigrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180311063651_CutsiteIndex")]
+    partial class CutsiteIndex
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
