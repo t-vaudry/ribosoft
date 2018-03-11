@@ -9,17 +9,18 @@ using Ribosoft.Data;
 using Ribosoft.Models;
 using System;
 
-namespace Ribosoft.Data.Migrations.SqlServerMigrations
+namespace Ribosoft.Data.Migrations.NpgsqlMigrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(NpgsqlDbContext))]
+    [Migration("20180311074935_Assemblies")]
+    partial class Assemblies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
+                .HasAnnotation("ProductVersion", "2.0.1-rtm-125");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -39,8 +40,7 @@ namespace Ribosoft.Data.Migrations.SqlServerMigrations
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                        .HasName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
                 });
@@ -174,8 +174,7 @@ namespace Ribosoft.Data.Migrations.SqlServerMigrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                        .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -201,9 +200,6 @@ namespace Ribosoft.Data.Migrations.SqlServerMigrations
                     b.Property<int>("SpeciesId");
 
                     b.Property<string>("Type")
-                        .IsRequired();
-                    
-                    b.Property<string>("Path")
                         .IsRequired();
 
                     b.Property<DateTime?>("UpdatedAt");
@@ -406,8 +402,7 @@ namespace Ribosoft.Data.Migrations.SqlServerMigrations
                 {
                     b.HasOne("Ribosoft.Models.Assembly", "Assembly")
                         .WithMany("Jobs")
-                        .HasForeignKey("AssemblyId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("AssemblyId");
 
                     b.HasOne("Ribosoft.Models.ApplicationUser", "Owner")
                         .WithMany()

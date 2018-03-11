@@ -12,9 +12,10 @@ using System;
 namespace Ribosoft.Data.Migrations.SqlServerMigrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180311064649_Assemblies")]
+    partial class Assemblies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,9 +203,6 @@ namespace Ribosoft.Data.Migrations.SqlServerMigrations
 
                     b.Property<string>("Type")
                         .IsRequired();
-                    
-                    b.Property<string>("Path")
-                        .IsRequired();
 
                     b.Property<DateTime?>("UpdatedAt");
 
@@ -254,7 +252,7 @@ namespace Ribosoft.Data.Migrations.SqlServerMigrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("AssemblyId");
+                    b.Property<int>("AssemblyId");
 
                     b.Property<DateTime?>("CreatedAt");
 
@@ -407,7 +405,7 @@ namespace Ribosoft.Data.Migrations.SqlServerMigrations
                     b.HasOne("Ribosoft.Models.Assembly", "Assembly")
                         .WithMany("Jobs")
                         .HasForeignKey("AssemblyId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Ribosoft.Models.ApplicationUser", "Owner")
                         .WithMany()

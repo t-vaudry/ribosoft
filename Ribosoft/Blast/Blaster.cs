@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Numerics;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -58,6 +60,98 @@ namespace Ribosoft.Blast
             return true;
         }
 
+        public IList<Database> GetAvailableDatabases(string path)
+        {
+            var args = string.Format("-list {0} -recursive -list_outfmt \"%f\t%t\t%d\t%l\t%n\t%U\"", EncodeParameterArgument(path));
+            
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "blastdbcmd",
+                    Arguments = args,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+
+            var databases = new List<Database>();
+            var tagRegex = new Regex(@"\[(?<name>[^=]+)=(?<value>[^]]+)\]+");
+
+            // start proc
+            process.Start();
+            
+            // read output
+            string outputLine;
+            while ((outputLine = process.StandardOutput.ReadLine()) != null)
+            {
+                if (string.IsNullOrWhiteSpace(outputLine))
+                {
+                    continue;
+                }
+                
+                var columns = outputLine.Split('\t');
+
+                if (columns.Length != 6)
+                {
+                    continue;
+                }
+
+                var database = new Database
+                {
+                    AbsolutePath = columns[0],
+                    RelativePath = columns[0].Substring(path.Length + 1),
+                    UpdatedAt = DateTime.Parse(columns[2]),
+                    Nucleotides = BigInteger.Parse(columns[3]),
+                    Sequences = BigInteger.Parse(columns[4]),
+                    Bytes = BigInteger.Parse(columns[5])
+                };
+
+                var tagMatches = tagRegex.Matches(columns[1]);
+
+                if (tagMatches.Count < 6)
+                {
+                    continue;
+                }
+
+                // parse out [name=value] tags in the db name to collect metadata
+                foreach (Match match in tagMatches)
+                {
+                    switch (match.Groups["name"].Value.ToLowerInvariant())
+                    {
+                        case "assembly_accession":
+                            database.AccessionId = match.Groups["value"].Value;
+                            break;
+                        case "asm_name":
+                            database.AssemblyName = match.Groups["value"].Value;
+                            break;
+                        case "taxid":
+                            database.TaxonomyId = int.Parse(match.Groups["value"].Value);
+                            break;
+                        case "species_taxid":
+                            database.SpeciesTaxonomyId = int.Parse(match.Groups["value"].Value);
+                            break;
+                        case "organism_name":
+                            database.OrganismName = match.Groups["value"].Value;
+                            break;
+                        case "type":
+                            database.Type = match.Groups["value"].Value;
+                            break;
+                    }
+                }
+                
+                databases.Add(database);
+            }
+            
+            process.WaitForExit();
+
+            // cleanup resources
+            process.Close();
+
+            return databases;
+        }
+        
         public string Run()
         {
             return Run(this.Parameters);
