@@ -33,7 +33,7 @@ namespace Ribosoft
                     : int.Parse(_configuration["Hangfire:WorkerCount"]);
 
                 string[] queues = string.IsNullOrEmpty(_configuration["Hangfire:Queues"])
-                    ? new[] {"blast", "default"}
+                    ? new[] {"admin", "blast", "default"}
                     : _configuration["Hangfire:Queues"].Split(',');
                 
                 var options = new BackgroundJobServerOptions { WorkerCount = workerCount, Queues = queues };
