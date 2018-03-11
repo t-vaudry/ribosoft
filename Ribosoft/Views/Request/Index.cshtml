@@ -31,14 +31,16 @@
                     <span asp-validation-for="InputSequence" class="text-danger"></span>
                 </div>
 
-                <div class="form-group" id="openFrameIndicesFormGroup">
+                <div class="form-group" id="openFrameIndicesStartFormGroup">
                     <label asp-for="OpenReadingFrameStart"></label>
-                    <textarea asp-for="OpenReadingFrameStart" class="form-control" id="openReadingFrameStart">
-                    </textarea>
-                    <span asp-validation-for="InputSequence" class="text-danger"></span>
+                    <input type="number" asp-for="OpenReadingFrameStart" class="form-control" id="openReadingFrameStart">
+                    <span asp-validation-for="OpenReadingFrameStart" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group" id="openFrameIndicesEndFormGroup">
                     <label asp-for="OpenReadingFrameEnd"></label>
-                    <textarea asp-for="OpenReadingFrameEnd" class="form-control" id="openReadingFrameEnd">
-                    </textarea>
+                    <input type="number" asp-for="OpenReadingFrameEnd" class="form-control" id="openReadingFrameEnd">
+                    <span asp-validation-for="OpenReadingFrameEnd" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
