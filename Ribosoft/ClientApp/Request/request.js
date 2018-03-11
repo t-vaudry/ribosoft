@@ -30,10 +30,10 @@ var app = new Vue({
         },
         targetEnvironment: function() {
             var environment = document.getElementById("targetEnvironmentMethod");
-            var radios = document.getElementsByName("TargetEnvironment.TargetEnvironment");
+            var radios = document.getElementsByName("SelectedTargetEnvironment");
 
             for (var i = 0; i < radios.length; i++) {
-                if (radios[i].checked && radios[i].value == "In-vivo") {
+                if (radios[i].checked && radios[i].value == "InVivo") {
                     this.inVivoSelected = true;
                 }
                 else this.inVivoSelected = false;
@@ -96,5 +96,8 @@ var app = new Vue({
                 endIndexField.value = response.body;
             });
         }
+    },
+    created: function () {
+        this.targetEnvironment();
     }
 });

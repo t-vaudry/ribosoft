@@ -80,7 +80,7 @@
                 @for (var i = 0; i < Model.TargetRegions.Length; i++)
                 {
                     <div class="form-check form-check-inline">
-                        <input type="checkbox" class="form-check-input" asp-for="@Model.TargetRegions[i].Selected" checked="checked">
+                        <input type="checkbox" class="form-check-input" asp-for="@Model.TargetRegions[i].Selected">
                         <label class="form-check-label" asp-for="@Model.TargetRegions[i].Selected">@Model.TargetRegions[i].Name</label>
                         <input type="hidden" asp-for="@Model.TargetRegions[i].Id"/>
                         <input type="hidden" asp-for="@Model.TargetRegions[i].Name"/>
@@ -94,37 +94,32 @@
         <div class="my-3 p-3 bg-white rounded box-shadow">
             <h6 class="border-bottom border-gray pb-2">Target environment</h6>
 
-            <div class="form-group mb-0" id="targetEnvironmentMethod">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" asp-for="TargetEnvironment.TargetEnvironment" type="radio" value="In-vitro" v-on:change="targetEnvironment" id="targetEnvironmentInVitro" checked="checked">
-                    <label class="form-check-label" for="targetEnvironmentInVitro">In-vitro</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" asp-for="TargetEnvironment.TargetEnvironment" type="radio" value="In-vivo" v-on:change="targetEnvironment" id="targetEnvironmentInVivo">
-                    <label class="form-check-label" for="targetEnvironmentInVivo">In-vivo</label>
-                </div>
-                <span asp-validation-for="TargetEnvironment" class="text-danger"></span>
+            <div class="form-group mb-0">
+                @foreach (var item in Model.TargetEnvironments)
+                {
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" asp-for="SelectedTargetEnvironment" type="radio" value="@item.Value" v-on:change="targetEnvironment" id="targetEnvironment@(item.Value)">
+                        <label class="form-check-label" for="targetEnvironment@(item.Value)">@item.Name</label>
+                    </div> 
+                }
+                <span asp-validation-for="SelectedTargetEnvironment" class="text-danger"></span>
             </div>
 
-            <div class="form-group mt-2" v-if="inVivoSelected">
+            <div class="form-group mt-2 border-top pt-2" v-if="inVivoSelected">
                 <label asp-for="InVivoEnvironment"></label>
-                <select asp-for="InVivoEnvironment" id="targetEnvironment" class="form-control">
-                    <option v-for="environment in targetEnvironments">{{ environment }}</option>
-                </select>
+                <select asp-for="InVivoEnvironment" asp-items="ViewBag.Assemblies" class="form-control"></select>
                 <span asp-validation-for="InVivoEnvironment" class="text-danger"></span>
             </div>
 
             <div class="form-group mb-0" v-if="inVivoSelected">
-                <label asp-for="Specificity"></label>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" asp-for="Specificity.Specificity" type="radio" value="Cleavage" id="specificityCleavage" checked="checked">
-                    <label class="form-check-label" for="specificityCleavage">Cleavage</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" asp-for="Specificity.Specificity" type="radio" value="Cleavage and Hybridization" id="specificityCleavageAndHybrid">
-                    <label class="form-check-label" for="specificityCleavageAndHybrid">Cleavage and Hybridization</label>
-                </div>
-                <span asp-validation-for="Specificity" class="text-danger"></span>
+                @foreach (var item in Model.SpecificityMethods)
+                {
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" asp-for="SelectedSpecificityMethod" type="radio" value="@item.Value" id="specificity@(item.Value)">
+                        <label class="form-check-label" for="specificity@(item.Value)">@item.Name</label>
+                    </div> 
+                }
+                <span asp-validation-for="SelectedSpecificityMethod" class="text-danger"></span>
             </div>
         </div>
 

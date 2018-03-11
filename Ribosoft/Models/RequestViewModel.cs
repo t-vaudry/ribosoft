@@ -32,12 +32,19 @@ namespace Ribosoft.Models
         public TargetRegion[] TargetRegions { get; set; }
 
         [Required]
+        public TargetEnvironment SelectedTargetEnvironment { get; set; }
+        
         [Display(Name = "Environment")]
-        public TargetEnvironmentRadioInput TargetEnvironment { get; set; }
+        public IEnumerable<TargetEnvironmentViewModel> TargetEnvironments { get; set; }
 
         [DataType(DataType.Text)]
         [Display(Name = "In-vivo Environment")]
-        public string InVivoEnvironment { get; set; }
+        public int? InVivoEnvironment { get; set; }
+        
+        public SpecificityMethod SelectedSpecificityMethod { get; set; }
+
+        [Display(Name = "Specificity Method")]
+        public IEnumerable<SpecificityMethodViewModel> SpecificityMethods { get; set; }
 
         [Required]
         [Display(Name = "Temperature (℃)")]
@@ -51,40 +58,48 @@ namespace Ribosoft.Models
         [Display(Name = "Probe (nM)")]
         public float Probe { get; set; }
 
-        [Display(Name = "Cut Sites")]
-        public string[] CutSites { get; set; }
+        // [Display(Name = "Cut Sites")]
+        // public string[] CutSites { get; set; }
 
-        [Display(Name = "Method")]
-        public SpecificityRadioInput Specificity { get; set; }
-
+        public RequestViewModel()
+        {
+            TargetRegions = new[]
+            {
+                new TargetRegion { Id = 1, Name = "5'UTR", Selected = true },
+                new TargetRegion { Id = 2, Name = "Open Reading Frame (ORF)", Selected = true },
+                new TargetRegion { Id = 3, Name = "3'UTR", Selected = true }
+            };
+            
+            TargetEnvironments = new List<TargetEnvironmentViewModel>
+            {
+                new TargetEnvironmentViewModel { Name = "In-vitro", Value = TargetEnvironment.InVitro },
+                new TargetEnvironmentViewModel { Name = "In-vivo", Value = TargetEnvironment.InVivo }
+            };
+            
+            SpecificityMethods = new List<SpecificityMethodViewModel>
+            {
+                new SpecificityMethodViewModel { Name = "Cleavage", Value = SpecificityMethod.CleavageOnly },
+                new SpecificityMethodViewModel { Name = "Cleavage and Hybridization", Value = SpecificityMethod.CleavageAndHybridization }
+            };
+        }
     }
 
     public class TargetRegion
     {
-        public TargetRegion()
-        {
-            this.Id = 0;
-            this.Name = "";
-            this.Selected = false;
-        }
-        public TargetRegion(int Id, string Name, bool Selected)
-        {
-            this.Id = Id;
-            this.Name = Name;
-            this.Selected = Selected;
-        }
         public int Id { get; set; }
         public string Name { get; set; }
         public bool Selected { get; set; }
     }
 
-    public class TargetEnvironmentRadioInput
+    public class TargetEnvironmentViewModel
     {
-        public string TargetEnvironment { get; set; }
+        public string Name { get; set; }
+        public TargetEnvironment Value { get; set; }
     }
-
-    public class SpecificityRadioInput
+    
+    public class SpecificityMethodViewModel
     {
-        public string Specificity { get; set; }
+        public string Name { get; set; }
+        public SpecificityMethod Value { get; set; }
     }
 }

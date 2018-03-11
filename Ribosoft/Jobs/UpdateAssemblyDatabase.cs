@@ -26,7 +26,7 @@ namespace Ribosoft.Jobs
             _configuration = configuration;
         }
         
-        [Queue("admin")]
+        [Queue("blast")]
         [AutomaticRetry(Attempts = 0)]
         public async Task Rescan(IJobCancellationToken cancellationToken)
         {

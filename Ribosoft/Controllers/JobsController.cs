@@ -70,6 +70,7 @@ namespace Ribosoft.Controllers
             var job = await _context.Jobs
                 .Include(j => j.Owner)
                 .Include(j => j.Ribozyme)
+                .Include(j => j.Assembly)
                 .Where(j => j.OwnerId == user.Id)
                 .SingleOrDefaultAsync(m => m.Id == id);
 
@@ -141,7 +142,7 @@ namespace Ribosoft.Controllers
                 job.JobState = JobState.New;
                 await _context.SaveChangesAsync();
 
-                job.HangfireJobId = BackgroundJob.Enqueue<GenerateCandidates>(x => x.Generate(job.Id, JobCancellationToken.Null));
+                job.HangfireJobId = BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase1(job.Id, JobCancellationToken.Null));
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
