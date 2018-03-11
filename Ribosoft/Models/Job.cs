@@ -38,10 +38,18 @@ namespace Ribosoft.Models
         public float? Temperature { get; set; }
         [Display(Name = "Na")]
         public float? Na { get; set; }
-        [Display(Name = "Mg")]
-        public float? Mg { get; set; }
-        [Display(Name = "Oligomer")]
-        public float? Oligomer { get; set; }
+        [Display(Name = "Probe")]
+        public float? Probe { get; set; }
+        [Display(Name = "5'")]
+        public bool FivePrime { get; set; }
+        [Display(Name = "3'")]
+        public bool ThreePrime { get; set; }
+        [Display(Name = "Open Reading Frame")]
+        public bool OpenReadingFrame { get; set; }
+        [Display(Name = "Open Reading Frame Start Index")]
+        public int OpenReadingFrameStart { get; set; }
+        [Display(Name = "Open Reading Frame End Index")]
+        public int OpenReadingFrameEnd { get; set; }
 
         public virtual ApplicationUser Owner { get; set; }
         public virtual Ribozyme Ribozyme { get; set; }
