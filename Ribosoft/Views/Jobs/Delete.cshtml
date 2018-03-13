@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Cancel Job";
-    var shouldCancel = Model.JobState == JobState.New || Model.JobState == JobState.Started;
+    var shouldCancel = Model.IsInProgress();
 }
 
 <h2>@(shouldCancel ? "Cancel" : "Delete") Job</h2>

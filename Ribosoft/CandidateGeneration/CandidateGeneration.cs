@@ -8,8 +8,17 @@ using Ribosoft.Biology;
 
 namespace Ribosoft.CandidateGeneration
 {
+
+    public struct SmallestSetSubstrateInfo
+    {
+        public int StartIndex;
+        public int EndIndex;
+        public String SubstrateBase;
+    }
+
     public class CandidateGenerator
     {
+        public SmallestSetSubstrateInfo SmallestSubstarteInfo;
         public List<Tuple<int, int>> NeighboursIndices { get; set; }
 
         public Ribozyme Ribozyme { get; set; }
@@ -94,7 +103,11 @@ namespace Ribosoft.CandidateGeneration
             //*********************
 
             TraverseRibozyme();
-            TraverseSubstrate();
+
+            if (GetLargestSetSubstrateRegion())
+                GetSubstrates();
+            else
+                TraverseSubstrate();
 
             //*********************
             //5- Handle repeat notations at extremities
@@ -258,6 +271,133 @@ namespace Ribosoft.CandidateGeneration
                     rootNode.Nucleotide.SetSymbol('-');
                 }
                 TraverseSequence(new Sequence(Ribozyme.Sequence.Length), rootNode);
+            }
+        }
+
+        //Find the longest specified (A, C, G, U) portion of the substrate
+        public bool GetLargestSetSubstrateRegion()
+        {
+            int tmpStart = -1;
+            int tmpEnd = -1;
+
+            int longestStart = -1;
+            int longestEnd = -1;
+            int longest = -1;
+
+            bool started = false;
+
+            //Only consider the portions without repeat regions
+            int start = NodesAtDepthCutSite[0][0].Depth;
+            int end = NodesAtDepthCutSite[NodesAtDepthCutSite.Count - 1][0].Depth;
+
+            for(int i = start; i < end; i++)
+            {
+                char c = Ribozyme.SubstrateSequence[i];
+                if (!started && (c == 'A' || c == 'C' || c == 'G' || c == 'U'))
+                {
+                    started = true;
+                    tmpStart = i;
+                }
+                else if (started && !(c == 'A' || c == 'C' || c == 'G' || c == 'U'))
+                {
+                    started = false;
+                    tmpEnd = i;
+
+                    if (tmpEnd - tmpStart > longest)
+                    {
+                        longest = tmpEnd - tmpStart;
+                        longestEnd = tmpEnd;
+                        longestStart = tmpStart;
+                    }
+                }
+            }
+
+            bool success = longestStart != -1 && longestEnd != -1;
+
+            if (success)
+            {
+                SmallestSubstarteInfo.StartIndex = longestStart;
+                SmallestSubstarteInfo.EndIndex = longestEnd;
+                SmallestSubstarteInfo.SubstrateBase = Ribozyme.SubstrateSequence.Substring(longestStart, longest);
+            }
+
+            return success;
+        }
+
+        //Get the substrates that are found in the RNA input
+        public void GetSubstrates()
+        {
+            //Locations of specified substrate portion within the RNA input
+            List<int> substrateIndices = AllIndicesOf(InputRNASequence, SmallestSubstarteInfo.SubstrateBase);
+
+            //Number of characters to specify before and after the specified portion
+            int lengthBefore = SmallestSubstarteInfo.StartIndex - NodesAtDepthCutSite[0][0].Depth;
+            int lengthAfter = NodesAtDepthCutSite[NodesAtDepthCutSite.Count-1][0].Depth - SmallestSubstarteInfo.EndIndex + 1;
+
+            //Total length of the specified portion
+            int length = SmallestSubstarteInfo.EndIndex - SmallestSubstarteInfo.StartIndex;
+
+            //Loop through all spots in the RNA input where the specified portion of the substrate was found
+            //Complete the unspecified part of the substrate using the RNA input
+            foreach (int idxInRNA in substrateIndices)
+            {
+                Sequence sequence = new Sequence();
+
+                //If the index in the RNA is such that the substrate won't fit around it, ignore it
+                if (idxInRNA < lengthBefore || (InputRNASequence.Length - idxInRNA) < lengthAfter + length)
+                    continue;
+
+                bool found = true;
+                //Add the elements before the specified portion
+                for (int i = lengthBefore; i > 0; i--)
+                {
+                    Nucleotide substrate = new Nucleotide(Ribozyme.SubstrateSequence[SmallestSubstarteInfo.StartIndex - i]);
+
+                    if (substrate.Bases.Contains(InputRNASequence[idxInRNA - i]))
+                    {
+                        sequence.Nucleotides.Add(new Nucleotide(InputRNASequence[idxInRNA - i]));
+                    }
+                    else
+                    {
+                        found = false;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    continue;
+                }
+
+                //Add the specified portion
+                foreach (char c in SmallestSubstarteInfo.SubstrateBase)
+                {
+                    sequence.Nucleotides.Add(new Nucleotide(c));
+                }
+
+                //Add the elements after the specified portion
+                for (int i = 0; i < lengthAfter; i++)
+                {
+                    Nucleotide substrate = new Nucleotide(Ribozyme.SubstrateSequence[SmallestSubstarteInfo.EndIndex + i]);
+
+                    if (substrate.Bases.Contains(InputRNASequence[idxInRNA + length + i]))
+                    {
+                        sequence.Nucleotides.Add(new Nucleotide(InputRNASequence[idxInRNA + length + i]));
+                    }
+                    else
+                    {
+                        found = false;
+                        break;
+                    }
+                }
+
+                if (found)
+                {
+                    //Add unique, since it is possible to build the same substrate multiple times from the RNA
+                    SubstrateInfo substrateInfo = new SubstrateInfo(sequence, SubstrateBaseStructure);
+                    if (!SubstrateInfo.Contains(substrateInfo))
+                        SubstrateInfo.Add(substrateInfo);
+                }
             }
         }
 
@@ -546,14 +686,13 @@ namespace Ribosoft.CandidateGeneration
                 while (currentCount <= (repeatRegion.Item2 - repeatRegion.Item1))
                 {
                     int beginIdx = -1;
-                    int insertIdx = -1;
 
                     if (!startRepeat && !endRepeat)
                     {
                         throw new CandidateGenerationException("Repeat notation not located at beginning or end of substrate sequence. Case not supported.");
                     }
 
-                    beginIdx = startRepeat ? (repeatRegion.Item1 + currentCount) : (repeatRegion.Item2 - currentCount);
+                    beginIdx = startRepeat ? (repeatRegion.Item2 - currentCount) : (repeatRegion.Item1 + currentCount);
 
                     Nucleotide newBeginning = new Nucleotide(Ribozyme.SubstrateSequence[beginIdx]);
                     char additionalStructure = Ribozyme.SubstrateStructure[beginIdx];
@@ -563,9 +702,9 @@ namespace Ribosoft.CandidateGeneration
                         foreach (SubstrateInfo seq in sequencesToBaseOffOf)
                         {
                             Sequence newSeq = new Sequence(seq.Sequence);
-                            insertIdx = startRepeat ? 0 : newSeq.GetLength();
+                            int insertIdx = startRepeat ? 0 : newSeq.GetLength();
                             newSeq.Insert(insertIdx, new Nucleotide(baseSymbol));
-                            String newStructure = additionalStructure + seq.Structure;
+                            String newStructure = startRepeat ? additionalStructure + seq.Structure : seq.Structure + additionalStructure;
 
                             int offset = startRepeat ? (currentCount + 1) : 0; //If there is a repeat at the beginning, the cutsite number should be shifted
 

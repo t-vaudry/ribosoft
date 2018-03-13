@@ -178,6 +178,39 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Ribosoft.Models.Assembly", b =>
+                {
+                    b.Property<int>("TaxonomyId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("AccessionId")
+                        .IsRequired();
+
+                    b.Property<string>("AssemblyName")
+                        .IsRequired();
+
+                    b.Property<DateTime?>("CreatedAt");
+
+                    b.Property<bool>("IsEnabled");
+
+                    b.Property<string>("OrganismName")
+                        .IsRequired();
+
+                    b.Property<int>("SpeciesId");
+
+                    b.Property<string>("Type")
+                        .IsRequired();
+                    
+                    b.Property<string>("Path")
+                        .IsRequired();
+
+                    b.Property<DateTime?>("UpdatedAt");
+
+                    b.HasKey("TaxonomyId");
+
+                    b.ToTable("Assemblies");
+                });
+
             modelBuilder.Entity("Ribosoft.Models.Design", b =>
                 {
                     b.Property<int>("Id")
@@ -186,6 +219,8 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
                     b.Property<float?>("AccessibilityScore");
 
                     b.Property<DateTime?>("CreatedAt");
+
+                    b.Property<int>("CutsiteIndex");
 
                     b.Property<float?>("DesiredTemperatureScore");
 
@@ -201,6 +236,8 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
 
                     b.Property<float?>("StructureScore");
 
+                    b.Property<int>("SubstrateSequenceLength");
+
                     b.Property<DateTime?>("UpdatedAt");
 
                     b.HasKey("Id");
@@ -214,6 +251,8 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("AssemblyId");
 
                     b.Property<DateTime?>("CreatedAt");
 
@@ -239,7 +278,11 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
 
                     b.Property<int>("RibozymeId");
 
+                    b.Property<int?>("SpecificityMethod");
+
                     b.Property<string>("StatusMessage");
+
+                    b.Property<int>("TargetEnvironment");
 
                     b.Property<float?>("Temperature");
 
@@ -248,6 +291,8 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
                     b.Property<DateTime?>("UpdatedAt");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AssemblyId");
 
                     b.HasIndex("OwnerId");
 
@@ -357,6 +402,11 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
 
             modelBuilder.Entity("Ribosoft.Models.Job", b =>
                 {
+                    b.HasOne("Ribosoft.Models.Assembly", "Assembly")
+                        .WithMany("Jobs")
+                        .HasForeignKey("AssemblyId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("Ribosoft.Models.ApplicationUser", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId");
