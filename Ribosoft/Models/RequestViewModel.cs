@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ribosoft.Models
 {
+    [ValidateRequest]
     public class RequestViewModel
     {
         [Required]
@@ -20,10 +21,12 @@ namespace Ribosoft.Models
         public string InputSequence { get; set; }
 
         [Required]
+        [OpenReadingFrame]
         [Display(Name = "Open Reading Frame Start Index")]
         public int OpenReadingFrameStart { get; set; }
 
         [Required]
+        [OpenReadingFrame]
         [Display(Name = "Open Reading Frame End Index")]
         public int OpenReadingFrameEnd { get; set; }
 
