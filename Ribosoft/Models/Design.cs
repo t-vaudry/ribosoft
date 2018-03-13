@@ -14,20 +14,30 @@ namespace Ribosoft.Models
         public string Sequence { get; set; }
         public int Rank { get; set; }
 
+        // fitness values
         [Display(Name = "Desired Temperature Score")]
+        [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? DesiredTemperatureScore { get; set; }
         [Display(Name = "Highest Temperature Score")]
+        [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? HighestTemperatureScore { get; set; }
         [Display(Name = "Specificity Score")]
+        [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? SpecificityScore { get; set; }
         [Display(Name = "Accessibility Score")]
+        [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? AccessibilityScore { get; set; }
         [Display(Name = "Structure Score")]
+        [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? StructureScore { get; set; }
+
+        // substrate sequence
+        public int CutsiteIndex { get; set; }
+        public int SubstrateSequenceLength { get; set; }
 
         public virtual Job Job { get; set; }
 
-        public IEnumerable<float> Comparables => new []
+        public virtual IEnumerable<float> Comparables => new []
         {
             DesiredTemperatureScore.GetValueOrDefault(),
             HighestTemperatureScore.GetValueOrDefault(),

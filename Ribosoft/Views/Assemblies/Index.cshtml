@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Ribosoft.Models.Assembly>
+
+@{
+    ViewData["Title"] = "Assemblies";
+}
+
+<h2>Assembly databases</h2>
+
+@if (TempData.ContainsKey("Alert"))
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["Alert"]
+    </div>
+}
+
+<div class="card my-3 box-shadow">
+    <div class="card-body">
+        <h5 class="card-title">
+            Available databases
+            <div class="float-md-right"><a class="btn btn-sm btn-primary" asp-action="Rescan">Rescan</a></div>
+        </h5>
+        
+        <div class="table-responsive mb-2">
+            <table class="table table-hover mb-0">
+                <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.TaxonomyId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.SpeciesId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.OrganismName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AccessionId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AssemblyName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Type)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Path)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IsEnabled)
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TaxonomyId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SpeciesId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.OrganismName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AccessionId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AssemblyName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Type)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Path)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IsEnabled)
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
