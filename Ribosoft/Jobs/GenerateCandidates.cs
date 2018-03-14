@@ -28,7 +28,7 @@ namespace Ribosoft.Jobs
 
         private ApplicationDbContext _db;
 
-        public GenerateCandidates(DbContextOptions<ApplicationDbContext> options, IEmailSender emailSender, IConfiguration configuration)
+        public GenerateCandidates(DbContextOptions<ApplicationDbContext> options, IEmailSender emailSender, ILogger<GenerateCandidates> logger, IConfiguration configuration)
         {
             _dbOptions = options;
             _db =  new ApplicationDbContext(options);
@@ -292,6 +292,7 @@ namespace Ribosoft.Jobs
             // check if blastn is available; if it isn't, ignore specificity
             if (!_blaster.IsAvailable())
             {
+            	_logger.LogWarning("RibosoftWarning | BLAST Service is not available!!");
                 return;
             }
             
