@@ -9,6 +9,10 @@ using Microsoft.Extensions.Logging;
 using Ribosoft.Data;
 using Ribosoft.Models;
 using Ribosoft.Services;
+using Ribosoft.Blast;
+using Microsoft.Extensions.Configuration;
+using System.Text;
+using Ribosoft.Biology;
 
 namespace Ribosoft.Jobs
 {
@@ -16,48 +20,108 @@ namespace Ribosoft.Jobs
     {
         private readonly DbContextOptions<ApplicationDbContext> _dbOptions;
         private readonly ILogger<GenerateCandidates> _logger;
-        private readonly CandidateGeneration.CandidateGenerator _candidateGenerator;
         private readonly IEmailSender _emailSender;
         private readonly RibosoftAlgo _ribosoftAlgo;
         private readonly MultiObjectiveOptimization.MultiObjectiveOptimizer _multiObjectiveOptimizer;
+        private readonly IConfiguration _configuration;
+        private readonly Blaster _blaster;
 
         private ApplicationDbContext _db;
 
-        public GenerateCandidates(DbContextOptions<ApplicationDbContext> options, IEmailSender emailSender, ILogger<GenerateCandidates> logger)
+        public GenerateCandidates(DbContextOptions<ApplicationDbContext> options, IEmailSender emailSender, IConfiguration configuration)
         {
             _dbOptions = options;
             _db =  new ApplicationDbContext(options);
             _logger = logger;
-            _candidateGenerator = new CandidateGeneration.CandidateGenerator();
             _emailSender = emailSender;
             _ribosoftAlgo = new RibosoftAlgo();
             _multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
+            _configuration = configuration;
+            _blaster = new Blaster();
         }
 
         [AutomaticRetry(Attempts = 0)]
-        public async Task Generate(int jobId, IJobCancellationToken cancellationToken)
+        public async Task Phase1(int jobId, IJobCancellationToken cancellationToken)
         {
             var job = GetJob(jobId);
 
-            if (job.JobState != JobState.New)
+            // TODO - temporarily catch retried jobs
+            await DoStage(job, JobState.Errored, j => j.JobState != JobState.New, async (j, c) => {}, cancellationToken);
+
+            // run candidate generator
+            await DoStage(job, JobState.CandidateGenerator, j => j.JobState == JobState.New, RunCandidateGenerator, cancellationToken);
+            
+            // queue phase 2 job for in-vivo runs (blast)
+            await DoStage(job, JobState.QueuedPhase2, j => j.JobState == JobState.CandidateGenerator && j.TargetEnvironment == TargetEnvironment.InVivo, async (j, c) =>
+                {
+                    BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase2(j.Id, c));
+                }, cancellationToken);
+            
+            // queue phase 3 job for in-vitro runs, skipping phase 2 (MOO)
+            await DoStage(job, JobState.QueuedPhase3, j => j.JobState == JobState.CandidateGenerator && j.TargetEnvironment == TargetEnvironment.InVitro, async (j, c) =>
             {
-                return;
-            }
-
-            job.JobState = JobState.Started;
-            await _db.SaveChangesAsync();
-
-            await RunCandidateGenerator(job, cancellationToken);
-            await MultiObjectiveOptimize(job, cancellationToken);
-
-            job.JobState = JobState.Completed;
-            await _db.SaveChangesAsync();
-
-            await SendJobCompletionEmail(job.Owner);
+                BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase3(j.Id, c));
+            }, cancellationToken);
         }
 
-        private void RecreateDbContext()
+        [Queue("blast")]
+        [AutomaticRetry(Attempts = 0)]
+        public async Task Phase2(int jobId, IJobCancellationToken cancellationToken)
         {
+            var job = GetJob(jobId);
+            
+            // TODO - temporarily catch retried jobs
+            await DoStage(job, JobState.Errored, j => j.JobState != JobState.QueuedPhase2, async (j, c) => {}, cancellationToken);
+
+            // run blast to calculate specificity
+            await DoStage(job, JobState.Specificity, j => j.JobState == JobState.QueuedPhase2, RunBlast, cancellationToken);
+            
+            // queue phase 3 job (MOO)
+            await DoStage(job, JobState.QueuedPhase3, j => j.JobState == JobState.Specificity, async (j, c) =>
+            {
+                BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase3(j.Id, c));
+            }, cancellationToken);
+        }
+        
+        [AutomaticRetry(Attempts = 0)]
+        public async Task Phase3(int jobId, IJobCancellationToken cancellationToken)
+        {
+            var job = GetJob(jobId);
+            
+            // TODO - temporarily catch retried jobs
+            await DoStage(job, JobState.Errored, j => j.JobState != JobState.QueuedPhase3, async (j, c) => {}, cancellationToken);
+
+            // run multi-objective optimization
+            await DoStage(job, JobState.MultiObjectiveOptimization, j => j.JobState == JobState.QueuedPhase3, MultiObjectiveOptimize, cancellationToken);
+            
+            // complete job
+            await DoStage(job, JobState.Completed, j => j.JobState == JobState.MultiObjectiveOptimization, CompleteJob, cancellationToken); 
+        }
+
+        private async Task DoStage(Job job, JobState state, Func<Job, bool> acceptFunc, Func<Job, IJobCancellationToken, Task> func, IJobCancellationToken cancellationToken)
+        {
+            if (!acceptFunc(job))
+            {
+                // don't do anything if the stage can't handle this type of job
+                // this also catches errored jobs, etc.
+                return;
+            }
+            
+            cancellationToken.ThrowIfCancellationRequested();
+            
+            // set the job to this stage's state
+            if (job.JobState != state)
+            {
+                job.JobState = state;
+                await _db.SaveChangesAsync();
+            }
+
+            await func(job, cancellationToken);
+        }
+
+        private async Task RecreateDbContext()
+        {
+            await _db.SaveChangesAsync();
             _db = new ApplicationDbContext(_dbOptions);
         }
 
@@ -65,6 +129,7 @@ namespace Ribosoft.Jobs
         {
             return _db.Jobs
                 .Include(j => j.Owner)
+                .Include(j => j.Assembly)
                 .Include(j => j.Ribozyme)
                     .ThenInclude(r => r.RibozymeStructures)
                 .Single(j => j.Id == jobId);
@@ -72,84 +137,132 @@ namespace Ribosoft.Jobs
 
         private async Task RunCandidateGenerator(Job job, IJobCancellationToken cancellationToken)
         {
-            uint batchCount = 0;
             var idealStructurePattern = new Regex(@"[^.^(^)]");
 
-            foreach (var ribozymeStructure in job.Ribozyme.RibozymeStructures)
+            List<string> rnaInputs = new List<string>();
+
+            if (job.FivePrime && job.OpenReadingFrame && job.ThreePrime)
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                rnaInputs.Add(job.RNAInput);
+            }
+            else if (job.FivePrime && job.OpenReadingFrame)
+            {
+                rnaInputs.Add(job.RNAInput.Substring(0, job.OpenReadingFrameEnd));
+            }
+            else if (job.OpenReadingFrame && job.ThreePrime)
+            {
+                rnaInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameStart, job.RNAInput.Length - job.OpenReadingFrameStart - 1));
+            }
+            else if (job.FivePrime && job.ThreePrime)
+            {
+                rnaInputs.Add(job.RNAInput.Substring(0, job.OpenReadingFrameStart));
+                rnaInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameEnd, job.RNAInput.Length - job.OpenReadingFrameEnd - 1));
+            }
+            else if (job.FivePrime)
+            {
+                rnaInputs.Add(job.RNAInput.Substring(0, job.OpenReadingFrameStart));
+            }
+            else if (job.OpenReadingFrame)
+            {
+                rnaInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameStart, job.OpenReadingFrameEnd - job.OpenReadingFrameStart - 1));
+            }
+            else if (job.ThreePrime)
+            {
+                rnaInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameEnd, job.RNAInput.Length - job.OpenReadingFrameEnd - 1));
+            }
+            else
+            {
+                job.JobState = JobState.Errored;
+                job.StatusMessage = "No Target Region Selected!";
+                await _db.SaveChangesAsync();
+                return;
+            }
 
-                IEnumerable<Candidate> candidates;
+            foreach (var rnaInput in rnaInputs)
+            {
+                CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
-                try
+                foreach (var ribozymeStructure in job.Ribozyme.RibozymeStructures)
                 {
-                    // Candidate Generation
-                    candidates = _candidateGenerator.GenerateCandidates(
-                        ribozymeStructure.Sequence,
-                        ribozymeStructure.Structure,
-                        ribozymeStructure.SubstrateTemplate,
-                        ribozymeStructure.SubstrateStructure,
-                        job.RNAInput);
-                }
-                catch (CandidateGeneration.CandidateGenerationException e)
-                {
-                    job.JobState = JobState.Errored;
-                    job.StatusMessage = e.Message;
-                    _logger.LogError(e, "Exception occurred during Candidate Generation.");
-                    await _db.SaveChangesAsync();
-                    return;
-                }
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                // Algorithms
-                try
-                {
-                    _db.ChangeTracker.AutoDetectChangesEnabled = false;
+                    IEnumerable<Candidate> candidates;
 
-                    foreach (var candidate in candidates)
+                    try
                     {
-                        cancellationToken.ThrowIfCancellationRequested();
-
-                        string ideal = idealStructurePattern.Replace(candidate.Structure, ".");
-
-                        var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
-                            ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset);
-                        var specificityScore = 0.0f; // TODO
-                        var structureScore = _ribosoftAlgo.Structure(candidate, ideal);
-                        var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
-                            candidate.SubstrateStructure, 1.0f, 0.05f);
-
-                        _db.Designs.Add(new Design
-                        {
-                            JobId = job.Id,
-
-                            Sequence = candidate.Sequence.GetString(),
-                            AccessibilityScore = accessibilityScore,
-                            SpecificityScore = specificityScore,
-                            StructureScore = structureScore,
-                            TemperatureScore = temperatureScore
-                        });
-
-                        if (batchCount % 100 == 0)
-                        {
-                            await _db.SaveChangesAsync();
-                            RecreateDbContext();
-                            _db.ChangeTracker.AutoDetectChangesEnabled = false;
-                            batchCount = 0;
-                        }
+                        // Candidate Generation
+                        candidates = candidateGenerator.GenerateCandidates(
+                            ribozymeStructure.Sequence,
+                            ribozymeStructure.Structure,
+                            ribozymeStructure.SubstrateTemplate,
+                            ribozymeStructure.SubstrateStructure,
+                            rnaInput);
                     }
-                }
-                catch (RibosoftAlgoException e)
-                {
-                    job.JobState = JobState.Errored;
-                    job.StatusMessage = e.Code.ToString();
-                    _logger.LogError(e, "Exception occurred during Ribosoft Algorithms.");
-                    return;
-                }
-                finally
-                {
-                    _db.ChangeTracker.AutoDetectChangesEnabled = true;
-                    _db.Jobs.Attach(job);
-                    await _db.SaveChangesAsync();
+                    catch (CandidateGeneration.CandidateGenerationException e)
+                    {
+                        job.JobState = JobState.Errored;
+                        job.StatusMessage = e.Message;
+                        _logger.LogError(e, "Exception occurred during Candidate Generation.");
+                        await _db.SaveChangesAsync();
+                        return;
+                    }
+
+                    // Algorithms
+                    try
+                    {
+                        uint batchCount = 0;
+                        _db.ChangeTracker.AutoDetectChangesEnabled = false;
+
+                        foreach (var candidate in candidates)
+                        {
+                            cancellationToken.ThrowIfCancellationRequested();
+
+                            string ideal = idealStructurePattern.Replace(candidate.Structure, ".");
+
+                            var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
+                                ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset);
+                            var structureScore = _ribosoftAlgo.Structure(candidate, ideal);
+                            var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
+                                candidate.SubstrateStructure, job.Na.GetValueOrDefault(), job.Probe.GetValueOrDefault());
+
+                            _db.Designs.Add(new Design
+                            {
+                                JobId = job.Id,
+
+                                Sequence = candidate.Sequence.GetString(),
+                                CutsiteIndex = candidate.CutsiteIndices.First(),
+                                SubstrateSequenceLength = candidate.SubstrateSequence.Length,
+
+                                AccessibilityScore = accessibilityScore,
+                                StructureScore = structureScore,
+                                HighestTemperatureScore = -1.0f * temperatureScore,
+                                DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())
+                            });
+
+                            if (++batchCount % 100 == 0)
+                            {
+                                await _db.SaveChangesAsync();
+                                await RecreateDbContext();
+                                _db.ChangeTracker.AutoDetectChangesEnabled = false;
+                                batchCount = 0;
+                            }
+                        }
+
+                        await RecreateDbContext();
+                    }
+                    catch (RibosoftAlgoException e)
+                    {
+                        job.JobState = JobState.Errored;
+                        job.StatusMessage = e.Code.ToString();
+                        _logger.LogError(e, "Exception occurred during Ribosoft Algorithms.");
+                        return;
+                    }
+                    finally
+                    {
+                        _db.ChangeTracker.AutoDetectChangesEnabled = true;
+                        _db.Jobs.Attach(job);
+                        await _db.SaveChangesAsync();
+                    }
                 }
             }
         }
@@ -167,8 +280,110 @@ namespace Ribosoft.Jobs
                 job.JobState = JobState.Errored;
                 job.StatusMessage = e.Message;
                 _logger.LogError(e, "Exception occurred during Multi Objective Optimization.");
+            }
+            finally
+            {
                 await _db.SaveChangesAsync();
             }
+        }
+
+        private async Task RunBlast(Job job, IJobCancellationToken cancellationToken)
+        {
+            // check if blastn is available; if it isn't, ignore specificity
+            if (!_blaster.IsAvailable())
+            {
+                return;
+            }
+            
+            var designs = _db.Designs
+                             .Where(d => d.JobId == job.Id)
+                             .GroupBy(d => new { d.CutsiteIndex, d.SubstrateSequenceLength });
+
+            foreach (var designGroup in designs)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var design = designGroup.First();
+                var substrateSequence = job.RNAInput.Substring(design.CutsiteIndex, design.SubstrateSequenceLength);
+
+                if (string.IsNullOrEmpty(substrateSequence))
+                {
+                    continue;
+                }
+
+                // calculate the substrate specificity score, which is common to all designs in this group
+                var substrateSpecificityScore = CalculateSpecificity(substrateSequence, job.Assembly.Path);
+                
+                if (job.SpecificityMethod == SpecificityMethod.CleavageAndHybridization)
+                {
+                    // if we're doing hybridization specificity, also compute the score for the design sequence complement
+                    foreach (var d in designGroup)
+                    {
+                        d.SpecificityScore = substrateSpecificityScore + CalculateSpecificity(new Sequence(d.Sequence).GetComplement(), job.Assembly.Path);
+                    }
+                }
+                else
+                {
+                    // for cleavage-only specificity, only use the substrate specificity score
+                    foreach (var d in designGroup)
+                    {
+                        d.SpecificityScore = substrateSpecificityScore;
+                    }
+                }                
+            }
+
+            await _db.SaveChangesAsync();
+        }
+
+        private float CalculateSpecificity(string sequence, string database)
+        {
+            var specificityScore = 0.0f;
+            var blastParameters = BlastParametersForQuery(database, sequence);
+            blastParameters.Query = sequence;
+            var output = _blaster.Run(blastParameters);
+
+            foreach (var line in output.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries))
+            {
+                var fields = line.Split('\t');
+
+                // filter out X_ predictions
+                //if (fields[1].StartsWith('X'))
+                //{
+                //    continue;
+                //}
+
+                specificityScore += float.Parse(fields[2]) * float.Parse(fields[3]) / 10000;
+            }
+
+            return specificityScore;
+        }
+
+        private BlastParameters BlastParametersForQuery(string database, string query)
+        {
+            var blastParameters = new BlastParameters
+            {
+                BlastDbPath = _configuration.GetValue("Blast:BLASTDB", string.Empty),
+                Database = database,
+                UseIndex = true,
+                LowercaseMasking = true,
+                OutputFormat = "6 qseqid saccver pident qcovs",
+                NumThreads = _configuration.GetValue("Blast:NumThreads", 4),
+                MaxTargetSequences = 200
+            };
+
+            if (query.Length <= 30)
+            {
+                // adjust parameters for a short query (as NCBI does it)
+                blastParameters.Task = BlastParameters.BlastTask.blastn_short;
+                blastParameters.ExpectValue = 1000.0f;
+            }
+
+            return blastParameters;
+        }
+
+        private async Task CompleteJob(Job job, IJobCancellationToken cancellationToken)
+        {
+            await SendJobCompletionEmail(job.Owner);
         }
 
         private async Task SendJobCompletionEmail(ApplicationUser user)

@@ -43,7 +43,10 @@ namespace Ribosoft
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseNpgsql(connectionString));
 
-                services.AddHangfire(x => x.UsePostgreSqlStorage(connectionString));
+                services.AddHangfire(x => x.UsePostgreSqlStorage(connectionString, new PostgreSqlStorageOptions
+                {
+                    InvisibilityTimeout = TimeSpan.FromDays(1)
+                }));
             }
             else if (providerName == "SqlServer")
             {
@@ -71,6 +74,8 @@ namespace Ribosoft
                     .Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
+
+            services.AddCloudscribePagination();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

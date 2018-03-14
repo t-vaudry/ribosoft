@@ -180,6 +180,39 @@ namespace Ribosoft.Data.Migrations.SqlServerMigrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Ribosoft.Models.Assembly", b =>
+                {
+                    b.Property<int>("TaxonomyId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("AccessionId")
+                        .IsRequired();
+
+                    b.Property<string>("AssemblyName")
+                        .IsRequired();
+
+                    b.Property<DateTime?>("CreatedAt");
+
+                    b.Property<bool>("IsEnabled");
+
+                    b.Property<string>("OrganismName")
+                        .IsRequired();
+
+                    b.Property<int>("SpeciesId");
+
+                    b.Property<string>("Type")
+                        .IsRequired();
+                    
+                    b.Property<string>("Path")
+                        .IsRequired();
+
+                    b.Property<DateTime?>("UpdatedAt");
+
+                    b.HasKey("TaxonomyId");
+
+                    b.ToTable("Assemblies");
+                });
+
             modelBuilder.Entity("Ribosoft.Models.Design", b =>
                 {
                     b.Property<int>("Id")
@@ -188,6 +221,12 @@ namespace Ribosoft.Data.Migrations.SqlServerMigrations
                     b.Property<float?>("AccessibilityScore");
 
                     b.Property<DateTime?>("CreatedAt");
+
+                    b.Property<int>("CutsiteIndex");
+
+                    b.Property<float?>("DesiredTemperatureScore");
+
+                    b.Property<float?>("HighestTemperatureScore");
 
                     b.Property<int>("JobId");
 
@@ -199,7 +238,7 @@ namespace Ribosoft.Data.Migrations.SqlServerMigrations
 
                     b.Property<float?>("StructureScore");
 
-                    b.Property<float?>("TemperatureScore");
+                    b.Property<int>("SubstrateSequenceLength");
 
                     b.Property<DateTime?>("UpdatedAt");
 
@@ -215,31 +254,47 @@ namespace Ribosoft.Data.Migrations.SqlServerMigrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int?>("AssemblyId");
+
                     b.Property<DateTime?>("CreatedAt");
+
+                    b.Property<bool>("FivePrime");
 
                     b.Property<string>("HangfireJobId");
 
                     b.Property<int>("JobState");
 
-                    b.Property<float?>("Mg");
-
                     b.Property<float?>("Na");
 
-                    b.Property<float?>("Oligomer");
+                    b.Property<bool>("OpenReadingFrame");
+
+                    b.Property<int>("OpenReadingFrameEnd");
+
+                    b.Property<int>("OpenReadingFrameStart");
 
                     b.Property<string>("OwnerId");
+
+                    b.Property<float?>("Probe");
 
                     b.Property<string>("RNAInput");
 
                     b.Property<int>("RibozymeId");
 
+                    b.Property<int?>("SpecificityMethod");
+
                     b.Property<string>("StatusMessage");
 
+                    b.Property<int>("TargetEnvironment");
+
                     b.Property<float?>("Temperature");
+
+                    b.Property<bool>("ThreePrime");
 
                     b.Property<DateTime?>("UpdatedAt");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AssemblyId");
 
                     b.HasIndex("OwnerId");
 
@@ -349,6 +404,11 @@ namespace Ribosoft.Data.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("Ribosoft.Models.Job", b =>
                 {
+                    b.HasOne("Ribosoft.Models.Assembly", "Assembly")
+                        .WithMany("Jobs")
+                        .HasForeignKey("AssemblyId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("Ribosoft.Models.ApplicationUser", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId");

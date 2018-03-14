@@ -86,7 +86,7 @@ namespace Ribosoft
                 throw new RibosoftAlgoException(status);
             }
 
-            temperatureScore += delta;
+            temperatureScore = delta;
 
             return temperatureScore;
         }
