@@ -14,6 +14,12 @@ TEST_CASE("Successful accessibility", "[accessibility]") {
     REQUIRE(fabs(delta - 5.9f) < DELTA);
 }
 
+TEST_CASE("Test from actual data", "[accessibility]") {
+    float delta = -1.0f;
+    R_STATUS status = accessibility("CUUGAAGUGGUUUGUUGUGCUUGAAGAGACCCC","UUGUUGU",11,4,delta);
+    REQUIRE(status == R_SUCCESS::R_STATUS_OK);
+}
+
 TEST_CASE("Invalid substrate sequence", "[accessibility]") {
     float delta = -1.0f;
     R_STATUS status = accessibility("cjwdjvbq", "fed..234", 200, 4, delta);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Ribosoft.Models
@@ -9,10 +10,33 @@ namespace Ribosoft.Models
     public enum JobState
     {
         New,
-        Started,
+        Started, // UNUSED
         Completed,
         Cancelled,
-        Errored
+        Errored,
+        
+        CandidateGenerator,
+        MultiObjectiveOptimization,
+        Specificity,
+        
+        QueuedPhase2,
+        QueuedPhase3
+    }
+
+    public enum TargetEnvironment
+    {
+        [Display(Name = "In-Vitro")]
+        InVitro,
+        [Display(Name = "In-Vivo")]
+        InVivo
+    }
+
+    public enum SpecificityMethod
+    {
+        [Display(Name = "Cleavage")]
+        CleavageOnly,
+        [Display(Name = "Cleavage and Hybridization")]
+        CleavageAndHybridization
     }
 
     public class Job : BaseEntity
@@ -26,26 +50,72 @@ namespace Ribosoft.Models
         public string OwnerId { get; set; }
         [Display(Name = "Job State")]
         public JobState JobState { get; set; }
+        
+        [ScaffoldColumn(false)]
         public int RibozymeId { get; set; }
         [Display(Name = "RNA Input")]
         public string RNAInput { get; set; }
+        
         [ScaffoldColumn(false)]
         public string HangfireJobId { get; set; }
         [Display(Name = "Status Message")]
         [DisplayFormat(NullDisplayText =  "None")]
         public string StatusMessage { get; set; }
+        
         [Display(Name = "Temperature")]
         public float? Temperature { get; set; }
         [Display(Name = "Na")]
         public float? Na { get; set; }
-        [Display(Name = "Mg")]
-        public float? Mg { get; set; }
-        [Display(Name = "Oligomer")]
-        public float? Oligomer { get; set; }
+        [Display(Name = "Probe")]
+        public float? Probe { get; set; }
+        
+        [Display(Name = "5'")]
+        public bool FivePrime { get; set; }
+        [Display(Name = "3'")]
+        public bool ThreePrime { get; set; }
+        [Display(Name = "Open Reading Frame")]
+        public bool OpenReadingFrame { get; set; }
+        
+        [Display(Name = "Open Reading Frame Start Index")]
+        public int OpenReadingFrameStart { get; set; }
+        [Display(Name = "Open Reading Frame End Index")]
+        public int OpenReadingFrameEnd { get; set; }
+        
+        [Display(Name = "Target Environment")]
+        public TargetEnvironment TargetEnvironment { get; set; }
+        [ScaffoldColumn(false)]
+        public int? AssemblyId { get; set; }
+        [Display(Name = "Specificity Method")]
+        public SpecificityMethod? SpecificityMethod { get; set; }
 
         public virtual ApplicationUser Owner { get; set; }
         public virtual Ribozyme Ribozyme { get; set; }
+        public virtual Assembly Assembly { get; set; }
 
         public virtual ICollection<Design> Designs { get; set; }
+
+        public bool IsInProgress()
+        {
+            return InProgress().Compile()(this);
+        }
+        
+        public bool IsCompleted()
+        {
+            return Completed().Compile()(this);
+        }
+
+        public static Expression<Func<Job, bool>> InProgress() =>
+            j => j.JobState == JobState.New
+                 || j.JobState == JobState.Started
+                 || j.JobState == JobState.CandidateGenerator
+                 || j.JobState == JobState.Specificity
+                 || j.JobState == JobState.MultiObjectiveOptimization
+                 || j.JobState == JobState.QueuedPhase2
+                 || j.JobState == JobState.QueuedPhase3;
+
+        public static Expression<Func<Job, bool>> Completed() =>
+            j => j.JobState == JobState.Completed
+                 || j.JobState == JobState.Errored
+                 || j.JobState == JobState.Cancelled;
     }
 }
