@@ -83,25 +83,47 @@ namespace Ribosoft.Controllers
             pageNumber = Math.Max(pageNumber, 1);
             int offset = (pageSize * pageNumber) - pageSize;
 
+            ViewBag.DesTempSortParm = sortOrder == "des_temp_asc" ? "des_temp_desc" : "des_temp_asc";
+            ViewBag.HiTempSortParm = sortOrder == "hi_temp_asc" ? "hi_temp_desc" : "hi_temp_asc";
+            ViewBag.SpecSortParm = sortOrder == "spec_asc" ? "spec_desc" : "spec_asc";
+            ViewBag.AccessSortParm = sortOrder == "access_asc" ? "access_desc" : "access_asc";
+            ViewBag.StructSortParm = sortOrder == "struct_asc" ? "struct_desc" : "struct_asc";
+            ViewBag.RankSortParm = String.IsNullOrEmpty(sortOrder) ? "rank_asc" : "";
+
             var designs = from d in _context.Designs where d.JobId == job.Id select d;
+
             switch (sortOrder)
             {
-                case "desired_temp_desc":
+                case "des_temp_desc":
                     designs = designs.OrderByDescending(d => d.DesiredTemperatureScore);
                     break;
-                case "high_temp_desc":
+                case "des_temp_asc":
+                    designs = designs.OrderBy(d => d.DesiredTemperatureScore);
+                    break;
+                case "hi_temp_desc":
                     designs = designs.OrderByDescending(d => d.HighestTemperatureScore);
+                    break;
+                case "hi_temp_asc":
+                    designs = designs.OrderBy(d => d.HighestTemperatureScore);
                     break;
                 case "spec_desc":
                     designs = designs.OrderByDescending(d => d.SpecificityScore);
                     break;
+                case "spec_asc":
+                    designs = designs.OrderBy(d => d.SpecificityScore);
+                    break;
                 case "access_desc":
                     designs = designs.OrderByDescending(d => d.AccessibilityScore);
+                    break;
+                case "access_asc":
+                    designs = designs.OrderBy(d => d.AccessibilityScore);
                     break;
                 case "struct_desc":
                     designs = designs.OrderByDescending(d => d.StructureScore);
                     break;
-                case "rank_asc":
+                case "struct_asc":
+                    designs = designs.OrderBy(d => d.StructureScore);
+                    break;
                 default:
                     designs = designs.OrderBy(d => d.Rank);
                     break;
