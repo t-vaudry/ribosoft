@@ -165,12 +165,15 @@
 <div class="card my-3 box-shadow">
     <div class="card-body">
         <h5 class="card-title">Designs</h5>
-
-        <span class="hide" id="showFilterOptions"><button class="btn btn-primary" id="refineResults">Refine Results</button></span>
-        <div class="hide" id="filterOptions">
+        
+        <div>
+            <span class="d-none" id="showFilterOptions"><button class="btn btn-primary" id="refineResults">Refine Results</button></span>
+        </div>
+        <div class="d-none" id="filterOptions">
             <select id="filterParam">
                 <option value="Rank">Rank</option>
-                <option value="TemperatureScore">TemperatureScore</option>
+                <option value="HighestTemperatureScore">HighestTemperatureScore</option>
+                <option value="DesiredTemperatureScore">DesiredTemperatureScore</option>
                 <option value="SpecificityScore">SpecificityScore</option>
                 <option value="AcessibilityScore">AcessibilityScore</option>
                 <option value="StructureScore">StructureScore</option>
@@ -182,9 +185,10 @@
             </select>
             <input type="text" id="filterValue">
             <button class="btn btn-primary" id="filterSubmit">
-                <span class="glyphicon glyphicon-filter"></span>
+                Filter
             </button>
         </div>
+        <br/>
         
         <div class="table-responsive mb-2">
             <table class="table table-hover mb-0">
