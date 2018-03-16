@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using cloudscribe.Pagination.Models;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Ribosoft.Data;
 using Ribosoft.Jobs;
 using Ribosoft.Models;
+using Ribosoft.Models.JobsViewModels;
 
 namespace Ribosoft.Controllers
 {
@@ -27,21 +29,36 @@ namespace Ribosoft.Controllers
         }
 
         // GET: Jobs
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageNumber)
         {
             var user = await GetUser();
 
-            var applicationDbContext = _context.Jobs
+            int pageSize = 20;
+            pageNumber = Math.Max(pageNumber, 1);
+            int offset = (pageSize * pageNumber) - pageSize;
+
+            var vm = new JobIndexViewModel();
+
+            var jobs = _context.Jobs
                 .Include(j => j.Owner)
                 .Include(j => j.Ribozyme)
                 .Where(j => j.OwnerId == user.Id)
                 .OrderByDescending(j => j.CreatedAt);
 
-            return View(await applicationDbContext.ToListAsync());
+            var inProgressJobs = jobs.Where(Job.InProgress());
+            var completedJobs = jobs.Where(Job.Completed());
+
+            vm.InProgress = inProgressJobs;
+            vm.Completed.Data = await completedJobs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
+            vm.Completed.TotalItems = await completedJobs.CountAsync();
+            vm.Completed.PageNumber = pageNumber;
+            vm.Completed.PageSize = pageSize;
+
+            return View(vm);
         }
 
         // GET: Jobs/Details/5
-        public async Task<IActionResult> Details(int? id, string sortOrder, string filterParam, string filterCondition, float filterValue)
+        public async Task<IActionResult> Details(int? id, string sortOrder, int pageNumber, string filterParam, string filterCondition, float filterValue)
         {
             if (id == null)
             {
@@ -53,7 +70,7 @@ namespace Ribosoft.Controllers
             var job = await _context.Jobs
                 .Include(j => j.Owner)
                 .Include(j => j.Ribozyme)
-                .Include(j => j.Designs)
+                .Include(j => j.Assembly)
                 .Where(j => j.OwnerId == user.Id)
                 .SingleOrDefaultAsync(m => m.Id == id);
 
@@ -62,7 +79,7 @@ namespace Ribosoft.Controllers
                 return NotFound();
             }
 
-            var designs = from d in job.Designs select d;
+            var designs = from d in _context.Designs where d.JobId == job.Id select d;
 
             if (!String.IsNullOrEmpty(filterParam))
             {
@@ -118,10 +135,17 @@ namespace Ribosoft.Controllers
                 }
             }
 
+            int pageSize = 20;
+            pageNumber = Math.Max(pageNumber, 1);
+            int offset = (pageSize * pageNumber) - pageSize;
+
             switch (sortOrder)
             {
-                case "temp_desc":
-                    designs = designs.OrderByDescending(d => d.TemperatureScore);
+                case "desired_temp_desc":
+                    designs = designs.OrderByDescending(d => d.DesiredTemperatureScore);
+                    break;
+                case "high_temp_desc":
+                    designs = designs.OrderByDescending(d => d.HighestTemperatureScore);
                     break;
                 case "spec_desc":
                     designs = designs.OrderByDescending(d => d.SpecificityScore);
@@ -132,13 +156,22 @@ namespace Ribosoft.Controllers
                 case "struct_desc":
                     designs = designs.OrderByDescending(d => d.StructureScore);
                     break;
+                case "rank_asc":
                 default:
                     designs = designs.OrderBy(d => d.Rank);
                     break;
             }
-            job.Designs = designs.ToList();
 
-            return View(job);
+            var vm = new JobDetailsViewModel();
+
+            vm.Job = job;
+            vm.SortOrder = sortOrder;
+            vm.Designs.Data = await designs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
+            vm.Designs.TotalItems = await _context.Designs.Where(d => d.JobId == job.Id).CountAsync();
+            vm.Designs.PageNumber = pageNumber;
+            vm.Designs.PageSize = pageSize;
+
+            return View(vm);
         }
 
         // GET: Jobs/Create
@@ -164,7 +197,7 @@ namespace Ribosoft.Controllers
                 job.JobState = JobState.New;
                 await _context.SaveChangesAsync();
 
-                job.HangfireJobId = BackgroundJob.Enqueue<GenerateCandidates>(x => x.Generate(job.Id, JobCancellationToken.Null));
+                job.HangfireJobId = BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase1(job.Id, JobCancellationToken.Null));
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
@@ -214,7 +247,7 @@ namespace Ribosoft.Controllers
                 return NotFound();
             }
 
-            if (job.JobState == JobState.New || job.JobState == JobState.Started)
+            if (job.IsInProgress())
             {
                 job.JobState = JobState.Cancelled;
 

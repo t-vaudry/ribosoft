@@ -43,8 +43,8 @@ extern "C"
             return R_APPLICATION_ERROR::R_INVALID_TEMPLATE_LENGTH;
         }
 
-        idx_t subSequenceStart = cutsiteIndex - EXTENDED_CUTSITE_LENGTH;
-        idx_t subSequenceEnd = cutsiteIndex + EXTENDED_CUTSITE_LENGTH;
+        int subSequenceStart = cutsiteIndex - EXTENDED_CUTSITE_LENGTH;
+        int subSequenceEnd = cutsiteIndex + EXTENDED_CUTSITE_LENGTH;
 
         // If cutsiteIndex is close to the beginning
         if (subSequenceStart < 0) {
@@ -53,10 +53,10 @@ extern "C"
 
         // If cutsiteIndex is close to the end
         if (subSequenceEnd > strlen(rna)) {
-            subSequenceEnd = (idx_t) strlen(rna) - 1;
+            subSequenceEnd = strlen(rna) - 1;
         }
 
-        idx_t length = subSequenceEnd - subSequenceStart;
+        int length = subSequenceEnd - subSequenceStart;
 
         // Copy substring of sequence that will be folded
         char* subSequence = new char[length + 1];
@@ -67,15 +67,15 @@ extern "C"
         memset(constraints, '.', length);
 
         // Set constraints for not folding here
-        idx_t constraintStart = cutsiteIndex - subSequenceStart - cutsiteNumber;
-        idx_t constraintEnd = constraintStart + (idx_t) strlen(substrateSequence);
+        int constraintStart = cutsiteIndex - subSequenceStart - cutsiteNumber;
+        int constraintEnd = constraintStart + strlen(substrateSequence);
 
         if (constraintStart < 0) {
             constraintStart = 0;
         }
 
         if (constraintEnd > length) {
-            constraintEnd = (idx_t) length - 1;
+            constraintEnd = length - 1;
         }
 
         for (idx_t i = constraintStart; i < constraintEnd; ++i) {
