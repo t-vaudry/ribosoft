@@ -2,11 +2,11 @@ document.addEventListener("DOMContentLoaded", function() {
     var params = (new URL(document.location)).searchParams;
 
     if (params.has("filterParam")) {
-        document.getElementById("filterOptions").classList.toggle('hide');
+        document.getElementById("filterOptions").classList.toggle('d-none');
         document.getElementById("filterValue").value = params.get("filterValue");
     }
     else {
-        document.getElementById("showFilterOptions").classList.toggle('hide');
+        document.getElementById("showFilterOptions").classList.toggle('d-none');
     }
 });
 
@@ -37,6 +37,6 @@ document.getElementById("refineResults").addEventListener("click", function() {
     var refineResults = document.getElementById("showFilterOptions");
     var filterOptions = document.getElementById("filterOptions");
 
-    refineResults.classList.toggle('hide');
-    filterOptions.classList.toggle('hide');
+    refineResults.classList.toggle('d-none');
+    filterOptions.classList.toggle('d-none');
 });

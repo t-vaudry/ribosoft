@@ -94,14 +94,23 @@ namespace Ribosoft.Controllers
                             designs = designs.Where(d => d.Rank == (int) filterValue);
                         }
                         break;
-                    case "TemperatureScore":
-                        // if (filterCondition == "gteq") {
-                        //     designs = designs.Where(d => d.TemperatureScore >= filterValue);
-                        // } else if (filterCondition == "lteq") {
-                        //     designs = designs.Where(d => d.TemperatureScore <= filterValue);
-                        // } else if (filterCondition == "eq") {
-                        //     designs = designs.Where(d => d.TemperatureScore == filterValue);
-                        // }
+                    case "HighestTemperatureScore":
+                        if (filterCondition == "gteq") {
+                            designs = designs.Where(d => d.HighestTemperatureScore >= filterValue);
+                        } else if (filterCondition == "lteq") {
+                            designs = designs.Where(d => d.HighestTemperatureScore <= filterValue);
+                        } else if (filterCondition == "eq") {
+                            designs = designs.Where(d => d.HighestTemperatureScore == filterValue);
+                        }
+                        break;
+                    case "DesiredTemperatureScore":
+                        if (filterCondition == "gteq") {
+                            designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue);
+                        } else if (filterCondition == "lteq") {
+                            designs = designs.Where(d => d.DesiredTemperatureScore <= filterValue);
+                        } else if (filterCondition == "eq") {
+                            designs = designs.Where(d => d.DesiredTemperatureScore == filterValue);
+                        }
                         break;
                     case "SpecificityScore":
                         if (filterCondition == "gteq") {
