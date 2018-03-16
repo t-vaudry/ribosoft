@@ -83,12 +83,20 @@ namespace Ribosoft.Controllers
             pageNumber = Math.Max(pageNumber, 1);
             int offset = (pageSize * pageNumber) - pageSize;
 
+            ViewBag.DesTempColumnTitle = "Desired Temperature Score";
+            ViewBag.HiTempColumnTitle = "Highest Temperature Score";
+            ViewBag.SpecColumnTitle = "Specificity Score";
+            ViewBag.AccessColumnTitle = "Accessibility Score";
+            ViewBag.StructColumnTitle = "Structure Score";
+            ViewBag.RankColumnTitle = "Rank";
+
             ViewBag.DesTempSortParm = sortOrder == "des_temp_asc" ? "des_temp_desc" : "des_temp_asc";
             ViewBag.HiTempSortParm = sortOrder == "hi_temp_asc" ? "hi_temp_desc" : "hi_temp_asc";
             ViewBag.SpecSortParm = sortOrder == "spec_asc" ? "spec_desc" : "spec_asc";
             ViewBag.AccessSortParm = sortOrder == "access_asc" ? "access_desc" : "access_asc";
             ViewBag.StructSortParm = sortOrder == "struct_asc" ? "struct_desc" : "struct_asc";
-            ViewBag.RankSortParm = String.IsNullOrEmpty(sortOrder) ? "rank_asc" : "";
+            ViewBag.RankSortParm = sortOrder == "rank_asc" ? "rank_desc" : "rank_asc";
+            // ViewBag.RankSortParm = String.IsNullOrEmpty(sortOrder) ? "rank_asc" : "";
 
             var designs = from d in _context.Designs where d.JobId == job.Id select d;
 
@@ -96,36 +104,51 @@ namespace Ribosoft.Controllers
             {
                 case "des_temp_desc":
                     designs = designs.OrderByDescending(d => d.DesiredTemperatureScore);
+                    ViewBag.DesTempColumnTitle = "▲ |  " + ViewBag.DesTempColumnTitle;
                     break;
                 case "des_temp_asc":
                     designs = designs.OrderBy(d => d.DesiredTemperatureScore);
+                    ViewBag.DesTempColumnTitle = "▼ | " + ViewBag.DesTempColumnTitle;
                     break;
                 case "hi_temp_desc":
                     designs = designs.OrderByDescending(d => d.HighestTemperatureScore);
+                    ViewBag.HiTempColumnTitle = "▲ | " + ViewBag.HiTempColumnTitle;
                     break;
                 case "hi_temp_asc":
                     designs = designs.OrderBy(d => d.HighestTemperatureScore);
+                    ViewBag.HiTempColumnTitle = "▼ | " + ViewBag.HiTempColumnTitle;
                     break;
                 case "spec_desc":
                     designs = designs.OrderByDescending(d => d.SpecificityScore);
+                    ViewBag.SpecColumnTitle = "▲ " + ViewBag.SpecColumnTitle;
                     break;
                 case "spec_asc":
                     designs = designs.OrderBy(d => d.SpecificityScore);
+                    ViewBag.SpecColumnTitle = "▼ | " + ViewBag.SpecColumnTitle;
                     break;
                 case "access_desc":
                     designs = designs.OrderByDescending(d => d.AccessibilityScore);
+                    ViewBag.AccessColumnTitle = "▲ | " + ViewBag.AccessColumnTitle;
                     break;
                 case "access_asc":
                     designs = designs.OrderBy(d => d.AccessibilityScore);
+                    ViewBag.AccessColumnTitle = "▼ | " + ViewBag.AccessColumnTitle;
                     break;
                 case "struct_desc":
                     designs = designs.OrderByDescending(d => d.StructureScore);
+                    ViewBag.StructColumnTitle = "▲ | " + ViewBag.StructColumnTitle;
                     break;
                 case "struct_asc":
                     designs = designs.OrderBy(d => d.StructureScore);
+                    ViewBag.StructColumnTitle = "▼ | " + ViewBag.StructColumnTitle;
+                    break;
+                case "rank_desc":
+                    designs = designs.OrderByDescending(d => d.Rank);
+                    ViewBag.RankColumnTitle = "▼ | " + ViewBag.RankColumnTitle;
                     break;
                 default:
                     designs = designs.OrderBy(d => d.Rank);
+                    ViewBag.RankColumnTitle = "▲ | " + ViewBag.RankColumnTitle;
                     break;
             }
 
