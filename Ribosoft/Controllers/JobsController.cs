@@ -95,13 +95,13 @@ namespace Ribosoft.Controllers
                         }
                         break;
                     case "TemperatureScore":
-                        if (filterCondition == "gteq") {
-                            designs = designs.Where(d => d.TemperatureScore >= filterValue);
-                        } else if (filterCondition == "lteq") {
-                            designs = designs.Where(d => d.TemperatureScore <= filterValue);
-                        } else if (filterCondition == "eq") {
-                            designs = designs.Where(d => d.TemperatureScore == filterValue);
-                        }
+                        // if (filterCondition == "gteq") {
+                        //     designs = designs.Where(d => d.TemperatureScore >= filterValue);
+                        // } else if (filterCondition == "lteq") {
+                        //     designs = designs.Where(d => d.TemperatureScore <= filterValue);
+                        // } else if (filterCondition == "eq") {
+                        //     designs = designs.Where(d => d.TemperatureScore == filterValue);
+                        // }
                         break;
                     case "SpecificityScore":
                         if (filterCondition == "gteq") {
