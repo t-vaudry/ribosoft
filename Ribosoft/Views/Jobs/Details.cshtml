@@ -171,25 +171,25 @@
                 <thead>
                 <tr>
                     <th>
-                        @Html.ActionLink("Rank", "Details", new {sortOrder = ViewBag.RankSortParm, pageNumber = @Model.Designs.PageNumber})
+                        @Html.ActionLink((string)ViewBag.RankColumnTitle, "Details", new {sortOrder = ViewBag.RankSortParm, pageNumber = @Model.Designs.PageNumber})
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.Designs.Data.First().Sequence)
                     </th>
                     <th>
-                        @Html.ActionLink("Desired Temperature Score", "Details", new {sortOrder = ViewBag.DesTempSortParm, pageNumber = @Model.Designs.PageNumber})
+                        @Html.ActionLink((string)ViewBag.DesTempColumnTitle, "Details", new {sortOrder = ViewBag.DesTempSortParm, pageNumber = @Model.Designs.PageNumber})
                     </th>
                     <th>
-                        @Html.ActionLink("Highest Temperature Score", "Details", new {sortOrder = ViewBag.HiTempSortParm, pageNumber = @Model.Designs.PageNumber})
+                        @Html.ActionLink((string)ViewBag.HiTempColumnTitle, "Details", new {sortOrder = ViewBag.HiTempSortParm, pageNumber = @Model.Designs.PageNumber})
                     </th>
                     <th>
-                        @Html.ActionLink("Specificity Score", "Details", new {sortOrder = ViewBag.SpecSortParm, pageNumber = @Model.Designs.PageNumber})
+                        @Html.ActionLink((string)ViewBag.SpecColumnTitle, "Details", new {sortOrder = ViewBag.SpecSortParm, pageNumber = @Model.Designs.PageNumber})
                     </th>
                     <th>
-                        @Html.ActionLink("Accessibility Score", "Details", new {sortOrder = ViewBag.AccessSortParm, pageNumber = @Model.Designs.PageNumber})
+                        @Html.ActionLink((string)ViewBag.AccessColumnTitle, "Details", new {sortOrder = ViewBag.AccessSortParm, pageNumber = @Model.Designs.PageNumber})
                     </th>
                     <th>
-                        @Html.ActionLink("Structure Score", "Details", new {sortOrder = ViewBag.StructSortParm, pageNumber = @Model.Designs.PageNumber})
+                        @Html.ActionLink((string)ViewBag.StructColumnTitle, "Details", new {sortOrder = ViewBag.StructSortParm, pageNumber = @Model.Designs.PageNumber})
                     </th>
                     @* <th></th> *@
                 </tr>
