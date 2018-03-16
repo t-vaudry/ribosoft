@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 
 namespace Ribosoft.GenbankRequests
 {
+
     public class GenbankRequest
     {
 
@@ -20,7 +21,7 @@ namespace Ribosoft.GenbankRequests
         private static String eUtilsHostString = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi";
         private static String genbankHostString = "https://www.ncbi.nlm.nih.gov/sviewer/viewer.fcgi";
 
-        static public string RunRequest(string accession)
+        static public string RunSequenceRequest(string accession)
         {
             {
                 try
@@ -31,7 +32,39 @@ namespace Ribosoft.GenbankRequests
                 }
                 catch (System.Exception exc)
                 {
-                    throw new GenbankRequestsException("An error occurred while running Genbank requests", exc);
+                    throw new GenbankRequestsException("An error occurred while running Genbank requests: Sequence", exc);
+                }
+            }
+        }
+
+        static public string RunStartIndexRequest(string accession)
+        {
+            {
+                try
+                {
+                    string id = getIDAsync(accession).Result;
+                    var result = getORFStartIndexAsync(id).Result;
+                    return result;
+                }
+                catch (System.Exception exc)
+                {
+                    throw new GenbankRequestsException("An error occurred while running Genbank requests: StartIndex", exc);
+                }
+            }
+        }
+
+        static public string RunEndIndexRequest(string accession)
+        {
+            {
+                try
+                {
+                    string id = getIDAsync(accession).Result;
+                    var result = getORFEndIndexAsync(id).Result;
+                    return result;
+                }
+                catch (System.Exception exc)
+                {
+                    throw new GenbankRequestsException("An error occurred while running Genbank requests: EndIndex", exc);
                 }
             }
         }
@@ -75,20 +108,20 @@ namespace Ribosoft.GenbankRequests
             string reportString = "report=genbank";
             string fmtmaskString = "fmt_mask=0";
             string maxdownloadString = "maxdownloadsize=1000000";
-            string rettypeString = "rettype=fasta";
+            string rettypeFastaString = "rettype=fasta";
             string retmodeString = "retmode=text";
-            var requestURL = string.Concat(genbankHostString, "?", idString, "&", databaseString, "&", reportString, "&", fmtmaskString, "&", maxdownloadString, "&", rettypeString, "&", retmodeString);
+            var fastaRequestURL = string.Concat(genbankHostString, "?", idString, "&", databaseString, "&", reportString, "&", fmtmaskString, "&", maxdownloadString, "&", rettypeFastaString, "&", retmodeString);
 
-            var result = await client.GetAsync(requestURL);
-            result.EnsureSuccessStatusCode();
-            var responseString = await result.Content.ReadAsStringAsync();
+            var fastaResult = await client.GetAsync(fastaRequestURL);
+            fastaResult.EnsureSuccessStatusCode();
+            var fastaResponseString = await fastaResult.Content.ReadAsStringAsync();
 
-            var sequenceIndex = responseString.IndexOf("\n") + 1;
+            var sequenceIndex = fastaResponseString.IndexOf("\n") + 1;
             if (sequenceIndex == -1)
             {
                 throw new GenbankRequestsException("Genbank response was empty");
             }
-            var sequenceString = responseString.Substring(sequenceIndex);
+            var sequenceString = fastaResponseString.Substring(sequenceIndex);
             sequenceString = sequenceString.Replace("\n", "");
             sequenceString = sequenceString.Replace("T", "U");
 
@@ -99,7 +132,74 @@ namespace Ribosoft.GenbankRequests
             }
 
             return sequenceString;
+        }
 
+        static public async Task<string> getORFStartIndexAsync(String id)
+        {
+            string idString = "id=" + id;
+            string databaseString = "db=nuccore";
+            string reportString = "report=genbank";
+            string fmtmaskString = "fmt_mask=0";
+            string maxdownloadString = "maxdownloadsize=1000000";
+            string rettypeXMLString = "rettype=xml";
+            string retmodeString = "retmode=text";
+            var xmlRequestURL = string.Concat(genbankHostString, "?", idString, "&", databaseString, "&", reportString, "&", fmtmaskString, "&", maxdownloadString, "&", rettypeXMLString, "&", retmodeString);
+
+            var xmlResult = await client.GetAsync(xmlRequestURL);
+            xmlResult.EnsureSuccessStatusCode();
+            var xmlResponseString = await xmlResult.Content.ReadAsStringAsync();
+
+            var xmlIndex = xmlResponseString.IndexOf("<Seq-entry>");
+            var xmlString = xmlResponseString.Substring(xmlIndex);
+
+            XmlDocument doc = new XmlDocument();
+            string startIndex;
+            try
+            {
+                doc.LoadXml(xmlString);
+                XmlNode node = doc.DocumentElement.SelectSingleNode("/Seq-entry/Seq-entry_set/Bioseq-set/Bioseq-set_annot/Seq-annot/Seq-annot_data/Seq-annot_data_ftable/Seq-feat/Seq-feat_location/Seq-loc/Seq-loc_int/Seq-interval/Seq-interval_from");
+                startIndex = node.InnerText;
+            }
+            catch (System.Exception exc)
+            {
+                throw new GenbankRequestsException("An error occurred while parsing GenBank XML", exc);
+            }
+
+            return startIndex;
+        }
+
+        static public async Task<string> getORFEndIndexAsync(String id)
+        {
+            string idString = "id=" + id;
+            string databaseString = "db=nuccore";
+            string reportString = "report=genbank";
+            string fmtmaskString = "fmt_mask=0";
+            string maxdownloadString = "maxdownloadsize=1000000";
+            string rettypeXMLString = "rettype=xml";
+            string retmodeString = "retmode=text";
+            var xmlRequestURL = string.Concat(genbankHostString, "?", idString, "&", databaseString, "&", reportString, "&", fmtmaskString, "&", maxdownloadString, "&", rettypeXMLString, "&", retmodeString);
+
+            var xmlResult = await client.GetAsync(xmlRequestURL);
+            xmlResult.EnsureSuccessStatusCode();
+            var xmlResponseString = await xmlResult.Content.ReadAsStringAsync();
+
+            var xmlIndex = xmlResponseString.IndexOf("<Seq-entry>");
+            var xmlString = xmlResponseString.Substring(xmlIndex);
+
+            XmlDocument doc = new XmlDocument();
+            string endIndex;
+            try
+            {
+                doc.LoadXml(xmlString);
+                XmlNode node = doc.DocumentElement.SelectSingleNode("/Seq-entry/Seq-entry_set/Bioseq-set/Bioseq-set_annot/Seq-annot/Seq-annot_data/Seq-annot_data_ftable/Seq-feat/Seq-feat_location/Seq-loc/Seq-loc_int/Seq-interval/Seq-interval_to");
+                endIndex = node.InnerText;
+            }
+            catch (System.Exception exc)
+            {
+                throw new GenbankRequestsException("An error occurred while parsing GenBank XML", exc);
+            }
+
+            return endIndex;
         }
     }
 }

@@ -41,10 +41,10 @@ namespace Ribosoft.Controllers
             return View(design);
         }
 
-        public FileStreamResult DownloadFile(string jobID, string rank, string temperatureScore, string specificityScore, string accessibilityScore, string structureScore, string createdAt, string updatedAt, string sequence)
+        public FileStreamResult DownloadFile(string jobID, string rank, string desiredTemperatureScore, string highestTemperatureScore, string specificityScore, string accessibilityScore, string structureScore, string createdAt, string updatedAt, string sequence)
         {
             // TODO: Break up sequence into chunks of max line length
-            var payload = String.Format(">Rank {0} | TemperatureScore {1} | SpecializationScore {2} | AccessibilityScore {3} | StructureScore {4} | CreatedAt {5} | UpdatedAt {6}\n{7}", rank, temperatureScore, specificityScore, accessibilityScore, structureScore, createdAt, updatedAt, sequence);
+            var payload = String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}", rank, desiredTemperatureScore, highestTemperatureScore, specificityScore, accessibilityScore, structureScore, createdAt, updatedAt, sequence);
 
             var byteArray = Encoding.ASCII.GetBytes(payload);
             var stream = new MemoryStream(byteArray);
