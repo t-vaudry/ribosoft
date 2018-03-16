@@ -18,7 +18,8 @@ module.exports = (env) => {
         },
         entry: {
             'main': './ClientApp/boot.js',
-            'request': './ClientApp/Request/request.js'
+            'request': './ClientApp/Request/request.js',
+            'details': './ClientApp/Jobs/details.js'
         },
         module: {
             rules: [
