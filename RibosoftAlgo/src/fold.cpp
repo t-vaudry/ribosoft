@@ -15,6 +15,8 @@ extern "C" {
 
 RIBOSOFT_NAMESPACE_START
 
+#define EPSILON 0.000001
+
 extern "C"
 {
     DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*out*/ size_t& size)
@@ -37,7 +39,15 @@ extern "C"
         // Get pf energy
         char *pf_struc = new char[length + 1];
         float energy = vrna_pf(vc, pf_struc);
+
+        if (vc->exp_params == NULL) {
+            return R_SYSTEM_ERROR::R_VIENNA_RNA_ERROR;
+        }
+
         double kT = vc->exp_params->kT / 1000.;
+        if (std::abs(kT) < EPSILON) {
+            return R_SYSTEM_ERROR::R_VIENNA_RNA_ERROR;
+        }
 
         // initialize output
         size_t solution_size = 0;
@@ -51,7 +61,7 @@ extern "C"
             output[i].structure = new char[length + 1];
             strncpy(output[i].structure, sol[i].structure, length);
             output[i].structure[length] = '\0';
-            output[i].probability = exp((energy - sol[i].energy) / kT);
+            output[i].probability = std::exp((energy - sol[i].energy) / kT);
 
             free(sol[i].structure);
         }
