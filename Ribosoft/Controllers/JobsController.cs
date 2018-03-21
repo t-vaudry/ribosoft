@@ -195,7 +195,7 @@ namespace Ribosoft.Controllers
             vm.FilterCondition = filterCondition;
             vm.FilterValue = filterValue.ToString();
             vm.Designs.Data = await designs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
-            vm.Designs.TotalItems = await _context.Designs.Where(d => d.JobId == job.Id).CountAsync();
+            vm.Designs.TotalItems = await designs.CountAsync();
             vm.Designs.PageNumber = pageNumber;
             vm.Designs.PageSize = pageSize;
 
