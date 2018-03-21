@@ -171,10 +171,29 @@ namespace Ribosoft.Controllers
                     break;
             }
 
+            List<SelectListItem> filterParams = new List<SelectListItem>();
+            List<SelectListItem> filterConditions = new List<SelectListItem>();
+
+            filterParams.Add(new SelectListItem { Text = "Rank", Value = "Rank", Selected=true });
+            filterParams.Add(new SelectListItem { Text = "Highest Temperature Score", Value = "HighestTemperatureScore" });
+            filterParams.Add(new SelectListItem { Text = "Desired Temperature Score", Value = "DesiredTemperatureScore" });
+            filterParams.Add(new SelectListItem { Text = "Specificity Score", Value = "SpecificityScore" });
+            filterParams.Add(new SelectListItem { Text = "Acessibility Score", Value = "AcessibilityScore" });
+            filterParams.Add(new SelectListItem { Text = "Structure Score", Value = "StructureScore" });
+
+            filterConditions.Add(new SelectListItem { Text = ">=", Value = "gteq", Selected=true });
+            filterConditions.Add(new SelectListItem { Text = "<=", Value = "lteq" });
+            filterConditions.Add(new SelectListItem { Text = "=", Value = "eq" });
+
             var vm = new JobDetailsViewModel();
 
             vm.Job = job;
             vm.SortOrder = sortOrder;
+            vm.FilterParams = filterParams;
+            vm.FilterConditions = filterConditions;
+            vm.FilterParam = filterParam;
+            vm.FilterCondition = filterCondition;
+            vm.FilterValue = filterValue.ToString();
             vm.Designs.Data = await designs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
             vm.Designs.TotalItems = await _context.Designs.Where(d => d.JobId == job.Id).CountAsync();
             vm.Designs.PageNumber = pageNumber;

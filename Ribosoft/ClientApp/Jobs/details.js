@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (params.has("filterParam")) {
         document.getElementById("filterOptions").classList.toggle('d-none');
-        document.getElementById("filterValue").value = params.get("filterValue");
     }
     else {
         document.getElementById("showFilterOptions").classList.toggle('d-none');
@@ -12,9 +11,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
 document.getElementById("filterSubmit").addEventListener("click", function() {
     var params = (new URL(document.location)).searchParams;
-    var filterParam = document.getElementById("filterParam");
-    var filterCondition = document.getElementById("filterCondition");
-    var filterValue = document.getElementById("filterValue");
+    var filterParam = document.getElementById("FilterParam");
+    var filterCondition = document.getElementById("FilterCondition");
+    var filterValue = document.getElementById("FilterValue");
     var url = document.URL;
 
     if (params.has("sortOrder")) {
