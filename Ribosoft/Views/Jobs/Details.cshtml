@@ -170,14 +170,14 @@
             <span class="d-none" id="showFilterOptions"><button class="btn btn-primary" id="refineResults">Refine Results</button></span>
         </div>
         <div class="d-none" id="filterOptions">
-            @Html.DropDownListFor(x => x.FilterParam, Model.FilterParams)
-            @Html.DropDownListFor(x => x.FilterCondition, Model.FilterConditions)
-            <input type="text" asp-for="FilterValue">
-            <!--@Html.ActionLink("Filter", "Details", new {filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue,
-                                                        sortOrder = @Model.SortOrder, pageNumber = @Model.Designs.PageNumber})-->
-            <button class="btn btn-primary" id="filterSubmit">
-                Filter
-            </button>
+            <form class="form-inline">
+                @Html.DropDownListFor(x => x.FilterParam, Model.FilterParams, new {@class = "form-control custom-select mb-2 mr-sm-2 mb-sm-0"})
+                @Html.DropDownListFor(x => x.FilterCondition, Model.FilterConditions, new {@class = "form-control custom-select mb-2 mr-sm-2 mb-sm-0"})
+                <input type="text" asp-for="FilterValue" class="form-control mb-2 mr-sm-2 mb-sm-0">
+                <button class="btn btn-primary" id="filterSubmit">
+                    Filter
+                </button>
+            </form>
         </div>
         <br/>
         
