@@ -170,20 +170,11 @@
             <span class="d-none" id="showFilterOptions"><button class="btn btn-primary" id="refineResults">Refine Results</button></span>
         </div>
         <div class="d-none" id="filterOptions">
-            <select id="filterParam">
-                <option value="Rank">Rank</option>
-                <option value="HighestTemperatureScore">HighestTemperatureScore</option>
-                <option value="DesiredTemperatureScore">DesiredTemperatureScore</option>
-                <option value="SpecificityScore">SpecificityScore</option>
-                <option value="AcessibilityScore">AcessibilityScore</option>
-                <option value="StructureScore">StructureScore</option>
-            </select>
-            <select id="filterCondition">
-                <option value="gteq">>=</option>
-                <option value="lteq"><=</option>
-                <option value="eq">=</option>
-            </select>
-            <input type="text" id="filterValue">
+            @Html.DropDownListFor(x => x.FilterParam, Model.FilterParams)
+            @Html.DropDownListFor(x => x.FilterCondition, Model.FilterConditions)
+            <input type="text" asp-for="FilterValue">
+            <!--@Html.ActionLink("Filter", "Details", new {filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue,
+                                                        sortOrder = @Model.SortOrder, pageNumber = @Model.Designs.PageNumber})-->
             <button class="btn btn-primary" id="filterSubmit">
                 Filter
             </button>
@@ -195,25 +186,25 @@
                 <thead>
                 <tr>
                     <th>
-                        @Html.ActionLink("Rank", "Details", new {sortOrder = "rank_asc", pageNumber = @Model.Designs.PageNumber})
+                        @Html.ActionLink("Rank", "Details", new {sortOrder = "rank_asc", pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.Designs.Data.First().Sequence)
                     </th>
                     <th>
-                        @Html.ActionLink("Desired Temperature Score", "Details", new {sortOrder = "desired_temp_desc", pageNumber = @Model.Designs.PageNumber})
+                        @Html.ActionLink("Desired Temperature Score", "Details", new {sortOrder = "desired_temp_desc", pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
                     </th>
                     <th>
-                        @Html.ActionLink("Highest Temperature Score", "Details", new {sortOrder = "high_temp_desc", pageNumber = @Model.Designs.PageNumber})
+                        @Html.ActionLink("Highest Temperature Score", "Details", new {sortOrder = "high_temp_desc", pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
                     </th>
                     <th>
-                        @Html.ActionLink("Specificity Score", "Details", new {sortOrder = "spec_desc", pageNumber = @Model.Designs.PageNumber})
+                        @Html.ActionLink("Specificity Score", "Details", new {sortOrder = "spec_desc", pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
                     </th>
                     <th>
-                        @Html.ActionLink("Accessibility Score", "Details", new {sortOrder = "access_desc", pageNumber = @Model.Designs.PageNumber})
+                        @Html.ActionLink("Accessibility Score", "Details", new {sortOrder = "access_desc", pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
                     </th>
                     <th>
-                        @Html.ActionLink("Structure Score", "Details", new {sortOrder = "struct_desc", pageNumber = @Model.Designs.PageNumber})
+                        @Html.ActionLink("Structure Score", "Details", new {sortOrder = "struct_desc", pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
                     </th>
                     @* <th></th> *@
                 </tr>
@@ -260,6 +251,9 @@
                   asp-controller="Jobs"
                   asp-route-id="@Model.Job.Id"
                   asp-route-sortOrder="@Model.SortOrder"
+                  asp-route-filterParam="@Model.FilterParam"
+                  asp-route-filterCondition="@Model.FilterCondition"
+                  asp-route-filterValue="@Model.FilterValue"
                   cs-pagenumber-param="pageNumber"
                   cs-pager-ul-class="pagination mb-0"
                   cs-pager-li-current-class="page-item active"
