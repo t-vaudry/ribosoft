@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Ribosoft.MultiObjectiveOptimization
 {
-    public interface IRankable<T> where T : IComparable<T>
+    public interface IRankable<T>
     {
         int Rank { get; set; }
 

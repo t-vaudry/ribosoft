@@ -18,7 +18,7 @@ namespace Ribosoft.MultiObjectiveOptimization {
         ** are ranked, and removed from the list. This happens
         ** recursively until there are no more candidates to rank.
         */
-        public IList<T> Optimize<T>(IList<T> candidates, int rank) where T : class, IRankable<float>
+        public IList<T> Optimize<T>(IList<T> candidates, int rank) where T : class, IRankable<OptimizeItem<float>>
         {
             // If candidates are empty, return
             if (candidates.Count == 0) {
@@ -69,7 +69,7 @@ namespace Ribosoft.MultiObjectiveOptimization {
         **   1. If fi(x) <= fi(y) for all i functions of f, and
         **   2. There is at least one i such that fi(x) < fi(y)
         */
-        private bool ParetoDominate(IRankable<float> victim, IRankable<float> dominator)
+        private bool ParetoDominate(IRankable<OptimizeItem<float>> victim, IRankable<OptimizeItem<float>> dominator)
         {
             bool dominated = true;
             bool strictlyDominated = false;
@@ -86,9 +86,9 @@ namespace Ribosoft.MultiObjectiveOptimization {
 
                     var d = dominatorEnumerator.Current;
 
-                    if (d <= v)
+                    if (((d.Type == OptimizeType.MIN) && (d.Value <= v.Value)) || (((d.Type == OptimizeType.MAX)) && (d.Value >= v.Value)))
                     {
-                        if (Math.Abs(d - v) > Tolerance)
+                        if (Math.Abs(d.Value - v.Value) > Tolerance)
                         {
                             strictlyDominated = true;
                         }

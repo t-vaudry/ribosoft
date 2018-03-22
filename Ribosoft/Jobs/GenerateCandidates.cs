@@ -235,7 +235,7 @@ namespace Ribosoft.Jobs
 
                                 AccessibilityScore = accessibilityScore,
                                 StructureScore = structureScore,
-                                HighestTemperatureScore = -1.0f * temperatureScore,
+                                HighestTemperatureScore = temperatureScore,
                                 DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())
                             });
 

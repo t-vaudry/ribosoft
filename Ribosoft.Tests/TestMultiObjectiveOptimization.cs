@@ -11,8 +11,14 @@ namespace Ribosoft.Tests
         {
             MultiObjectiveOptimization.MultiObjectiveOptimizer multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
 
-            float[] first = { 1.0f, 1.0f };
-            float[] second = { 1.0f, 1.0f };
+            MultiObjectiveOptimization.OptimizeItem<float>[] first = {
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN)
+            };
+            MultiObjectiveOptimization.OptimizeItem<float>[] second = {
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN)
+            };
 
             Candidate one = new Candidate { FitnessValues = first };
             Candidate two = new Candidate { FitnessValues = second };
@@ -34,8 +40,14 @@ namespace Ribosoft.Tests
         {
             MultiObjectiveOptimization.MultiObjectiveOptimizer multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
 
-            float[] first = { 1.0f, 1.0f };
-            float[] second = { 1.05f, 1.0f };
+            MultiObjectiveOptimization.OptimizeItem<float>[] first = {
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN)
+            };
+            MultiObjectiveOptimization.OptimizeItem<float>[] second = {
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.05f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN)
+            };
 
             Candidate one = new Candidate { FitnessValues = first };
             Candidate two = new Candidate { FitnessValues = second };
@@ -57,8 +69,14 @@ namespace Ribosoft.Tests
         {
             MultiObjectiveOptimization.MultiObjectiveOptimizer multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
 
-            float[] first = { 1.0f, 1.0f };
-            float[] second = { 2.0f, 2.0f };
+            MultiObjectiveOptimization.OptimizeItem<float>[] first = {
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN)
+            };
+            MultiObjectiveOptimization.OptimizeItem<float>[] second = {
+                new MultiObjectiveOptimization.OptimizeItem<float>(2.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(2.0f, MultiObjectiveOptimization.OptimizeType.MIN)
+            };
 
             Candidate one = new Candidate { FitnessValues = first };
             Candidate two = new Candidate { FitnessValues = second };
@@ -80,8 +98,16 @@ namespace Ribosoft.Tests
         {
             MultiObjectiveOptimization.MultiObjectiveOptimizer multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
 
-            float[] first = { 1.0f, 1.0f, 1.0f };
-            float[] second = { 2.0f, 2.0f, 2.0f };
+            MultiObjectiveOptimization.OptimizeItem<float>[] first = {
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN)
+            };
+            MultiObjectiveOptimization.OptimizeItem<float>[] second = {
+                new MultiObjectiveOptimization.OptimizeItem<float>(2.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(2.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(2.0f, MultiObjectiveOptimization.OptimizeType.MIN)
+            };
 
             Candidate one = new Candidate { FitnessValues = first };
             Candidate two = new Candidate { FitnessValues = second };
@@ -103,8 +129,18 @@ namespace Ribosoft.Tests
         {
             MultiObjectiveOptimization.MultiObjectiveOptimizer multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
 
-            float[] first = { 1.0f, 1.0f, 1.0f, 1.0f };
-            float[] second = { 2.0f, 2.0f, 2.0f, 2.0f };
+            MultiObjectiveOptimization.OptimizeItem<float>[] first = {
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN)
+            };
+            MultiObjectiveOptimization.OptimizeItem<float>[] second = {
+                new MultiObjectiveOptimization.OptimizeItem<float>(2.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(2.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(2.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(2.0f, MultiObjectiveOptimization.OptimizeType.MIN)
+            };
 
             Candidate one = new Candidate { FitnessValues = first };
             Candidate two = new Candidate { FitnessValues = second };
@@ -126,9 +162,20 @@ namespace Ribosoft.Tests
         {
             MultiObjectiveOptimization.MultiObjectiveOptimizer multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
 
-            float[] first = { 2.0f, 1.0f, 1.0f };
-            float[] second = { 2.0f, 2.0f, 2.0f };
-            float[] third = { 3.0f, 2.0f };
+            MultiObjectiveOptimization.OptimizeItem<float>[] first = {
+                new MultiObjectiveOptimization.OptimizeItem<float>(2.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN)
+            };
+            MultiObjectiveOptimization.OptimizeItem<float>[] second = {
+                new MultiObjectiveOptimization.OptimizeItem<float>(2.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(2.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(2.0f, MultiObjectiveOptimization.OptimizeType.MIN)
+            };
+            MultiObjectiveOptimization.OptimizeItem<float>[] third = {
+                new MultiObjectiveOptimization.OptimizeItem<float>(3.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(2.0f, MultiObjectiveOptimization.OptimizeType.MIN)
+            };
 
             Candidate one = new Candidate { FitnessValues = first };
             Candidate two = new Candidate { FitnessValues = second };
@@ -160,6 +207,35 @@ namespace Ribosoft.Tests
                 Assert.Equal(R_STATUS.R_EMPTY_CANDIDATE_LIST, Exception.Code);
                 Assert.Equal("List of Candidates is empty!", Exception.Message);
             }
+        }
+
+        [Fact]
+        public void Maximize1D()
+        {
+            MultiObjectiveOptimization.MultiObjectiveOptimizer multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
+
+            MultiObjectiveOptimization.OptimizeItem<float>[] first = {
+                new MultiObjectiveOptimization.OptimizeItem<float>(1.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(3.0f, MultiObjectiveOptimization.OptimizeType.MAX)
+            };
+            MultiObjectiveOptimization.OptimizeItem<float>[] second = {
+                new MultiObjectiveOptimization.OptimizeItem<float>(2.0f, MultiObjectiveOptimization.OptimizeType.MIN),
+                new MultiObjectiveOptimization.OptimizeItem<float>(2.0f, MultiObjectiveOptimization.OptimizeType.MAX)
+            };
+
+            Candidate one = new Candidate { FitnessValues = first };
+            Candidate two = new Candidate { FitnessValues = second };
+
+            List<Candidate> candidates = new List<Candidate>
+            {
+                one,
+                two
+            };
+
+            multiObjectiveOptimizer.Optimize(candidates, 1);
+
+            Assert.Equal(1, one.Rank);
+            Assert.Equal(2, two.Rank);
         }
     }
 }
