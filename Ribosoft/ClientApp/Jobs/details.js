@@ -29,7 +29,19 @@ document.getElementById("filterSubmit").addEventListener("click", function() {
     url += "&filterCondition="+filterCondition.value;
     url += "&filterValue="+filterValue.value;
 
-    window.location.href = url;
+    var errorElement = document.getElementById("filterError");
+
+    if (filterValue.value != "" && !isNaN(filterValue.value)) {
+        if (!errorElement.classList.contains("d-none")) {
+            errorElement.classList.toggle('d-none');
+        }
+
+        window.location.href = url;
+    } else {
+        if (errorElement.classList.contains("d-none")) {
+            errorElement.classList.toggle('d-none');
+        }
+    }
 });
 
 document.getElementById("refineResults").addEventListener("click", function() {

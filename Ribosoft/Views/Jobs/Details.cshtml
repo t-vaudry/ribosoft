@@ -173,11 +173,12 @@
             <div class="form-inline">
                 @Html.DropDownListFor(x => x.FilterParam, Model.FilterParams, new {@class = "form-control custom-select mb-2 mr-sm-2 mb-sm-0"})
                 @Html.DropDownListFor(x => x.FilterCondition, Model.FilterConditions, new {@class = "form-control custom-select mb-2 mr-sm-2 mb-sm-0"})
-                <input type="text" asp-for="FilterValue" class="form-control mb-2 mr-sm-2 mb-sm-0">
+                <input type="number" step="any" asp-for="FilterValue" class="form-control mb-2 mr-sm-2 mb-sm-0">
                 <button class="btn btn-primary" id="filterSubmit">
                     Filter
                 </button>
             </div>
+            <p id="filterError" class="text-danger d-none">Input must be a number.</label>
         </div>
         <br/>
         
