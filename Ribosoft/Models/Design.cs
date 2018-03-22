@@ -7,7 +7,7 @@ using Ribosoft.MultiObjectiveOptimization;
 
 namespace Ribosoft.Models
 {
-    public class Design : BaseEntity, IRankable<float>
+    public class Design : BaseEntity, IRankable<OptimizeItem<float>>
     {
         public int Id { get; set; }
         public int JobId { get; set; }
@@ -37,13 +37,13 @@ namespace Ribosoft.Models
 
         public virtual Job Job { get; set; }
 
-        public virtual IEnumerable<float> Comparables => new []
+        public virtual IEnumerable<OptimizeItem<float>> Comparables => new []
         {
-            DesiredTemperatureScore.GetValueOrDefault(),
-            HighestTemperatureScore.GetValueOrDefault(),
-            SpecificityScore.GetValueOrDefault(),
-            AccessibilityScore.GetValueOrDefault(),
-            StructureScore.GetValueOrDefault()
+            new OptimizeItem<float>(DesiredTemperatureScore.GetValueOrDefault(), OptimizeType.MIN),
+            new OptimizeItem<float>(HighestTemperatureScore.GetValueOrDefault(), OptimizeType.MAX),
+            new OptimizeItem<float>(SpecificityScore.GetValueOrDefault(), OptimizeType.MIN),
+            new OptimizeItem<float>(AccessibilityScore.GetValueOrDefault(), OptimizeType.MIN),
+            new OptimizeItem<float>(StructureScore.GetValueOrDefault(), OptimizeType.MIN)
         };
     }
 }

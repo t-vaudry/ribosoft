@@ -197,7 +197,6 @@
                 <tbody>
                 @foreach (var item in Model.Designs.Data)
                 {
-                    float? HighestTemperatureScore = -1.0f * item.HighestTemperatureScore;
                     <tr class="clickable-row" data-href="@Url.Action("Details", "Designs", new { id = item.Id })">
                         <td>
                             @Html.DisplayFor(modelItem => item.Rank)
@@ -209,7 +208,7 @@
                             @Html.DisplayFor(modelItem => item.DesiredTemperatureScore)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => HighestTemperatureScore)
+                            @Html.DisplayFor(modelItem => item.HighestTemperatureScore)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.SpecificityScore)
