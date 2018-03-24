@@ -13,7 +13,8 @@ module.exports = (env) => {
         resolve: {
             extensions: [ '.js' ],
             alias: {
-                'vue$': 'vue/dist/vue.esm.js'
+                'vue$': 'vue/dist/vue.esm.js',
+                '@fortawesome/fontawesome-free-solid$': '@fortawesome/fontawesome-free-solid/shakable.es.js'
             }
         },
         entry: {
