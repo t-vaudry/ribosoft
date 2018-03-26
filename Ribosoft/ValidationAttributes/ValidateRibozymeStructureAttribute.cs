@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Globalization;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
@@ -10,7 +11,7 @@ public class ValidateRibozymeStructureAttribute : ValidationAttribute
     public ValidateRibozymeStructureAttribute()
     {
         _isValid = true;
-        _errorMessage = "Invalid input";
+        _errorMessage = "Invalid input, ensure sequence and substrates match their structures";
     }
 
     public override bool IsValid(object value)
@@ -57,6 +58,7 @@ public class ValidateRibozymeStructureAttribute : ValidationAttribute
         string substrateStructureAlphanumeric = "";
         Regex r = new Regex(@"[a-z0-9]");
 
+        // Get all alphanumerics in sequence
         foreach (char c in sequenceStructure) 
         {
             Match m = r.Match(c.ToString());
@@ -67,6 +69,7 @@ public class ValidateRibozymeStructureAttribute : ValidationAttribute
             }
         }
 
+        // Get all alphanumerics in substrate
         foreach (char c in substrateStructure) 
         {
             Match m = r.Match(c.ToString());
@@ -76,6 +79,10 @@ public class ValidateRibozymeStructureAttribute : ValidationAttribute
                 substrateStructureAlphanumeric += c;
             }
         }
+
+        // Sort alphanumeric strings
+        sequenceStructureAlphanumeric = String.Concat(sequenceStructureAlphanumeric.OrderBy(c => c));
+        substrateStructureAlphanumeric = String.Concat(substrateStructureAlphanumeric.OrderBy(c => c));
 
         return sequenceStructureAlphanumeric == substrateStructureAlphanumeric;
     }
