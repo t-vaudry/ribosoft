@@ -104,43 +104,43 @@ namespace Ribosoft.Controllers
             {
                 case "des_temp_desc":
                     designs = designs.OrderByDescending(d => d.DesiredTemperatureScore);
-                    ViewBag.DesTempColumnTitle = "▲ |  " + ViewBag.DesTempColumnTitle;
+                    ViewBag.DesTempColumnTitle = "▼ |  " + ViewBag.DesTempColumnTitle;
                     break;
                 case "des_temp_asc":
                     designs = designs.OrderBy(d => d.DesiredTemperatureScore);
-                    ViewBag.DesTempColumnTitle = "▼ | " + ViewBag.DesTempColumnTitle;
+                    ViewBag.DesTempColumnTitle = "▲ | " + ViewBag.DesTempColumnTitle;
                     break;
                 case "hi_temp_desc":
                     designs = designs.OrderByDescending(d => d.HighestTemperatureScore);
-                    ViewBag.HiTempColumnTitle = "▲ | " + ViewBag.HiTempColumnTitle;
+                    ViewBag.HiTempColumnTitle = "▼ | " + ViewBag.HiTempColumnTitle;
                     break;
                 case "hi_temp_asc":
                     designs = designs.OrderBy(d => d.HighestTemperatureScore);
-                    ViewBag.HiTempColumnTitle = "▼ | " + ViewBag.HiTempColumnTitle;
+                    ViewBag.HiTempColumnTitle = "▲ | " + ViewBag.HiTempColumnTitle;
                     break;
                 case "spec_desc":
                     designs = designs.OrderByDescending(d => d.SpecificityScore);
-                    ViewBag.SpecColumnTitle = "▲ " + ViewBag.SpecColumnTitle;
+                    ViewBag.SpecColumnTitle = "▼ " + ViewBag.SpecColumnTitle;
                     break;
                 case "spec_asc":
                     designs = designs.OrderBy(d => d.SpecificityScore);
-                    ViewBag.SpecColumnTitle = "▼ | " + ViewBag.SpecColumnTitle;
+                    ViewBag.SpecColumnTitle = "▲ | " + ViewBag.SpecColumnTitle;
                     break;
                 case "access_desc":
                     designs = designs.OrderByDescending(d => d.AccessibilityScore);
-                    ViewBag.AccessColumnTitle = "▲ | " + ViewBag.AccessColumnTitle;
+                    ViewBag.AccessColumnTitle = "▼ | " + ViewBag.AccessColumnTitle;
                     break;
                 case "access_asc":
                     designs = designs.OrderBy(d => d.AccessibilityScore);
-                    ViewBag.AccessColumnTitle = "▼ | " + ViewBag.AccessColumnTitle;
+                    ViewBag.AccessColumnTitle = "▲ | " + ViewBag.AccessColumnTitle;
                     break;
                 case "struct_desc":
                     designs = designs.OrderByDescending(d => d.StructureScore);
-                    ViewBag.StructColumnTitle = "▲ | " + ViewBag.StructColumnTitle;
+                    ViewBag.StructColumnTitle = "▼ | " + ViewBag.StructColumnTitle;
                     break;
                 case "struct_asc":
                     designs = designs.OrderBy(d => d.StructureScore);
-                    ViewBag.StructColumnTitle = "▼ | " + ViewBag.StructColumnTitle;
+                    ViewBag.StructColumnTitle = "▲ | " + ViewBag.StructColumnTitle;
                     break;
                 case "rank_desc":
                     designs = designs.OrderByDescending(d => d.Rank);
