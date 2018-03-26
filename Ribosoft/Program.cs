@@ -7,7 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using NLog.Web;
 using Ribosoft.Data;
 
 namespace Ribosoft
@@ -17,6 +17,7 @@ namespace Ribosoft
         public static void Main(string[] args)
         {
             var host = BuildMainWebHost(args);
+            var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
 
             using (var scope = host.Services.CreateScope())
             {
@@ -27,8 +28,8 @@ namespace Ribosoft
                 }
                 catch (Exception ex)
                 {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred while seeding the database.");
+                    logger.Error(ex, "Stopped program because of exception");
+                    throw;
                 }
             }
 
@@ -40,10 +41,20 @@ namespace Ribosoft
                 .UseStartup<Startup>()
                 .Build();
 
-        public static IWebHost BuildMainWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+        public static IWebHost BuildMainWebHost(string[] args)
+        {
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("hosting.json", optional: true)
+                .AddCommandLine(args)
+                .Build();
+            
+            return WebHost.CreateDefaultBuilder(args)
+                .UseConfiguration(config)
                 .ConfigureServices(services => services.AddTransient<IStartupFilter, HangfireStartupFilter>())
                 .UseStartup<Startup>()
+                .UseNLog()
                 .Build();
+        }
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Ribosoft.Data;
 using Ribosoft.Models;
+using Ribosoft.Models.RibozymeViewModel;
 
 namespace Ribosoft.Controllers
 {
@@ -58,15 +59,36 @@ namespace Ribosoft.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name")] Ribozyme ribozyme)
+        public async Task<IActionResult> Create(RibozymeCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var ribozyme = new Ribozyme
+                {
+                    Name = model.Name
+                };
+                
                 _context.Add(ribozyme);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                
+                var ribozymeStructure = new RibozymeStructure
+                {
+                    RibozymeId = ribozyme.Id,
+                    Sequence = model.Sequence,
+                    Structure = model.Structure,
+                    SubstrateTemplate = model.SubstrateTemplate,
+                    SubstrateStructure = model.SubstrateStructure,
+                    Cutsite = model.Cutsite,
+                    PostProcess = model.PostProcess
+                };
+                
+                _context.Add(ribozymeStructure);
+                await _context.SaveChangesAsync();
+                
+                return RedirectToAction(nameof(Details), "Ribozymes", new {id = ribozyme.Id});
             }
-            return View(ribozyme);
+            
+            return View(model);
         }
 
         // GET: Ribozymes/Edit/5
@@ -115,7 +137,7 @@ namespace Ribosoft.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), "Ribozymes", new { id });
             }
             return View(ribozyme);
         }

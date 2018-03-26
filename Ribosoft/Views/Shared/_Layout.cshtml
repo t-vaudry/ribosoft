@@ -3,84 +3,65 @@
 
 @inject SignInManager<ApplicationUser> SignInManager
 
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>@ViewData["Title"] - Ribosoft</title>
 
-    <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
-    </environment>
+    <link rel="stylesheet" href="~/dist/vendor.css" asp-append-version="true" />
     <environment exclude="Development">
-        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/dist/site.css" asp-append-version="true" />
     </environment>
 </head>
-<body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+<body class="bg-light">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Ribosoft</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
+            <a asp-controller="Home" asp-action="Index" class="navbar-brand">
+                <img src="/img/logo.svg" height="30" alt="Ribosoft">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
                     @if (SignInManager.IsSignedIn(User))
                     {
-                        <li><a asp-area="" asp-controller="Jobs" asp-action="Index">Jobs</a></li>
+                        <li class="nav-item" is-active-route asp-controller="Request" asp-action="Index">
+                            <a asp-controller="Request" asp-action="Index" class="nav-link">New request</a>
+                        </li>
+                        <li class="nav-item" is-active-route asp-controller="Jobs">
+                            <a asp-controller="Jobs" asp-action="Index" class="nav-link">Jobs</a>
+                        </li>
                         if (User.IsInRole("Administrator"))
                         {
-                            <li><a asp-area="" asp-controller="Ribozymes" asp-action="Index">Ribozymes</a></li>
+                            <li class="nav-item" is-active-route asp-controller="Ribozymes">
+                                <a asp-controller="Ribozymes" asp-action="Index" class="nav-link">Ribozymes</a>
+                            </li>
+                            <li class="nav-item" is-active-route asp-controller="Assemblies">
+                                <a asp-controller="Assemblies" asp-action="Index" class="nav-link">Assemblies</a>
+                            </li>
                         }
                     }
                 </ul>
-                @await Html.PartialAsync("_LoginPartial")
             </div>
+
+            @await Html.PartialAsync("_LoginPartial")
         </div>
     </nav>
-    <div class="container body-content">
+
+    <div class="container body-content" role="main">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2017 - Ribosoft</p>
-        </footer>
     </div>
 
-    <environment include="Development">
-        <script src="~/lib/vue/dist/vue.js"></script>
-        <script src="~/lib/vue-resource/dist/vue-resource.js"></script> 
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-    </environment>
-    <environment exclude="Development">
-        <script src="~/lib/vue/dist/vue.min.js"></script>
-        <script src="~/lib/vue-resource/dist/vue-resource.min.js"></script> 
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
-        </script>
-        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
-    </environment>
+    <footer class="container">
+        <p class="text-muted">&copy; 2018 - Ribosoft</p>
+    </footer>
 
-    @RenderSection("Scripts", required: false)
+    <script src="~/dist/vendor.js" asp-append-version="true"></script>
+    <script src="~/dist/main.js" asp-append-version="true"></script>
+    @RenderSection("scripts", required: false)
 </body>
 </html>

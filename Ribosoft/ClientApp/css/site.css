@@ -1,0 +1,122 @@
+html, body {
+    height: 100%;
+}
+
+[v-cloak] {
+    display: none !important;
+}
+
+/* Wrapping element */
+/* Set some basic padding to keep content from hitting the edges */
+.body-content {
+    padding-top: 70px;
+    padding-bottom: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Carousel */
+.carousel-caption p {
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+/* Make .svg files in the carousel display properly in older browsers */
+.carousel-inner .item img[src$=".svg"] {
+    width: 100%;
+}
+
+/* QR code generator */
+#qrCode {
+    margin: 15px;
+}
+
+/* Hide/rearrange for smaller screens */
+@media screen and (max-width: 767px) {
+    /* Hide captions */
+    .carousel-caption {
+        display: none;
+    }
+}
+
+.text-vertical-center {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+/* Landing page elements */
+.landing-page {
+    height: 100vh;
+    width: 100vw;
+    background-image: url("../images/concordia-1.jpg");
+    color: white;
+}
+
+.landing-page h1 {
+    font-size: 5em;
+}
+
+.landing-page h2 {
+    font-size: 3em;
+}
+
+.landing-page .btn {
+    font-size: 1.5em;
+    padding: 10px;
+    margin: 5px;
+    border-color: white;
+}
+
+/* Request design form panels */
+.panel h3:after {
+    font-family:'Glyphicons Halflings';
+    content:"\e114";
+    float: right;
+    color: grey;
+}
+
+.panel-heading h3.collapsed:after {
+    content:"\e080";
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5
+}
+
+.border-top {
+    border-top: 1px solid #e5e5e5
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05)
+}
+
+.card-body .table tr:first-child td {
+    border-top: 0;
+}
+
+.cover-page {
+    height: 100vh;
+    margin-top: -20px;
+    overflow: hidden;
+}
+
+.helix {
+    position: fixed;
+    height: 382px;
+    width: 188px;
+    top: 50%;
+    left: 50%;
+    margin-left: -94px;
+    margin-top: -191px;
+    z-index: -1;
+    background: url("../images/helix.svg") 0 0 repeat-y;
+    transform: rotate(30deg) scale(6);
+    opacity: 0.3;
+    overflow: hidden;
+}
+
+tr.clickable-row {
+    cursor: pointer; 
+}

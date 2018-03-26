@@ -62,6 +62,10 @@ namespace Ribosoft.Data
                 {
                     entity.CreatedAt = now;
                 }
+                else
+                {
+                    entry.Property("CreatedAt").IsModified = false;
+                }
 
                 entity.UpdatedAt = now;
             }
@@ -71,5 +75,6 @@ namespace Ribosoft.Data
         public DbSet<Ribozyme> Ribozymes { get; set; }
         public DbSet<RibozymeStructure> RibozymeStructures { get; set; }
         public DbSet<Design> Designs { get; set; }
+        public DbSet<Assembly> Assemblies { get; set; }
     }
 }
