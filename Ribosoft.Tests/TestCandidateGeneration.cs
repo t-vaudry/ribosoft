@@ -20,6 +20,8 @@ namespace Ribosoft.Tests
 
             Assert.Single(candidates);
             Assert.Equal("CGUGGUUAGGGCCACGUUAAAUAGUUAUUUAAGCCCUAAGCGUGCAAU", candidates[0].Sequence.GetString());
+            Assert.Equal("AUUGCAGUAUAA", candidates[0].SubstrateSequence);
+            Assert.Equal("987654..3210", candidates[0].SubstrateStructure);
         }
 
         [Fact]
@@ -249,8 +251,14 @@ namespace Ribosoft.Tests
 
             Assert.Equal(3, candidates.Count);
             Assert.Equal("GUA", candidates[0].Sequence.GetString());
+            Assert.Equal("A", candidates[0].SubstrateSequence);
+            Assert.Equal("1", candidates[0].SubstrateStructure);
             Assert.Equal("GAA", candidates[1].Sequence.GetString());
-            Assert.Equal("GUAA", candidates[2].Sequence.GetString());
+            Assert.Equal("U", candidates[1].SubstrateSequence);
+            Assert.Equal("1", candidates[1].SubstrateStructure);
+            Assert.Equal("GAUA", candidates[2].Sequence.GetString());
+            Assert.Equal("AU", candidates[2].SubstrateSequence);
+            Assert.Equal("10", candidates[2].SubstrateStructure);
         }
 
         [Fact]
@@ -266,8 +274,14 @@ namespace Ribosoft.Tests
 
             Assert.Equal(3, candidates.Count);
             Assert.Equal("GUA", candidates[0].Sequence.GetString());
+            Assert.Equal("A", candidates[0].SubstrateSequence);
+            Assert.Equal("0", candidates[0].SubstrateStructure);
             Assert.Equal("GAA", candidates[1].Sequence.GetString());
+            Assert.Equal("U", candidates[1].SubstrateSequence);
+            Assert.Equal("0", candidates[1].SubstrateStructure);
             Assert.Equal("GAUA", candidates[2].Sequence.GetString());
+            Assert.Equal("AU", candidates[2].SubstrateSequence);
+            Assert.Equal("10", candidates[2].SubstrateStructure);
         }
 
         [Fact]
@@ -283,13 +297,65 @@ namespace Ribosoft.Tests
 
             Assert.Equal(8, candidates.Count);
             Assert.Equal("GU", candidates[0].Sequence.GetString());
+            Assert.Equal("A", candidates[0].SubstrateSequence);
+            Assert.Equal("1", candidates[0].SubstrateStructure);
             Assert.Equal("GC", candidates[1].Sequence.GetString());
+            Assert.Equal("G", candidates[1].SubstrateSequence);
+            Assert.Equal("1", candidates[1].SubstrateStructure);
             Assert.Equal("GA", candidates[2].Sequence.GetString());
+            Assert.Equal("U", candidates[2].SubstrateSequence);
+            Assert.Equal("1", candidates[2].SubstrateStructure);
             Assert.Equal("GAU", candidates[3].Sequence.GetString());
+            Assert.Equal("AU", candidates[3].SubstrateSequence);
+            Assert.Equal("21", candidates[3].SubstrateStructure);
             Assert.Equal("GCA", candidates[4].Sequence.GetString());
-            Assert.Equal("AGC", candidates[5].Sequence.GetString());
-            Assert.Equal("UGCA", candidates[6].Sequence.GetString());
-            Assert.Equal("UGA", candidates[7].Sequence.GetString());
+            Assert.Equal("UG", candidates[4].SubstrateSequence);
+            Assert.Equal("21", candidates[4].SubstrateStructure);
+            Assert.Equal("CGA", candidates[5].Sequence.GetString());
+            Assert.Equal("UG", candidates[5].SubstrateSequence);
+            Assert.Equal("10", candidates[5].SubstrateStructure);
+            Assert.Equal("CGAU", candidates[6].Sequence.GetString());
+            Assert.Equal("AUG", candidates[6].SubstrateSequence);
+            Assert.Equal("210", candidates[6].SubstrateStructure);
+            Assert.Equal("AGU", candidates[7].Sequence.GetString());
+            Assert.Equal("AU", candidates[7].SubstrateSequence);
+            Assert.Equal("10", candidates[7].SubstrateStructure);
+        }
+
+        [Fact]
+        public void Generate_Candidates_Yarrowia()
+        {
+            CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
+            var candidates = candidateGenerator.GenerateCandidates(
+                "NNNNNNNCCUGAUGAGAACAAACCCNNNNNNNNCGUCGAAACNNnnnnnnnnnnn",
+                "01234567.......((........89abcdef..))...ghijklmnopqrstu",
+                "nnnnnnnnnnnNNGUCGNNNNNNNNNNNNNNN",
+                "utsrqponmlkjihg.76543210fedcba98",
+                "AUGUCGGUCGAUAUGCUAGCUAGCUAGAGUC").ToList();
+
+            Assert.Equal(6, candidates.Count);
+            Assert.Equal("AUGUCGGUCGAUAUGCUAGCU", candidates[0].SubstrateSequence);
+            Assert.Equal("CGGUCGAUAUGCUAGCUAGCU", candidates[1].SubstrateSequence);
+            Assert.Equal("UCGGUCGAUAUGCUAGCUAGCU", candidates[2].SubstrateSequence);
+            Assert.Equal("GUCGGUCGAUAUGCUAGCUAGCU", candidates[3].SubstrateSequence);
+            Assert.Equal("UGUCGGUCGAUAUGCUAGCUAGCU", candidates[4].SubstrateSequence);
+            Assert.Equal("AUGUCGGUCGAUAUGCUAGCUAGCU", candidates[5].SubstrateSequence);
+        }
+
+        [Fact]
+        public void Generate_Candidates_Repeat_Test()
+        {
+            CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
+            var candidates = candidateGenerator.GenerateCandidates(
+                "NNNNNNNCCUGAUGAGAACAAACCCNNNNNNNNCGUCGAAACNNnn",
+                "01234567.......((........89abcdef..))...ghijkl",
+                "nnNNGUCGNNNNNNNNNNNNNNN",
+                "lkjihg.76543210fedcba98",
+                "AUGUCGGUCGAUAUGCUAGCUAGCUAGAGUC").ToList();
+
+            Assert.Equal(4, candidates.Count);
+            Assert.Equal("UAUCGACCCUGAUGAGAACAAACCCAGCUAGCACGUCGAAACAU", candidates[0].Sequence.GetString());
+            Assert.Equal("AGCAUAUCCUGAUGAGAACAAACCCAGCUAGCUCGUCGAAACCGAC", candidates[3].Sequence.GetString());
         }
     }
 }

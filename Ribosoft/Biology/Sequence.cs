@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Ribosoft.Biology
@@ -8,23 +8,25 @@ namespace Ribosoft.Biology
     public class Sequence
     {
         public List<Nucleotide> Nucleotides { get; set; }
-        public int Capacity;
 
         public Sequence()
         {
-            Capacity = 0;
-            Nucleotides = new List<Nucleotide>(Capacity);
+            Nucleotides = new List<Nucleotide>();
         }
 
         public Sequence(int capacity)
         {
-            Capacity = capacity;
-            Nucleotides = new List<Nucleotide>(Capacity);
+            Nucleotides = new List<Nucleotide>(capacity);
         }
 
         public Sequence(Sequence otherSequence)
         {
             Nucleotides = new List<Nucleotide>(otherSequence.Nucleotides);
+        }
+
+        public Sequence(string sequence) : this()
+        {
+            Nucleotides = sequence.Select(c => new Nucleotide(c)).ToList();
         }
 
         public String GetString()

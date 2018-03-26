@@ -11,6 +11,7 @@ namespace Ribosoft.Models
     {
         public int Id { get; set; }
         public int RibozymeId { get; set; }
+        [Required]
         public int Cutsite { get; set; }
         [Required]
         [DataType(DataType.Text)]
@@ -33,6 +34,7 @@ namespace Ribosoft.Models
         ErrorMessage = "Subtrate structure must only contain ., letters, or numbers")]
         [UniqueAlphaNumericStructure]
         public string SubstrateStructure { get; set; }
+        [Required]
         [Display(Name = "Post Process")]
         public bool PostProcess { get; set; }
 

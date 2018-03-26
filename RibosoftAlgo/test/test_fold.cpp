@@ -11,12 +11,19 @@ TEST_CASE("default", "[fold]") {
     R_STATUS status = fold("AUGUCUUAGGUGAUACGUGC", output, size);
     REQUIRE(status == R_SUCCESS::R_STATUS_OK);
     REQUIRE(strcmp(output[0].structure, ".((((......)))).....") == 0);
-    REQUIRE(output[0].energy == -1.60f);
+    REQUIRE(output[0].probability == Approx(0.66907f).epsilon(0.01f));
 
     REQUIRE(strcmp(output[35].structure, "((((..(.....).))))..") == 0);
-    REQUIRE(output[35].energy == 3.00f);
+    REQUIRE(output[35].probability == Approx(0.00038f).epsilon(0.01f));
 
     REQUIRE(size == 51);
+
+    float temp = 0.0f;
+    for (int i = 0; i < size; i++) {
+        temp += output[i].probability;
+    }
+
+    REQUIRE(temp == Approx(1.00f).epsilon(0.05f));
 }
 
 TEST_CASE("valid", "[fold]") {
@@ -25,12 +32,19 @@ TEST_CASE("valid", "[fold]") {
     R_STATUS status = fold("AUUUUAGUGCUGAUGGCCAAUGCGCGAACCCAUCGGCGCUGUGA", output, size);
     REQUIRE(status == R_SUCCESS::R_STATUS_OK);
     REQUIRE(strcmp(output[1].structure, ".((.((((((((((((.............)))))))))))).))") == 0);
-    REQUIRE(output[1].energy == -16.20f);
+    REQUIRE(output[1].probability == Approx(0.11585f).epsilon(0.01f));
 
     REQUIRE(strcmp(output[17].structure, ".....((((((((((((........)...)))))))))))....") == 0);
-    REQUIRE(output[17].energy == -14.50f);
+    REQUIRE(output[17].probability == Approx(0.00734f).epsilon(0.01f));
 
     REQUIRE(size == 173);
+
+    float temp = 0.0f;
+    for (int i = 0; i < size; i++) {
+        temp += output[i].probability;
+    }
+
+    REQUIRE(temp == Approx(1.00f).epsilon(0.05f));
 }
 
 TEST_CASE("invalid sequence", "[fold]") {

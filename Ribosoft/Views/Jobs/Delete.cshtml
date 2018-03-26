@@ -1,52 +1,87 @@
 ﻿@model Ribosoft.Models.Job
 
 @{
-    ViewData["Title"] = "Cancel Job";
-    var shouldCancel = Model.JobState == JobState.New || Model.JobState == JobState.Started;
+    var shouldCancel = Model.IsInProgress();
+    ViewData["Title"] = (shouldCancel ? "Cancel" : "Delete") + " Job";
 }
 
-<h2>@(shouldCancel ? "Cancel" : "Delete") Job</h2>
+<h2 class="my-3">@(shouldCancel ? "Cancel" : "Delete") job</h2>
 
-<h3>Are you sure you want to @(shouldCancel ? "cancel" : "delete") this job?</h3>
-<div>
-    <h4>Job</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.JobState)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.JobState)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.RNAInput)
-        </dt>
-        <dd>
-            <textarea rows="4" cols="80" readonly="readonly">@Model.RNAInput</textarea>
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Ribozyme)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Ribozyme.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.UpdatedAt)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UpdatedAt)
-        </dd>
-    </dl>
-    
+<div class="card box-shadow my-3">
+    <div class="card-body">
+        <p>Are you sure you want to @(shouldCancel ? "cancel" : "delete") this job?</p>
+        
+        <h5 class="card-title border-bottom border-gray pb-2 mb-3">Job details</h5>
+        
+        <dl class="row mb-0">
+            <dt class="col-2">
+                @Html.DisplayNameFor(model => model.StatusMessage)
+            </dt>
+            <dd class="col-10">
+                @Html.DisplayFor(model => model.StatusMessage)
+            </dd>
+            <dt class="col-2">
+                @Html.DisplayNameFor(model => model.Ribozyme)
+            </dt>
+            <dd class="col-10">
+                @Html.DisplayFor(model => model.Ribozyme.Name)
+            </dd>
+            <dt class="col-2">
+                @Html.DisplayNameFor(model => model.RNAInput)
+            </dt>
+            <dd class="col-10">
+                <textarea class="form-control" rows="4" cols="80" readonly="readonly">@Model.RNAInput</textarea>
+            </dd>
+            <dt class="col-4">
+                @Html.DisplayNameFor(model => model.OpenReadingFrameStart)
+            </dt>
+            <dd class="col-2">
+                @Html.DisplayFor(model => model.OpenReadingFrameStart)
+            </dd>
+            <dt class="col-4">
+                @Html.DisplayNameFor(model => model.OpenReadingFrameEnd)
+            </dt>
+            <dd class="col-2">
+                @Html.DisplayFor(model => model.OpenReadingFrameEnd)
+            </dd>
+            <dt class="col-3">
+                @Html.DisplayNameFor(model => model.FivePrime)
+            </dt>
+            <dd class="col-1">
+                @Html.DisplayFor(model => model.ThreePrime)
+            </dd>
+            <dt class="col-3">
+                @Html.DisplayNameFor(model => model.OpenReadingFrame)
+            </dt>
+            <dd class="col-1">
+                @Html.DisplayFor(model => model.OpenReadingFrame)
+            </dd>
+            <dt class="col-3">
+                @Html.DisplayNameFor(model => model.ThreePrime)
+            </dt>
+            <dd class="col-1">
+                @Html.DisplayFor(model => model.ThreePrime)
+            </dd>
+            <dt class="col-2">
+                @Html.DisplayNameFor(model => model.TargetEnvironment)
+            </dt>
+            <dd class="col-10">
+                @Html.DisplayFor(model => model.TargetEnvironment)
+            </dd>
+            <dt class="col-2">
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </dt>
+            <dd class="col-10">
+                @Html.DisplayFor(model => model.CreatedAt)
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<div class="clearfix">
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="@(shouldCancel ? "Cancel" : "Delete")" class="btn btn-default" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Index" class="btn btn-primary float-md-left"><i class="fas fa-arrow-left mr-1"></i> Back to jobs</a>
+        <input type="submit" value="@(shouldCancel ? "Cancel" : "Delete") job" class="btn btn-danger float-md-right" />
     </form>
 </div>
