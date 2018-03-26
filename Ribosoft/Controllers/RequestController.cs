@@ -93,21 +93,25 @@ namespace Ribosoft.Controllers
         }
 
         [HttpGet]
-        public string GetSequenceFromGenbank(string accession)
+        public async Task<JsonResult> GetSequenceFromGenbank(string accession)
         {
-            return GenbankRequest.RunSequenceRequest(accession);
-        }
+            IDictionary<string, object> response = new Dictionary<string, object>();
 
-        [HttpGet]
-        public string GetStartIndexFromGenbank(string accession)
-        {
-            return GenbankRequest.RunStartIndexRequest(accession);
-        }
-
-        [HttpGet]
-        public string GetEndIndexFromGenbank(string accession)
-        {
-            return GenbankRequest.RunEndIndexRequest(accession);
+            try
+            {
+                var result = await GenbankRequest.RunSequenceRequest(accession);
+                response["result"] = result;
+            }
+            catch (GenbankRequestsException e)
+            {
+                response["error"] = e.Message;
+            }
+            catch (Exception)
+            {
+                response["error"] = "An unknown error occurred. Please try again later.";
+            }
+            
+            return Json(response);
         }
 
         private async Task<ApplicationUser> GetUser()

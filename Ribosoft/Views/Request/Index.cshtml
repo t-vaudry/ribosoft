@@ -1,17 +1,26 @@
 @model Ribosoft.Models.RequestViewModel
 
 @{
-    ViewData["Title"] = "Create a new search";
+    ViewData["Title"] = "Create a new request";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1 class="my-3">@ViewData["Title"]</h1>
 
 <div id="app">
     <form method="post">
         
         @if (!ViewData.ModelState.IsValid)
         {
-            <div asp-validation-summary="All" class="my-3 p-3 bg-white rounded box-shadow text-danger"></div>
+            <div class="alert alert-danger box-shadow" role="alert">
+                <h5 class="alert-heading"><i class="fas fa-exclamation-triangle mr-1"></i> Some errors were encountered!</h5>
+                @foreach (var modelState in ViewData.ModelState.Values)
+                {
+                    foreach (var error in modelState.Errors)
+                    {
+                        <p class="mb-0 mt-3">@error.ErrorMessage</p>
+                    }
+                }
+            </div>
         }
 
         <!-- Sequence Selection -->
@@ -44,29 +53,31 @@
 
             <div class="form-group" id="inputSequenceFormGroup">
                 <label asp-for="InputSequence"></label>
-                <textarea asp-for="InputSequence" class="form-control" placeholder="RNA..." rows="6" id="inputSequence"></textarea>
+                <textarea asp-for="InputSequence" class="form-control" placeholder="RNA..." :disabled="genbankLoading" rows="6" id="inputSequence"></textarea>
                 <span asp-validation-for="InputSequence" class="text-danger"></span>
             </div>
 
             <div class="form-group form-inline">
                 <label class="btn btn-sm btn-secondary" for="FASTAfileInput">Upload a FASTA file</label>
-                <input type="file" class="form-control-file d-none" value="Use FASTA file" v-on:change="processFASTAfile" id="FASTAfileInput">
+                <input type="file" class="form-control-file d-none" value="Use FASTA file" v-on:change="processFASTAfile" :disabled="genbankLoading" id="FASTAfileInput">
                 <span class="mx-2">or</span>
                 <label class="sr-only" for="accesionNumber">Get sequence from GenBank by accession number</label>
-                <input type="text" class="form-control form-control-sm" id="accesionNumber" placeholder="Accession number">
-                <button type="button" class="btn btn-sm btn-secondary mx-1" v-on:click="getFromGenbank">Search</button>
+                <input type="text" class="form-control form-control-sm" id="accesionNumber" :disabled="genbankLoading" placeholder="Accession number">
+                <button type="button" class="btn btn-sm btn-secondary mx-1" v-on:click="getFromGenbank" :disabled="genbankLoading">Search</button>
+                <span class="ml-1" v-if="genbankLoading" v-cloak><i class="fas fa-circle-notch fa-spin"></i></span>
+                <span class="text-danger ml-1" v-cloak>{{ genbankStatus }}</span>
             </div>
 
             <div class="form-row mb-0">
                 <div class="form-group col-md-6">
                     <label asp-for="OpenReadingFrameStart"></label>
-                    <input asp-for="OpenReadingFrameStart" class="form-control" min="0">
+                    <input asp-for="OpenReadingFrameStart" class="form-control" min="0" :disabled="genbankLoading">
                     <span asp-validation-for="OpenReadingFrameStart" class="text-danger"></span>
                 </div>
 
                 <div class="form-group col-md-6">
                     <label asp-for="OpenReadingFrameEnd"></label>
-                    <input asp-for="OpenReadingFrameEnd" class="form-control" min="0">
+                    <input asp-for="OpenReadingFrameEnd" class="form-control" min="0" :disabled="genbankLoading">
                     <span asp-validation-for="OpenReadingFrameEnd" class="text-danger"></span>
                 </div>
             </div>
@@ -159,7 +170,7 @@
         @*     </div> *@
         @* </div> *@
 
-        <input type="submit" class="btn btn-primary btn-block">
+        <input type="submit" class="btn btn-primary btn-block" value="Submit request">
     </form>
 </div>
 
