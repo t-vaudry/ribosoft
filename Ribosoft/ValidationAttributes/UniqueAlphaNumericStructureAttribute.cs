@@ -17,6 +17,7 @@ public class UniqueAlphaNumericStructureAttribute : ValidationAttribute
 
     public override bool IsValid(object value)
     {
+        _isValid = true;
         string structure = value.ToString();
         var validInputs = new List<char>(new char[] {'.', '(', ')', '[', ']'});
         var occured = new List<char>();
