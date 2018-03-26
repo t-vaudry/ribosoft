@@ -24,7 +24,8 @@ module.exports = (env) => {
                 'jquery',
                 'jquery-validation',
                 'jquery-validation-unobtrusive',
-                'vue'
+                'vue',
+                'qrious',
             ],
         },
         module: {
