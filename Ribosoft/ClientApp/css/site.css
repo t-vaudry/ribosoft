@@ -2,6 +2,10 @@ html, body {
     height: 100%;
 }
 
+[v-cloak] {
+    display: none !important;
+}
+
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {
