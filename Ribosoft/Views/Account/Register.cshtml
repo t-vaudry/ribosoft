@@ -3,13 +3,13 @@
     ViewData["Title"] = "Register";
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2 class="my-3">@ViewData["Title"]</h2>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
-            <h4>Create a new account.</h4>
-            <hr />
+<form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+    <div class="card box-shadow my-3">
+        <div class="card-body">
+            <h5 class="card-title border-bottom border-gray pb-2 mb-3">Create a new account</h5>
+        
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Email"></label>
@@ -26,10 +26,11 @@
                 <input asp-for="ConfirmPassword" class="form-control" />
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-default">Register</button>
-        </form>
+        </div>
     </div>
-</div>
+    
+    <button type="submit" class="btn btn-primary">Register <i class="fas fa-check ml-1"></i></button>
+</form>
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")

@@ -1,7 +1,9 @@
 import './css/site.css';
 import 'bootstrap';
 
-import fontawesome from '@fortawesome/fontawesome';
-import { faEdit, faPlusCircle, faInfoCircle, faTrash, faArrowLeft, faCheck } from '@fortawesome/fontawesome-free-solid'
+window.QRious = require('qrious');
 
-fontawesome.library.add(faEdit, faPlusCircle, faInfoCircle, faTrash, faArrowLeft, faCheck);
+import fontawesome from '@fortawesome/fontawesome';
+import { faEdit, faPlusCircle, faInfoCircle, faTrash, faArrowLeft, faCheck, faExclamationTriangle, faCircleNotch } from '@fortawesome/fontawesome-free-solid'
+
+fontawesome.library.add(faEdit, faPlusCircle, faInfoCircle, faTrash, faArrowLeft, faCheck, faExclamationTriangle, faCircleNotch);
