@@ -62,6 +62,10 @@ namespace Ribosoft.Data
                 {
                     entity.CreatedAt = now;
                 }
+                else
+                {
+                    entry.Property("CreatedAt").IsModified = false;
+                }
 
                 entity.UpdatedAt = now;
             }

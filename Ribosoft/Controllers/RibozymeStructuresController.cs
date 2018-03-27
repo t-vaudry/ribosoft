@@ -48,9 +48,20 @@ namespace Ribosoft.Controllers
         }
 
         // GET: RibozymeStructures/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create(int? ribozymeId)
         {
-            ViewData["RibozymeId"] = new SelectList(_context.Ribozymes, "Id", "Name");
+            if (ribozymeId == null)
+            {
+                return NotFound();
+            }
+            
+            var ribozyme = await _context.Ribozymes.SingleOrDefaultAsync(m => m.Id == ribozymeId);
+            if (ribozyme == null)
+            {
+                return NotFound();
+            }
+            
+            ViewData["RibozymeId"] = ribozyme.Id;
             return View();
         }
 
@@ -59,15 +70,28 @@ namespace Ribosoft.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RibozymeId,Cutsite,Sequence,Structure,SubstrateTemplate,SubstrateStructure,PostProcess")] RibozymeStructure ribozymeStructure)
+        public async Task<IActionResult> Create(int? ribozymeId, [Bind("Cutsite,Sequence,Structure,SubstrateTemplate,SubstrateStructure,PostProcess")] RibozymeStructure ribozymeStructure)
         {
+            if (ribozymeId == null)
+            {
+                return NotFound();
+            }
+            
+            var ribozyme = await _context.Ribozymes.SingleOrDefaultAsync(m => m.Id == ribozymeId);
+            if (ribozyme == null)
+            {
+                return NotFound();
+            }
+            
             if (ModelState.IsValid)
             {
+                ribozymeStructure.RibozymeId = ribozyme.Id;
                 _context.Add(ribozymeStructure);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Details", "Ribozymes", new {id = ribozymeStructure.RibozymeId});
             }
-            ViewData["RibozymeId"] = new SelectList(_context.Ribozymes, "Id", "Name", ribozymeStructure.RibozymeId);
+
+            ViewData["RibozymeId"] = ribozyme.Id;
             return View(ribozymeStructure);
         }
 
@@ -84,7 +108,7 @@ namespace Ribosoft.Controllers
             {
                 return NotFound();
             }
-            ViewData["RibozymeId"] = new SelectList(_context.Ribozymes, "Id", "Name", ribozymeStructure.RibozymeId);
+            
             return View(ribozymeStructure);
         }
 
@@ -120,7 +144,7 @@ namespace Ribosoft.Controllers
                 }
                 return RedirectToAction("Details", "Ribozymes", new { id = ribozymeStructure.RibozymeId });
             }
-            ViewData["RibozymeId"] = new SelectList(_context.Ribozymes, "Id", "Name", ribozymeStructure.RibozymeId);
+            
             return View(ribozymeStructure);
         }
 
