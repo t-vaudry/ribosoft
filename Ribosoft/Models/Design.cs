@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using Ribosoft.MultiObjectiveOptimization;
@@ -37,6 +38,7 @@ namespace Ribosoft.Models
 
         public virtual Job Job { get; set; }
 
+        [NotMapped]
         public virtual IEnumerable<OptimizeItem<float>> Comparables => new []
         {
             new OptimizeItem<float>(DesiredTemperatureScore.GetValueOrDefault(), OptimizeType.MIN),
