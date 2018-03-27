@@ -17,7 +17,9 @@ var app = new Vue({
             ],
             inVivoSelected: false,
             cutSites: [
-            ]
+            ],
+            genbankLoading: false,
+            genbankStatus: "",
         }
     },
     methods: {
@@ -68,32 +70,43 @@ var app = new Vue({
                     }
                 }
 
-                inputField.value = output.replace(/T/g, "U");;
-            }
+                inputField.value = output.replace(/T/g, "U");
+            };
 
             reader.readAsText(file)
         },
         getFromGenbank: function() {
-            var accesionField = document.getElementById('accesionNumber');
-            var sequenceInputField = document.getElementById("inputSequence");
-            var startIndexField = document.getElementById("OpenReadingFrameStart");
-            var endIndexField = document.getElementById("OpenReadingFrameEnd");
+            let accesionField = document.getElementById('accesionNumber');
+            let sequenceInputField = document.getElementById("inputSequence");
+            let startIndexField = document.getElementById("OpenReadingFrameStart");
+            let endIndexField = document.getElementById("OpenReadingFrameEnd");
 
-            var seqRoute = '/Request/GetSequenceFromGenbank?accession=' + accesionField.value;
-            var startRoute = '/Request/GetStartIndexFromGenbank?accession=' + accesionField.value;
-            var endRoute = '/Request/GetEndIndexFromGenbank?accession=' + accesionField.value;
+            if (!accesionField.value) {
+                return;
+            } 
 
-            this.$http.get(seqRoute).then((response)=>{
-                sequenceInputField.value = response.body;
-                accesionField.value = "";
-            });
+            let seqRoute = '/Request/GetSequenceFromGenbank?accession=' + accesionField.value;
+            
+            this.genbankLoading = true;
 
-            this.$http.get(startRoute).then((response) => {
-                startIndexField.value = response.body;
-            });
+            this.$http.get(seqRoute).then(response => {
+                this.genbankLoading = false;
 
-            this.$http.get(endRoute).then((response) => {
-                endIndexField.value = response.body;
+                if ('error' in response.body) {
+                    this.genbankStatus = response.body.error;
+                } else if ('result' in response.body) {
+                    sequenceInputField.value = response.body.result.sequence;
+                    startIndexField.value = response.body.result.openReadingFrameStart;
+                    endIndexField.value = response.body.result.openReadingFrameEnd;
+                    accesionField.value = "";
+                    this.genbankStatus = "";
+                } else {
+                    this.genbankStatus = "An error occurred making the request.";
+                }
+            }, response => {
+                // error callback
+                this.genbankLoading = false;
+                this.genbankStatus = "An error occurred making the request.";
             });
         }
     },

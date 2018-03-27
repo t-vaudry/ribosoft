@@ -4,36 +4,37 @@
     ViewData["Title"] = "Delete";
 }
 
-<h2>Delete</h2>
+<h2 class="my-3">Delete ribozyme</h2>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Ribozyme</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.UpdatedAt)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UpdatedAt)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-default" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+<div class="card my-3 box-shadow">
+    <div class="card-body">
+        <h5 class="card-title border-bottom border-gray pb-2 mb-3">Ribozyme</h5>
+        <p>Are you sure you want to delete this ribozyme?</p>
+        <dl class="row mb-0">
+            <dt class="col-2">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-10">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt class="col-2">
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </dt>
+            <dd class="col-10">
+                @Html.DisplayFor(model => model.CreatedAt)
+            </dd>
+            <dt class="col-2">
+                @Html.DisplayNameFor(model => model.UpdatedAt)
+            </dt>
+            <dd class="col-10">
+                @Html.DisplayFor(model => model.UpdatedAt)
+            </dd>
+        </dl>
+    </div>
 </div>
+
+<form asp-action="Delete" class="clearfix">
+    <a asp-controller="Ribozymes" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary float-md-left"><i class="fas fa-arrow-left mr-1"></i> Cancel</a>
+    <input type="hidden" asp-for="Id"/>
+    <input type="submit" value="Delete" class="btn btn-danger float-md-right" />
+</form>

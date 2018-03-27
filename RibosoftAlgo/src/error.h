@@ -36,6 +36,7 @@ enum R_USER_ERROR : R_STATUS {
 /* SYSTEM ERROR : Range (-2000)-(-2999) */
 enum R_SYSTEM_ERROR : R_STATUS {
     R_SYSTEM_ERROR_FIRST        = -2000,
+    R_VIENNA_RNA_ERROR          = -2001,
     R_SYSTEM_ERROR_LAST         = -2999,
 };
 
