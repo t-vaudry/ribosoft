@@ -188,13 +188,12 @@
                 <tr>
                     <th>
                         @Html.ActionLink((string)ViewBag.RankColumnTitle, "Details", new {sortOrder = ViewBag.RankSortParm, pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
-
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.Designs.Data.First().Sequence)
                     </th>
                     <th>
-                        @Html.ActionLink((string)ViewBag.DesTempColumnTitle, new {sortOrder = ViewBag.DesTempSortParm, pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
+                        @Html.ActionLink((string)ViewBag.DesTempColumnTitle, "Details", new {sortOrder = ViewBag.DesTempSortParm, pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
                     </th>
                     <th>
                         @Html.ActionLink((string)ViewBag.HiTempColumnTitle, "Details", new {sortOrder = ViewBag.HiTempSortParm, pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
