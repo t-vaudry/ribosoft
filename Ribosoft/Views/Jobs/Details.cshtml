@@ -166,30 +166,46 @@
     <div class="card-body">
         <h5 class="card-title">Designs</h5>
         
+        <div>
+            <span class="d-none" id="showFilterOptions"><button class="btn btn-primary" id="refineResults">Refine Results</button></span>
+        </div>
+        <div class="d-none" id="filterOptions">
+            <div class="form-inline">
+                @Html.DropDownListFor(x => x.FilterParam, Model.FilterParams, new {@class = "form-control custom-select mb-2 mr-sm-2 mb-sm-0"})
+                @Html.DropDownListFor(x => x.FilterCondition, Model.FilterConditions, new {@class = "form-control custom-select mb-2 mr-sm-2 mb-sm-0"})
+                <input type="number" step="any" asp-for="FilterValue" class="form-control mb-2 mr-sm-2 mb-sm-0">
+                <button class="btn btn-primary" id="filterSubmit">
+                    Filter
+                </button>
+            </div>
+            <p id="filterError" class="text-danger d-none">Input must be a number.</label>
+        </div>
+        <br/>
+        
         <div class="table-responsive mb-2">
             <table class="table table-hover mb-0">
                 <thead>
                 <tr>
                     <th>
-                        @Html.ActionLink((string)ViewBag.RankColumnTitle, "Details", new {sortOrder = ViewBag.RankSortParm, pageNumber = @Model.Designs.PageNumber})
+                        @Html.ActionLink((string)ViewBag.RankColumnTitle, "Details", new {sortOrder = ViewBag.RankSortParm, pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.Designs.Data.First().Sequence)
                     </th>
                     <th>
-                        @Html.ActionLink((string)ViewBag.DesTempColumnTitle, "Details", new {sortOrder = ViewBag.DesTempSortParm, pageNumber = @Model.Designs.PageNumber})
+                        @Html.ActionLink((string)ViewBag.DesTempColumnTitle, "Details", new {sortOrder = ViewBag.DesTempSortParm, pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
                     </th>
                     <th>
-                        @Html.ActionLink((string)ViewBag.HiTempColumnTitle, "Details", new {sortOrder = ViewBag.HiTempSortParm, pageNumber = @Model.Designs.PageNumber})
+                        @Html.ActionLink((string)ViewBag.HiTempColumnTitle, "Details", new {sortOrder = ViewBag.HiTempSortParm, pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
                     </th>
                     <th>
-                        @Html.ActionLink((string)ViewBag.SpecColumnTitle, "Details", new {sortOrder = ViewBag.SpecSortParm, pageNumber = @Model.Designs.PageNumber})
+                        @Html.ActionLink((string)ViewBag.SpecColumnTitle, "Details", new {sortOrder = ViewBag.SpecSortParm, pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
                     </th>
                     <th>
-                        @Html.ActionLink((string)ViewBag.AccessColumnTitle, "Details", new {sortOrder = ViewBag.AccessSortParm, pageNumber = @Model.Designs.PageNumber})
+                        @Html.ActionLink((string)ViewBag.AccessColumnTitle, "Details", new {sortOrder = ViewBag.AccessSortParm, pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
                     </th>
                     <th>
-                        @Html.ActionLink((string)ViewBag.StructColumnTitle, "Details", new {sortOrder = ViewBag.StructSortParm, pageNumber = @Model.Designs.PageNumber})
+                        @Html.ActionLink((string)ViewBag.StructColumnTitle, "Details", new {sortOrder = ViewBag.StructSortParm, pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
                     </th>
                     @* <th></th> *@
                 </tr>
@@ -236,6 +252,9 @@
                   asp-controller="Jobs"
                   asp-route-id="@Model.Job.Id"
                   asp-route-sortOrder="@Model.SortOrder"
+                  asp-route-filterParam="@Model.FilterParam"
+                  asp-route-filterCondition="@Model.FilterCondition"
+                  asp-route-filterValue="@Model.FilterValue"
                   cs-pagenumber-param="pageNumber"
                   cs-pager-ul-class="pagination mb-0"
                   cs-pager-li-current-class="page-item active"
@@ -256,6 +275,7 @@
 
 @section scripts
 {
+    <script src="~/dist/details.js"></script>
     <script type="text/javascript">
         jQuery(document).ready(function($) {
             $(".clickable-row").click(function() {

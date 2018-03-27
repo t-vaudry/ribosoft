@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text;
 using cloudscribe.Pagination.Models;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
@@ -58,7 +59,7 @@ namespace Ribosoft.Controllers
         }
 
         // GET: Jobs/Details/5
-        public async Task<IActionResult> Details(int? id, string sortOrder, int pageNumber)
+        public async Task<IActionResult> Details(int? id, string sortOrder, int pageNumber, string filterParam, string filterCondition, float filterValue)
         {
             if (id == null)
             {
@@ -77,6 +78,75 @@ namespace Ribosoft.Controllers
             if (job == null)
             {
                 return NotFound();
+            }
+
+            var designs = from d in _context.Designs where d.JobId == job.Id select d;
+
+            if (!String.IsNullOrEmpty(filterParam))
+            {
+                StringBuilder sb = new StringBuilder(filterValue.ToString());
+                sb[sb.Length-1] = Convert.ToChar(Convert.ToInt32(sb[sb.Length-1])+1);
+                float upperBound = float.Parse(sb.ToString());
+
+                switch (filterParam)
+                {
+                    case "Rank":
+                        if (filterCondition == "gteq") {
+                            designs = designs.Where(d => d.Rank >= filterValue);
+                        } else if (filterCondition == "lteq") {
+                            designs = designs.Where(d => d.Rank <= filterValue);
+                        } else if (filterCondition == "eq") {
+                            designs = designs.Where(d => d.Rank == (int) filterValue);
+                        }
+                        break;
+                    case "HighestTemperatureScore":
+                        if (filterCondition == "gteq") {
+                            designs = designs.Where(d => d.HighestTemperatureScore >= filterValue);
+                        } else if (filterCondition == "lteq") {
+                            designs = designs.Where(d => d.HighestTemperatureScore <= filterValue);
+                        } else if (filterCondition == "eq") {
+                            designs = designs.Where(d => d.HighestTemperatureScore >= filterValue && d.HighestTemperatureScore < upperBound);
+                        }
+                        break;
+                    case "DesiredTemperatureScore":
+                        if (filterCondition == "gteq") {
+                            designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue);
+                        } else if (filterCondition == "lteq") {
+                            designs = designs.Where(d => d.DesiredTemperatureScore <= filterValue);
+                        } else if (filterCondition == "eq") {
+                            designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue && d.DesiredTemperatureScore < upperBound);
+                        }
+                        break;
+                    case "SpecificityScore":
+                        if (filterCondition == "gteq") {
+                            designs = designs.Where(d => d.SpecificityScore >= filterValue);
+                        } else if (filterCondition == "lteq") {
+                            designs = designs.Where(d => d.SpecificityScore <= filterValue);
+                        } else if (filterCondition == "eq") {
+                            designs = designs.Where(d => d.SpecificityScore >= filterValue && d.SpecificityScore < upperBound);
+                        }
+                        break;
+                    case "AcessibilityScore":
+                        if (filterCondition == "gteq") {
+                            designs = designs.Where(d => d.AccessibilityScore >= filterValue);
+                        } else if (filterCondition == "lteq") {
+                            designs = designs.Where(d => d.AccessibilityScore <= filterValue);
+                        } else if (filterCondition == "eq") {
+                            designs = designs.Where(d => d.AccessibilityScore >= filterValue && d.AccessibilityScore < upperBound);
+                        }
+                        break;
+                    case "StructureScore":
+                        if (filterCondition == "gteq") {
+                            designs = designs.Where(d => d.StructureScore >= filterValue);
+                        } else if (filterCondition == "lteq") {
+                            designs = designs.Where(d => d.StructureScore <= filterValue);
+                        } else if (filterCondition == "eq") {
+                            designs = designs.Where(d => d.StructureScore >= filterValue && d.StructureScore < upperBound);
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
 
             int pageSize = 20;
@@ -98,11 +168,9 @@ namespace Ribosoft.Controllers
             ViewBag.RankSortParm = sortOrder == "rank_asc" ? "rank_desc" : "rank_asc";
             // ViewBag.RankSortParm = String.IsNullOrEmpty(sortOrder) ? "rank_asc" : "";
 
-            var designs = from d in _context.Designs where d.JobId == job.Id select d;
-
             switch (sortOrder)
             {
-                case "des_temp_desc":
+                case "des_temp_desc": 
                     designs = designs.OrderByDescending(d => d.DesiredTemperatureScore);
                     ViewBag.DesTempColumnTitle = "▼ |  " + ViewBag.DesTempColumnTitle;
                     break;
@@ -152,12 +220,31 @@ namespace Ribosoft.Controllers
                     break;
             }
 
+            List<SelectListItem> filterParams = new List<SelectListItem>();
+            List<SelectListItem> filterConditions = new List<SelectListItem>();
+
+            filterParams.Add(new SelectListItem { Text = "Rank", Value = "Rank", Selected=true });
+            filterParams.Add(new SelectListItem { Text = "Highest Temperature Score", Value = "HighestTemperatureScore" });
+            filterParams.Add(new SelectListItem { Text = "Desired Temperature Score", Value = "DesiredTemperatureScore" });
+            filterParams.Add(new SelectListItem { Text = "Specificity Score", Value = "SpecificityScore" });
+            filterParams.Add(new SelectListItem { Text = "Acessibility Score", Value = "AcessibilityScore" });
+            filterParams.Add(new SelectListItem { Text = "Structure Score", Value = "StructureScore" });
+
+            filterConditions.Add(new SelectListItem { Text = ">=", Value = "gteq", Selected=true });
+            filterConditions.Add(new SelectListItem { Text = "<=", Value = "lteq" });
+            filterConditions.Add(new SelectListItem { Text = "=", Value = "eq" });
+
             var vm = new JobDetailsViewModel();
 
             vm.Job = job;
             vm.SortOrder = sortOrder;
+            vm.FilterParams = filterParams;
+            vm.FilterConditions = filterConditions;
+            vm.FilterParam = filterParam;
+            vm.FilterCondition = filterCondition;
+            vm.FilterValue = filterValue.ToString();
             vm.Designs.Data = await designs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
-            vm.Designs.TotalItems = await _context.Designs.Where(d => d.JobId == job.Id).CountAsync();
+            vm.Designs.TotalItems = await designs.CountAsync();
             vm.Designs.PageNumber = pageNumber;
             vm.Designs.PageSize = pageSize;
 
