@@ -31,7 +31,7 @@
             <h6 class="border-bottom border-gray pb-2">Ribozyme</h6>
 
             <div class="form-group mb-0">
-                <label asp-for="RibozymeStructure"></label> <span data-toggle="tooltip" data-placement="right" title="@Localizer["RibozymeStructureTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
+                <label asp-for="RibozymeStructure"></label>
                 <select asp-for="RibozymeStructure"
                         asp-items="ViewBag.Ribozymes"
                         class="form-control">
@@ -45,7 +45,7 @@
             <h6 class="border-bottom border-gray pb-2">RNA sequence</h6>
 
             <div class="form-group" id="inputSequenceFormGroup">
-                <label asp-for="InputSequence"></label> <span data-toggle="tooltip" data-placement="right" title="@Localizer["InputSequenceTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
+                <label asp-for="InputSequence"></label>
                 <textarea asp-for="InputSequence" class="form-control" placeholder="RNA..." :disabled="genbankLoading" rows="6" id="inputSequence"></textarea>
                 <span asp-validation-for="InputSequence" class="text-danger"></span>
             </div>
@@ -65,12 +65,14 @@
             <div class="form-row mb-0">
                 <div class="form-group col-md-6 mb-0">
                     <label asp-for="OpenReadingFrameStart"></label>
+                    <span data-toggle="tooltip" data-placement="right" title="@Localizer["ORFStartTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
                     <input asp-for="OpenReadingFrameStart" class="form-control" min="0" :disabled="genbankLoading">
                     <span asp-validation-for="OpenReadingFrameStart" class="text-danger"></span>
                 </div>
 
                 <div class="form-group col-md-6 mb-0">
                     <label asp-for="OpenReadingFrameEnd"></label>
+                    <span data-toggle="tooltip" data-placement="right" title="@Localizer["ORFEndTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
                     <input asp-for="OpenReadingFrameEnd" class="form-control" min="0" :disabled="genbankLoading">
                     <span asp-validation-for="OpenReadingFrameEnd" class="text-danger"></span>
                 </div>
@@ -80,8 +82,7 @@
         <!-- Regions for Target Design -->
         <div class="my-3 p-3 bg-white rounded box-shadow">
             <div class="clearfix border-bottom border-gray mb-2">
-                <h6 class="float-md-left">Target regions</h6>
-                <span class="float-md-right" data-toggle="tooltip" data-placement="left" title="@Localizer["TargetRegionsTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
+                <h6 class="float-md-left">Target regions <span data-toggle="tooltip" data-placement="left" title="@Localizer["TargetRegionsTooltip"]"><i class="fas fa-question-circle text-info"></i></span></h6>
             </div>
 
             <div class="form-group mb-0">
@@ -100,7 +101,7 @@
 
         <!-- Target Environment -->
         <div class="my-3 p-3 bg-white rounded box-shadow">
-            <h6 class="border-bottom border-gray pb-2">Target environment <span data-toggle="tooltip" data-placement="right" title="@Localizer["TargetEnvironmentTooltip"]"><i class="fas fa-question-circle text-info"></i></span></h6>
+            <h6 class="border-bottom border-gray pb-2">Target environment</h6>
 
             <div class="form-group mb-0">
                 @foreach (var item in Model.TargetEnvironments)
@@ -128,6 +129,7 @@
                     </div> 
                 }
                 <span asp-validation-for="SelectedSpecificityMethod" class="text-danger"></span>
+                <span data-toggle="tooltip" data-placement="right" title="@Localizer["SpecificityTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
             </div>
         </div>
 
@@ -136,12 +138,12 @@
             <h6 class="border-bottom border-gray pb-2">Environment properties</h6>
 
             <div class="form-group">
-                <label asp-for="Temperature"></label> <span data-toggle="tooltip" data-placement="right" title="@Localizer["TemperatureTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
+                <label asp-for="Temperature"></label>
                 <input asp-for="Temperature" type="text" class="form-control">
                 <span asp-validation-for="Temperature" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Na"></label> <span data-toggle="tooltip" data-placement="right" title="@Localizer["NaTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
+                <label asp-for="Na"></label>
                 <input asp-for="Na" type="text" class="form-control">
                 <span asp-validation-for="Na" class="text-danger"></span>
             </div>

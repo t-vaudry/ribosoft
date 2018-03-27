@@ -118,27 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="GenBankTooltip" xml:space="preserve">
-    <value>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eros nisl, efficitur sed ex vitae, bibendum dictum tellus.</value>
+    <value>Accession number from the NCBI GenBank.</value>
   </data>
-  <data name="InputSequenceTooltip" xml:space="preserve">
-    <value>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eros nisl, efficitur sed ex vitae, bibendum dictum tellus.</value>
+  <data name="ORFStartTooltip" xml:space="preserve">
+    <value>The index of the nucleotide that starts the open reading frame.</value>
   </data>
-  <data name="NaTooltip" xml:space="preserve">
-    <value>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eros nisl, efficitur sed ex vitae, bibendum dictum tellus.</value>
+  <data name="ORFEndTooltip" xml:space="preserve">
+    <value>The index of the nucleotide that ends the open reading frame.</value>
   </data>
   <data name="ProbeTooltip" xml:space="preserve">
-    <value>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eros nisl, efficitur sed ex vitae, bibendum dictum tellus.</value>
-  </data>
-  <data name="RibozymeStructureTooltip" xml:space="preserve">
-    <value>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eros nisl, efficitur sed ex vitae, bibendum dictum tellus. Ut sit amet tempor massa, id faucibus orci. Aliquam tempor finibus dui semper efficitur.</value>
-  </data>
-  <data name="TargetEnvironmentTooltip" xml:space="preserve">
-    <value>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eros nisl, efficitur sed ex vitae, bibendum dictum tellus.</value>
+    <value>Nucleic acid concentration in excess.</value>
   </data>
   <data name="TargetRegionsTooltip" xml:space="preserve">
-    <value>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eros nisl, efficitur sed ex vitae, bibendum dictum tellus.</value>
+    <value>By selecting the target regions, the ribozymes will only be considered to cleave in the areas selected.</value>
   </data>
-  <data name="TemperatureTooltip" xml:space="preserve">
-    <value>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eros nisl, efficitur sed ex vitae, bibendum dictum tellus.</value>
+  <data name="SpecificityTooltip" xml:space="preserve">
+    <value>Cleavage considers only ribozyme that match the cutsites, Hybridization will account for ribozymes that bond to the target without cleaving.</value>
   </data>
 </root>
