@@ -83,7 +83,7 @@
         <!-- Regions for Target Design -->
         <div class="my-3 p-3 bg-white rounded box-shadow">
             <div class="clearfix border-bottom border-gray mb-2">
-                <h6 class="float-md-left">Target regions <span data-toggle="tooltip" data-placement="left" title="@Localizer["TargetRegionsTooltip"]"><i class="fas fa-question-circle text-info"></i></span></h6>
+                <h6 class="float-md-left">Target regions <span data-toggle="tooltip" data-placement="right" title="@Localizer["TargetRegionsTooltip"]"><i class="fas fa-question-circle text-info"></i></span></h6>
             </div>
 
             <div class="form-group mb-0">
@@ -115,13 +115,13 @@
                 <span asp-validation-for="SelectedTargetEnvironment" class="text-danger"></span>
             </div>
 
-            <div class="form-group mt-2 border-top pt-2" v-if="inVivoSelected">
+            <div class="form-group mt-2 border-top pt-2" v-show="inVivoSelected">
                 <label asp-for="InVivoEnvironment"></label>
                 <select asp-for="InVivoEnvironment" asp-items="ViewBag.Assemblies" class="form-control"></select>
                 <span asp-validation-for="InVivoEnvironment" class="text-danger"></span>
             </div>
 
-            <div class="form-group mb-0" v-if="inVivoSelected">
+            <div class="form-group mb-0" v-show="inVivoSelected">
                 @foreach (var item in Model.SpecificityMethods)
                 {
                     <div class="form-check form-check-inline">
