@@ -32,8 +32,7 @@
                 @Html.DisplayNameFor(model => model.HighestTemperatureScore)
             </dt>
             <dd class="col-9">
-                @{ float? HighestTemperatureScore = -1.0f * Model.HighestTemperatureScore; }
-                @Html.DisplayFor(model => HighestTemperatureScore)
+                @Html.DisplayFor(model => model.HighestTemperatureScore)
             </dd>
             <dt class="col-3">
                 @Html.DisplayNameFor(model => model.SpecificityScore)
@@ -57,7 +56,7 @@
                 Download
             </dt>
             <dd class="col-9">
-                @Html.ActionLink("FASTA File", "DownloadFile", new {jobID = Model.JobId, rank = Model.Rank, desiredTemperatureScore = Model.DesiredTemperatureScore, highestTemperatureScore = -1.0f * Model.HighestTemperatureScore, specificityScore = Model.SpecificityScore, accessibilityScore = Model.AccessibilityScore, structureScore = Model.StructureScore, createdAt = Model.CreatedAt, updatedAt = Model.UpdatedAt, sequence = Model.Sequence}, new { @class = "btn btn-sm btn-primary"})
+                @Html.ActionLink("FASTA File", "DownloadFile", new {jobID = Model.JobId, rank = Model.Rank, desiredTemperatureScore = Model.DesiredTemperatureScore, highestTemperatureScore = Model.HighestTemperatureScore, specificityScore = Model.SpecificityScore, accessibilityScore = Model.AccessibilityScore, structureScore = Model.StructureScore, createdAt = Model.CreatedAt, updatedAt = Model.UpdatedAt, sequence = Model.Sequence}, new { @class = "btn btn-sm btn-primary"})
             </dd>
         </dl>
     </div>
