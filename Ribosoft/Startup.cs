@@ -12,6 +12,7 @@ using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Ribosoft.Data;
 using Ribosoft.Models;
 using Ribosoft.Services;
@@ -67,13 +68,17 @@ namespace Ribosoft
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
-            services.AddMvc(config =>
-            {
-                var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-                config.Filters.Add(new AuthorizeFilter(policy));
-            });
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+            services
+                .AddMvc(config =>
+                {
+                    var policy = new AuthorizationPolicyBuilder()
+                        .RequireAuthenticatedUser()
+                        .Build();
+                    config.Filters.Add(new AuthorizeFilter(policy));
+                })
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
 
             services.AddCloudscribePagination();
         }

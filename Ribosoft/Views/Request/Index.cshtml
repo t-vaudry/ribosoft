@@ -1,4 +1,7 @@
 @model Ribosoft.Models.RequestViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Create a new request";
@@ -23,26 +26,11 @@
             </div>
         }
 
-        <!-- Sequence Selection -->
+        <!-- Ribozyme Selection -->
         <div class="my-3 p-3 bg-white rounded box-shadow">
-            <h6 class="border-bottom border-gray pb-2">RNA sequence</h6>
+            <h6 class="border-bottom border-gray pb-2">Ribozyme</h6>
 
-            @*@foreach (var item in Model.InProgress)
-            {
-                <div class="d-flex justify-content-between align-items-center pt-3 border-bottom border-gray">
-                    <p class="pb-3 mb-0 small lh-125">
-                        <span class="d-block"><strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong> <span class="text-muted">on @item.CreatedAt</span></span>
-                        @(item.RNAInput.Length > 50 ? item.RNAInput.Substring(0, 50) + "..." : item.RNAInput)
-                    </p>
-                    <div class="pb-3 mb-0">
-                        <button type="button" class="btn btn-sm btn-primary" asp-action="Details" asp-route-id="@item.Id">Details</button>
-                        <button type="button" class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Cancel</button>
-                    </div>
-                </div>
-            }*@
-
-            <div class="form-group">
-                <!-- TODO: Redo and populate from C# not JS -->
+            <div class="form-group mb-0">
                 <label asp-for="RibozymeStructure"></label>
                 <select asp-for="RibozymeStructure"
                         asp-items="ViewBag.Ribozymes"
@@ -50,6 +38,11 @@
                 </select>
                 <span asp-validation-for="RibozymeStructure" class="text-danger"></span>
             </div>
+        </div>
+
+        <!-- Sequence Selection -->
+        <div class="my-3 p-3 bg-white rounded box-shadow">
+            <h6 class="border-bottom border-gray pb-2">RNA sequence</h6>
 
             <div class="form-group" id="inputSequenceFormGroup">
                 <label asp-for="InputSequence"></label>
@@ -64,19 +57,22 @@
                 <label class="sr-only" for="accesionNumber">Get sequence from GenBank by accession number</label>
                 <input type="text" class="form-control form-control-sm" id="accesionNumber" :disabled="genbankLoading" placeholder="Accession number">
                 <button type="button" class="btn btn-sm btn-secondary mx-1" v-on:click="getFromGenbank" :disabled="genbankLoading">Search</button>
+                <span data-toggle="tooltip" data-placement="right" title="@Localizer["GenBankTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
                 <span class="ml-1" v-if="genbankLoading" v-cloak><i class="fas fa-circle-notch fa-spin"></i></span>
                 <span class="text-danger ml-1" v-cloak>{{ genbankStatus }}</span>
             </div>
 
             <div class="form-row mb-0">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6 mb-0">
                     <label asp-for="OpenReadingFrameStart"></label>
+                    <span data-toggle="tooltip" data-placement="right" title="@Localizer["ORFStartTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
                     <input asp-for="OpenReadingFrameStart" class="form-control" min="0" :disabled="genbankLoading">
                     <span asp-validation-for="OpenReadingFrameStart" class="text-danger"></span>
                 </div>
 
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6 mb-0">
                     <label asp-for="OpenReadingFrameEnd"></label>
+                    <span data-toggle="tooltip" data-placement="right" title="@Localizer["ORFEndTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
                     <input asp-for="OpenReadingFrameEnd" class="form-control" min="0" :disabled="genbankLoading">
                     <span asp-validation-for="OpenReadingFrameEnd" class="text-danger"></span>
                 </div>
@@ -85,7 +81,9 @@
 
         <!-- Regions for Target Design -->
         <div class="my-3 p-3 bg-white rounded box-shadow">
-            <h6 class="border-bottom border-gray pb-2">Target regions</h6>
+            <div class="clearfix border-bottom border-gray mb-2">
+                <h6 class="float-md-left">Target regions <span data-toggle="tooltip" data-placement="left" title="@Localizer["TargetRegionsTooltip"]"><i class="fas fa-question-circle text-info"></i></span></h6>
+            </div>
 
             <div class="form-group mb-0">
                 @for (var i = 0; i < Model.TargetRegions.Length; i++)
@@ -131,6 +129,7 @@
                     </div> 
                 }
                 <span asp-validation-for="SelectedSpecificityMethod" class="text-danger"></span>
+                <span data-toggle="tooltip" data-placement="right" title="@Localizer["SpecificityTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
             </div>
         </div>
 
@@ -145,12 +144,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="Na"></label>
-                <input asp-for="Na" type="text" class="form-control" value="1.0">
+                <input asp-for="Na" type="text" class="form-control">
                 <span asp-validation-for="Na" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Probe"></label>
-                <input asp-for="Probe" type="text" class="form-control" value="0.05">
+            <div class="form-group mb-0">
+                <label asp-for="Probe"></label> <span data-toggle="tooltip" data-placement="right" title="@Localizer["ProbeTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
+                <input asp-for="Probe" type="text" class="form-control">
                 <span asp-validation-for="Probe" class="text-danger"></span>
             </div>
         </div>
@@ -176,4 +175,10 @@
 
 @section scripts{
     <script src="~/dist/request.js"></script>
+
+    <script>
+        $(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
 }
