@@ -35,6 +35,7 @@ namespace Ribosoft.Controllers
         {
             ViewData["Ribozymes"] = new SelectList(_context.Ribozymes, "Id", "Name");
             ViewData["Assemblies"] = _context.Assemblies
+                .Where(a => a.IsEnabled)
                 .OrderBy(a => a.OrganismName)
                 .Select(a => new SelectListItem{ Value = a.TaxonomyId.ToString(), Text = string.Format("{0} (taxon {1})", a.OrganismName, a.TaxonomyId) });
             
@@ -43,7 +44,7 @@ namespace Ribosoft.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public  async Task<IActionResult> Index(RequestViewModel model)
+        public async Task<IActionResult> Index(RequestViewModel model)
         {
             var user = await GetUser();
             Job job = new Job();
@@ -86,6 +87,7 @@ namespace Ribosoft.Controllers
             
             ViewData["Ribozymes"] = new SelectList(_context.Ribozymes, "Id", "Name");
             ViewData["Assemblies"] = _context.Assemblies
+                .Where(a => a.IsEnabled)
                 .OrderBy(a => a.OrganismName)
                 .Select(a => new SelectListItem{ Value = a.TaxonomyId.ToString(), Text = string.Format("{0} (taxon {1})", a.OrganismName, a.TaxonomyId)});
 
