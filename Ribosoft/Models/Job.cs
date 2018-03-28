@@ -14,20 +14,20 @@ namespace Ribosoft.Models
         Completed,
         Cancelled,
         Errored,
-        
+
         CandidateGenerator,
         MultiObjectiveOptimization,
         Specificity,
-        
+
         QueuedPhase2,
         QueuedPhase3
     }
 
     public enum TargetEnvironment
     {
-        [Display(Name = "In-Vitro")]
+        [Display(Name = "In-vitro")]
         InVitro,
-        [Display(Name = "In-Vivo")]
+        [Display(Name = "In-vivo")]
         InVivo
     }
 
@@ -35,7 +35,7 @@ namespace Ribosoft.Models
     {
         [Display(Name = "Cleavage")]
         CleavageOnly,
-        [Display(Name = "Cleavage and Hybridization")]
+        [Display(Name = "Cleavage and hybridization")]
         CleavageAndHybridization
     }
 
@@ -48,44 +48,44 @@ namespace Ribosoft.Models
 
         public int Id { get; set; }
         public string OwnerId { get; set; }
-        [Display(Name = "Job State")]
+        [Display(Name = "Job state")]
         public JobState JobState { get; set; }
-        
+
         [ScaffoldColumn(false)]
         public int RibozymeId { get; set; }
-        [Display(Name = "RNA Input")]
+        [Display(Name = "RNA input")]
         public string RNAInput { get; set; }
-        
+
         [ScaffoldColumn(false)]
         public string HangfireJobId { get; set; }
-        [Display(Name = "Status Message")]
+        [Display(Name = "Status message")]
         [DisplayFormat(NullDisplayText =  "None")]
         public string StatusMessage { get; set; }
-        
-        [Display(Name = "Temperature")]
+
+        [Display(Name = "Temperature (℃)")]
         public float? Temperature { get; set; }
-        [Display(Name = "Na")]
+        [Display(Name = "Na⁺ (mM)")]
         public float? Na { get; set; }
-        [Display(Name = "Probe")]
+        [Display(Name = "Probe (nM)")]
         public float? Probe { get; set; }
-        
+
         [Display(Name = "5'")]
         public bool FivePrime { get; set; }
         [Display(Name = "3'")]
         public bool ThreePrime { get; set; }
-        [Display(Name = "Open Reading Frame")]
+        [Display(Name = "Open reading frame")]
         public bool OpenReadingFrame { get; set; }
-        
-        [Display(Name = "Open Reading Frame Start Index")]
+
+        [Display(Name = "Open reading frame start index")]
         public int OpenReadingFrameStart { get; set; }
-        [Display(Name = "Open Reading Frame End Index")]
+        [Display(Name = "Open reading frame end index")]
         public int OpenReadingFrameEnd { get; set; }
-        
-        [Display(Name = "Target Environment")]
+
+        [Display(Name = "Target environment")]
         public TargetEnvironment TargetEnvironment { get; set; }
         [ScaffoldColumn(false)]
         public int? AssemblyId { get; set; }
-        [Display(Name = "Specificity Method")]
+        [Display(Name = "Specificity method")]
         public SpecificityMethod? SpecificityMethod { get; set; }
 
         public virtual ApplicationUser Owner { get; set; }
@@ -98,7 +98,7 @@ namespace Ribosoft.Models
         {
             return InProgress().Compile()(this);
         }
-        
+
         public bool IsCompleted()
         {
             return Completed().Compile()(this);

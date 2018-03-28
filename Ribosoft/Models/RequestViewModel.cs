@@ -57,7 +57,7 @@ namespace Ribosoft.Models
 
         [Required]
         [Range(0.0f, 1000.0f)]
-        [Display(Name = "Na (nM)")]
+        [Display(Name = "Na⁺ (mM)")]
         public float Na { get; set; }
 
         [Required]

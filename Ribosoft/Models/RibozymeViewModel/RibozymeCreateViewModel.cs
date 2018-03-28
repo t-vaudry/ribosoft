@@ -16,7 +16,7 @@ namespace Ribosoft.Models.RibozymeViewModel
 
         [Required(AllowEmptyStrings = false)]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
-        [RepeatNotations(5)]
+        [RepeatNotations(15)]
         [Nucleotide]
         public string Sequence { get; set; }
 
@@ -29,6 +29,7 @@ namespace Ribosoft.Models.RibozymeViewModel
 
         [Required(AllowEmptyStrings = false)]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
+        [StringLength(200, MinimumLength = 1)]
         [Display(Name = "Substrate template")]
         [Nucleotide]
         public string SubstrateTemplate { get; set; }

@@ -29,6 +29,6 @@ public class RepeatNotationsAttribute : ValidationAttribute
 
     public override string FormatErrorMessage(string name)
     {
-        return String.Format(CultureInfo.CurrentCulture, "Repeat notation cannot exced 8", name);
+        return String.Format(CultureInfo.CurrentCulture, "Amount of repeat notations cannot exceed " + _maxRepeats, name);
     }
 }
