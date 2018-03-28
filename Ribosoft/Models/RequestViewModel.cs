@@ -10,54 +10,58 @@ namespace Ribosoft.Models
     public class RequestViewModel
     {
         [Required]
-        [Display(Name = "Ribozyme Structure")]
+        [Display(Name = "Ribozyme structure")]
         public int RibozymeStructure { get; set; }
 
         [Required]
-        [RegularExpression(@"^['A','C','G','U','R','Y','K','M','S','W','B','D','H','V','N']+$", 
+        [StringLength(30000, MinimumLength = 1)]
+        [RegularExpression(@"^['A','C','G','U','R','Y','K','M','S','W','B','D','H','V','N']+$",
         ErrorMessage = "Sequence must only contain the following characters: A, C, G, U, R, Y, K, M, S, W, B, D, H, V, N")]
         [DataType(DataType.Text)]
-        [Display(Name = "Input Sequence")]
+        [Display(Name = "Input sequence")]
         public string InputSequence { get; set; }
 
         [Required]
         [OpenReadingFrame]
-        [Display(Name = "Open Reading Frame Start Index")]
+        [Display(Name = "Open reading frame start index")]
         public int OpenReadingFrameStart { get; set; }
 
         [Required]
         [OpenReadingFrame]
-        [Display(Name = "Open Reading Frame End Index")]
+        [Display(Name = "Open reading frame end index")]
         public int OpenReadingFrameEnd { get; set; }
 
         [Required]
-        [Display(Name = "Select Target Region")]
+        [Display(Name = "Target regions")]
         public TargetRegion[] TargetRegions { get; set; }
 
         [Required]
         public TargetEnvironment SelectedTargetEnvironment { get; set; }
-        
+
         [Display(Name = "Environment")]
         public IEnumerable<TargetEnvironmentViewModel> TargetEnvironments { get; set; }
 
         [DataType(DataType.Text)]
-        [Display(Name = "In-vivo Environment")]
+        [Display(Name = "In-vivo environment")]
         public int? InVivoEnvironment { get; set; }
-        
+
         public SpecificityMethod SelectedSpecificityMethod { get; set; }
 
-        [Display(Name = "Specificity Method")]
+        [Display(Name = "Specificity method")]
         public IEnumerable<SpecificityMethodViewModel> SpecificityMethods { get; set; }
 
         [Required]
+        [Range(-270.0f, 900.0f)]
         [Display(Name = "Temperature (℃)")]
         public float Temperature { get; set; }
 
         [Required]
+        [Range(0.0f, 1000.0f)]
         [Display(Name = "Na (nM)")]
         public float Na { get; set; }
 
         [Required]
+        [Range(0.01f, 10000.0f)]
         [Display(Name = "Probe (nM)")]
         public float Probe { get; set; }
 
@@ -66,23 +70,27 @@ namespace Ribosoft.Models
 
         public RequestViewModel()
         {
+            Temperature = 0.0f;
+            Na = 1.0f;
+            Probe = 0.05f;
+
             TargetRegions = new[]
             {
                 new TargetRegion { Id = 1, Name = "5'UTR", Selected = true },
-                new TargetRegion { Id = 2, Name = "Open Reading Frame (ORF)", Selected = true },
+                new TargetRegion { Id = 2, Name = "Open reading frame (ORF)", Selected = true },
                 new TargetRegion { Id = 3, Name = "3'UTR", Selected = true }
             };
-            
+
             TargetEnvironments = new List<TargetEnvironmentViewModel>
             {
                 new TargetEnvironmentViewModel { Name = "In-vitro", Value = TargetEnvironment.InVitro },
                 new TargetEnvironmentViewModel { Name = "In-vivo", Value = TargetEnvironment.InVivo }
             };
-            
+
             SpecificityMethods = new List<SpecificityMethodViewModel>
             {
                 new SpecificityMethodViewModel { Name = "Cleavage", Value = SpecificityMethod.CleavageOnly },
-                new SpecificityMethodViewModel { Name = "Cleavage and Hybridization", Value = SpecificityMethod.CleavageAndHybridization }
+                new SpecificityMethodViewModel { Name = "Cleavage and hybridization", Value = SpecificityMethod.CleavageAndHybridization }
             };
         }
     }
@@ -99,7 +107,7 @@ namespace Ribosoft.Models
         public string Name { get; set; }
         public TargetEnvironment Value { get; set; }
     }
-    
+
     public class SpecificityMethodViewModel
     {
         public string Name { get; set; }
