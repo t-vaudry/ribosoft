@@ -164,24 +164,22 @@
 
 <div class="card my-3 box-shadow">
     <div class="card-body">
-        <h5 class="card-title">Designs</h5>
-        
-        <div>
-            <span class="d-none" id="showFilterOptions"><button class="btn btn-primary" id="refineResults">Refine Results</button></span>
-        </div>
-        <div class="d-none" id="filterOptions">
-            <div class="form-inline">
-                @Html.DropDownListFor(x => x.FilterParam, Model.FilterParams, new {@class = "form-control custom-select mb-2 mr-sm-2 mb-sm-0"})
-                @Html.DropDownListFor(x => x.FilterCondition, Model.FilterConditions, new {@class = "form-control custom-select mb-2 mr-sm-2 mb-sm-0"})
-                <input type="number" step="any" asp-for="FilterValue" class="form-control mb-2 mr-sm-2 mb-sm-0">
-                <button class="btn btn-primary" id="filterSubmit">
-                    Filter
-                </button>
+        <div class="clearfix">
+            <h5 class="card-title float-md-left">Designs</h5>
+            <div class="d-none float-md-right mb-2" id="showFilterOptions">
+                <button class="btn btn-sm btn-primary" id="refineResults">Refine Results <i class="fas fa-filter"></i></button>
             </div>
-            <p id="filterError" class="text-danger d-none">Input must be a number.</label>
+            <div class="d-none float-md-right mb-2" id="filterOptions">
+                <div class="form-inline">
+                    @Html.DropDownListFor(x => x.FilterParam, Model.FilterParams, new {@class = "form-control form-control-sm custom-select custom-select-sm mb-2 mr-sm-2 mb-sm-0"})
+                    @Html.DropDownListFor(x => x.FilterCondition, Model.FilterConditions, new {@class = "form-control form-control-sm custom-select custom-select-sm mb-2 mr-sm-2 mb-sm-0"})
+                    <input type="number" step="any" asp-for="FilterValue" class="form-control form-control-sm mb-2 mr-sm-2 mb-sm-0">
+                    <button class="btn btn-sm btn-primary" id="filterSubmit">Filter <i class="fas fa-check"></i></button>
+                </div>
+                <p id="filterError" class="text-danger d-none">Input must be a number.</p>
+            </div>
         </div>
-        <br/>
-        
+
         <div class="table-responsive mb-2">
             <table class="table table-hover mb-0">
                 <thead>
