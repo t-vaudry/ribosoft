@@ -1,5 +1,6 @@
 @model Ribosoft.Models.RequestViewModel
 @using Microsoft.AspNetCore.Mvc.Localization
+@using Ribosoft.Extensions
 
 @inject IViewLocalizer Localizer
 
@@ -46,8 +47,8 @@
 
             <div class="form-group" id="inputSequenceFormGroup">
                 <label asp-for="InputSequence"></label>
-                <textarea asp-for="InputSequence" class="form-control" placeholder="RNA..." :disabled="genbankLoading" rows="6" id="inputSequence"></textarea>
-                <span asp-validation-for="InputSequence" class="text-danger"></span>
+                <textarea asp-for="InputSequence" class="form-control @ViewData.ModelState.InvalidFieldClass("InputSequence")" placeholder="CUUGAAGUGGUU..." :disabled="genbankLoading" rows="6" id="inputSequence"></textarea>
+                <span asp-validation-for="InputSequence" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group form-inline">
@@ -139,18 +140,18 @@
 
             <div class="form-group">
                 <label asp-for="Temperature"></label>
-                <input asp-for="Temperature" type="text" class="form-control">
-                <span asp-validation-for="Temperature" class="text-danger"></span>
+                <input asp-for="Temperature" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("Temperature")">
+                <span asp-validation-for="Temperature" class="invalid-feedback"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Na"></label>
-                <input asp-for="Na" type="text" class="form-control">
-                <span asp-validation-for="Na" class="text-danger"></span>
+                <input asp-for="Na" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("Na")">
+                <span asp-validation-for="Na" class="invalid-feedback"></span>
             </div>
             <div class="form-group mb-0">
                 <label asp-for="Probe"></label> <span data-toggle="tooltip" data-placement="right" title="@Localizer["ProbeTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
-                <input asp-for="Probe" type="text" class="form-control">
-                <span asp-validation-for="Probe" class="text-danger"></span>
+                <input asp-for="Probe" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("Probe")">
+                <span asp-validation-for="Probe" class="invalid-feedback"></span>
             </div>
         </div>
 

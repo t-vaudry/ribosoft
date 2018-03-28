@@ -15,7 +15,7 @@ namespace Ribosoft.Models
         public int Cutsite { get; set; }
         [Required]
         [DataType(DataType.Text)]
-        [RepeatNotations(5)]
+        [RepeatNotations(15)]
         [Nucleotide]
         public string Sequence { get; set; }
         [Required]
