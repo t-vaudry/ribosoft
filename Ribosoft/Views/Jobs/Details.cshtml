@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Job Details";
+    var shouldCancel = Model.Job.IsInProgress();
 }
 
 <h1 class="my-3">Job details</h1>
@@ -10,100 +11,100 @@
     <div class="card-body">
         <h5 class="card-title border-bottom border-gray pb-2">Request information</h5>
         <dl class="row mb-0">
-            <dt class="col-2">
+            <dt class="col-md-2">
                 @Html.DisplayNameFor(model => model.Job.StatusMessage)
             </dt>
-            <dd class="col-10">
+            <dd class="col-md-10">
                 @Html.DisplayFor(model => model.Job.StatusMessage)
             </dd>
-            <dt class="col-2">
+            <dt class="col-md-2">
                 @Html.DisplayNameFor(model => model.Job.Ribozyme)
             </dt>
-            <dd class="col-10">
+            <dd class="col-md-10">
                 @Html.DisplayFor(model => model.Job.Ribozyme.Name)
             </dd>
-            <dt class="col-2">
+            <dt class="col-md-2">
                 @Html.DisplayNameFor(model => model.Job.RNAInput)
             </dt>
-            <dd class="col-10">
+            <dd class="col-md-10">
                 <textarea class="form-control" rows="4" cols="80" readonly="readonly">@Model.Job.RNAInput</textarea>
             </dd>
-            <dt class="col-4">
+            <dt class="col-md-4">
                 @Html.DisplayNameFor(model => model.Job.OpenReadingFrameStart)
             </dt>
-            <dd class="col-2">
+            <dd class="col-md-2">
                 @Html.DisplayFor(model => model.Job.OpenReadingFrameStart)
             </dd>
-            <dt class="col-4">
+            <dt class="col-md-4">
                 @Html.DisplayNameFor(model => model.Job.OpenReadingFrameEnd)
             </dt>
-            <dd class="col-2">
+            <dd class="col-md-2">
                 @Html.DisplayFor(model => model.Job.OpenReadingFrameEnd)
             </dd>
-            <dt class="col-3">
+            <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.Job.FivePrime)
             </dt>
-            <dd class="col-1">
+            <dd class="col-md-1">
                 @Html.DisplayFor(model => model.Job.ThreePrime)
             </dd>
-            <dt class="col-3">
+            <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.Job.OpenReadingFrame)
             </dt>
-            <dd class="col-1">
+            <dd class="col-md-1">
                 @Html.DisplayFor(model => model.Job.OpenReadingFrame)
             </dd>
-            <dt class="col-3">
+            <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.Job.ThreePrime)
             </dt>
-            <dd class="col-1">
+            <dd class="col-md-1">
                 @Html.DisplayFor(model => model.Job.ThreePrime)
             </dd>
-            <dt class="col-2">
+            <dt class="col-md-2">
                 @Html.DisplayNameFor(model => model.Job.TargetEnvironment)
             </dt>
-            <dd class="col-10">
+            <dd class="col-md-10">
                 @Html.DisplayFor(model => model.Job.TargetEnvironment)
             </dd>
             @if (Model.Job.TargetEnvironment == TargetEnvironment.InVivo && Model.Job.AssemblyId.HasValue)
             {
-                <dt class="col-2">
+                <dt class="col-md-2">
                     @Html.DisplayNameFor(model => model.Job.Assembly)
                 </dt>
-                <dd class="col-10">
+                <dd class="col-md-10">
                     @Html.DisplayFor(model => model.Job.Assembly.OrganismName)
                     (taxonomy <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=@(Model.Job.Assembly.TaxonomyId)">@Html.DisplayFor(model => model.Job.Assembly.TaxonomyId)</a>,
                     species <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=@(Model.Job.Assembly.SpeciesId)">@Html.DisplayFor(model => model.Job.Assembly.SpeciesId)</a>)
                     using assembly <a href="https://www.ncbi.nlm.nih.gov/assembly/@(Model.Job.Assembly.AccessionId)">@Html.DisplayFor(model => model.Job.Assembly.AssemblyName)</a>
                 </dd>
-                <dt class="col-2">
+                <dt class="col-md-2">
                     @Html.DisplayNameFor(model => model.Job.SpecificityMethod)
                 </dt>
-                <dd class="col-10">
+                <dd class="col-md-10">
                     @Html.DisplayFor(model => model.Job.SpecificityMethod)
                 </dd>
             }
-            <dt class="col-2">
+            <dt class="col-md-2">
                 @Html.DisplayNameFor(model => model.Job.Temperature)
             </dt>
-            <dd class="col-10">
+            <dd class="col-md-10">
                 @Html.DisplayFor(model => model.Job.Temperature)
             </dd>
-            <dt class="col-2">
+            <dt class="col-md-2">
                 @Html.DisplayNameFor(model => model.Job.Na)
             </dt>
-            <dd class="col-10">
+            <dd class="col-md-10">
                 @Html.DisplayFor(model => model.Job.Na)
             </dd>
-            <dt class="col-2">
+            <dt class="col-md-2">
                 @Html.DisplayNameFor(model => model.Job.Probe)
             </dt>
-            <dd class="col-10">
+            <dd class="col-md-10">
                 @Html.DisplayFor(model => model.Job.Probe)
             </dd>
-            <dt class="col-2">
+            <dt class="col-md-2">
                 @Html.DisplayNameFor(model => model.Job.CreatedAt)
             </dt>
-            <dd class="col-10">
+            <dd class="col-md-10">
                 @Html.DisplayFor(model => model.Job.CreatedAt)
             </dd>
         </dl>
@@ -185,33 +186,32 @@
                 <thead>
                 <tr>
                     <th>
-                        @Html.ActionLink((string)ViewBag.RankColumnTitle, "Details", new {sortOrder = ViewBag.RankSortParm, pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
+                        @Html.ActionLink((string) ViewBag.RankColumnTitle, "Details", new {sortOrder = ViewBag.RankSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue})
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.Designs.Data.First().Sequence)
                     </th>
                     <th>
-                        @Html.ActionLink((string)ViewBag.DesTempColumnTitle, "Details", new {sortOrder = ViewBag.DesTempSortParm, pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
+                        @Html.ActionLink((string) ViewBag.DesTempColumnTitle, "Details", new {sortOrder = ViewBag.DesTempSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue})
                     </th>
                     <th>
-                        @Html.ActionLink((string)ViewBag.HiTempColumnTitle, "Details", new {sortOrder = ViewBag.HiTempSortParm, pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
+                        @Html.ActionLink((string) ViewBag.HiTempColumnTitle, "Details", new {sortOrder = ViewBag.HiTempSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue})
                     </th>
                     <th>
-                        @Html.ActionLink((string)ViewBag.SpecColumnTitle, "Details", new {sortOrder = ViewBag.SpecSortParm, pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
+                        @Html.ActionLink((string) ViewBag.SpecColumnTitle, "Details", new {sortOrder = ViewBag.SpecSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue})
                     </th>
                     <th>
-                        @Html.ActionLink((string)ViewBag.AccessColumnTitle, "Details", new {sortOrder = ViewBag.AccessSortParm, pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
+                        @Html.ActionLink((string) ViewBag.AccessColumnTitle, "Details", new {sortOrder = ViewBag.AccessSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue})
                     </th>
                     <th>
-                        @Html.ActionLink((string)ViewBag.StructColumnTitle, "Details", new {sortOrder = ViewBag.StructSortParm, pageNumber = @Model.Designs.PageNumber, filterParam = @Model.FilterParam, filterCondition = @Model.FilterCondition, filterValue = @Model.FilterValue})
+                        @Html.ActionLink((string) ViewBag.StructColumnTitle, "Details", new {sortOrder = ViewBag.StructSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue})
                     </th>
-                    @* <th></th> *@
                 </tr>
                 </thead>
                 <tbody>
                 @foreach (var item in Model.Designs.Data)
                 {
-                    <tr class="clickable-row" data-href="@Url.Action("Details", "Designs", new { id = item.Id })">
+                    <tr class="clickable-row" data-href="@Url.Action("Details", "Designs", new {id = item.Id})">
                         <td>
                             @Html.DisplayFor(modelItem => item.Rank)
                         </td>
@@ -233,15 +233,12 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.StructureScore)
                         </td>
-                        @* <td> *@
-                        @*     <a asp-controller="Designs" asp-action="Details" asp-route-id="@item.Id">Details</a> *@
-                        @* </td> *@
                     </tr>
                 }
                 </tbody>
             </table>
         </div>
-    
+
         <cs-pager cs-paging-pagesize="@Model.Designs.PageSize"
                   cs-paging-pagenumber="@Model.Designs.PageNumber"
                   cs-paging-totalitems="@Model.Designs.TotalItems"
@@ -262,12 +259,17 @@
     </div>
 </div>
 
-<div>
+<div class="clearfix">
+    <a asp-action="Index" class="btn btn-primary float-sm-left"><i class="fas fa-arrow-left ml-1"></i> Back to jobs</a>
+
     @if (Model.Job.JobState == JobState.New || Model.Job.JobState == JobState.Started)
     {
-        <a asp-action="Delete" asp-route-id="@Model.Job.Id">Cancel</a> @:|
+        <a asp-action="Delete" asp-route-id="@Model.Job.Id" class="btn btn-danger float-sm-right">Cancel <i class="fas fa-trash ml-1"></i></a>
     }
-    <a asp-action="Index">Back to List</a>
+    else
+    {
+        <a asp-action="Delete" asp-route-id="@Model.Job.Id" class="btn btn-danger float-sm-right">@(shouldCancel ? "Cancel" : "Delete") <i class="fas fa-trash ml-1"></i></a>
+    }
 </div>
 
 @section scripts

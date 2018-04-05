@@ -12,11 +12,19 @@
 
 <div id="app">
     <form method="post">
-        
+
+        @if (Model.ExceededMaxRequests)
+        {
+            <div class="alert alert-danger box-shadow" role="alert">
+                <h5 class="alert-heading"><i class="fas fa-exclamation-triangle mr-1"></i> Request limit exceeded</h5>
+                <p class="mb-0 mt-3">You've exceeded your request limit (@Model.MaxRequests). Please delete some requests and try again. This request will not be saved.</p>
+            </div>
+        }
+
         @if (!ViewData.ModelState.IsValid)
         {
             <div class="alert alert-danger box-shadow" role="alert">
-                <h5 class="alert-heading"><i class="fas fa-exclamation-triangle mr-1"></i> Some errors were encountered!</h5>
+                <h5 class="alert-heading"><i class="fas fa-exclamation-triangle mr-1"></i> Some errors were encountered</h5>
                 @foreach (var modelState in ViewData.ModelState.Values)
                 {
                     foreach (var error in modelState.Errors)
