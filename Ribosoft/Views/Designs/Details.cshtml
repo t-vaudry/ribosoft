@@ -10,52 +10,52 @@
     <div class="card-body">
         <h5 class="card-title border-bottom border-gray pb-2">Design</h5>
         <dl class="row mb-0">
-            <dt class="col-3">
+            <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.Sequence)
             </dt>
-            <dd class="col-9">
+            <dd class="col-md-9">
                 <code>@Html.DisplayFor(model => model.Sequence)</code>
             </dd>
-            <dt class="col-3">
+            <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.Rank)
             </dt>
-            <dd class="col-9">
+            <dd class="col-md-9">
                 @Html.DisplayFor(model => model.Rank)
             </dd>
-            <dt class="col-3">
+            <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.DesiredTemperatureScore)
             </dt>
-            <dd class="col-9">
+            <dd class="col-md-9">
                 @Html.DisplayFor(model => model.DesiredTemperatureScore)
             </dd>
-            <dt class="col-3">
+            <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.HighestTemperatureScore)
             </dt>
-            <dd class="col-9">
+            <dd class="col-md-9">
                 @Html.DisplayFor(model => model.HighestTemperatureScore)
             </dd>
-            <dt class="col-3">
+            <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.SpecificityScore)
             </dt>
-            <dd class="col-9">
+            <dd class="col-md-9">
                 @Html.DisplayFor(model => model.SpecificityScore)
             </dd>
-            <dt class="col-3">
+            <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.AccessibilityScore)
             </dt>
-            <dd class="col-9">
+            <dd class="col-md-9">
                 @Html.DisplayFor(model => model.AccessibilityScore)
             </dd>
-            <dt class="col-3">
+            <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.StructureScore)
             </dt>
-            <dd class="col-9">
+            <dd class="col-md-9">
                 @Html.DisplayFor(model => model.StructureScore)
             </dd>
-            <dt class="col-3">
+            <dt class="col-md-3">
                 Download
             </dt>
-            <dd class="col-9">
+            <dd class="col-md-9">
                 @Html.ActionLink("FASTA File", "DownloadFile", new {jobID = Model.JobId, rank = Model.Rank, desiredTemperatureScore = Model.DesiredTemperatureScore, highestTemperatureScore = Model.HighestTemperatureScore, specificityScore = Model.SpecificityScore, accessibilityScore = Model.AccessibilityScore, structureScore = Model.StructureScore, createdAt = Model.CreatedAt, updatedAt = Model.UpdatedAt, sequence = Model.Sequence}, new { @class = "btn btn-sm btn-primary"})
             </dd>
         </dl>
@@ -63,5 +63,5 @@
 </div>
 
 <div>
-    <a class="btn btn-primary" asp-controller="Jobs" asp-action="Details" asp-route-id="@Model.JobId">Back to Job</a>
+    <a class="btn btn-primary" asp-controller="Jobs" asp-action="Details" asp-route-id="@Model.JobId"><i class="fas fa-arrow-left mr-1"></i> Back to Job</a>
 </div>
