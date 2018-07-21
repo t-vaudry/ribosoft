@@ -6,10 +6,21 @@
 
 #include "functions.h"
 
+//! \namespace ribosoft
 RIBOSOFT_NAMESPACE_START
 
-#define EMPTY(str) if (strlen(str) == 0) return R_APPLICATION_ERROR::R_EMPTY_PARAMETER;
+#define EMPTY(str) if (strlen(str) == 0) return R_APPLICATION_ERROR::R_EMPTY_PARAMETER; //!< Macro to determine if parameter is empty
 
+/*! \brief Sequence Validation
+ * Used to determine if sequence only contains base nucleotides (A,C,G,U)
+ *
+ * Understanding return values:
+ * - R_INVALID_NUCLEOTIDE | Invalid nucleotide found in sequence
+ *************************************************************************
+ *
+ * @param sequence Sequence to be validated
+ * @return Status Code
+ */
 R_STATUS validate_sequence(const char* sequence)
 {
     EMPTY(sequence);
@@ -22,6 +33,17 @@ R_STATUS validate_sequence(const char* sequence)
     return R_SUCCESS::R_STATUS_OK;
 }
 
+/*! \brief
+ * Used to determine if structure has proper bonds
+ *
+ * Understanding return values:
+ * - R_INVALID_STRUCT_ELEMENT | Element in structure is invalid
+ * - R_BAD_PAIR_MATCH | Bonds are not perfect in structure
+ ***************************************************************
+ *
+ * @param structure Structure to be validated
+ * @return Status Code
+ */
 R_STATUS validate_structure(const char* structure)
 {
     EMPTY(structure);

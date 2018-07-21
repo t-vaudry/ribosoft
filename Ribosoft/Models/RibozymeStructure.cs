@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ribosoft.Models
 {
-    [ValidateRibozymeStructure]
+    [ValidationAttributes.ValidateRibozymeStructure]
     public class RibozymeStructure : BaseEntity
     {
         public int Id { get; set; }
@@ -15,24 +15,24 @@ namespace Ribosoft.Models
         public int Cutsite { get; set; }
         [Required]
         [DataType(DataType.Text)]
-        [RepeatNotations(15)]
-        [Nucleotide]
+        [ValidationAttributes.RepeatNotations(15)]
+        [ValidationAttributes.Nucleotide]
         public string Sequence { get; set; }
         [Required]
         [RegularExpression(@"^[.()\[\]a-z0-9]+$",
         ErrorMessage = "Sequence structure must only contain ., (, ), [, ], letters, or numbers")]
-        [UniqueAlphaNumericStructure]
-        [ValidStructure]
+        [ValidationAttributes.UniqueAlphaNumericStructure]
+        [ValidationAttributes.ValidStructure]
         public string Structure { get; set; }
         [Required]
         [Display(Name = "Substrate Template")]
-        [Nucleotide]
+        [ValidationAttributes.Nucleotide]
         public string SubstrateTemplate { get; set; }
         [Required]
         [Display(Name = "Substrate Structure")]
         [RegularExpression(@"^[\.a-z0-9]+$",
         ErrorMessage = "Subtrate structure must only contain ., letters, or numbers")]
-        [UniqueAlphaNumericStructure]
+        [ValidationAttributes.UniqueAlphaNumericStructure]
         public string SubstrateStructure { get; set; }
         [Required]
         [Display(Name = "Post Process")]
