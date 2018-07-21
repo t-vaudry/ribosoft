@@ -4,6 +4,7 @@ using System.Globalization;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using Ribosoft.Models;
+using Ribosoft.Models.RibozymeViewModel;
 
 namespace Ribosoft.ValidationAttributes
 {
@@ -19,36 +20,79 @@ namespace Ribosoft.ValidationAttributes
 
         public override bool IsValid(object value)
         {
-            RibozymeStructure model = value as RibozymeStructure;
             // Reset boolean and error message for second pass of validation
             _isValid = true;
 
+        if (value is RibozymeStructure ribozymeStructure)
+        {
+            _isValid = IsValidRibozymeStructure(ribozymeStructure);
+        }
+
+        if (value is RibozymeCreateViewModel ribozymeCreateViewModel)
+        {
+            _isValid = IsValidRibozymeCreateViewModel(ribozymeCreateViewModel);
+        }
+
+        return _isValid;
+    }
+
+    private bool IsValidRibozymeStructure(RibozymeStructure model)
+    {
             // Validate Cutsite is within Substrate Template
             if (model.Cutsite > model.SubstrateTemplate.Length)
             {
-                _isValid = false;
+            return false;
             }
 
             // Validate Sequence length matches Structure length
             if (model.Sequence.Length != model.Structure.Length)
             {
-                _isValid = false;
+            return false;
             }
 
             // Validate Substrate Template length matches Substrate Structure length
             if (model.SubstrateTemplate.Length != model.SubstrateStructure.Length)
             {
-                _isValid = false;
+            return false;
             }
 
             // Validate Structure and Substrate Structure alphanums are equivalent
             if (!matchingAlphaNumerics(model.Structure, model.SubstrateStructure))
             {
-                _isValid = false;
+            return false;
             }
 
-            return _isValid;
+        return true;
         }
+
+    private bool IsValidRibozymeCreateViewModel(RibozymeCreateViewModel model)
+    {
+        // Validate Cutsite is within Substrate Template
+        if (model.Cutsite > model.SubstrateTemplate.Length)
+        {
+            return false;
+        }
+
+        // Validate Sequence length matches Structure length
+        if (model.Sequence.Length != model.Structure.Length)
+        {
+            return false;
+        }
+
+        // Validate Substrate Template length matches Substrate Structure length
+        if (model.SubstrateTemplate.Length != model.SubstrateStructure.Length)
+        {
+            return false;
+        }
+
+        // Validate Structure and Substrate Structure alphanums are equivalent
+        if (!matchingAlphaNumerics(model.Structure, model.SubstrateStructure))
+        {
+            return false;
+        }
+
+        return true;
+    }
 
         public override string FormatErrorMessage(string name)
         {

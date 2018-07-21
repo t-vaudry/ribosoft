@@ -6,6 +6,7 @@ using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Ribosoft.Models;
 using Ribosoft.GenbankRequests;
@@ -31,15 +32,22 @@ namespace Ribosoft.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var user = await GetUser();
+
             ViewData["Ribozymes"] = new SelectList(_context.Ribozymes, "Id", "Name");
             ViewData["Assemblies"] = _context.Assemblies
                 .Where(a => a.IsEnabled)
                 .OrderBy(a => a.OrganismName)
-                .Select(a => new SelectListItem{ Value = a.TaxonomyId.ToString(), Text = string.Format("{0} (taxon {1})", a.OrganismName, a.TaxonomyId) });
-            
-            return View(new RequestViewModel());
+                .Select(a => new SelectListItem {Value = a.TaxonomyId.ToString(), Text = string.Format("{0} (taxon {1})", a.OrganismName, a.TaxonomyId)});
+
+            var viewModel = new RequestViewModel
+            {
+                ExceededMaxRequests = await ExceededMaxRequests(user)
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -47,11 +55,14 @@ namespace Ribosoft.Controllers
         public async Task<IActionResult> Index(RequestViewModel model)
         {
             var user = await GetUser();
-            Job job = new Job();
-            
-            if (ModelState.IsValid) {
+
+            model.ExceededMaxRequests = await ExceededMaxRequests(user);
+
+            if (ModelState.IsValid && !model.ExceededMaxRequests)
+            {
+                var job = new Job();
                 _context.Add(job);
-                
+
                 job.RibozymeId = model.RibozymeStructure;
                 job.RNAInput = model.InputSequence;
                 job.Temperature = model.Temperature;
@@ -75,21 +86,21 @@ namespace Ribosoft.Controllers
                 {
                     job.TargetEnvironment = TargetEnvironment.InVitro;
                 }
-                                
+
                 await _context.SaveChangesAsync();
-                
+
                 job.HangfireJobId = BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase1(job.Id, JobCancellationToken.Null));
 
-                await _context.SaveChangesAsync();                
+                await _context.SaveChangesAsync();
 
-                return RedirectToAction("Details", "Jobs", new { id = job.Id });
+                return RedirectToAction("Details", "Jobs", new {id = job.Id});
             }
-            
+
             ViewData["Ribozymes"] = new SelectList(_context.Ribozymes, "Id", "Name");
             ViewData["Assemblies"] = _context.Assemblies
                 .Where(a => a.IsEnabled)
                 .OrderBy(a => a.OrganismName)
-                .Select(a => new SelectListItem{ Value = a.TaxonomyId.ToString(), Text = string.Format("{0} (taxon {1})", a.OrganismName, a.TaxonomyId)});
+                .Select(a => new SelectListItem {Value = a.TaxonomyId.ToString(), Text = string.Format("{0} (taxon {1})", a.OrganismName, a.TaxonomyId)});
 
             return View(model);
         }
@@ -112,7 +123,7 @@ namespace Ribosoft.Controllers
             {
                 response["error"] = "An unknown error occurred. Please try again later.";
             }
-            
+
             return Json(response);
         }
 
@@ -125,6 +136,11 @@ namespace Ribosoft.Controllers
             }
 
             return user;
+        }
+
+        private async Task<bool> ExceededMaxRequests(ApplicationUser user)
+        {
+            return await _context.Jobs.CountAsync(j => j.OwnerId == user.Id) >= 20;
         }
     }
 }

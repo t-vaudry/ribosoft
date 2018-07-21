@@ -9,27 +9,27 @@
 <div class="card my-3 box-shadow">
     <div class="card-body">
         <div class="clearfix border-bottom border-gray pb-2 mb-3">
-            <h5 class="float-md-left card-title ">Basic information</h5>
-            <div class="float-md-right"><a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Rename <i class="fas fa-edit ml-1"></i></a></div>
+            <h5 class="float-sm-left card-title">Basic information</h5>
+            <div class="float-sm-right"><a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Rename <i class="fas fa-edit ml-1"></i></a></div>
         </div>
         
         <dl class="row mb-0">
-            <dt class="col-2">
+            <dt class="col-md-2">
                 @Html.DisplayNameFor(model => model.Name)
             </dt>
-            <dd class="col-10">
+            <dd class="col-md-10">
                 @Html.DisplayFor(model => model.Name)
             </dd>
-            <dt class="col-2">
+            <dt class="col-md-2">
                 @Html.DisplayNameFor(model => model.CreatedAt)
             </dt>
-            <dd class="col-10">
+            <dd class="col-md-10">
                 @Html.DisplayFor(model => model.CreatedAt)
             </dd>
-            <dt class="col-2">
+            <dt class="col-md-2">
                 @Html.DisplayNameFor(model => model.UpdatedAt)
             </dt>
-            <dd class="col-10">
+            <dd class="col-md-10">
                 @Html.DisplayFor(model => model.UpdatedAt)
             </dd>
         </dl>
@@ -38,9 +38,11 @@
 
 <div class="card my-3 box-shadow">
     <div class="card-body">
-        <h5 class="float-md-left card-title">Structures</h5>
-        <div class="float-md-right"><a class="btn btn-sm btn-primary" asp-controller="RibozymeStructures" asp-action="Create" asp-route-ribozymeId="@Model.Id">Create <i class="fas fa-plus-circle ml-1"></i></a></div>
-        
+        <div class="clearfix pb-2">
+            <h5 class="float-sm-left card-title">Structures</h5>
+            <div class="float-sm-right"><a class="btn btn-sm btn-primary" asp-controller="RibozymeStructures" asp-action="Create" asp-route-ribozymeId="@Model.Id">Create <i class="fas fa-plus-circle ml-1"></i></a></div>
+        </div>
+
         <div class="table-responsive mb-2">
             <table class="table mb-0">
                 <thead>
