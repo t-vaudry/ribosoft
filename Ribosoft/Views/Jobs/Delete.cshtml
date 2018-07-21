@@ -14,64 +14,64 @@
         <h5 class="card-title border-bottom border-gray pb-2 mb-3">Job details</h5>
         
         <dl class="row mb-0">
-            <dt class="col-2">
+            <dt class="col-md-2">
                 @Html.DisplayNameFor(model => model.StatusMessage)
             </dt>
-            <dd class="col-10">
+            <dd class="col-md-10">
                 @Html.DisplayFor(model => model.StatusMessage)
             </dd>
-            <dt class="col-2">
+            <dt class="col-md-2">
                 @Html.DisplayNameFor(model => model.Ribozyme)
             </dt>
-            <dd class="col-10">
+            <dd class="col-md-10">
                 @Html.DisplayFor(model => model.Ribozyme.Name)
             </dd>
-            <dt class="col-2">
+            <dt class="col-md-2">
                 @Html.DisplayNameFor(model => model.RNAInput)
             </dt>
-            <dd class="col-10">
+            <dd class="col-md-10">
                 <textarea class="form-control" rows="4" cols="80" readonly="readonly">@Model.RNAInput</textarea>
             </dd>
-            <dt class="col-4">
+            <dt class="col-md-4">
                 @Html.DisplayNameFor(model => model.OpenReadingFrameStart)
             </dt>
-            <dd class="col-2">
+            <dd class="col-md-2">
                 @Html.DisplayFor(model => model.OpenReadingFrameStart)
             </dd>
-            <dt class="col-4">
+            <dt class="col-md-4">
                 @Html.DisplayNameFor(model => model.OpenReadingFrameEnd)
             </dt>
-            <dd class="col-2">
+            <dd class="col-md-2">
                 @Html.DisplayFor(model => model.OpenReadingFrameEnd)
             </dd>
-            <dt class="col-3">
+            <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.FivePrime)
             </dt>
-            <dd class="col-1">
+            <dd class="col-md-1">
                 @Html.DisplayFor(model => model.ThreePrime)
             </dd>
-            <dt class="col-3">
+            <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.OpenReadingFrame)
             </dt>
-            <dd class="col-1">
+            <dd class="col-md-1">
                 @Html.DisplayFor(model => model.OpenReadingFrame)
             </dd>
-            <dt class="col-3">
+            <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.ThreePrime)
             </dt>
-            <dd class="col-1">
+            <dd class="col-md-1">
                 @Html.DisplayFor(model => model.ThreePrime)
             </dd>
-            <dt class="col-2">
+            <dt class="col-md-2">
                 @Html.DisplayNameFor(model => model.TargetEnvironment)
             </dt>
-            <dd class="col-10">
+            <dd class="col-md-10">
                 @Html.DisplayFor(model => model.TargetEnvironment)
             </dd>
-            <dt class="col-2">
+            <dt class="col-md-2">
                 @Html.DisplayNameFor(model => model.CreatedAt)
             </dt>
-            <dd class="col-10">
+            <dd class="col-md-10">
                 @Html.DisplayFor(model => model.CreatedAt)
             </dd>
         </dl>
@@ -81,7 +81,7 @@
 <div class="clearfix">
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <a asp-action="Index" class="btn btn-primary float-md-left"><i class="fas fa-arrow-left mr-1"></i> Back to jobs</a>
-        <input type="submit" value="@(shouldCancel ? "Cancel" : "Delete") job" class="btn btn-danger float-md-right" />
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-primary float-sm-left"><i class="fas fa-arrow-left mr-1"></i> Back to job</a>
+        <input type="submit" value="@(shouldCancel ? "Cancel" : "Delete") job" class="btn btn-danger float-sm-right" />
     </form>
 </div>

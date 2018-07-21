@@ -65,14 +65,16 @@ namespace Ribosoft.Models
         [Display(Name = "Probe (nM)")]
         public float Probe { get; set; }
 
-        // [Display(Name = "Cut Sites")]
-        // public string[] CutSites { get; set; }
+        public int MaxRequests { get; set; }
+        public bool ExceededMaxRequests { get; set; }
 
         public RequestViewModel()
         {
             Temperature = 0.0f;
             Na = 1.0f;
             Probe = 0.05f;
+            MaxRequests = 20;
+            ExceededMaxRequests = false;
 
             TargetRegions = new[]
             {
