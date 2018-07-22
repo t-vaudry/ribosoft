@@ -3,7 +3,6 @@ set(SOURCE_FILES
     dll.h
     functions.h
     error.h
-    main.cpp
     anneal.cpp
     validation.cpp
     fold.cpp

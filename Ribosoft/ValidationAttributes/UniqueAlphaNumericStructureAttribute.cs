@@ -4,48 +4,51 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
-public class UniqueAlphaNumericStructureAttribute : ValidationAttribute
+namespace Ribosoft.ValidationAttributes
 {
-    private bool _isValid;
-    private string _errorMessage;
-
-    public UniqueAlphaNumericStructureAttribute()
+    public class UniqueAlphaNumericStructureAttribute : ValidationAttribute
     {
-        _isValid = true;
-        _errorMessage = "Alphanumerics within the structure must only occur once";
-    }
+        private bool _isValid;
+        private string _errorMessage;
 
-    public override bool IsValid(object value)
-    {
-        _isValid = true;
-        string structure = value.ToString();
-        var validInputs = new List<char>(new char[] {'.', '(', ')', '[', ']'});
-        var occured = new List<char>();
-
-        foreach (char c in structure)
+        public UniqueAlphaNumericStructureAttribute()
         {
-            if (Char.IsLower(c) || Char.IsDigit(c))
+            _isValid = true;
+            _errorMessage = "Alphanumerics within the structure must only occur once";
+        }
+
+        public override bool IsValid(object value)
+        {
+            _isValid = true;
+            string structure = value.ToString();
+            var validInputs = new List<char>(new char[] {'.', '(', ')', '[', ']'});
+            var occured = new List<char>();
+
+            foreach (char c in structure)
             {
-                if (occured.Contains(c))
+                if (Char.IsLower(c) || Char.IsDigit(c))
+                {
+                    if (occured.Contains(c))
+                    {
+                        _isValid = false;
+                    }
+                    else
+                    {
+                        occured.Add(c);
+                    }
+                }
+                else if (!validInputs.Contains(c))
                 {
                     _isValid = false;
                 }
-                else
-                {
-                    occured.Add(c);
-                }
             }
-            else if (!validInputs.Contains(c))
-            {
-                _isValid = false;
-            }
+
+            return _isValid;
         }
 
-        return _isValid;
-    }
-
-     public override string FormatErrorMessage(string name)
-    {
-        return String.Format(CultureInfo.CurrentCulture, _errorMessage, name);
+         public override string FormatErrorMessage(string name)
+        {
+            return String.Format(CultureInfo.CurrentCulture, _errorMessage, name);
+        }
     }
 }

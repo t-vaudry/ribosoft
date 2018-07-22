@@ -2,24 +2,27 @@ using System;
 using System.Globalization;
 using System.ComponentModel.DataAnnotations;
 
-public class OpenReadingFrameAttribute : ValidationAttribute
+namespace Ribosoft.ValidationAttributes
 {
-    private string _errorMessage;
-
-    public OpenReadingFrameAttribute()
+    public class OpenReadingFrameAttribute : ValidationAttribute
     {
-        _errorMessage = "Index must be a positive integer";
-    }
+        private string _errorMessage;
 
-    public override bool IsValid(object value)
-    {
-        int start = value as int? ?? -1;
+        public OpenReadingFrameAttribute()
+        {
+            _errorMessage = "Index must be a positive integer";
+        }
 
-        return start >= 0;
-    }
+        public override bool IsValid(object value)
+        {
+            int start = value as int? ?? -1;
 
-    public override string FormatErrorMessage(string name)
-    {
-        return String.Format(CultureInfo.CurrentCulture, _errorMessage, name);
+            return start >= 0;
+        }
+
+        public override string FormatErrorMessage(string name)
+        {
+            return String.Format(CultureInfo.CurrentCulture, _errorMessage, name);
+        }
     }
 }
