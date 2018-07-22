@@ -70,7 +70,7 @@ namespace Ribosoft.Models
 
         public RequestViewModel()
         {
-            Temperature = 0.0f;
+            Temperature = 37.0f;
             Na = 1.0f;
             Probe = 0.05f;
             MaxRequests = 20;
