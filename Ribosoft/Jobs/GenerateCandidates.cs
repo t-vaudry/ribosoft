@@ -219,11 +219,16 @@ namespace Ribosoft.Jobs
 
                             string ideal = idealStructurePattern.Replace(candidate.Structure, ".");
 
+                            var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
+                                candidate.SubstrateStructure, job.Na.GetValueOrDefault(), job.Probe.GetValueOrDefault());
+                            if (temperatureScore < 0.0f || temperatureScore > 100.0f)
+                            {
+                                continue;
+                            }
+
                             var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
                                 ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset);
                             var structureScore = _ribosoftAlgo.Structure(candidate, ideal);
-                            var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
-                                candidate.SubstrateStructure, job.Na.GetValueOrDefault(), job.Probe.GetValueOrDefault());
 
                             _db.Designs.Add(new Design
                             {
