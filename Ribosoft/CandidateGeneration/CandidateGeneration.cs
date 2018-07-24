@@ -55,6 +55,20 @@ namespace Ribosoft.CandidateGeneration
             RepeatRegions = new List<Tuple<int, int>>();
         }
 
+        public void Clear()
+        {
+            NeighboursIndices.Clear();
+            Sequences.Clear();
+            SubstrateInfo.Clear();
+            RibozymeSubstrateIndexPairs.Clear();
+            NodesAtDepthSequence.Clear();
+            NodesAtDepthCutSite.Clear();
+            OpenBondIndices.Clear();
+            OpenPseudoKnotIndices.Clear();
+            RepeatStructureSymbols.Clear();
+            RepeatRegions.Clear();
+        }
+
         public IEnumerable<Candidate> GenerateCandidates(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
         {
             //*********************
