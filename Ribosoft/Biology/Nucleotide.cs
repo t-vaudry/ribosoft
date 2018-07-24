@@ -126,5 +126,23 @@ namespace Ribosoft.Biology
                     throw new RibosoftException(R_STATUS.R_INVALID_NUCLEOTIDE, String.Format("Cannot get complement of invalid symbol {0}", Symbol));
             }
         }
+
+        // Allows GU Pairing but ONLY defined on the ribozyme... The software will not force a GU pair, that is up to the user
+        public char[] GetSpecialComplements()
+        {
+            switch (Symbol)
+            {
+                case 'A':
+                    return new char[] { 'U' };
+                case 'U':
+                    return new char[] { 'A', 'G' };
+                case 'G':
+                    return new char[] { 'C', 'U' };
+                case 'C':
+                    return new char[] { 'G' };
+                default:
+                    throw new RibosoftException(R_STATUS.R_INVALID_NUCLEOTIDE, String.Format("Cannot get complement of invalid symbol {0}", Symbol));
+            }
+        }
     }
 }
