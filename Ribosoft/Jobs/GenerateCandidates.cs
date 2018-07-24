@@ -337,8 +337,13 @@ namespace Ribosoft.Jobs
                     {
                         d.SpecificityScore = substrateSpecificityScore;
                     }
-                }                
+                }
             }
+
+            // Specificity is minimized to 1
+            // Anything below 1 means there is absolutely no matching in the organism and will not bond
+            // Therefore, remove the design
+            _db.Designs.RemoveRange(_db.Designs.Where(d => d.SpecificityScore < 1.0f));
 
             await _db.SaveChangesAsync();
         }
