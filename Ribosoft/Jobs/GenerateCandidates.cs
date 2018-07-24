@@ -178,10 +178,10 @@ namespace Ribosoft.Jobs
                 return;
             }
 
+            CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
+
             foreach (var rnaInput in rnaInputs)
             {
-                CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
-
                 foreach (var ribozymeStructure in job.Ribozyme.RibozymeStructures)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -268,6 +268,8 @@ namespace Ribosoft.Jobs
                         _db.Jobs.Attach(job);
                         await _db.SaveChangesAsync();
                     }
+
+                    candidateGenerator.Clear();
                 }
             }
         }
