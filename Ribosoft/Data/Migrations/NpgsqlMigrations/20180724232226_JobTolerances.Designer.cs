@@ -12,9 +12,10 @@ using System;
 namespace Ribosoft.Data.Migrations.NpgsqlMigrations
 {
     [DbContext(typeof(NpgsqlDbContext))]
-    partial class NpgsqlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180724232226_JobTolerances")]
+    partial class JobTolerances
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
