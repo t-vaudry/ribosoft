@@ -272,6 +272,22 @@ namespace Ribosoft.Jobs
                     candidateGenerator.Clear();
                 }
             }
+
+            _db.ChangeTracker.AutoDetectChangesEnabled = false;
+            var designs = _db.Designs.Where(j => j.JobId == job.Id).ToList();
+            float deltaDesiredTemperature = designs.Max(d => d.DesiredTemperatureScore.GetValueOrDefault()) - designs.Min(d => d.DesiredTemperatureScore.GetValueOrDefault());
+            float deltaHighestTemperature = designs.Max(d => d.HighestTemperatureScore.GetValueOrDefault()) - designs.Min(d => d.HighestTemperatureScore.GetValueOrDefault());
+            float deltaAccessibility = designs.Max(d => d.AccessibilityScore.GetValueOrDefault()) - designs.Min(d => d.AccessibilityScore.GetValueOrDefault());
+            float deltaStructure = designs.Max(d => d.StructureScore.GetValueOrDefault()) - designs.Min(d => d.StructureScore.GetValueOrDefault());
+
+            job.DesiredTempTolerance *= deltaDesiredTemperature;
+            job.HighestTempTolerance *= deltaHighestTemperature;
+            job.AccessibilityTolerance *= deltaAccessibility;
+            job.StructureTolerance *= deltaStructure;
+
+            _db.ChangeTracker.AutoDetectChangesEnabled = true;
+            _db.Jobs.Attach(job);
+            await _db.SaveChangesAsync();
         }
 
         private async Task MultiObjectiveOptimize(Job job, IJobCancellationToken cancellationToken)
@@ -339,6 +355,11 @@ namespace Ribosoft.Jobs
                     }
                 }                
             }
+
+            var completedDesigns = _db.Designs.Where(d => d.JobId == job.Id);
+            float deltaSpecificity = completedDesigns.Max(d => d.SpecificityScore.GetValueOrDefault()) - completedDesigns.Min(d => d.SpecificityScore.GetValueOrDefault());
+            job.SpecificityTolerance *= deltaSpecificity;
+            _db.Jobs.Attach(job);
 
             await _db.SaveChangesAsync();
         }
