@@ -356,6 +356,11 @@ namespace Ribosoft.Jobs
                 }                
             }
 
+            // Specificity is minimized to 1
+            // Anything below 1 means there is absolutely no matching in the organism and will not bond
+            // Therefore, remove the design
+            _db.Designs.RemoveRange(_db.Designs.Where(d => d.SpecificityScore < 1.0f));
+
             var completedDesigns = _db.Designs.Where(d => d.JobId == job.Id);
             float deltaSpecificity = completedDesigns.Max(d => d.SpecificityScore.GetValueOrDefault()) - completedDesigns.Min(d => d.SpecificityScore.GetValueOrDefault());
             job.SpecificityTolerance *= deltaSpecificity;
