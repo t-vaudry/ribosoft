@@ -65,6 +65,31 @@ namespace Ribosoft.Models
         [Display(Name = "Probe (nM)")]
         public float Probe { get; set; }
 
+        [Required]
+        [Range(0.0f, 1.0f)]
+        [Display(Name = "Desired Temperature Tolerance")]
+        public float DesiredTemperatureTolerance { get; set; }
+
+        [Required]
+        [Range(0.0f, 1.0f)]
+        [Display(Name = "Highest Temperature Tolerance")]
+        public float HighestTemperatureTolerance { get; set; }
+
+        [Required]
+        [Range(0.0f, 1.0f)]
+        [Display(Name = "Specificity Tolerance")]
+        public float SpecificityTolerance { get; set; }
+
+        [Required]
+        [Range(0.0f, 1.0f)]
+        [Display(Name = "Accessibility Tolerance")]
+        public float AccessibilityTolerance { get; set; }
+
+        [Required]
+        [Range(0.0f, 1.0f)]
+        [Display(Name = "Structure Tolerance")]
+        public float StructureTolerance { get; set; }
+
         public int MaxRequests { get; set; }
         public bool ExceededMaxRequests { get; set; }
 
@@ -75,6 +100,12 @@ namespace Ribosoft.Models
             Probe = 0.05f;
             MaxRequests = 20;
             ExceededMaxRequests = false;
+
+            DesiredTemperatureTolerance = 0.05f;
+            HighestTemperatureTolerance = 0.05f;
+            SpecificityTolerance = 0.05f;
+            AccessibilityTolerance = 0.05f;
+            StructureTolerance = 0.05f;
 
             TargetRegions = new[]
             {

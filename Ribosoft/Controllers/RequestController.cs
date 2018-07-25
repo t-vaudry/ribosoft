@@ -68,6 +68,11 @@ namespace Ribosoft.Controllers
                 job.Temperature = model.Temperature;
                 job.Na = model.Na;
                 job.Probe = model.Probe;
+                job.DesiredTempTolerance = model.DesiredTemperatureTolerance;
+                job.HighestTempTolerance = model.HighestTemperatureTolerance;
+                job.SpecificityTolerance = model.SpecificityTolerance;
+                job.AccessibilityTolerance = model.AccessibilityTolerance;
+                job.StructureTolerance = model.StructureTolerance;
                 job.FivePrime = model.TargetRegions.Any(tr => tr.Id == 1 && tr.Selected);
                 job.OpenReadingFrame = model.TargetRegions.Any(tr => tr.Id == 2 && tr.Selected);
                 job.ThreePrime = model.TargetRegions.Any(tr => tr.Id == 3 && tr.Selected);
