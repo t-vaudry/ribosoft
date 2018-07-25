@@ -102,6 +102,34 @@ html, body {
     overflow: hidden;
 }
 
+.showMore {
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.2;
+    color: inherit;
+    width: 100%;
+}
+
+.showMore + input {
+    display: none;
+}
+
+.showMore + input + * {
+    max-height: 0;
+    /*and eventually delay an overflow:auto; */
+    overflow: hidden;
+    transition: max-height 0.5s, overflow 0s;
+}
+
+.showMore + input:checked + * {
+    /* here comes the compromise, set a max-height that would for your usual contents*/
+    max-height: 30em;
+    overflow: hidden;
+    transition: max-height 0.5s, overflow 0.5s 0.5s;
+}
+
 .helix {
     position: fixed;
     height: 382px;
@@ -118,5 +146,5 @@ html, body {
 }
 
 tr.clickable-row {
-    cursor: pointer; 
+    cursor: pointer;
 }

@@ -163,6 +163,39 @@
             </div>
         </div>
 
+        <!-- Advanced Settings -->
+        <div class="my-3 p-3 bg-white rounded box-shadow">
+            <label class="showMore border-bottom border-gray pb-2" for="advancedSettings">Advanced settings</label>
+            <input id="advancedSettings" type="checkbox">
+            <div>
+                <div class="form-group">
+                    <label asp-for="DesiredTemperatureTolerance"></label>
+                    <input asp-for="DesiredTemperatureTolerance" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("DesiredTemperatureTolerance")">
+                    <span asp-validation-for="DesiredTemperatureTolerance" class="invalid-feedback"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="HighestTemperatureTolerance"></label>
+                    <input asp-for="HighestTemperatureTolerance" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("HighestTemperatureTolerance")">
+                    <span asp-validation-for="HighestTemperatureTolerance" class="invalid-feedback"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SpecificityTolerance"></label>
+                    <input asp-for="SpecificityTolerance" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("SpecificityTolerance")">
+                    <span asp-validation-for="SpecificityTolerance" class="invalid-feedback"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AccessibilityTolerance"></label>
+                    <input asp-for="AccessibilityTolerance" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("AccessibilityTolerance")">
+                    <span asp-validation-for="AccessibilityTolerance" class="invalid-feedback"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="StructureTolerance"></label>
+                    <input asp-for="StructureTolerance" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("StructureTolerance")">
+                    <span asp-validation-for="StructureTolerance" class="invalid-feedback"></span>
+                </div>
+            </div>
+        </div>
+
         <!-- Potential Cut Sites -->
         @* <div class="panel panel-default"> *@
         @*     <div class="panel-heading" v-on:click="expand('cutSiteTitle', 'cutSiteBody')"> *@

@@ -17,7 +17,14 @@ namespace Ribosoft.Tests
                 HighestTemperatureScore = 1.0f,
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
-                StructureScore = 1.0f
+                StructureScore = 1.0f,
+                Job = new Job {
+                    DesiredTempTolerance = 0.05f,
+                    HighestTempTolerance = 0.05f,
+                    SpecificityTolerance = 0.05f,
+                    AccessibilityTolerance = 0.05f,
+                    StructureTolerance = 0.05f
+                }
             };
 
             Design two = new Design
@@ -26,7 +33,15 @@ namespace Ribosoft.Tests
                 HighestTemperatureScore = 1.0f,
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
-                StructureScore = 1.0f
+                StructureScore = 1.0f,
+                Job = new Job
+                {
+                    DesiredTempTolerance = 0.05f,
+                    HighestTempTolerance = 0.05f,
+                    SpecificityTolerance = 0.05f,
+                    AccessibilityTolerance = 0.05f,
+                    StructureTolerance = 0.05f
+                }
             };
 
             List<Design> designs = new List<Design>
@@ -52,7 +67,15 @@ namespace Ribosoft.Tests
                 HighestTemperatureScore = 1.0f,
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
-                StructureScore = 1.0f
+                StructureScore = 1.0f,
+                Job = new Job
+                {
+                    DesiredTempTolerance = 0.05f,
+                    HighestTempTolerance = 0.05f,
+                    SpecificityTolerance = 0.05f,
+                    AccessibilityTolerance = 0.05f,
+                    StructureTolerance = 0.05f
+                }
             };
 
             Design two = new Design
@@ -61,7 +84,15 @@ namespace Ribosoft.Tests
                 HighestTemperatureScore = 1.05f,
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
-                StructureScore = 1.0f
+                StructureScore = 1.0f,
+                Job = new Job
+                {
+                    DesiredTempTolerance = 0.05f,
+                    HighestTempTolerance = 0.05f,
+                    SpecificityTolerance = 0.05f,
+                    AccessibilityTolerance = 0.05f,
+                    StructureTolerance = 0.05f
+                }
             };
 
             List<Design> designs = new List<Design>
@@ -87,7 +118,15 @@ namespace Ribosoft.Tests
                 HighestTemperatureScore = 1.0f,
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
-                StructureScore = 1.0f
+                StructureScore = 1.0f,
+                Job = new Job
+                {
+                    DesiredTempTolerance = 0.05f,
+                    HighestTempTolerance = 0.05f,
+                    SpecificityTolerance = 0.05f,
+                    AccessibilityTolerance = 0.05f,
+                    StructureTolerance = 0.05f
+                }
             };
 
             Design two = new Design
@@ -96,7 +135,15 @@ namespace Ribosoft.Tests
                 HighestTemperatureScore = 0.0f,
                 DesiredTemperatureScore = 2.0f,
                 SpecificityScore = 2.0f,
-                StructureScore = 2.0f
+                StructureScore = 2.0f,
+                Job = new Job
+                {
+                    DesiredTempTolerance = 0.05f,
+                    HighestTempTolerance = 0.05f,
+                    SpecificityTolerance = 0.05f,
+                    AccessibilityTolerance = 0.05f,
+                    StructureTolerance = 0.05f
+                }
             };
 
             List<Design> designs = new List<Design>
@@ -122,7 +169,15 @@ namespace Ribosoft.Tests
                 HighestTemperatureScore = 1.0f,
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
-                StructureScore = 1.0f
+                StructureScore = 1.0f,
+                Job = new Job
+                {
+                    DesiredTempTolerance = 0.05f,
+                    HighestTempTolerance = 0.05f,
+                    SpecificityTolerance = 0.05f,
+                    AccessibilityTolerance = 0.05f,
+                    StructureTolerance = 0.05f
+                }
             };
 
             Design two = new Design
@@ -131,13 +186,29 @@ namespace Ribosoft.Tests
                 HighestTemperatureScore = 1.0f,
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
-                StructureScore = 1.0f
+                StructureScore = 1.0f,
+                Job = new Job
+                {
+                    DesiredTempTolerance = 0.05f,
+                    HighestTempTolerance = 0.05f,
+                    SpecificityTolerance = 0.05f,
+                    AccessibilityTolerance = 0.05f,
+                    StructureTolerance = 0.05f
+                }
             };
 
             Design three = new Design
             {
                 AccessibilityScore = 1.0f,
                 HighestTemperatureScore = 1.0f,
+                Job = new Job
+                {
+                    DesiredTempTolerance = 0.05f,
+                    HighestTempTolerance = 0.05f,
+                    SpecificityTolerance = 0.05f,
+                    AccessibilityTolerance = 0.05f,
+                    StructureTolerance = 0.05f
+                }
             };
 
             List<Design> designs = new List<Design>

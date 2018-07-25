@@ -88,6 +88,17 @@ namespace Ribosoft.Models
         [Display(Name = "Specificity method")]
         public SpecificityMethod? SpecificityMethod { get; set; }
 
+        [Display(Name = "Desired Temperature Tolerance")]
+        public float? DesiredTempTolerance { get; set; }
+        [Display(Name = "Highest Temperature Tolerance")]
+        public float? HighestTempTolerance { get; set; }
+        [Display(Name = "Specificity Tolerance")]
+        public float? SpecificityTolerance { get; set; }
+        [Display(Name = "Accessibility Tolerance")]
+        public float? AccessibilityTolerance { get; set; }
+        [Display(Name = "Structure Tolerance")]
+        public float? StructureTolerance { get; set; }
+
         public virtual ApplicationUser Owner { get; set; }
         public virtual Ribozyme Ribozyme { get; set; }
         public virtual Assembly Assembly { get; set; }
