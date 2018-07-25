@@ -6,8 +6,6 @@ namespace Ribosoft.MultiObjectiveOptimization {
 
     public class MultiObjectiveOptimizer
     {
-        public const float Tolerance = 0.05f;
-
         public MultiObjectiveOptimizer()
         {
         }
@@ -88,7 +86,7 @@ namespace Ribosoft.MultiObjectiveOptimization {
 
                     if (((d.Type == OptimizeType.MIN) && (d.Value <= v.Value)) || (((d.Type == OptimizeType.MAX)) && (d.Value >= v.Value)))
                     {
-                        if (Math.Abs(d.Value - v.Value) > Tolerance)
+                        if (Math.Abs(d.Value - v.Value) > v.Tolerance)
                         {
                             strictlyDominated = true;
                         }
