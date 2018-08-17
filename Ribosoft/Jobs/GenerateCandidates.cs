@@ -275,6 +275,19 @@ namespace Ribosoft.Jobs
 
             _db.ChangeTracker.AutoDetectChangesEnabled = false;
             var designs = _db.Designs.Where(j => j.JobId == job.Id).ToList();
+
+            // Check that there are designs left
+            if (!designs.Any())
+            {
+                job.JobState = JobState.Errored;
+                job.StatusMessage = "No designs returned from Candidate Generation!";
+                _logger.LogError("No designs returned from Candidate Generation!");
+                _db.ChangeTracker.AutoDetectChangesEnabled = true;
+                _db.Jobs.Attach(job);
+                await _db.SaveChangesAsync();
+                return;
+            }
+
             float deltaDesiredTemperature = designs.Max(d => d.DesiredTemperatureScore.GetValueOrDefault()) - designs.Min(d => d.DesiredTemperatureScore.GetValueOrDefault());
             float deltaHighestTemperature = designs.Max(d => d.HighestTemperatureScore.GetValueOrDefault()) - designs.Min(d => d.HighestTemperatureScore.GetValueOrDefault());
             float deltaAccessibility = designs.Max(d => d.AccessibilityScore.GetValueOrDefault()) - designs.Min(d => d.AccessibilityScore.GetValueOrDefault());
@@ -353,7 +366,7 @@ namespace Ribosoft.Jobs
                     {
                         d.SpecificityScore = substrateSpecificityScore;
                     }
-                }                
+                }
             }
 
             // Specificity is minimized to 1
@@ -362,6 +375,18 @@ namespace Ribosoft.Jobs
             _db.Designs.RemoveRange(_db.Designs.Where(d => d.SpecificityScore < 1.0f));
 
             var completedDesigns = _db.Designs.Where(d => d.JobId == job.Id);
+
+            // Check that there are designs left
+            if (!completedDesigns.Any())
+            {
+                job.JobState = JobState.Errored;
+                job.StatusMessage = "No designs returned from Candidate Generation!";
+                _logger.LogError("No designs returned from Candidate Generation!");
+                _db.Jobs.Attach(job);
+                await _db.SaveChangesAsync();
+                return;
+            }
+
             float deltaSpecificity = completedDesigns.Max(d => d.SpecificityScore.GetValueOrDefault()) - completedDesigns.Min(d => d.SpecificityScore.GetValueOrDefault());
             job.SpecificityTolerance *= deltaSpecificity;
             _db.Jobs.Attach(job);
