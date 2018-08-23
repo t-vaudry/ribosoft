@@ -11,7 +11,6 @@ using Ribosoft.Models;
 
 namespace Ribosoft.Controllers
 {
-    [Authorize(Roles = "Administrator")]
     public class RibozymeStructuresController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -48,6 +47,7 @@ namespace Ribosoft.Controllers
         }
 
         // GET: RibozymeStructures/Create
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create(int? ribozymeId)
         {
             if (ribozymeId == null)
@@ -70,6 +70,7 @@ namespace Ribosoft.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create(int? ribozymeId, [Bind("Cutsite,Sequence,Structure,SubstrateTemplate,SubstrateStructure,PostProcess")] RibozymeStructure ribozymeStructure)
         {
             if (ribozymeId == null)
@@ -96,6 +97,7 @@ namespace Ribosoft.Controllers
         }
 
         // GET: RibozymeStructures/Edit/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -117,6 +119,7 @@ namespace Ribosoft.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,RibozymeId,Cutsite,Sequence,Structure,SubstrateTemplate,SubstrateStructure,PostProcess")] RibozymeStructure ribozymeStructure)
         {
             if (id != ribozymeStructure.Id)
@@ -149,6 +152,7 @@ namespace Ribosoft.Controllers
         }
 
         // GET: RibozymeStructures/Delete/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -170,6 +174,7 @@ namespace Ribosoft.Controllers
         // POST: RibozymeStructures/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var ribozymeStructure = await _context.RibozymeStructures.SingleOrDefaultAsync(m => m.Id == id);
