@@ -64,7 +64,7 @@ namespace Ribosoft.Controllers
                 _context.Add(job);
 
                 job.RibozymeId = model.RibozymeStructure;
-                job.RNAInput = model.InputSequence;
+                job.RNAInput = model.InputSequence.Replace('T','U');
                 job.Temperature = model.Temperature;
                 job.Na = model.Na;
                 job.Probe = model.Probe;
