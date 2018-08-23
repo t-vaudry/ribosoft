@@ -15,8 +15,8 @@ namespace Ribosoft.Models
 
         [Required]
         [StringLength(30000, MinimumLength = 1)]
-        [RegularExpression(@"^['A','C','G','U','R','Y','K','M','S','W','B','D','H','V','N']+$",
-        ErrorMessage = "Sequence must only contain the following characters: A, C, G, U, R, Y, K, M, S, W, B, D, H, V, N")]
+        [RegularExpression(@"^['A','C','G','T','U','R','Y','K','M','S','W','B','D','H','V','N']+$",
+        ErrorMessage = "Sequence must only contain the following characters: A, C, G, T, U, R, Y, K, M, S, W, B, D, H, V, N")]
         [DataType(DataType.Text)]
         [Display(Name = "Input sequence")]
         public string InputSequence { get; set; }
