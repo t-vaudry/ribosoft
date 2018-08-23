@@ -55,6 +55,7 @@
 
             <div class="form-group" id="inputSequenceFormGroup">
                 <label asp-for="InputSequence"></label>
+                <span data-toggle="tooltip" data-placement="right" title="@Localizer["InputSequenceTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
                 <textarea asp-for="InputSequence" class="form-control @ViewData.ModelState.InvalidFieldClass("InputSequence")" placeholder="CUUGAAGUGGUU..." :disabled="genbankLoading" rows="6" id="inputSequence"></textarea>
                 <span asp-validation-for="InputSequence" class="invalid-feedback"></span>
             </div>
