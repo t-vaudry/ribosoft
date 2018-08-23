@@ -12,6 +12,7 @@ namespace Ribosoft.Models
     {
         public int Id { get; set; }
         public int JobId { get; set; }
+        [Display(Name = "Ribozyme Sequence")]
         public string Sequence { get; set; }
         public int Rank { get; set; }
 
@@ -47,5 +48,15 @@ namespace Ribosoft.Models
             new OptimizeItem<float>(AccessibilityScore.GetValueOrDefault(), OptimizeType.MIN, Job.AccessibilityTolerance.GetValueOrDefault()),
             new OptimizeItem<float>(StructureScore.GetValueOrDefault(), OptimizeType.MIN, Job.StructureTolerance.GetValueOrDefault())
         };
+
+        [NotMapped]
+        [Display(Name = "Susbtrate Target Sequence")]
+        public string SubstrateTargetSequence
+        {
+            get
+            {
+                return Job.RNAInput.Substring(CutsiteIndex, SubstrateSequenceLength);
+            }
+        }
     }
 }
