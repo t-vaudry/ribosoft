@@ -12,7 +12,6 @@ using Ribosoft.Models.RibozymeViewModel;
 
 namespace Ribosoft.Controllers
 {
-    [Authorize(Roles = "Administrator")]
     public class RibozymesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -49,6 +48,7 @@ namespace Ribosoft.Controllers
         }
 
         // GET: Ribozymes/Create
+        [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
             return View();
@@ -59,6 +59,7 @@ namespace Ribosoft.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create(RibozymeCreateViewModel model)
         {
             if (ModelState.IsValid)
@@ -92,6 +93,7 @@ namespace Ribosoft.Controllers
         }
 
         // GET: Ribozymes/Edit/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -112,6 +114,7 @@ namespace Ribosoft.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Ribozyme ribozyme)
         {
             if (id != ribozyme.Id)
@@ -143,6 +146,7 @@ namespace Ribosoft.Controllers
         }
 
         // GET: Ribozymes/Delete/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -163,6 +167,7 @@ namespace Ribosoft.Controllers
         // POST: Ribozymes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var ribozyme = await _context.Ribozymes.SingleOrDefaultAsync(m => m.Id == id);
