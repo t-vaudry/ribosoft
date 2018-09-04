@@ -10,6 +10,7 @@ namespace Ribosoft.Models
     public class RequestViewModel
     {
         [Required]
+        [Range(0.0, double.MaxValue, ErrorMessage = "The Ribozyme structure field is required!")]
         [Display(Name = "Ribozyme structure")]
         public int RibozymeStructure { get; set; }
 
