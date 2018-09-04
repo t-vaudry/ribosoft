@@ -41,10 +41,14 @@
 
             <div class="form-group mb-0">
                 <label asp-for="RibozymeStructure"></label>
-                <select asp-for="RibozymeStructure"
-                        asp-items="ViewBag.Ribozymes"
-                        class="form-control">
-                </select>
+                <v-select label="ribozymeOptions" :options="options" id="ribozymes" :on-change="ribozymeId"></v-select>
+                <datalist id="ribozymeList">
+                    @foreach (var item in ViewBag.Ribozymes)
+                    {
+                        <option value="@item.Text" data-value="@item.Value"></option>
+                    }
+                </datalist>
+                <input asp-for="RibozymeStructure" type="hidden" value="-1">
                 <span asp-validation-for="RibozymeStructure" class="text-danger"></span>
             </div>
         </div>
