@@ -1,26 +1,35 @@
 import Vue from 'vue';
 import VueResource from 'vue-resource';
+import vSelect from 'vue-select'
 
 Vue.use(VueResource);
+Vue.component('v-select', vSelect)
 
 var app = new Vue({
     el: "#app",
-    data: function() {
-        return {
-            ribozymes: [
-                "Hammerhead",
-                "Pistol"
-            ],
-            targetEnvironments: [
-                "Mouse",
-                "Human"
-            ],
-            inVivoSelected: false,
-            cutSites: [
-            ],
-            genbankLoading: false,
-            genbankStatus: "",
+    data: function () {
+        var dataList = document.getElementById("ribozymeList");
+        var optionsList = dataList.children;
+
+        var optionsArr = new Array(optionsList.length);
+        for (var i = 0; i < optionsList.length; i++) {
+            optionsArr[i] = optionsList[i].value;
         }
+
+        dataList = document.getElementById("environmentList");
+        optionsList = dataList.children;
+
+        var vivoArr = new Array(optionsList.length);
+        for (var i = 0; i < optionsList.length; i++) {
+            vivoArr[i] = optionsList[i].value;
+        }
+
+        return { options: optionsArr,
+                 inVivoOptions: vivoArr,
+                 inVivoSelected: false,
+                 cutSites: [],
+                 genbankLoading: false,
+                 genbankStatus: "" };
     },
     methods: {
         expand: function(title, body) {
@@ -29,6 +38,36 @@ var app = new Vue({
 
             panelTitle.classList.toggle("collapsed");
             panelBody.classList.toggle("collapse");
+        },
+        ribozymeId: function (value) {
+            var dataList = document.getElementById("ribozymeList");
+            var optionsList = dataList.children;
+            var hiddenInput = document.getElementById("RibozymeStructure");
+
+            for (var i = 0; i < optionsList.length; i++) {
+                if (optionsList[i].value == value) {
+                    hiddenInput.value = optionsList[i].getAttribute('data-value');
+                }
+            }
+
+            if (value == null) {
+                hiddenInput.value = -1;
+            }
+        },
+        vivoEnvironment: function (value) {
+            var dataList = document.getElementById("environmentList");
+            var optionsList = dataList.children;
+            var hiddenInput = document.getElementById("InVivoEnvironment");
+
+            for (var i = 0; i < optionsList.length; i++) {
+                if (optionsList[i].value == value) {
+                    hiddenInput.value = optionsList[i].getAttribute('data-value');
+                }
+            }
+
+            if (value == null) {
+                hiddenInput.value = -1;
+            }
         },
         targetEnvironment: function() {
             var environment = document.getElementById("targetEnvironmentMethod");

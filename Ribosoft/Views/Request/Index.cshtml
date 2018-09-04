@@ -41,10 +41,14 @@
 
             <div class="form-group mb-0">
                 <label asp-for="RibozymeStructure"></label>
-                <select asp-for="RibozymeStructure"
-                        asp-items="ViewBag.Ribozymes"
-                        class="form-control">
-                </select>
+                <v-select label="ribozymeOptions" :options="options" id="ribozymes" :on-change="ribozymeId"></v-select>
+                <datalist id="ribozymeList">
+                    @foreach (var item in ViewBag.Ribozymes)
+                    {
+                        <option value="@item.Text" data-value="@item.Value"></option>
+                    }
+                </datalist>
+                <input asp-for="RibozymeStructure" type="hidden" value="-1">
                 <span asp-validation-for="RibozymeStructure" class="text-danger"></span>
             </div>
         </div>
@@ -126,7 +130,14 @@
 
             <div class="form-group mt-2 border-top pt-2" v-show="inVivoSelected">
                 <label asp-for="InVivoEnvironment"></label>
-                <select asp-for="InVivoEnvironment" asp-items="ViewBag.Assemblies" class="form-control"></select>
+                <v-select :options="inVivoOptions" id="environments" :on-change="vivoEnvironment"></v-select>
+                <datalist id="environmentList">
+                    @foreach (var item in ViewBag.Assemblies)
+                    {
+                        <option value="@item.Text" data-value="@item.Value"></option>
+                    }
+                </datalist>
+                <input asp-for="InVivoEnvironment" type="hidden" value="-1">
                 <span asp-validation-for="InVivoEnvironment" class="text-danger"></span>
             </div>
 
