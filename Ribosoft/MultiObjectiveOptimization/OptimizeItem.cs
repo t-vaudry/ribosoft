@@ -16,11 +16,13 @@ namespace Ribosoft.MultiObjectiveOptimization
     {
         public T Value { get; set; }
         public OptimizeType Type { get; set; }
+        public float Tolerance { get; set; }
 
-        public OptimizeItem(T value, OptimizeType type)
+        public OptimizeItem(T value, OptimizeType type, float tolerance)
         {
             Value = value;
             Type = type;
+            Tolerance = tolerance;
         }
     }
 }

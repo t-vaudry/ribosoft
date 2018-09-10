@@ -190,9 +190,10 @@ namespace Ribosoft.Tests
                 "........",
                 "UAUACGGCAUUGCAGUAUAAAGCCU").ToList();
 
-            Assert.Equal(2, candidates.Count);
+            Assert.Equal(3, candidates.Count);
             Assert.Equal("CG", candidates[0].Sequence.GetString());
             Assert.Equal("UA", candidates[1].Sequence.GetString());
+            Assert.Equal("UG", candidates[2].Sequence.GetString());
         }
 
         [Fact]
@@ -356,6 +357,39 @@ namespace Ribosoft.Tests
             Assert.Equal(4, candidates.Count);
             Assert.Equal("UAUCGACCCUGAUGAGAACAAACCCAGCUAGCACGUCGAAACAU", candidates[0].Sequence.GetString());
             Assert.Equal("AGCAUAUCCUGAUGAGAACAAACCCAGCUAGCUCGUCGAAACCGAC", candidates[3].Sequence.GetString());
+        }
+
+        [Fact]
+        public void Generate_Candidates_Bond_Substrate()
+        {
+            CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
+            var candidates = candidateGenerator.GenerateCandidates(
+                "NNNNNNNCCUGAUGAGAACAAACCCNNNNNNNNCGUCGAAACNNnn",
+                "01234567.......((........89abcdef..))...gh..kl",
+                "nnNNGUCGNNNNNNNNNNNNNNN",
+                "lk..hg.76543210fedcba98",
+                "AUGUCGGUCGAUAUGCUAGCUAGCUAGAGUC").ToList();
+
+            Assert.Equal(64, candidates.Count);
+            Assert.Equal("UAUCGACCCUGAUGAGAACAAACCCAGCUAGCACGUCGAAACAA", candidates[0].Sequence.GetString());
+            Assert.Equal("UAUCGACCCUGAUGAGAACAAACCCAGCUAGCACGUCGAAACAC", candidates[1].Sequence.GetString());
+        }
+
+        [Fact]
+        public void Generate_Candidates_GU_Pairing()
+        {
+            CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
+            var candidates = candidateGenerator.GenerateCandidates(
+                "GN",
+                "()",
+                "N",
+                ".",
+                "A"
+                ).ToList();
+
+            Assert.Equal(2, candidates.Count);
+            Assert.Equal("GC", candidates[0].Sequence.GetString());
+            Assert.Equal("GU", candidates[1].Sequence.GetString());
         }
     }
 }

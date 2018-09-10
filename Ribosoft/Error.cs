@@ -23,6 +23,10 @@ namespace Ribosoft
         R_BAD_PAIR_MATCH               =    -5,
         R_FITNESS_VALUE_LENGTHS_DIFFER =    -6,
         R_EMPTY_CANDIDATE_LIST         =    -7,
+        R_STRUCT_LENGTH_DIFFER         =    -8,
+        R_OUT_OF_RANGE                 =    -9,
+        R_INVALID_TEMPLATE_LENGTH      =    -10,
+        R_INVALID_CONCENTRATION        =    -11,
         R_APPLICATION_ERROR_LAST       =  -999,
 
         /* USER ERROR */
@@ -31,6 +35,7 @@ namespace Ribosoft
 
         /* SYSTEM ERROR */
         R_SYSTEM_ERROR_FIRST           = -2000,
+        R_VIENNA_RNA_ERROR             = -2001,
         R_SYSTEM_ERROR_LAST            = -2999,
     };
 

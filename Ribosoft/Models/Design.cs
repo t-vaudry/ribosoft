@@ -12,6 +12,7 @@ namespace Ribosoft.Models
     {
         public int Id { get; set; }
         public int JobId { get; set; }
+        [Display(Name = "Ribozyme Sequence")]
         public string Sequence { get; set; }
         public int Rank { get; set; }
 
@@ -41,11 +42,21 @@ namespace Ribosoft.Models
         [NotMapped]
         public virtual IEnumerable<OptimizeItem<float>> Comparables => new []
         {
-            new OptimizeItem<float>(DesiredTemperatureScore.GetValueOrDefault(), OptimizeType.MIN),
-            new OptimizeItem<float>(HighestTemperatureScore.GetValueOrDefault(), OptimizeType.MAX),
-            new OptimizeItem<float>(SpecificityScore.GetValueOrDefault(), OptimizeType.MIN),
-            new OptimizeItem<float>(AccessibilityScore.GetValueOrDefault(), OptimizeType.MIN),
-            new OptimizeItem<float>(StructureScore.GetValueOrDefault(), OptimizeType.MIN)
+            new OptimizeItem<float>(DesiredTemperatureScore.GetValueOrDefault(), OptimizeType.MIN, Job.DesiredTempTolerance.GetValueOrDefault()),
+            new OptimizeItem<float>(HighestTemperatureScore.GetValueOrDefault(), OptimizeType.MAX, Job.HighestTempTolerance.GetValueOrDefault()),
+            new OptimizeItem<float>(SpecificityScore.GetValueOrDefault(), OptimizeType.MIN, Job.SpecificityTolerance.GetValueOrDefault()),
+            new OptimizeItem<float>(AccessibilityScore.GetValueOrDefault(), OptimizeType.MIN, Job.AccessibilityTolerance.GetValueOrDefault()),
+            new OptimizeItem<float>(StructureScore.GetValueOrDefault(), OptimizeType.MIN, Job.StructureTolerance.GetValueOrDefault())
         };
+
+        [NotMapped]
+        [Display(Name = "Susbtrate Target Sequence")]
+        public string SubstrateTargetSequence
+        {
+            get
+            {
+                return Job.RNAInput.Substring(CutsiteIndex, SubstrateSequenceLength);
+            }
+        }
     }
 }

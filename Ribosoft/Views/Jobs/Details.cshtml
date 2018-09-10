@@ -45,7 +45,7 @@
                 @Html.DisplayNameFor(model => model.Job.FivePrime)
             </dt>
             <dd class="col-md-1">
-                @Html.DisplayFor(model => model.Job.ThreePrime)
+                @Html.DisplayFor(model => model.Job.FivePrime)
             </dd>
             <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.Job.OpenReadingFrame)
@@ -108,6 +108,47 @@
                 @Html.DisplayFor(model => model.Job.CreatedAt)
             </dd>
         </dl>
+    </div>
+</div>
+
+<div class="card my-3 box-shadow">
+    <div class="card-body">
+        <label class="showMore card-title border-bottom border-gray pb-2" for="advancedSettings">Advanced settings</label>
+        <input id="advancedSettings" type="checkbox">
+        <div>
+            <dl class="row mb-0">
+                <dt class="col-md-4">
+                    @Html.DisplayNameFor(model => model.Job.DesiredTempTolerance)
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.Job.DesiredTempTolerance)
+                </dd>
+                <dt class="col-md-4">
+                    @Html.DisplayNameFor(model => model.Job.HighestTempTolerance)
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.Job.HighestTempTolerance)
+                </dd>
+                <dt class="col-md-4">
+                    @Html.DisplayNameFor(model => model.Job.SpecificityTolerance)
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.Job.SpecificityTolerance)
+                </dd>
+                <dt class="col-md-4">
+                    @Html.DisplayNameFor(model => model.Job.AccessibilityTolerance)
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.Job.AccessibilityTolerance)
+                </dd>
+                <dt class="col-md-4">
+                    @Html.DisplayNameFor(model => model.Job.StructureTolerance)
+                </dt>
+                <dd class="col-md-8">
+                    @Html.DisplayFor(model => model.Job.StructureTolerance)
+                </dd>
+            </dl>
+        </div>
     </div>
 </div>
 
