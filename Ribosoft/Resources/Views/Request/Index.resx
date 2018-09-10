@@ -135,4 +135,7 @@
   <data name="SpecificityTooltip" xml:space="preserve">
     <value>Cleavage considers only ribozyme that match the cutsites, Hybridization will account for ribozymes that bond to the target without cleaving.</value>
   </data>
+  <data name="InputSequenceTooltip" xml:space="preserve">
+    <value>Only valid nucleotides are accepted; A, C, G, T, U, R, Y, K, M, S, W, B, D, H, V, N. *Note: T will be converted to U, since Ribosoft only supports RNA.</value>
+  </data>
 </root>

@@ -10,7 +10,10 @@
     <div class="card-body">
         <div class="clearfix border-bottom border-gray pb-2 mb-3">
             <h5 class="float-sm-left card-title">Basic information</h5>
-            <div class="float-sm-right"><a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Rename <i class="fas fa-edit ml-1"></i></a></div>
+            @if (User.IsInRole("Administrator"))
+            {
+                <div class="float-sm-right"><a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Rename <i class="fas fa-edit ml-1"></i></a></div>
+            }
         </div>
         
         <dl class="row mb-0">
@@ -40,7 +43,10 @@
     <div class="card-body">
         <div class="clearfix pb-2">
             <h5 class="float-sm-left card-title">Structures</h5>
-            <div class="float-sm-right"><a class="btn btn-sm btn-primary" asp-controller="RibozymeStructures" asp-action="Create" asp-route-ribozymeId="@Model.Id">Create <i class="fas fa-plus-circle ml-1"></i></a></div>
+            @if (User.IsInRole("Administrator"))
+            {
+                <div class="float-sm-right"><a class="btn btn-sm btn-primary" asp-controller="RibozymeStructures" asp-action="Create" asp-route-ribozymeId="@Model.Id">Create <i class="fas fa-plus-circle ml-1"></i></a></div>
+            }
         </div>
 
         <div class="table-responsive mb-2">
@@ -78,10 +84,13 @@
                         <td rowspan="2">
                             @Html.DisplayFor(modelItem => item.PostProcess)
                         </td>
-                        <td rowspan="2" class="text-right">
-                            <a asp-controller="RibozymeStructures" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Edit</a>
-                            <a asp-controller="RibozymeStructures" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
-                        </td>
+                        @if (User.IsInRole("Administrator"))
+                        {
+                            <td rowspan="2" class="text-right">
+                                <a asp-controller="RibozymeStructures" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Edit</a>
+                                <a asp-controller="RibozymeStructures" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        }
                     </tr>
                     <tr>
                         <td>
@@ -99,6 +108,9 @@
 </div>
 
 <div class="clearfix">
-    <a class="btn btn-secondary float-md-left" asp-action="Index"><i class="fas fa-arrow-left mr-1"></i> Back to ribozymes</a>
-    <a asp-controller="Ribozymes" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger float-md-right">Delete <i class="fas fa-trash ml-1"></i></a>
+    <a class="btn btn-secondary float-md-left" asp-action="Index"><i class="fas fa-arrow-left mr-1"></i> Back to Ribozymes</a>
+    @if (User.IsInRole("Administrator"))
+    {
+        <a asp-controller="Ribozymes" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger float-md-right">Delete <i class="fas fa-trash ml-1"></i></a>
+    }
 </div>

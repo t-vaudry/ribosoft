@@ -10,81 +10,139 @@
 #include "functions.h"
 
 extern "C" {
+    /**
+     *  @brief  Retrieve a #vrna_fold_compound_t data structure for single sequences and hybridizing sequences
+     *
+     *  This function provides an easy interface to obtain a prefilled #vrna_fold_compound_t by passing a single
+     *  sequence, or two contatenated sequences as input. For the latter, sequences need to be seperated by
+     *  an '&' character like this: @verbatim char *sequence = "GGGG&CCCC"; @endverbatim
+     *
+     *  The optional parameter @p md_p can be used to specify the model details for successive computations
+     *  based on the content of the generated #vrna_fold_compound_t. Passing NULL will instruct the function
+     *  to use default model details.
+     *  The third parameter @p options may be used to specify dynamic programming (DP) matrix requirements.
+     *  Use the macros:
+     *
+     *  - #VRNA_OPTION_MFE
+     *  - #VRNA_OPTION_PF
+     *  - #VRNA_OPTION_WINDOW
+     *  - #VRNA_OPTION_EVAL_ONLY
+     *  - #VRNA_OPTION_DEFAULT
+     *
+     *  to specify the required type of computations that will be performed with the #vrna_fold_compound_t.
+     *
+     *  If you just need the folding compound serving as a container for your data, you can simply pass
+     *  #VRNA_OPTION_DEFAULT to the @p option parameter. This creates a #vrna_fold_compound_t without DP
+     *  matrices, thus saving memory. Subsequent calls of any structure prediction function will then take
+     *  care of allocating the memory required for the DP matrices.
+     *  If you only intend to evaluate structures instead of actually predicting them, you may use the
+     *  #VRNA_OPTION_EVAL_ONLY macro. This will seriously speedup the creation of the #vrna_fold_compound_t.
+     *
+     *  @note The sequence string must be uppercase, and should contain only RNA (resp. DNA) alphabet depending
+     *        on what energy parameter set is used
+     *
+     *  @see  vrna_fold_compound_free(), vrna_fold_compound_comparative(), #vrna_md_t, #VRNA_OPTION_MFE,
+     *        #VRNA_OPTION_PF, #VRNA_OPTION_EVAL_ONLY, #VRNA_OPTION_WINDOW
+     *
+     *  @param    sequence    A single sequence, or two concatenated sequences seperated by an '&' character
+     *  @param    md_p        An optional set of model details
+     *  @param    options     The options for DP matrices memory allocation
+     *  @return               A prefilled vrna_fold_compound_t that can be readily used for computations
+     */
     vrna_fold_compound_t* vrna_fold_compound(const char*, vrna_md_t*, unsigned int);
 }
 
+//! \namespace ribosoft
 RIBOSOFT_NAMESPACE_START
 
-#define EPSILON 0.000001
+#define EPSILON 0.000001 //!< Epsilon to determine if equal to zero
 
-extern "C"
+/*! \brief Fold
+ * Used to fold the RNA sequence and provide the probabilities
+ * of each fold in the distribution. Folding is done using ViennaRNA
+ *
+ * Understanding return values:
+ * - R_INVALID_NUCLEOTIDE | sequence has an invalid nucleotide
+ * - R_VIENNA_RNA_ERROR | Error from ViennaRNA, contact us with more details.
+ *
+ ***************************************************************************************
+ * @param sequence Ribozyme sequence
+ * @param output Out variable for fold structures
+ * @param size Out variable for the size of the fold_output
+ * @return Status Code
+ */
+DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*out*/ size_t& size)
 {
-    DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*out*/ size_t& size)
-    {
-        // validate input sequence
-        R_STATUS status = validate_sequence(sequence);
-        if (status != R_SUCCESS::R_STATUS_OK) {
-            return status;
-        }
-
-        size_t length = strlen(sequence);
-
-        // get a vrna_fold_compound with default settings
-        vrna_fold_compound_t *vc = vrna_fold_compound(sequence, NULL, VRNA_OPTION_DEFAULT);
-
-        // fold with suboptimal structures
-        // TODO: consider passing energy range from user input
-        vrna_subopt_solution_t *sol = vrna_subopt(vc, 500, 1, NULL);
-
-        // Get pf energy
-        char *pf_struc = new char[length + 1];
-        float energy = vrna_pf(vc, pf_struc);
-
-        if (vc->exp_params == NULL) {
-            return R_SYSTEM_ERROR::R_VIENNA_RNA_ERROR;
-        }
-
-        double kT = vc->exp_params->kT / 1000.;
-        if (std::abs(kT) < EPSILON) {
-            return R_SYSTEM_ERROR::R_VIENNA_RNA_ERROR;
-        }
-
-        // initialize output
-        size_t solution_size = 0;
-        while(sol[solution_size].structure != nullptr) {
-            solution_size++;
-        }
-
-        size = solution_size;
-        output = new fold_output[solution_size];
-        for (size_t i = 0; i < solution_size; ++i) {
-            output[i].structure = new char[length + 1];
-            strncpy(output[i].structure, sol[i].structure, length);
-            output[i].structure[length] = '\0';
-            output[i].probability = std::exp((energy - sol[i].energy) / kT);
-
-            free(sol[i].structure);
-        }
-
-        // free memory
-        free(sol);
-        vrna_fold_compound_free(vc);
-        free(pf_struc);
-
-        return R_SUCCESS::R_STATUS_OK;
+    // validate input sequence
+    R_STATUS status = validate_sequence(sequence);
+    if (status != R_SUCCESS::R_STATUS_OK) {
+        return status;
     }
 
-	DLL_PUBLIC void fold_output_free(fold_output* output, size_t size)
-	{
-		if (output) {
-			for (int i = 0; i < size; ++i) {
-				delete[] output[i].structure;
-				output[i].structure = nullptr;
-			}
+    size_t length = strlen(sequence);
 
-			delete[] output;
-		}
-	}
+    // get a vrna_fold_compound with default settings
+    vrna_fold_compound_t *vc = vrna_fold_compound(sequence, NULL, VRNA_OPTION_DEFAULT);
+
+    // fold with suboptimal structures
+    // TODO: consider passing energy range from user input
+    vrna_subopt_solution_t *sol = vrna_subopt(vc, 500, 1, NULL);
+
+    // Get pf energy
+    char *pf_struc = new char[length + 1];
+    float energy = vrna_pf(vc, pf_struc);
+
+    if (vc->exp_params == NULL) {
+        return R_SYSTEM_ERROR::R_VIENNA_RNA_ERROR;
+    }
+
+    double kT = vc->exp_params->kT / 1000.;
+    if (std::abs(kT) < EPSILON) {
+        return R_SYSTEM_ERROR::R_VIENNA_RNA_ERROR;
+    }
+
+    // initialize output
+    size_t solution_size = 0;
+    while(sol[solution_size].structure != nullptr) {
+        solution_size++;
+    }
+
+    size = solution_size;
+    output = new fold_output[solution_size];
+    for (size_t i = 0; i < solution_size; ++i) {
+        output[i].structure = new char[length + 1];
+        strncpy(output[i].structure, sol[i].structure, length);
+        output[i].structure[length] = '\0';
+        output[i].probability = std::exp((energy - sol[i].energy) / kT);
+
+        free(sol[i].structure);
+    }
+
+    // free memory
+    free(sol);
+    vrna_fold_compound_free(vc);
+    free(pf_struc);
+
+    return R_SUCCESS::R_STATUS_OK;
+}
+
+/*! \brief Free memory from fold outputs
+ * Used to free the memory from the fold structure
+ *
+ ***************************************************************************************
+ * @param output Fold structure to be freed
+ * @param size Size of the output
+ */
+DLL_PUBLIC void fold_output_free(fold_output* output, size_t size)
+{
+    if (output) {
+        for (int i = 0; i < size; ++i) {
+            delete[] output[i].structure;
+            output[i].structure = nullptr;
+        }
+
+        delete[] output;
+    }
 }
 
 RIBOSOFT_NAMESPACE_END

@@ -3,36 +3,39 @@ using System.Globalization;
 using System.ComponentModel.DataAnnotations;
 using Ribosoft.Models;
 
-public class ValidateRequestAttribute : ValidationAttribute
+namespace Ribosoft.ValidationAttributes
 {
-    private bool _isValid;
-    private string _errorMessage;
-
-    public ValidateRequestAttribute()
+    public class ValidateRequestAttribute : ValidationAttribute
     {
-        _isValid = true;
-        _errorMessage = "Invalid start and end index, verify end position is after start and within the sequence";
-    }
+        private bool _isValid;
+        private string _errorMessage;
 
-    public override bool IsValid(object value)
-    {
-        RequestViewModel model = value as RequestViewModel;
-        _isValid = true;
-
-        if (model.OpenReadingFrameEnd < model.OpenReadingFrameStart) {
-            _isValid = false;
+        public ValidateRequestAttribute()
+        {
+            _isValid = true;
+            _errorMessage = "Invalid start and end index, verify end position is after start and within the sequence";
         }
 
-        if (model.OpenReadingFrameEnd > model.InputSequence.Length || 
-            model.OpenReadingFrameStart > model.InputSequence.Length) {
-            _isValid = false;
+        public override bool IsValid(object value)
+        {
+            RequestViewModel model = value as RequestViewModel;
+            _isValid = true;
+
+            if (model.OpenReadingFrameEnd < model.OpenReadingFrameStart) {
+                _isValid = false;
+            }
+
+            if (model.OpenReadingFrameEnd > model.InputSequence.Length || 
+                model.OpenReadingFrameStart > model.InputSequence.Length) {
+                _isValid = false;
+            }
+
+            return _isValid;
         }
 
-        return _isValid;
-    }
-
-     public override string FormatErrorMessage(string name)
-    {
-        return String.Format(CultureInfo.CurrentCulture, _errorMessage, name);
+         public override string FormatErrorMessage(string name)
+        {
+            return String.Format(CultureInfo.CurrentCulture, _errorMessage, name);
+        }
     }
 }

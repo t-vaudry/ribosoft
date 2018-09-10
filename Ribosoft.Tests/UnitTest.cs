@@ -4,17 +4,10 @@ using Ribosoft;
 
 namespace Ribosoft.Tests
 {
-    public class UnitTest1
+    public class UnitTest
     {
         [Fact]
-        public void Test1()
-        {
-            RibosoftAlgo sdc = new RibosoftAlgo();
-            Assert.Equal(3, sdc.Add(1, 2));
-        }
-
-        [Fact]
-        public void Test2()
+        public void Test()
         {
             RibosoftAlgo sdc = new RibosoftAlgo();
             Assert.Equal(R_STATUS.R_STATUS_OK, sdc.ValidateSequence("AUUGCC"));

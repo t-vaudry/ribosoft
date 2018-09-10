@@ -55,6 +55,20 @@ namespace Ribosoft.CandidateGeneration
             RepeatRegions = new List<Tuple<int, int>>();
         }
 
+        public void Clear()
+        {
+            NeighboursIndices.Clear();
+            Sequences.Clear();
+            SubstrateInfo.Clear();
+            RibozymeSubstrateIndexPairs.Clear();
+            NodesAtDepthSequence.Clear();
+            NodesAtDepthCutSite.Clear();
+            OpenBondIndices.Clear();
+            OpenPseudoKnotIndices.Clear();
+            RepeatStructureSymbols.Clear();
+            RepeatRegions.Clear();
+        }
+
         public IEnumerable<Candidate> GenerateCandidates(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
         {
             //*********************
@@ -428,11 +442,10 @@ namespace Ribosoft.CandidateGeneration
             //If leaf, add sequence to list
             if (currentNode.Children.Count == 0) //Leaf
             {
-                if (Sequences.Contains(currentSequence))
+                if (!Sequences.Contains(currentSequence))
                 {
-                    Console.WriteLine("Inserting duplicate!");
+                    Sequences.Add(currentSequence);
                 }
-                Sequences.Add(currentSequence);
             }
             else
             {
@@ -447,30 +460,34 @@ namespace Ribosoft.CandidateGeneration
                 else if (currentNode.Children[0].NeighbourIndex.HasValue && currentNode.Children[0].NeighbourIndex.Value < currentNode.Depth + 1)
                 {
                     //Get the complement of the base at the specified neighbour index in the input string
-                    char requiredBase = currentSequence.Nucleotides[currentNode.Children[0].NeighbourIndex.Value].GetComplement();
+                    char[] requiredBases = currentSequence.Nucleotides[currentNode.Children[0].NeighbourIndex.Value].GetSpecialComplements();
                     bool found = false;
-                    foreach (Node child in currentNode.Children)
+                    foreach (char c in requiredBases)
                     {
-                        if (child.Nucleotide.Symbol == requiredBase)
+                        foreach (Node child in currentNode.Children)
                         {
-                            TraverseSequence(new Sequence(currentSequence), child);
-                            found = true;
-                            break;
+                            if (child.Nucleotide.Symbol == c)
+                            {
+                                TraverseSequence(new Sequence(currentSequence), child);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found)
+                        {
+                            //If not found, there is the possibility that one of the neighbour's siblings is valid.
+                            //In this case, there is no error: silently discard this sequence
+                            Nucleotide inputNeighbourNucleotide = new Nucleotide(Ribozyme.Sequence[currentNode.Children[0].NeighbourIndex.Value]);
+                            if (inputNeighbourNucleotide.Bases.Contains(c))
+                            {
+                                return;
+                            }
                         }
                     }
+
                     if (!found)
                     {
-                        //If not found, there is the possibility that one of the neighbour's siblings is valid.
-                        //In this case, there is no error: silently discard this sequence
-                        Nucleotide inputNeighbourNucleotide = new Nucleotide(Ribozyme.Sequence[currentNode.Children[0].NeighbourIndex.Value]);
-                        if (inputNeighbourNucleotide.Bases.Contains(requiredBase))
-                        {
-                            return;
-                        }
-                        else
-                        {
-                            throw new CandidateGenerationException("Neighbours don't match!");
-                        }
+                        throw new CandidateGenerationException("Neighbours don't match!");
                     }
                 }
                 else

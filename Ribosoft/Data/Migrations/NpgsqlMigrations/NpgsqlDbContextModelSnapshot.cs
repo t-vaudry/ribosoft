@@ -196,12 +196,12 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
                     b.Property<string>("OrganismName")
                         .IsRequired();
 
+                    b.Property<string>("Path")
+                        .IsRequired();
+
                     b.Property<int>("SpeciesId");
 
                     b.Property<string>("Type")
-                        .IsRequired();
-                    
-                    b.Property<string>("Path")
                         .IsRequired();
 
                     b.Property<DateTime?>("UpdatedAt");
@@ -252,13 +252,19 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<float?>("AccessibilityTolerance");
+
                     b.Property<int?>("AssemblyId");
 
                     b.Property<DateTime?>("CreatedAt");
 
+                    b.Property<float?>("DesiredTempTolerance");
+
                     b.Property<bool>("FivePrime");
 
                     b.Property<string>("HangfireJobId");
+
+                    b.Property<float?>("HighestTempTolerance");
 
                     b.Property<int>("JobState");
 
@@ -280,7 +286,11 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
 
                     b.Property<int?>("SpecificityMethod");
 
+                    b.Property<float?>("SpecificityTolerance");
+
                     b.Property<string>("StatusMessage");
+
+                    b.Property<float?>("StructureTolerance");
 
                     b.Property<int>("TargetEnvironment");
 
@@ -308,7 +318,8 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
 
                     b.Property<DateTime?>("CreatedAt");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<DateTime?>("UpdatedAt");
 
@@ -330,13 +341,17 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
 
                     b.Property<int>("RibozymeId");
 
-                    b.Property<string>("Sequence");
+                    b.Property<string>("Sequence")
+                        .IsRequired();
 
-                    b.Property<string>("Structure");
+                    b.Property<string>("Structure")
+                        .IsRequired();
 
-                    b.Property<string>("SubstrateStructure");
+                    b.Property<string>("SubstrateStructure")
+                        .IsRequired();
 
-                    b.Property<string>("SubstrateTemplate");
+                    b.Property<string>("SubstrateTemplate")
+                        .IsRequired();
 
                     b.Property<DateTime?>("UpdatedAt");
 
@@ -404,8 +419,7 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
                 {
                     b.HasOne("Ribosoft.Models.Assembly", "Assembly")
                         .WithMany("Jobs")
-                        .HasForeignKey("AssemblyId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("AssemblyId");
 
                     b.HasOne("Ribosoft.Models.ApplicationUser", "Owner")
                         .WithMany()

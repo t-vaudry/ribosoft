@@ -2,24 +2,28 @@ using System;
 using System.Globalization;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-public class NucleotideAttribute : ValidationAttribute
+
+namespace Ribosoft.ValidationAttributes
 {
-    private string _pattern;
-    public NucleotideAttribute()
+    public class NucleotideAttribute : ValidationAttribute
     {
-        _pattern = @"^['A','C','G','U','R','Y','K','M','S','W','B','D','H','V','N','a','c','g','u','r','y','k','m','s','w','b','d','h','v','n']+$";
-    }
+        private string _pattern;
+        public NucleotideAttribute()
+        {
+            _pattern = @"^['A','C','G','U','R','Y','K','M','S','W','B','D','H','V','N','a','c','g','u','r','y','k','m','s','w','b','d','h','v','n']+$";
+        }
 
-    public override bool IsValid(object value)
-    {
-        Regex r = new Regex(_pattern);
-        Match m = r.Match(value.ToString());
+        public override bool IsValid(object value)
+        {
+            Regex r = new Regex(_pattern);
+            Match m = r.Match(value.ToString());
 
-        return m.Success;
-    }
+            return m.Success;
+        }
 
-    public override string FormatErrorMessage(string name)
-    {
-        return String.Format(CultureInfo.CurrentCulture, name+" must only contain the following upper or lower case values: A, C, G, U, R, Y, K, M, S, W, B, D, H, V, N", name);
+        public override string FormatErrorMessage(string name)
+        {
+            return String.Format(CultureInfo.CurrentCulture, name+" must only contain the following upper or lower case values: A, C, G, U, R, Y, K, M, S, W, B, D, H, V, N", name);
+        }
     }
 }
