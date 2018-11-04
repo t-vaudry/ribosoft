@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +13,8 @@ using Ribosoft.Data;
 using Ribosoft.Jobs;
 using Ribosoft.Models;
 using Ribosoft.Models.JobsViewModels;
+
+using System.IO;
 
 namespace Ribosoft.Controllers
 {
@@ -359,5 +361,40 @@ namespace Ribosoft.Controllers
 
             return user;
         }
+
+        public FileStreamResult DownloadDesigns(int jobID, string sortOrder="default", string format="fasta")
+        {
+            var designs = from d in _context.Designs where d.JobId == jobID select d;
+            var payload = "";
+            var extension = "";
+            switch (format)
+            {
+                case "csv":
+                    payload += String.Format("Rank,DesiredTemperatureScore,HighestTemperatureScore,SpecificityScore,AccessibilityScore,StructureScore,CreatedAt,UpdatedAt,Sequence\n");
+                    extension = "csv";
+                    foreach (Design d in designs)
+                    {
+                        // TODO: Break up sequence into chunks of max line length
+                        payload += String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
+                    }
+                    break;
+                default:
+                    // payload += String.Format(">Sort order: {0}\n\n", sortOrder);
+                    extension = "fasta";
+                    foreach (Design d in designs)
+                    {
+                        // TODO: Break up sequence into chunks of max line length
+                        payload += String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
+                    }
+                    break;
+            }
+
+            var byteArray = Encoding.ASCII.GetBytes(payload);
+            var stream = new MemoryStream(byteArray);
+
+            // return File(stream, "text/plain", String.Format("job{0}_bulk_{1}.{2}", jobID, sortOrder, extension));
+            return File(stream, "text/plain", String.Format("job{0}_bulk.{1}", jobID, extension));
+        }
+
     }
 }

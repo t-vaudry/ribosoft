@@ -158,37 +158,37 @@
         <div class="progress" style="height: 30px;">
             @if (Model.Job.JobState == JobState.New || Model.Job.JobState == JobState.Started)
             {
-                <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>    
+                <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>
                 <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
                 <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
             }
             else if (Model.Job.JobState == JobState.CandidateGenerator)
             {
-                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>    
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>
                 <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
                 <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
             }
             else if (Model.Job.JobState == JobState.QueuedPhase2)
             {
-                <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>    
+                <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>
                 <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
                 <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
             }
             else if (Model.Job.JobState == JobState.Specificity)
             {
-                <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>    
+                <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>
                 <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
                 <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
             }
             else if (Model.Job.JobState == JobState.QueuedPhase3)
             {
-                <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>    
+                <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>
                 <div class="progress-bar bg-success" role="progressbar" style="width: 34%" aria-valuenow="34" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
                 <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
             }
             else if (Model.Job.JobState == JobState.MultiObjectiveOptimization)
             {
-                <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>    
+                <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>
                 <div class="progress-bar bg-success" role="progressbar" style="width: 34%" aria-valuenow="34" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
                 <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
             }
@@ -208,119 +208,124 @@
     <div class="card-body">
         <div class="clearfix">
             <h5 class="card-title float-md-left">Designs</h5>
-            <div class="d-none float-md-right mb-2" id="showFilterOptions">
-                <button class="btn btn-sm btn-primary" id="refineResults">Refine Results <i class="fas fa-filter"></i></button>
-            </div>
-            <div class="d-none float-md-right mb-2" id="filterOptions">
-                <div class="form-inline">
-                    @Html.DropDownListFor(x => x.FilterParam, Model.FilterParams, new {@class = "form-control form-control-sm custom-select custom-select-sm mb-2 mr-sm-2 mb-sm-0"})
-                    @Html.DropDownListFor(x => x.FilterCondition, Model.FilterConditions, new {@class = "form-control form-control-sm custom-select custom-select-sm mb-2 mr-sm-2 mb-sm-0"})
-                    <input type="number" step="any" asp-for="FilterValue" class="form-control form-control-sm mb-2 mr-sm-2 mb-sm-0">
-                    <button class="btn btn-sm btn-primary" id="filterSubmit">Filter <i class="fas fa-check"></i></button>
+                <div class="float-md-right mb-2" id="downloadDesigns">
+                    @Html.ActionLink("Download All (.CSV)", "DownloadDesigns", new { jobID = Model.Job.Id, sortOrder = Model.SortOrder, format = "csv" }, new { @class = "btn btn-sm btn-primary" })
                 </div>
-                <p id="filterError" class="text-danger d-none">Input must be a number.</p>
+                <div class="float-md-right mb-2" id="downloadDesigns">
+                    @Html.ActionLink("Download All (.FASTA)", "DownloadDesigns", new { jobID = Model.Job.Id, sortOrder = Model.SortOrder, format = "fasta" }, new { @class = "btn btn-sm btn-primary" })
+                </div>
+                <div class="d-none float-md-right mb-2" id="showFilterOptions">
+                    <button class="btn btn-sm btn-primary" id="refineResults">Refine Results <i class="fas fa-filter"></i></button>
+                </div>
+                <div class="d-none float-md-right mb-2" id="filterOptions">
+                    <div class="form-inline">
+                        @Html.DropDownListFor(x => x.FilterParam, Model.FilterParams, new { @class = "form-control form-control-sm custom-select custom-select-sm mb-2 mr-sm-2 mb-sm-0" })
+                        @Html.DropDownListFor(x => x.FilterCondition, Model.FilterConditions, new { @class = "form-control form-control-sm custom-select custom-select-sm mb-2 mr-sm-2 mb-sm-0" })
+                        <input type="number" step="any" asp-for="FilterValue" class="form-control form-control-sm mb-2 mr-sm-2 mb-sm-0">
+                        <button class="btn btn-sm btn-primary" id="filterSubmit">Filter <i class="fas fa-check"></i></button>
+                    </div>
+                    <p id="filterError" class="text-danger d-none">Input must be a number.</p>
+                </div>
+
+            <div class="table-responsive mb-2">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.ActionLink((string)ViewBag.RankColumnTitle, "Details", new { sortOrder = ViewBag.RankSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue })
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Designs.Data.First().Sequence)
+                            </th>
+                            <th>
+                                @Html.ActionLink((string)ViewBag.DesTempColumnTitle, "Details", new { sortOrder = ViewBag.DesTempSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue })
+                            </th>
+                            <th>
+                                @Html.ActionLink((string)ViewBag.HiTempColumnTitle, "Details", new { sortOrder = ViewBag.HiTempSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue })
+                            </th>
+                            <th>
+                                @Html.ActionLink((string)ViewBag.SpecColumnTitle, "Details", new { sortOrder = ViewBag.SpecSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue })
+                            </th>
+                            <th>
+                                @Html.ActionLink((string)ViewBag.AccessColumnTitle, "Details", new { sortOrder = ViewBag.AccessSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue })
+                            </th>
+                            <th>
+                                @Html.ActionLink((string)ViewBag.StructColumnTitle, "Details", new { sortOrder = ViewBag.StructSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue })
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Designs.Data)
+                        {
+                            <tr class="clickable-row" data-href="@Url.Action("Details", "Designs", new {id = item.Id})">
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Rank)
+                                </td>
+                                <td>
+                                    <code style="word-break: break-all;">@Html.DisplayFor(modelItem => item.Sequence)</code>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DesiredTemperatureScore)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.HighestTemperatureScore)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SpecificityScore)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AccessibilityScore)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.StructureScore)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
-        </div>
 
-        <div class="table-responsive mb-2">
-            <table class="table table-hover mb-0">
-                <thead>
-                <tr>
-                    <th>
-                        @Html.ActionLink((string) ViewBag.RankColumnTitle, "Details", new {sortOrder = ViewBag.RankSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue})
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Designs.Data.First().Sequence)
-                    </th>
-                    <th>
-                        @Html.ActionLink((string) ViewBag.DesTempColumnTitle, "Details", new {sortOrder = ViewBag.DesTempSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue})
-                    </th>
-                    <th>
-                        @Html.ActionLink((string) ViewBag.HiTempColumnTitle, "Details", new {sortOrder = ViewBag.HiTempSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue})
-                    </th>
-                    <th>
-                        @Html.ActionLink((string) ViewBag.SpecColumnTitle, "Details", new {sortOrder = ViewBag.SpecSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue})
-                    </th>
-                    <th>
-                        @Html.ActionLink((string) ViewBag.AccessColumnTitle, "Details", new {sortOrder = ViewBag.AccessSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue})
-                    </th>
-                    <th>
-                        @Html.ActionLink((string) ViewBag.StructColumnTitle, "Details", new {sortOrder = ViewBag.StructSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue})
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var item in Model.Designs.Data)
-                {
-                    <tr class="clickable-row" data-href="@Url.Action("Details", "Designs", new {id = item.Id})">
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Rank)
-                        </td>
-                        <td>
-                            <code style="word-break: break-all;">@Html.DisplayFor(modelItem => item.Sequence)</code>
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DesiredTemperatureScore)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.HighestTemperatureScore)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SpecificityScore)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.AccessibilityScore)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.StructureScore)
-                        </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
+            <cs-pager cs-paging-pagesize="@Model.Designs.PageSize"
+                      cs-paging-pagenumber="@Model.Designs.PageNumber"
+                      cs-paging-totalitems="@Model.Designs.TotalItems"
+                      asp-action="Details"
+                      asp-controller="Jobs"
+                      asp-route-id="@Model.Job.Id"
+                      asp-route-sortOrder="@Model.SortOrder"
+                      asp-route-filterParam="@Model.FilterParam"
+                      asp-route-filterCondition="@Model.FilterCondition"
+                      asp-route-filterValue="@Model.FilterValue"
+                      cs-pagenumber-param="pageNumber"
+                      cs-pager-ul-class="pagination mb-0"
+                      cs-pager-li-current-class="page-item active"
+                      cs-pager-li-other-class="page-item"
+                      cs-pager-li-non-active-class="page-item disabled"
+                      cs-pager-link-current-class="page-link"
+                      cs-pager-link-other-class="page-link"></cs-pager>
         </div>
-
-        <cs-pager cs-paging-pagesize="@Model.Designs.PageSize"
-                  cs-paging-pagenumber="@Model.Designs.PageNumber"
-                  cs-paging-totalitems="@Model.Designs.TotalItems"
-                  asp-action="Details"
-                  asp-controller="Jobs"
-                  asp-route-id="@Model.Job.Id"
-                  asp-route-sortOrder="@Model.SortOrder"
-                  asp-route-filterParam="@Model.FilterParam"
-                  asp-route-filterCondition="@Model.FilterCondition"
-                  asp-route-filterValue="@Model.FilterValue"
-                  cs-pagenumber-param="pageNumber"
-                  cs-pager-ul-class="pagination mb-0"
-                  cs-pager-li-current-class="page-item active"
-                  cs-pager-li-other-class="page-item"
-                  cs-pager-li-non-active-class="page-item disabled"
-                  cs-pager-link-current-class="page-link"
-                  cs-pager-link-other-class="page-link"></cs-pager>
     </div>
-</div>
 
-<div class="clearfix">
-    <a asp-action="Index" class="btn btn-primary float-sm-left"><i class="fas fa-arrow-left ml-1"></i> Back to jobs</a>
+    <div class="clearfix">
+        <a asp-action="Index" class="btn btn-primary float-sm-left"><i class="fas fa-arrow-left ml-1"></i> Back to jobs</a>
 
-    @if (Model.Job.JobState == JobState.New || Model.Job.JobState == JobState.Started)
-    {
-        <a asp-action="Delete" asp-route-id="@Model.Job.Id" class="btn btn-danger float-sm-right">Cancel <i class="fas fa-trash ml-1"></i></a>
-    }
-    else
-    {
-        <a asp-action="Delete" asp-route-id="@Model.Job.Id" class="btn btn-danger float-sm-right">@(shouldCancel ? "Cancel" : "Delete") <i class="fas fa-trash ml-1"></i></a>
-    }
-</div>
+        @if (Model.Job.JobState == JobState.New || Model.Job.JobState == JobState.Started)
+        {
+            <a asp-action="Delete" asp-route-id="@Model.Job.Id" class="btn btn-danger float-sm-right">Cancel <i class="fas fa-trash ml-1"></i></a>
+        }
+        else
+        {
+            <a asp-action="Delete" asp-route-id="@Model.Job.Id" class="btn btn-danger float-sm-right">@(shouldCancel ? "Cancel" : "Delete") <i class="fas fa-trash ml-1"></i></a>
+        }
+    </div>
 
-@section scripts
-{
-    <script src="~/dist/details.js"></script>
-    <script type="text/javascript">
-        jQuery(document).ready(function($) {
-            $(".clickable-row").click(function() {
-                window.location = $(this).data("href");
+    @section scripts
+        {
+        <script src="~/dist/details.js"></script>
+        <script type="text/javascript">
+            jQuery(document).ready(function ($) {
+                $(".clickable-row").click(function () {
+                    window.location = $(this).data("href");
+                });
             });
-        });
-    </script>
-}
+        </script>
+    }
