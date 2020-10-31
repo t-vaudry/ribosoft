@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authorization;
@@ -16,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Ribosoft.Data;
 using Ribosoft.Models;
 using Ribosoft.Services;
+using Hangfire.Logging.LogProviders;
 
 namespace Ribosoft
 {
@@ -44,7 +43,9 @@ namespace Ribosoft
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseNpgsql(connectionString));
 
-                services.AddHangfire(x => x.UsePostgreSqlStorage(connectionString, new PostgreSqlStorageOptions
+                services.AddHangfire(x => x
+                .UseLogProvider(new ColouredConsoleLogProvider())
+                .UsePostgreSqlStorage(connectionString, new PostgreSqlStorageOptions
                 {
                     InvisibilityTimeout = TimeSpan.FromDays(1)
                 }));
@@ -54,7 +55,9 @@ namespace Ribosoft
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(connectionString));
 
-                services.AddHangfire(x => x.UseSqlServerStorage(connectionString));
+                services.AddHangfire(x => x
+                .UseLogProvider(new ColouredConsoleLogProvider())
+                .UseSqlServerStorage(connectionString));
             }
             else
             {
@@ -84,13 +87,13 @@ namespace Ribosoft
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
-                app.UseDatabaseErrorPage();
+                BrowserLinkExtensions.UseBrowserLink(app);
+                DatabaseErrorPageExtensions.UseDatabaseErrorPage(app);
             }
             else
             {

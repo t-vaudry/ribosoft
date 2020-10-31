@@ -334,6 +334,7 @@ namespace Ribosoft.Jobs
             
             var designs = _db.Designs
                              .Where(d => d.JobId == job.Id)
+                             .AsEnumerable()
                              .GroupBy(d => new { d.CutsiteIndex, d.SubstrateSequenceLength });
 
             foreach (var designGroup in designs)

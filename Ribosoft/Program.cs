@@ -51,7 +51,7 @@ namespace Ribosoft
             
             return WebHost.CreateDefaultBuilder(args)
                 .UseConfiguration(config)
-                .ConfigureServices(services => services.AddTransient<IStartupFilter, HangfireStartupFilter>())
+                .ConfigureServices(services => services.AddTransient<IStartupFilter, HangfireStartupFilter>() .AddMvc(option => option.EnableEndpointRouting = false))
                 .UseStartup<Startup>()
                 .UseNLog()
                 .Build();
