@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-latest]
 
     steps:
     - uses: actions/checkout@v2
@@ -29,21 +29,11 @@ jobs:
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
       
-    - if: matrix.os != 'windows-latest'
-      name: Install pip requirements
+    - name: Install pip requirements
       run: pip install -r $GITHUB_WORKSPACE/requirements.txt
       
-    - if: matrix.os == 'windows-latest'
-      name: Install pip requirements
-      run: pip install -r $GITHUB_WORKSPACE\requirements.txt
-    
-    - if: matrix.os != 'windows-latest'
-      name: Get dependencies
+    - name: Get dependencies
       run: python $GITHUB_WORKSPACE/ribosoft.py deps install --yes
-      
-    - if: matrix.os == 'windows-latest'
-      name: Get dependencies
-      run: python $GITHUB_WORKSPACE\ribosoft.py deps install --yes
 
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
