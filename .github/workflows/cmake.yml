@@ -73,4 +73,4 @@ jobs:
 
     - name: Test
       working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo/build/bin/$BUILD_TYPE
-      run: ./tests.exe
+      run: tests.exe
