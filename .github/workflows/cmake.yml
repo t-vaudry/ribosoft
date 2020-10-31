@@ -53,4 +53,4 @@ jobs:
 
     - name: Test
       working-directory: ${{runner.workspace}}/build
-      run: bin/$BUILD_TYPE/tests.exe
+      run: bin/tests.exe
