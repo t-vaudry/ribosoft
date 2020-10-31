@@ -29,11 +29,21 @@ jobs:
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
       
-    - name: Install pip requirements
+    - if: matrix.os != 'windows-latest'
+      name: Install pip requirements
       run: pip install -r $GITHUB_WORKSPACE/requirements.txt
+      
+    - if: matrix.os == 'windows-latest'
+      name: Install pip requirements
+      run: pip install -r $GITHUB_WORKSPACE\requirements.txt
     
-    - name: Get dependencies
+    - if: matrix.os != 'windows-latest'
+      name: Get dependencies
       run: python $GITHUB_WORKSPACE/ribosoft.py deps install --yes
+      
+    - if: matrix.os == 'windows-latest'
+      name: Get dependencies
+      run: python $GITHUB_WORKSPACE\ribosoft.py deps install --yes
 
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
