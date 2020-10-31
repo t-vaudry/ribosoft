@@ -19,7 +19,7 @@ jobs:
       with:
         python-version: 3.6
         architecture: x64
-    - if: ${{ matrix.os }} == 'macOS-latest'
+    - if: matrix.os == 'macOS-latest'
       name: setup-xamarin
       uses: maxim-lobanov/setup-xamarin@v1
       with:
