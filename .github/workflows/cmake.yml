@@ -20,7 +20,7 @@ jobs:
         python-version: 3.6
         architecture: x64
     - if: matrix.os == 'macOS-latest'
-      name: setup-xamarin
+      name: Setup Mono
       uses: maxim-lobanov/setup-xamarin@v1
       with:
         mono-version: latest
@@ -29,6 +29,9 @@ jobs:
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
       
+    - name: Install pip requirements
+      run: pip install -r $GITHUB_WORKSPACE/requirements.txt
+    
     - name: Get dependencies
       run: python $GITHUB_WORKSPACE/ribosoft.py deps install --yes
 
