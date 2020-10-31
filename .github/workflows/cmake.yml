@@ -53,7 +53,7 @@ jobs:
         architecture: x64
 
     - name: Create Build Environment
-      run: cmake -E make_directory ${{runner.workspace}}/build
+      run: cmake -E make_directory ${{runner.workspace}}/RibosoftAlgo/build
     
     - name: Install pip requirements
       run: pip install -r ./requirements.txt
@@ -63,15 +63,15 @@ jobs:
 
     - name: Configure CMake
       shell: bash
-      working-directory: ${{runner.workspace}}/build
-      run: cmake ./RibosoftAlgo -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+      working-directory: ${{runner.workspace}}/RibosoftAlgo/build
+      run: cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
     - name: Build
       shell: bash
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{runner.workspace}}/RibosoftAlgo/build
       run: cmake --build . --config $BUILD_TYPE
 
     - name: Test
       shell: bash
-      working-directory: ${{runner.workspace}}/build
-      run: ${{runner.workspace}}/build/bin/tests.exe
+      working-directory: ${{runner.workspace}}/RibosoftAlgo/build
+      run: ${{runner.workspace}}/RibosoftAlgo/build/bin/$BUILD_TYPE/tests.exe
