@@ -14,13 +14,22 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+        architecture: x64
     - name: setup-xamarin
       uses: maxim-lobanov/setup-xamarin@v1
       with:
         mono-version: latest
+      if: ${{ matrix.os }} == 'macOS-latest'
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
+      
+    - name: Get dependencies
+      run: python $GITHUB_WORKSPACE/ribosoft.py deps install --yes
 
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
