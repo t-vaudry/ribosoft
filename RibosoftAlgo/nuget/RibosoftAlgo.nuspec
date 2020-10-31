@@ -10,8 +10,11 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Ribosoft algorithm support library</description>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright 2017</copyright>
+    <copyright>Copyright 2020</copyright>
     <tags></tags>
     <dependencies></dependencies>
   </metadata>
+  <files>
+    <file src="build\*" target="build\netcoreapp3.1"/>
+  </files>
 </package>
