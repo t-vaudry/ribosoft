@@ -19,11 +19,12 @@ jobs:
       with:
         python-version: 3.6
         architecture: x64
-    - name: setup-xamarin
+    - if: ${{ matrix.os }} == 'macOS-latest'
+      name: setup-xamarin
       uses: maxim-lobanov/setup-xamarin@v1
       with:
         mono-version: latest
-      if: ${{ matrix.os }} == 'macOS-latest'
+      
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
