@@ -72,6 +72,5 @@ jobs:
       run: cmake --build . --config $BUILD_TYPE
 
     - name: Test
-      shell: bash
-      working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
-      run: ${{runner.workspace}}/ribosoft/RibosoftAlgo/build/bin/$BUILD_TYPE/tests.exe
+      working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo/build/bin/$BUILD_TYPE
+      run: ./tests.exe
