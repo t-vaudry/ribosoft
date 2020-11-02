@@ -7,6 +7,8 @@ name: Publish RibosoftAlgo Nuget Package
 on:
   workflow_dispatch:
     inputs:
+      tags:
+        description: 'Publish tag'
 
 env:
   BUILD_TYPE: Release
