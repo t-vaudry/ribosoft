@@ -1,0 +1,56 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Publish RibosoftAlgo Nuget Package
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the develop branch
+on:
+  push:
+    branches: [ develop, master ]
+  workflow_dispatch:
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+        architecture: x64
+    - name: Setup .NET Core @ Latest
+      uses: actions/setup-dotnet@v1
+      with:
+        source_url: https://api.nuget.org/v3/index.json
+      env:
+        NUGET_AUTH_KEY: ${{ secrets.NUGET_AUTH_KEY }}
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/build
+
+    - name: Install pip requirements
+      run: pip install -r $GITHUB_WORKSPACE/requirements.txt
+
+    - name: Get library dependencies
+      run: python $GITHUB_WORKSPACE/ribosoft.py deps install --yes
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: cmake $GITHUB_WORKSPACE/RibosoftAlgo -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+
+    - name: Build
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: cmake --build . --config $BUILD_TYPE
+      
+    # Publish
+    - name: Publish
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: dotnet nuget push ./bin/RibosoftAlgo.1.0.0.nupkg -k ${NUGET_AUTH_KEY}
