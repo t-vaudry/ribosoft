@@ -51,4 +51,4 @@ jobs:
     - name: Publish
       shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: dotnet nuget push ./bin/RibosoftAlgo.1.0.0.nupkg -k $NUGET_AUTH_TOKEN
+      run: dotnet nuget push ./bin/RibosoftAlgo.1.0.0.nupkg -k $NUGET_AUTH_TOKEN --skip-duplicate
