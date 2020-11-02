@@ -9,6 +9,7 @@ on: push
 env:
   BUILD_TYPE: Release
   NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_KEY}}
+  GH_AUTH_TOKEN: ${{secrets.GH_AUTH_KEY}}
 
 jobs:
   publish:
@@ -56,7 +57,7 @@ jobs:
     - name: Publish to GitHub Packages
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
-        nupkg-path:  ${{runner.workspace}}/build/bin/RibosoftAlgo.1.0.0.nupkg
-        repo-owner:  't-vaudry'
-        gh-user:  't-vaudry'
-        token:  ${{ secrets.GH_AUTH_KEY }}
+        nupkg-path: ${{runner.workspace}}/build/bin/RibosoftAlgo.1.0.0.nupkg
+        repo-owner: 't-vaudry'
+        gh-user: 't-vaudry'
+        token: $GH_AUTH_TOKEN
