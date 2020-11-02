@@ -76,7 +76,7 @@ jobs:
       run: ${{runner.workspace}}\ribosoft\RibosoftAlgo\build\bin\Release\tests.exe
 
   build-macos:
-    runs-on: masOS-latest
+    runs-on: macOS-latest
 
     steps:
     - uses: actions/checkout@v2
