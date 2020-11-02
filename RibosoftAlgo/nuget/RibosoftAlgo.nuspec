@@ -5,7 +5,7 @@
     <version>1.0.0</version>
     <authors>t-vaudry</authors>
     <owners>t-vaudry</owners>
-    <license>https://github.com/t-vaudry/ribosoft/blob/develop/LICENSE.md</license>
+    <licenseUrl>https://github.com/t-vaudry/ribosoft/blob/develop/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/t-vaudry/ribosoft</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Ribosoft algorithm support library</description>
