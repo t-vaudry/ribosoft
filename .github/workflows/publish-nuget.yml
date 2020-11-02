@@ -6,6 +6,7 @@ name: Publish RibosoftAlgo Nuget Package
 # events but only for the develop branch
 on:
   workflow_dispatch:
+    inputs:
 
 env:
   BUILD_TYPE: Release
