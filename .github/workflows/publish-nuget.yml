@@ -83,7 +83,7 @@ jobs:
         
     - name: Copy Nuspec
       shell: bash
-      run: cp ${{runner.workspace}}/ribosoft/.github/nuspec/RibosoftAlgo-windows.nuspec ${{runner.workspace}}/ribosoft/RibosoftAlgo/nuget/RibosoftAlgo.nuspec
+      run: cp ${{runner.workspace}}\ribosoft\.github\nuspec\RibosoftAlgo-windows.nuspec ${{runner.workspace}}\ribosoft\RibosoftAlgo\nuget\RibosoftAlgo.nuspec
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
@@ -143,7 +143,7 @@ jobs:
     
     - name: Copy Nuspec
       shell: bash
-      run: cp $GITHUB_WORKSPACE/.github/nuspec/RibosoftAlgo-macos.nuspec $GITHUB_WORKSPACE/RibosoftAlgo/nuget/RibosoftAlgo.nuspec
+      run: cp $GITHUB_WORKSPACE/.github/nuspec/RibosoftAlgo-osx.nuspec $GITHUB_WORKSPACE/RibosoftAlgo/nuget/RibosoftAlgo.nuspec
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
