@@ -57,6 +57,6 @@ jobs:
       shell: bash
       working-directory: ${{runner.workspace}}/build
       run: |
-        dotnet nuget add source https://nuget.pkg.github.com/t-vaudry/index.json -n github -u t-vaudry -p ${{secrets.GITHUB_TOKEN}} [--store-password-in-clear-text]
+        dotnet nuget add source https://nuget.pkg.github.com/t-vaudry/index.json -n github -u t-vaudry -p ${{secrets.GITHUB_TOKEN}} --store-password-in-clear-text
         dotnet nuget push ./bin/RibosoftAlgo.1.0.0.nupkg -k ${{secrets.GITHUB_TOKEN}} --source "github" --skip-duplicate
       
