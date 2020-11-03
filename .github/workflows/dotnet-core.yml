@@ -21,6 +21,7 @@ jobs:
         node-version: '12'
     - name: Install node modules
       shell: bash
+      working-directory: ./Ribosoft
       run: |
         npm install
         node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js
