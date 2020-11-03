@@ -82,9 +82,9 @@ jobs:
         NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_KEY}}
         
     - name: Copy Nuspec
-      shell: cmd
+      shell: bash
       working-directory: ${{runner.workspace}}/ribosoft
-      run: copy ./.github/nuspec/RibosoftAlgo-windows.nuspec ${{runner.workspace}}/ribosoft/RibosoftAlgo/nuget/RibosoftAlgo.nuspec
+      run: cp ./.github/nuspec/RibosoftAlgo-windows.nuspec ./RibosoftAlgo/nuget/RibosoftAlgo.nuspec
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
