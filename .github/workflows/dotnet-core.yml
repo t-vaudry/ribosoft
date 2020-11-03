@@ -15,9 +15,20 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.301
+    - name: Setup Node
+      uses: actions/setup-node@v2-beta
+      with:
+        node-version: '12'
+    - name: Install node modules
+      shell: bash
+      working-directory: $GITHUB_WORKSPACE/Ribosoft
+      run: |
+        npm install
+        node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js
+        node node_modules/webpack/bin/webpack.js
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore Ribosoft.sln
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build Ribosoft.sln --configuration Release --no-restore
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test Ribosoft.Tests --no-restore --verbosity normal
