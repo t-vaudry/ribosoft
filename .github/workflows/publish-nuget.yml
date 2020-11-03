@@ -84,7 +84,7 @@ jobs:
     - name: Copy Nuspec
       shell: cmd
       working-directory: ${{runner.workspace}}/ribosoft
-      run: copy .github/nuspec/RibosoftAlgo-windows.nuspec RibosoftAlgo/nuget/RibosoftAlgo.nuspec
+      run: xcopy ./.github/nuspec/RibosoftAlgo-windows.nuspec ./RibosoftAlgo/nuget/RibosoftAlgo.nuspec
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
