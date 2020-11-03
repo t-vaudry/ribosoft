@@ -4,7 +4,9 @@ name: Publish RibosoftAlgo Nuget Package
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the develop branch
-on: push
+on: 
+  push:
+    branches: [master, develop]
 
 env:
   BUILD_TYPE: Release
