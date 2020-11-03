@@ -82,7 +82,7 @@ jobs:
         NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_KEY}}
         
     - name: Copy Nuspec
-      shell: bash
+      shell: cmd
       working-directory: ${{runner.workspace}}/ribosoft
       run: copy .github/nuspec/RibosoftAlgo-windows.nuspec RibosoftAlgo/nuget/RibosoftAlgo.nuspec
 
