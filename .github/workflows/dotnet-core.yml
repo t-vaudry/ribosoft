@@ -12,7 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Setup PostgreSQL
-      if: ${{matrix-os}} == 'ubuntu-latest'
+      if: ${{matrix.os}} == 'ubuntu-latest'
       uses: harmon758/postgresql-action@v1
       with:
         postgresql version: '11'
@@ -25,7 +25,7 @@ jobs:
       with:
         node-version: '12'   
     - name: Create database
-      if: ${{matrix-os}} == 'ubuntu-latest'
+      if: ${{matrix.os}} == 'ubuntu-latest'
       shell: bash
       run: |
         psql -c 'CREATE DATABASE github_test;' -U postgres
