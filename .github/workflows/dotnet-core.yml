@@ -28,6 +28,8 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       shell: bash
       run: |
+        service postgresql initdb
+        service postgresql start
         psql -c 'CREATE DATABASE github_test;' -U postgres
         cp $GITHUB_WORKSPACE/.github/db/appsettings.json $GITHUB_WORKSPACE/Ribosoft/appsettings.json
     - name: Install node modules
