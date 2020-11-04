@@ -11,11 +11,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup PostgreSQL
-      if: matrix.os == 'ubuntu-latest'
-      uses: harmon758/postgresql-action@v1
-      with:
-        postgresql version: '11'
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
@@ -23,14 +18,7 @@ jobs:
     - name: Setup Node
       uses: actions/setup-node@v2-beta
       with:
-        node-version: '12'   
-    - name: Create database
-      if: matrix.os == 'ubuntu-latest'
-      shell: bash
-      run: |
-        service postgresql start
-        psql -c 'CREATE DATABASE github_test;' -U postgres
-        cp $GITHUB_WORKSPACE/.github/db/appsettings.json $GITHUB_WORKSPACE/Ribosoft/appsettings.json
+        node-version: '12'
     - name: Install node modules
       shell: bash
       working-directory: ./Ribosoft
@@ -42,10 +30,5 @@ jobs:
       run: dotnet restore Ribosoft.sln
     - name: Build
       run: dotnet build Ribosoft.sln --configuration Release --no-restore
-    - name: Apply migrations
-      if: matrix.os == 'ubuntu-latest'
-      shell: bash
-      working-directory: ./Ribosoft
-      run: dotnet-ef database update -c NpgsqlDbContext
     - name: Test
       run: dotnet test Ribosoft.Tests --no-restore --verbosity normal
