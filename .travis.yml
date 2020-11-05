@@ -23,6 +23,7 @@ addons:
     - g++-7
     - cmake
     - python3.6
+    - python3.6-pip
 
 services:
   - postgresql
