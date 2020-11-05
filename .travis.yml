@@ -23,18 +23,16 @@ addons:
     - g++-7
     - cmake
     - python3.6
-    - python3.6-venv
+    - pipenv
 
 services:
   - postgresql
 
 before_install:
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
-  - python3.6 -m venv venv
-  - source venv/bin/activate
 
 install:
-  - pip install -r requirements.txt
+  - pipenv install && pipenv shell
   - ./ribosoft.py deps install --yes
   - cd Ribosoft && npm install
   - cd $TRAVIS_BUILD_DIR
