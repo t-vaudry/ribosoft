@@ -23,7 +23,7 @@ addons:
     - g++-7
     - cmake
     - python3.6
-    - python3.6-pip
+    - python3-pip
 
 services:
   - postgresql
@@ -33,7 +33,7 @@ before_install:
 
 install:
   - pip3 install pipenv
-  - pipenv --three && pipenv install --dev
+  - python3.6 -m pipenv --three && python3.6 -m pipenv install --dev
   - ./ribosoft.py deps install --yes
   - cd Ribosoft && npm install
   - cd $TRAVIS_BUILD_DIR
