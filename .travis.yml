@@ -5,8 +5,8 @@ solution: Ribosoft.sln
 
 mono: latest
 dotnet: 3.1
+python: 3.6
 
-sudo: false
 group: travis_latest
 
 env:
@@ -22,8 +22,6 @@ addons:
     packages:
     - g++-7
     - cmake
-    - python3.6
-    - python3-pip
 
 services:
   - postgresql
@@ -32,8 +30,8 @@ before_install:
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
 
 install:
-  - pip3 install pipenv
-  - pipenv install
+  - pip install pipenv
+  - pipenv install --dev
   - ./ribosoft.py deps install --yes
   - cd Ribosoft && npm install
   - cd $TRAVIS_BUILD_DIR
