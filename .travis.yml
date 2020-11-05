@@ -33,7 +33,7 @@ before_install:
 
 install:
   - pip3 install pipenv
-  - python3.6 -m pipenv --three && python3.6 -m pipenv install --dev
+  - pipenv --three && pipenv install --dev
   - ./ribosoft.py deps install --yes
   - cd Ribosoft && npm install
   - cd $TRAVIS_BUILD_DIR
