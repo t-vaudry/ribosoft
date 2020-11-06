@@ -7,7 +7,7 @@ name = "pypi"
 click = ">=6.0,<7.0"
 click-log = "<0.3,>=0.2"
 colorama = ">=0.3,<0.4"
-requests = "<2.19,>=2.18"
+requests = ">=2.18,<2.21"
 enum34 = ">=1.1,<1.2"
 
 [dev-packages]
