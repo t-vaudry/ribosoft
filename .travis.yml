@@ -59,4 +59,3 @@ deploy:
     script: .travis/deploy.sh "$MASTER_DEPLOY_URL" "$TRAVIS_BRANCH"
     on:
       branch: master
-      tags: true
