@@ -101,8 +101,6 @@ jobs:
       run: cmake -E make_directory ${{runner.workspace}}/build
     
     - name: Install pipenv
-      shell: bash
-      working-directory: $GITHUB_WORKSPACE
       run: |
         pip install pipenv
         pipenv install
