@@ -41,7 +41,7 @@ jobs:
     - name: Test
       shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: ${{runner.workspace}}/build/bin/tests
+      run: ctest -C $BUILD_TYPE
 
   build-windows:
     runs-on: windows-latest
@@ -76,8 +76,9 @@ jobs:
       run: cmake --build . --config $BUILD_TYPE
 
     - name: Test
-      shell: cmd
-      run: ${{runner.workspace}}\ribosoft\RibosoftAlgo\build\bin\Release\tests.exe
+      shell: bash
+      working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
+      run: ctest -C $BUILD_TYPE
 
   build-macos:
     runs-on: macOS-latest
@@ -121,4 +122,4 @@ jobs:
     - name: Test
       shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: ${{runner.workspace}}/build/bin/tests
+      run: ctest -C $BUILD_TYPE
