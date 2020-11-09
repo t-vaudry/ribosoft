@@ -21,14 +21,12 @@ jobs:
       run: cmake -E make_directory ${{runner.workspace}}/build
     
     - name: Install pipenv
-      shell: bash
-      working-directory: $GITHUB_WORKSPACE
       run: |
         pip install pipenv
         pipenv install
     
     - name: Get library dependencies
-      run: python $GITHUB_WORKSPACE/ribosoft.py deps install --yes
+      run: pipenv run python $GITHUB_WORKSPACE/ribosoft.py deps install --yes
 
     - name: Configure CMake
       shell: bash
@@ -65,7 +63,7 @@ jobs:
         pipenv install
     
     - name: Get library dependencies
-      run: python ./ribosoft.py deps install --yes
+      run: pipenv run python ./ribosoft.py deps install --yes
 
     - name: Configure CMake
       shell: bash
@@ -110,7 +108,7 @@ jobs:
         pipenv install
     
     - name: Get library dependencies
-      run: python $GITHUB_WORKSPACE/ribosoft.py deps install --yes
+      run: pipenv run python $GITHUB_WORKSPACE/ribosoft.py deps install --yes
 
     - name: Configure CMake
       shell: bash
