@@ -3,8 +3,8 @@
   <metadata>
     <id>RibosoftAlgo</id>
     <version>0.0.0</version>
-    <authors>chris</authors>
-    <owners>chris</owners>
+    <authors>t-vaudry</authors>
+    <owners>t-vaudry</owners>
     <licenseUrl>https://github.com/t-vaudry/ribosoft/blob/develop/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/t-vaudry/ribosoft</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
