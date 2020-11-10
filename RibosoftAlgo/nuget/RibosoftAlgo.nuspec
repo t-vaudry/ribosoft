@@ -2,10 +2,9 @@
 <package >
   <metadata>
     <id>RibosoftAlgo</id>
-    <version>1.0.0</version>
+    <version>0.0.0</version>
     <authors>t-vaudry</authors>
     <owners>t-vaudry</owners>
-    <repository type="git" url="https://github.com/t-vaudry/ribosoft"></repository>
     <licenseUrl>https://github.com/t-vaudry/ribosoft/blob/develop/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/t-vaudry/ribosoft</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
