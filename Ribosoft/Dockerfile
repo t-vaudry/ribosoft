@@ -9,16 +9,14 @@ RUN apt-get -y install mono-complete
 
 WORKDIR /src
 COPY . .
-COPY ./.docker/appsettings.json /src/Ribosoft/appsettings.json
+COPY .docker/appsettings.json /src/appsettings.json
 
-WORKDIR /src/Ribosoft
 RUN npm install
 RUN node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js
 RUN node node_modules/webpack/bin/webpack.js
 
-WORKDIR "/src/Ribosoft"
 RUN dotnet build "Ribosoft.csproj" -c Release
 EXPOSE 80
-COPY ./.docker/migrations.sh .
+COPY .docker/migrations.sh .
 RUN chmod +x ./migrations.sh
 CMD /bin/bash ./migrations.sh
