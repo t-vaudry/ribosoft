@@ -8,9 +8,6 @@ services:
      image: postgres:latest
      container_name: db
      restart: always
-     build:
-       context: .
-       dockerfile: Dockerfile
      ports:
        - 5432:5432
      environment:
@@ -21,12 +18,16 @@ services:
        - pgdata:/var/lib/postgresql/data
 
   ribosoft:
-    image: ${DOCKER_REGISTRY-}ribosoft
+    image: tvaudryread/ribosoft:latest
     container_name: ribosoft
     ports:
       - 5001:80
     build:
-      context: .
-      dockerfile: Ribosoft/Dockerfile
+      context: Ribosoft
+      dockerfile: Dockerfile
+    environment:
+      ConnectionStrings__NpgsqlConnection: "Host=db;Port=5432;Username=postgres;Password=postgres;Database=ribosoft;Pooling=true;"
+      DB_CONTEXT: NpgsqlDbContext
+      EntityFrameworkProvider: Npgsql
     depends_on:
       - "db"
