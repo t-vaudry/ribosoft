@@ -15,9 +15,10 @@
     <PackageReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
-    <PackageReference Include="RibosoftAlgo" Version="1.0.0" Condition="$([MSBuild]::IsOsPlatform('Linux'))"/>
-    <PackageReference Include="RibosoftAlgo" Version="1.0.1" Condition="$([MSBuild]::IsOsPlatform('Windows'))"/>
-    <PackageReference Include="RibosoftAlgo" Version="1.0.2" Condition="$([MSBuild]::IsOsPlatform('OSX'))"/>
+    <PackageReference Include="RibosoftAlgo" Version="0.0.0" Condition="'$(Configuration)' == 'Debug'" />
+    <PackageReference Include="RibosoftAlgo" Version="1.0.0" Condition="$([MSBuild]::IsOsPlatform('Linux')) AND '$(Configuration)' == 'Release'"/>
+    <PackageReference Include="RibosoftAlgo" Version="1.0.1" Condition="$([MSBuild]::IsOsPlatform('Windows')) AND '$(Configuration)' == 'Release'"/>
+    <PackageReference Include="RibosoftAlgo" Version="1.0.2" Condition="$([MSBuild]::IsOsPlatform('OSX')) AND '$(Configuration)' == 'Release'"/>
     <PackageReference Include="HangFire" Version="1.7.17" />
     <PackageReference Include="Sendgrid" Version="9.21.0" />
     <PackageReference Include="cloudscribe.Web.Pagination" Version="3.1.0" />
@@ -65,7 +66,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <RestoreSources>$(RestoreSources);https://api.nuget.org/v3/index.json</RestoreSources>
+    <RestoreSources>$(RestoreSources);../RibosoftAlgo/build/bin;https://api.nuget.org/v3/index.json</RestoreSources>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
