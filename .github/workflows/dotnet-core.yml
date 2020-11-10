@@ -1,0 +1,32 @@
+name: Ribosoft .NET Core Builds
+
+on: push
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest] # macOS-latest is missing
+    runs-on: ${{matrix.os}}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Setup Node
+      uses: actions/setup-node@v2-beta
+      with:
+        node-version: '12'
+    - name: Install node modules
+      shell: bash
+      working-directory: ./Ribosoft
+      run: |
+        npm install
+        node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js
+        node node_modules/webpack/bin/webpack.js
+    - name: Build
+      run: dotnet build Ribosoft.sln --configuration Release
+    - name: Test
+      run: dotnet test Ribosoft.Tests --configuration Release --no-restore --verbosity normal
