@@ -66,7 +66,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <RestoreSources>$(RestoreSources);../RibosoftAlgo/build/bin;https://api.nuget.org/v3/index.json</RestoreSource>
+    <RestoreSources>$(RestoreSources);../RibosoftAlgo/build/bin;https://api.nuget.org/v3/index.json</RestoreSources>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
