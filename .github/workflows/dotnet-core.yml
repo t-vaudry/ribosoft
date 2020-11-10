@@ -1,6 +1,6 @@
 name: Ribosoft .NET Core Builds
 
-on: push
+on: [push, workflow_dispatch]
 
 jobs:
   build:
