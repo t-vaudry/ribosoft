@@ -27,7 +27,7 @@ jobs:
         node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js
         node node_modules/webpack/bin/webpack.js
     - name: Install dependencies
-      run: dotnet restore Ribosoft.sln
+      run: dotnet restore Ribosoft.sln --ignore-failed-sources
     - name: Build
       run: dotnet build Ribosoft.sln --configuration Release --no-restore
     - name: Test
