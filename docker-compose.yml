@@ -18,7 +18,7 @@ services:
        - pgdata:/var/lib/postgresql/data
 
   ribosoft:
-    image: tvaudryread/ribosoft:latest
+    image: tvaudryread/ribosoft:beta
     container_name: ribosoft
     ports:
       - 5001:80
