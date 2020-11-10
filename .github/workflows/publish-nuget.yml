@@ -37,11 +37,13 @@ jobs:
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
 
-    - name: Install pip requirements
-      run: pip install -r $GITHUB_WORKSPACE/requirements.txt
+    - name: Install pipenv
+      run: |
+        pip install pipenv
+        pipenv install
 
     - name: Get library dependencies
-      run: python $GITHUB_WORKSPACE/ribosoft.py deps install --yes
+      run: pipenv run python $GITHUB_WORKSPACE/ribosoft.py deps install --yes
 
     - name: Configure CMake
       shell: bash
@@ -91,11 +93,13 @@ jobs:
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
 
-    - name: Install pip requirements
-      run: pip install -r ./requirements.txt
+    - name: Install pipenv
+      run: |
+        pip install pipenv
+        pipenv install
 
     - name: Get library dependencies
-      run: python ./ribosoft.py deps install --yes
+      run: pipenv run python ./ribosoft.py deps install --yes
 
     - name: Configure CMake
       shell: bash
@@ -151,11 +155,13 @@ jobs:
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
 
-    - name: Install pip requirements
-      run: pip install -r $GITHUB_WORKSPACE/requirements.txt
+    - name: Install pipenv
+      run: |
+        pip install pipenv
+        pipenv install
 
     - name: Get library dependencies
-      run: python $GITHUB_WORKSPACE/ribosoft.py deps install --yes
+      run: pipenv run python $GITHUB_WORKSPACE/ribosoft.py deps install --yes
 
     - name: Configure CMake
       shell: bash
