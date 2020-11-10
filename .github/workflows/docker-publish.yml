@@ -2,13 +2,14 @@ name: Publish Docker image to GitHub Packages
 
 on:
   push:
-    # Publish `develop` as Docker `latest` image.
+    # Publish `develop` as Docker `beta` image and `master` as Docker `latest` image
     branches:
+      - master
       - develop
 
     # Publish `v1.2.3` tags as releases.
     tags:
-      - v*
+      - release/v*
 
 env:
   IMAGE_NAME: ribosoft
@@ -40,8 +41,11 @@ jobs:
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
 
+          # Use Docker `beta` tag convention
+          [ "$VERSION" == "develop" ] && VERSION=beta
+          
           # Use Docker `latest` tag convention
-          [ "$VERSION" == "develop" ] && VERSION=latest
+          [ "$VERSION" == "master" ] && VERSION=latest
 
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
