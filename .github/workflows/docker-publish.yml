@@ -24,7 +24,7 @@ jobs:
       - name: Build image
         shell: bash
         working-directory: $GITHUB_WORKSPACE/Ribosoft
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME
+        run: docker build . --file $GITHUB_WORKSPACE/Ribosoft/Dockerfile --tag $IMAGE_NAME
 
       - name: Log into registry
         shell: bash
