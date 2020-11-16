@@ -12,11 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Start an SSH Agent
-        uses: frankdejonge/use-ssh-agent@1.0.0
-
       - name: Deploy application
         shell: bash
         run: |
+          mkdir -p $HOME/.ssh
           chmod +x $GITHUB_WORKSPACE/.github/deploy/deploy.sh
           $GITHUB_WORKSPACE/.github/deploy/deploy.sh "$MASTER_DEPLOY_URL" "${GITHUB_REF##*/}"
