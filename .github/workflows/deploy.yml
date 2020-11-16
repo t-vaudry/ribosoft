@@ -12,6 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Start an SSH Agent
+        uses: frankdejonge/use-ssh-agent@1.0.0
+
       - name: Deploy application
         shell: bash
         run: |
