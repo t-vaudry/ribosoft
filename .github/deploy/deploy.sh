@@ -11,7 +11,7 @@ openssl aes-256-cbc -K $encrypted_201caca5971a_key -iv $encrypted_201caca5971a_i
 tar xf .github/deploy/secrets.tar
 
 # prepare ssh environment
-cat .github/deploy/ssh_config >> /root/.ssh/config
+cat .github/deploy/ssh_config >> $HOME/.ssh/config
 eval "$(ssh-agent -s)"
 
 # add deployment key
