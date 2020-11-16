@@ -13,4 +13,5 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Deploy application
+        shell: bash
         run: $GITHUB_WORKSPACE/.github/deploy/deploy.sh "$MASTER_DEPLOY_URL" "${GITHUB_REF##*/}"
