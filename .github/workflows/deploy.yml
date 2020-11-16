@@ -14,4 +14,6 @@ jobs:
 
       - name: Deploy application
         shell: bash
-        run: $GITHUB_WORKSPACE/.github/deploy/deploy.sh "$MASTER_DEPLOY_URL" "${GITHUB_REF##*/}"
+        run: |
+          chmod 600 $GITHUB_WORKSPACE/.github/deploy/deploy.sh
+          $GITHUB_WORKSPACE/.github/deploy/deploy.sh "$MASTER_DEPLOY_URL" "${GITHUB_REF##*/}"
