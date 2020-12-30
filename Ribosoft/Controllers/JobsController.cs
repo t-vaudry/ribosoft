@@ -395,6 +395,5 @@ namespace Ribosoft.Controllers
             // return File(stream, "text/plain", String.Format("job{0}_bulk_{1}.{2}", jobID, sortOrder, extension));
             return File(stream, "text/plain", String.Format("job{0}_bulk.{1}", jobID, extension));
         }
-
     }
 }
