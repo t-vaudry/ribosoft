@@ -8,7 +8,7 @@
     white-space : nowrap;
     float: none;
     margin-top: 8px;
-    right: 0px;
+    right: 0;
     width: 170px;
     height: 24px;
     z-index: 102;
@@ -52,7 +52,7 @@
     color: #909090;
     outline: none;
     font: 9pt Arial, Verdana, sans-serif;
-    -webkit-border-radius: 0px;
+    -webkit-border-radius: 0;
 }
 
 #FSearchBox #MSearchField {
@@ -76,8 +76,8 @@
     top: 4px;
     background : none;
     border: none;
-    margin: 0px 4px 0px 0px;
-    padding: 0px 0px;
+    margin: 0 4px 0 0;
+    padding: 0;
     outline: none;
 }
 
@@ -116,7 +116,7 @@
     font: 8pt Arial, Verdana, sans-serif;
     padding-left:  2px;
     padding-right: 12px;
-    border: 0px;
+    border: 0;
 }
 
 span.SelectionMark {
@@ -129,7 +129,7 @@ span.SelectionMark {
 a.SelectItem {
     display: block;
     outline-style: none;
-    color: #000000; 
+    color: #000000;
     text-decoration: none;
     padding-left:   6px;
     padding-right: 12px;
@@ -137,7 +137,7 @@ a.SelectItem {
 
 a.SelectItem:focus,
 a.SelectItem:active {
-    color: #000000; 
+    color: #000000;
     outline-style: none;
     text-decoration: none;
 }
@@ -171,7 +171,7 @@ iframe#MSearchResults {
 
 
 #SRIndex {
-    clear:both; 
+    clear:both;
     padding-bottom: 15px;
 }
 
@@ -190,7 +190,7 @@ body.SRPage {
 }
 
 .SRChildren {
-    padding-left: 3ex; padding-bottom: .5em 
+    padding-left: 3ex; padding-bottom: .5em
 }
 
 .SRPage .SRChildren {
@@ -198,7 +198,7 @@ body.SRPage {
 }
 
 .SRSymbol {
-    font-weight: bold; 
+    font-weight: bold;
     color: #425E97;
     font-family: Arial, Verdana, sans-serif;
     text-decoration: none;
@@ -207,7 +207,7 @@ body.SRPage {
 
 a.SRScope {
     display: block;
-    color: #425E97; 
+    color: #425E97;
     font-family: Arial, Verdana, sans-serif;
     text-decoration: none;
     outline: none;
@@ -245,7 +245,7 @@ DIV.searchresults {
 
 .pages b {
    color: white;
-   padding: 5px 5px 3px 5px;
+   padding: 5px 5px 3px;
    background-image: url("../tab_a.png");
    background-repeat: repeat-x;
    text-shadow: 0 1px 1px #000000;
