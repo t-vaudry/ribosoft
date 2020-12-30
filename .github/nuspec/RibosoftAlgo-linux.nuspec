@@ -2,11 +2,12 @@
 <package >
   <metadata>
     <id>RibosoftAlgo</id>
-    <version>0.0.0</version>
+    <version>1.0.0</version>
     <authors>t-vaudry</authors>
     <owners>t-vaudry</owners>
     <licenseUrl>https://github.com/t-vaudry/ribosoft/blob/develop/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/t-vaudry/ribosoft</projectUrl>
+    <repository type="git" url="https://github.com/t-vaudry/ribosoft"></repository>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Ribosoft algorithm support library</description>
     <releaseNotes></releaseNotes>

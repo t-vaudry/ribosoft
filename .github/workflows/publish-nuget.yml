@@ -1,0 +1,187 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Publish RibosoftAlgo Nuget Package
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the develop branch
+on: 
+  push:
+    branches: [master, develop]
+
+env:
+  BUILD_TYPE: Release
+  NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_KEY}}
+
+jobs:
+  publish-ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+        architecture: x64
+    - name: Setup .NET Core @ Latest
+      uses: actions/setup-dotnet@v1
+      with:
+        source-url: https://api.nuget.org/v3/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_KEY}}
+        
+    - name: Copy Nuspec
+      shell: bash
+      run: cp $GITHUB_WORKSPACE/.github/nuspec/RibosoftAlgo-linux.nuspec $GITHUB_WORKSPACE/RibosoftAlgo/nuget/RibosoftAlgo.nuspec
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/build
+
+    - name: Install pipenv
+      run: |
+        pip install pipenv
+        pipenv install
+
+    - name: Get library dependencies
+      run: pipenv run python $GITHUB_WORKSPACE/ribosoft.py deps install --yes
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: cmake $GITHUB_WORKSPACE/RibosoftAlgo -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+
+    - name: Build
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: cmake --build . --config $BUILD_TYPE
+
+    # Publish
+    - name: Publish to Nuget
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: dotnet nuget push ./bin/RibosoftAlgo.1.0.0.nupkg -k $NUGET_AUTH_TOKEN --skip-duplicate
+      
+    - name: Publish to GitHub Packages
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: |
+        dotnet nuget add source https://nuget.pkg.github.com/t-vaudry/index.json -n github -u t-vaudry -p ${{secrets.GITHUB_TOKEN}} --store-password-in-clear-text
+        dotnet nuget push ./bin/RibosoftAlgo.1.0.0.nupkg -k ${{secrets.GITHUB_TOKEN}} --source "github" --skip-duplicate
+  
+  publish-windows:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+        architecture: x64
+    - name: Setup .NET Core @ Latest
+      uses: actions/setup-dotnet@v1
+      with:
+        source-url: https://api.nuget.org/v3/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_KEY}}
+        
+    - name: Copy Nuspec
+      shell: bash
+      working-directory: ${{runner.workspace}}/ribosoft
+      run: cp ./.github/nuspec/RibosoftAlgo-windows.nuspec ./RibosoftAlgo/nuget/RibosoftAlgo.nuspec
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
+
+    - name: Install pipenv
+      run: |
+        pip install pipenv
+        pipenv install
+
+    - name: Get library dependencies
+      run: pipenv run python ./ribosoft.py deps install --yes
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
+      run: cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+
+    - name: Build
+      shell: bash
+      working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
+      run: cmake --build . --config $BUILD_TYPE
+
+    # Publish
+    - name: Publish to Nuget
+      shell: bash
+      working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
+      run: dotnet nuget push ./bin/RibosoftAlgo.1.0.1.nupkg -k $NUGET_AUTH_TOKEN --skip-duplicate
+      
+    - name: Publish to GitHub Packages
+      shell: bash
+      working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
+      run: |
+        dotnet nuget add source https://nuget.pkg.github.com/t-vaudry/index.json -n github -u t-vaudry -p ${{secrets.GITHUB_TOKEN}} --store-password-in-clear-text
+        dotnet nuget push ./bin/RibosoftAlgo.1.0.1.nupkg -k ${{secrets.GITHUB_TOKEN}} --source "github" --skip-duplicate
+        
+  publish-macos:
+    runs-on: macOS-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+        architecture: x64
+    - name: Install Mono
+      uses: maxim-lobanov/setup-xamarin@v1
+      with:
+        mono-version: latest
+    - name: Install gcc & libomp
+      shell: bash
+      run: brew install gcc@10 libomp
+    - name: Setup .NET Core @ Latest
+      uses: actions/setup-dotnet@v1
+      with:
+        source-url: https://api.nuget.org/v3/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_KEY}}
+    
+    - name: Copy Nuspec
+      shell: bash
+      run: cp $GITHUB_WORKSPACE/.github/nuspec/RibosoftAlgo-osx.nuspec $GITHUB_WORKSPACE/RibosoftAlgo/nuget/RibosoftAlgo.nuspec
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/build
+
+    - name: Install pipenv
+      run: |
+        pip install pipenv
+        pipenv install
+
+    - name: Get library dependencies
+      run: pipenv run python $GITHUB_WORKSPACE/ribosoft.py deps install --yes
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: CC=gcc-10 CXX=g++-10 cmake $GITHUB_WORKSPACE/RibosoftAlgo -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+
+    - name: Build
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: cmake --build . --config $BUILD_TYPE
+      
+    # Publish
+    - name: Publish to Nuget
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: dotnet nuget push ./bin/RibosoftAlgo.1.0.2.nupkg -k $NUGET_AUTH_TOKEN --skip-duplicate
+      
+    - name: Publish to GitHub Packages
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: |
+        dotnet nuget add source https://nuget.pkg.github.com/t-vaudry/index.json -n github -u t-vaudry -p ${{secrets.GITHUB_TOKEN}} --store-password-in-clear-text
+        dotnet nuget push ./bin/RibosoftAlgo.1.0.2.nupkg -k ${{secrets.GITHUB_TOKEN}} --source "github" --skip-duplicate
