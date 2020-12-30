@@ -16,7 +16,7 @@ namespace Ribosoft.Models.RibozymeViewModel
 
         [Required(AllowEmptyStrings = false)]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
-        [ValidationAttributes.RepeatNotations(15)]
+        [ValidationAttributes.RepeatNotations(50)]
         [ValidationAttributes.Nucleotide]
         public string Sequence { get; set; }
 

@@ -221,10 +221,10 @@ namespace Ribosoft.Jobs
 
                             var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
                                 candidate.SubstrateStructure, job.Na.GetValueOrDefault(), job.Probe.GetValueOrDefault());
-                            if (temperatureScore < 0.0f || temperatureScore > 100.0f)
+                            /*if (temperatureScore < 0.0f || temperatureScore > 100.0f)
                             {
                                 continue;
-                            }
+                            }*/
 
                             var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
                                 ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset);
@@ -334,6 +334,7 @@ namespace Ribosoft.Jobs
             
             var designs = _db.Designs
                              .Where(d => d.JobId == job.Id)
+                             .AsEnumerable()
                              .GroupBy(d => new { d.CutsiteIndex, d.SubstrateSequenceLength });
 
             foreach (var designGroup in designs)
