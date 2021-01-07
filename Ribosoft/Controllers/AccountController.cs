@@ -86,6 +86,26 @@ namespace Ribosoft.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GuestLogin(LoginViewModel model, string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            Guid guid = Guid.NewGuid();
+            var user = new ApplicationUser { UserName = string.Format("Guest-{0}", guid), Email = string.Format("{0}@ribosoft.com", guid) };
+            var result = await _userManager.CreateAsync(user, "Ribosoft2Guest!");
+            await _userManager.AddToRoleAsync(user, "Guest");
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("Guest created a new account with password.");
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return RedirectToLocal(returnUrl);
+            }
+            AddErrors(result);
+            return RedirectToLocal(returnUrl);
+        }
+
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> LoginWith2fa(bool rememberMe, string returnUrl = null)

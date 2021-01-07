@@ -8,7 +8,14 @@
 {
     <ul class="navbar-nav">
         <li class="nav-item" is-active-route asp-controller="Manage">
-            <a asp-controller="Manage" asp-action="Index" title="Manage" class="nav-link">Hello @UserManager.GetUserName(User)!</a>
+            @if (User.IsInRole("Guest"))
+            {
+                <span class="nav-link">Hello Guest!</span>
+            }
+            else
+            {
+                <a asp-controller="Manage" asp-action="Index" title="Manage" class="nav-link">Hello @UserManager.GetUserName(User)!</a>
+            }
         </li>
         <li class="nav-item" is-active-route asp-controller="Account" asp-action="Logout">
             <form asp-controller="Account" asp-action="Logout" method="post" class="form-inline">
