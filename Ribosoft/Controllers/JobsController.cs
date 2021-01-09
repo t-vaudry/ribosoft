@@ -64,7 +64,8 @@ namespace Ribosoft.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(JobIndexViewModel model)
         {
-            if (_context.Jobs.Any(job => job.Id == Int32.Parse(model.JobId)))
+            int val;
+            if (Int32.TryParse(model.JobId, out val) && _context.Jobs.Any(job => job.Id == val))
             {
                 // modify owner of job to current user
                 ApplicationUser user = await GetUser();

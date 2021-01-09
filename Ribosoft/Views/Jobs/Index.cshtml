@@ -1,10 +1,24 @@
 ﻿@model Ribosoft.Models.JobsViewModels.JobIndexViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Jobs";
 }
 
-<h1 class="my-3">@ViewData["Title"]</h1>
+<div class="row my-3">
+    <h1 class="col-md-6">@ViewData["Title"]</h1>
+    <div class="col-md-6 align-content-center d-flex">
+        <form method="post" class="form-inline ml-auto">
+            <span class="text-danger mr-1">@Model.ErrorMessage</span>
+            <span class="text-success mr-1">@Model.SuccessMessage</span>
+            <span data-toggle="tooltip" data-placement="left" title="@Localizer["AddJobTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
+            <input asp-for="JobId" class="form-control mx-1" placeholder="Job Id">
+            <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+    </div>
+</div>
 
 @if (Model.InProgress.Any())
 {
@@ -45,14 +59,6 @@
                 <div class="col-md-6">
                     <h5 class="card-title mb-0">Completed</h5>
                 </div>
-                <div class="col-md-6">
-                    <form method="post" class="form-inline float-right">
-                        <span class="text-danger">@Model.ErrorMessage</span>
-                        <span class="text-success">@Model.SuccessMessage</span>
-                        <input asp-for="JobId" class="form-control mx-1" placeholder="Job Id">
-                        <button type="submit" class="btn btn-primary">Add</button>
-                    </form>
-                </div>
             </div>
             <p class="card-text">You have no completed jobs.</p>
         </div>
@@ -63,14 +69,6 @@
             <div class="row my-1">
                 <div class="col-md-6">
                     <h5 class="card-title mb-0">Completed</h5>
-                </div>
-                <div class="col-md-6">
-                    <form method="post" class="form-inline float-right">
-                        <span class="text-danger">@Model.ErrorMessage</span>
-                        <span class="text-success">@Model.SuccessMessage</span>
-                        <input asp-for="JobId" class="form-control mx-1" placeholder="Job Id">
-                        <button type="submit" class="btn btn-primary">Add</button>
-                    </form>
                 </div>
             </div>
         </div>
@@ -114,3 +112,12 @@
         </div>
     }
 </div>
+
+@section scripts 
+{
+    <script>
+        $(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}
