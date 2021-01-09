@@ -21,7 +21,7 @@
                         <div class="col-md-8">
                             <p class="mb-0">
                                 <span class="d-block">
-                                    <strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong> <span class="text-muted">on @item.CreatedAt</span>
+                                    <strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong> <span class="text-muted">on @item.CreatedAt</span> <span class="text-muted">[@Html.DisplayNameFor(modelItem => item.Id): @item.Id]</span>
                                 </span>
                                 <code>@(item.RNAInput.Length > 80 ? item.RNAInput.Substring(0, 80) + "..." : item.RNAInput)</code>
                             </p>
@@ -41,14 +41,38 @@
     @if (Model.Completed.TotalItems == 0)
     {
         <div class="card-body">
-            <h5 class="card-title border-bottom border-gray pb-3 mb-3">Completed</h5>
+            <div class="row my-1">
+                <div class="col-md-6">
+                    <h5 class="card-title mb-0">Completed</h5>
+                </div>
+                <div class="col-md-6">
+                    <form method="post" class="form-inline float-right">
+                        <span class="text-danger">@Model.ErrorMessage</span>
+                        <span class="text-success">@Model.SuccessMessage</span>
+                        <input asp-for="JobId" class="form-control mx-1" placeholder="Job Id">
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </form>
+                </div>
+            </div>
             <p class="card-text">You have no completed jobs.</p>
         </div>
     }
     else
     {
         <div class="card-body">
-            <h5 class="card-title mb-0">Completed</h5>
+            <div class="row my-1">
+                <div class="col-md-6">
+                    <h5 class="card-title mb-0">Completed</h5>
+                </div>
+                <div class="col-md-6">
+                    <form method="post" class="form-inline float-right">
+                        <span class="text-danger">@Model.ErrorMessage</span>
+                        <span class="text-success">@Model.SuccessMessage</span>
+                        <input asp-for="JobId" class="form-control mx-1" placeholder="Job Id">
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <div class="list-group list-group-flush">
@@ -60,7 +84,7 @@
                             <p class="mb-0">
                                 <span class="d-block">
                                     @Html.Partial("JobStateBadge", item.JobState)
-                                    <strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong> <span class="text-muted">on @item.CreatedAt</span>
+                                    <strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong> <span class="text-muted">on @item.CreatedAt</span> <span class="text-muted">[@Html.DisplayNameFor(modelItem => item.Id): @item.Id]</span>
                                 </span>
                                 <code>@(item.RNAInput.Length > 80 ? item.RNAInput.Substring(0, 80) + "..." : item.RNAInput)</code>
                             </p>
