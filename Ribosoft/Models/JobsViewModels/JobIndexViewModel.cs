@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using cloudscribe.Pagination.Models;
 
 namespace Ribosoft.Models.JobsViewModels
@@ -8,6 +7,9 @@ namespace Ribosoft.Models.JobsViewModels
     {
         public IEnumerable<Job> InProgress { get; set; }
         public PagedResult<Job> Completed { get; set; }
+        public string JobId { get; set; }
+        public string ErrorMessage { get; set; }
+        public string SuccessMessage { get; set; }
 
         public JobIndexViewModel()
         {
