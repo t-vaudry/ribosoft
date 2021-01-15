@@ -90,99 +90,7 @@ namespace Ribosoft.Controllers
 
             if (!String.IsNullOrEmpty(filterParam))
             {
-                StringBuilder sb = new StringBuilder(filterValue.ToString());
-                sb[sb.Length - 1] = Convert.ToChar(Convert.ToInt32(sb[sb.Length - 1]) + 1);
-                float upperBound = float.Parse(sb.ToString());
-
-                switch (filterParam)
-                {
-                    case "Rank":
-                        if (filterCondition == "gteq")
-                        {
-                            designs = designs.Where(d => d.Rank >= filterValue);
-                        }
-                        else if (filterCondition == "lteq")
-                        {
-                            designs = designs.Where(d => d.Rank <= filterValue);
-                        }
-                        else if (filterCondition == "eq")
-                        {
-                            designs = designs.Where(d => d.Rank == (int)filterValue);
-                        }
-                        break;
-                    case "HighestTemperatureScore":
-                        if (filterCondition == "gteq")
-                        {
-                            designs = designs.Where(d => d.HighestTemperatureScore >= filterValue);
-                        }
-                        else if (filterCondition == "lteq")
-                        {
-                            designs = designs.Where(d => d.HighestTemperatureScore <= filterValue);
-                        }
-                        else if (filterCondition == "eq")
-                        {
-                            designs = designs.Where(d => d.HighestTemperatureScore >= filterValue && d.HighestTemperatureScore < upperBound);
-                        }
-                        break;
-                    case "DesiredTemperatureScore":
-                        if (filterCondition == "gteq")
-                        {
-                            designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue);
-                        }
-                        else if (filterCondition == "lteq")
-                        {
-                            designs = designs.Where(d => d.DesiredTemperatureScore <= filterValue);
-                        }
-                        else if (filterCondition == "eq")
-                        {
-                            designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue && d.DesiredTemperatureScore < upperBound);
-                        }
-                        break;
-                    case "SpecificityScore":
-                        if (filterCondition == "gteq")
-                        {
-                            designs = designs.Where(d => d.SpecificityScore >= filterValue);
-                        }
-                        else if (filterCondition == "lteq")
-                        {
-                            designs = designs.Where(d => d.SpecificityScore <= filterValue);
-                        }
-                        else if (filterCondition == "eq")
-                        {
-                            designs = designs.Where(d => d.SpecificityScore >= filterValue && d.SpecificityScore < upperBound);
-                        }
-                        break;
-                    case "AcessibilityScore":
-                        if (filterCondition == "gteq")
-                        {
-                            designs = designs.Where(d => d.AccessibilityScore >= filterValue);
-                        }
-                        else if (filterCondition == "lteq")
-                        {
-                            designs = designs.Where(d => d.AccessibilityScore <= filterValue);
-                        }
-                        else if (filterCondition == "eq")
-                        {
-                            designs = designs.Where(d => d.AccessibilityScore >= filterValue && d.AccessibilityScore < upperBound);
-                        }
-                        break;
-                    case "StructureScore":
-                        if (filterCondition == "gteq")
-                        {
-                            designs = designs.Where(d => d.StructureScore >= filterValue);
-                        }
-                        else if (filterCondition == "lteq")
-                        {
-                            designs = designs.Where(d => d.StructureScore <= filterValue);
-                        }
-                        else if (filterCondition == "eq")
-                        {
-                            designs = designs.Where(d => d.StructureScore >= filterValue && d.StructureScore < upperBound);
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                FilterDesigns(ref designs, filterParam, filterCondition, filterValue);
             }
 
             int pageSize = 20;
@@ -396,104 +304,12 @@ namespace Ribosoft.Controllers
             return user;
         }
 
-        public FileStreamResult DownloadDesigns(int jobID, string format, string filterParam, string filterCondition, int filterValue)
+        public FileStreamResult DownloadDesigns(int jobID, string format, string filterParam, string filterCondition, float filterValue)
         {
             var designs = from d in _context.Designs where d.JobId == jobID select d;
             if (!String.IsNullOrEmpty(filterParam))
             {
-                StringBuilder sb = new StringBuilder(filterValue.ToString());
-                sb[sb.Length - 1] = Convert.ToChar(Convert.ToInt32(sb[sb.Length - 1]) + 1);
-                float upperBound = float.Parse(sb.ToString());
-
-                switch (filterParam)
-                {
-                    case "Rank":
-                        if (filterCondition == "gteq")
-                        {
-                            designs = designs.Where(d => d.Rank >= filterValue);
-                        }
-                        else if (filterCondition == "lteq")
-                        {
-                            designs = designs.Where(d => d.Rank <= filterValue);
-                        }
-                        else if (filterCondition == "eq")
-                        {
-                            designs = designs.Where(d => d.Rank == (int)filterValue);
-                        }
-                        break;
-                    case "HighestTemperatureScore":
-                        if (filterCondition == "gteq")
-                        {
-                            designs = designs.Where(d => d.HighestTemperatureScore >= filterValue);
-                        }
-                        else if (filterCondition == "lteq")
-                        {
-                            designs = designs.Where(d => d.HighestTemperatureScore <= filterValue);
-                        }
-                        else if (filterCondition == "eq")
-                        {
-                            designs = designs.Where(d => d.HighestTemperatureScore >= filterValue && d.HighestTemperatureScore < upperBound);
-                        }
-                        break;
-                    case "DesiredTemperatureScore":
-                        if (filterCondition == "gteq")
-                        {
-                            designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue);
-                        }
-                        else if (filterCondition == "lteq")
-                        {
-                            designs = designs.Where(d => d.DesiredTemperatureScore <= filterValue);
-                        }
-                        else if (filterCondition == "eq")
-                        {
-                            designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue && d.DesiredTemperatureScore < upperBound);
-                        }
-                        break;
-                    case "SpecificityScore":
-                        if (filterCondition == "gteq")
-                        {
-                            designs = designs.Where(d => d.SpecificityScore >= filterValue);
-                        }
-                        else if (filterCondition == "lteq")
-                        {
-                            designs = designs.Where(d => d.SpecificityScore <= filterValue);
-                        }
-                        else if (filterCondition == "eq")
-                        {
-                            designs = designs.Where(d => d.SpecificityScore >= filterValue && d.SpecificityScore < upperBound);
-                        }
-                        break;
-                    case "AcessibilityScore":
-                        if (filterCondition == "gteq")
-                        {
-                            designs = designs.Where(d => d.AccessibilityScore >= filterValue);
-                        }
-                        else if (filterCondition == "lteq")
-                        {
-                            designs = designs.Where(d => d.AccessibilityScore <= filterValue);
-                        }
-                        else if (filterCondition == "eq")
-                        {
-                            designs = designs.Where(d => d.AccessibilityScore >= filterValue && d.AccessibilityScore < upperBound);
-                        }
-                        break;
-                    case "StructureScore":
-                        if (filterCondition == "gteq")
-                        {
-                            designs = designs.Where(d => d.StructureScore >= filterValue);
-                        }
-                        else if (filterCondition == "lteq")
-                        {
-                            designs = designs.Where(d => d.StructureScore <= filterValue);
-                        }
-                        else if (filterCondition == "eq")
-                        {
-                            designs = designs.Where(d => d.StructureScore >= filterValue && d.StructureScore < upperBound);
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                FilterDesigns(ref designs, filterParam, filterCondition, filterValue);                
             }
             var payload = "";
             var extension = "";
@@ -631,6 +447,102 @@ namespace Ribosoft.Controllers
             else
             {
                 return new EmptyResult();
+            }
+        }
+
+        private void FilterDesigns(ref IQueryable<Design> designs, string filterParam, string filterCondition, float filterValue)
+        {
+            StringBuilder sb = new StringBuilder(filterValue.ToString());
+            sb[sb.Length - 1] = Convert.ToChar(Convert.ToInt32(sb[sb.Length - 1]) + 1);
+            float upperBound = float.Parse(sb.ToString());
+            switch (filterParam)
+            {
+                case "Rank":
+                    if (filterCondition == "gteq")
+                    {
+                        designs = designs.Where(d => d.Rank >= filterValue);
+                    }
+                    else if (filterCondition == "lteq")
+                    {
+                        designs = designs.Where(d => d.Rank <= filterValue);
+                    }
+                    else if (filterCondition == "eq")
+                    {
+                        designs = designs.Where(d => d.Rank == (int)filterValue);
+                    }
+                    break;
+                case "HighestTemperatureScore":
+                    if (filterCondition == "gteq")
+                    {
+                        designs = designs.Where(d => d.HighestTemperatureScore >= filterValue);
+                    }
+                    else if (filterCondition == "lteq")
+                    {
+                        designs = designs.Where(d => d.HighestTemperatureScore <= filterValue);
+                    }
+                    else if (filterCondition == "eq")
+                    {
+                        designs = designs.Where(d => d.HighestTemperatureScore >= filterValue && d.HighestTemperatureScore < upperBound);
+                    }
+                    break;
+                case "DesiredTemperatureScore":
+                    if (filterCondition == "gteq")
+                    {
+                        designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue);
+                    }
+                    else if (filterCondition == "lteq")
+                    {
+                        designs = designs.Where(d => d.DesiredTemperatureScore <= filterValue);
+                    }
+                    else if (filterCondition == "eq")
+                    {
+                        designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue && d.DesiredTemperatureScore < upperBound);
+                    }
+                    break;
+                case "SpecificityScore":
+                    if (filterCondition == "gteq")
+                    {
+                        designs = designs.Where(d => d.SpecificityScore >= filterValue);
+                    }
+                    else if (filterCondition == "lteq")
+                    {
+                        designs = designs.Where(d => d.SpecificityScore <= filterValue);
+                    }
+                    else if (filterCondition == "eq")
+                    {
+                        designs = designs.Where(d => d.SpecificityScore >= filterValue && d.SpecificityScore < upperBound);
+                    }
+                    break;
+                case "AcessibilityScore":
+                    if (filterCondition == "gteq")
+                    {
+                        designs = designs.Where(d => d.AccessibilityScore >= filterValue);
+                    }
+                    else if (filterCondition == "lteq")
+                    {
+                        designs = designs.Where(d => d.AccessibilityScore <= filterValue);
+                    }
+                    else if (filterCondition == "eq")
+                    {
+                        designs = designs.Where(d => d.AccessibilityScore >= filterValue && d.AccessibilityScore < upperBound);
+                    }
+                    break;
+                case "StructureScore":
+                    if (filterCondition == "gteq")
+                    {
+                        designs = designs.Where(d => d.StructureScore >= filterValue);
+                    }
+                    else if (filterCondition == "lteq")
+                    {
+                        designs = designs.Where(d => d.StructureScore <= filterValue);
+                    }
+                    else if (filterCondition == "eq")
+                    {
+                        designs = designs.Where(d => d.StructureScore >= filterValue && d.StructureScore < upperBound);
+                    }
+                    break;
+                default:
+                    break;
             }
         }
     }

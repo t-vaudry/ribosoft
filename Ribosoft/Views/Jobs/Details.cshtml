@@ -226,9 +226,9 @@
                         <template slot="button-content">
                             <i class="fas fa-download"></i> Download
                         </template>
-                        @Html.ActionLink("Download all to .zip", "DownloadDesigns", new { jobID = Model.Job.Id, format = "fasta", filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = int.Parse(Model.FilterValue) }, new { @class = "dropdown-item", @role = "menuitem", @target = "_self" })
-                        @Html.ActionLink("Download all to .fasta", "DownloadDesigns", new { jobID = Model.Job.Id, format = "fasta", filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = int.Parse(Model.FilterValue) }, new { @class = "dropdown-item", @role = "menuitem", @target = "_self" })
-                        @Html.ActionLink("Download all to .csv", "DownloadDesigns", new { jobID = Model.Job.Id, format = "csv", filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = int.Parse(Model.FilterValue) }, new { @class = "dropdown-item", @role = "menuitem", @target = "_self" })
+                        @Html.ActionLink("Download all to .zip", "DownloadDesigns", new { jobID = Model.Job.Id, format = "fasta", filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = float.Parse(Model.FilterValue) }, new { @class = "dropdown-item", @role = "menuitem", @target = "_self" })
+                        @Html.ActionLink("Download all to .fasta", "DownloadDesigns", new { jobID = Model.Job.Id, format = "fasta", filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = float.Parse(Model.FilterValue) }, new { @class = "dropdown-item", @role = "menuitem", @target = "_self" })
+                        @Html.ActionLink("Download all to .csv", "DownloadDesigns", new { jobID = Model.Job.Id, format = "csv", filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = float.Parse(Model.FilterValue) }, new { @class = "dropdown-item", @role = "menuitem", @target = "_self" })
                         <b-dropdown-divider></b-dropdown-divider>
                         <input type="button" id="zip" class="dropdown-item disabled" role="menuitem" value="Download selected to .zip" />
                         <input type="button" id="fasta" class="dropdown-item disabled" role="menuitem" value="Download selected to .fasta" />
