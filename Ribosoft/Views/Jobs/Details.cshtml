@@ -1,4 +1,5 @@
 ﻿@model Ribosoft.Models.JobsViewModels.JobDetailsViewModel
+@using System.Web
 
 @{
     ViewData["Title"] = "Job Details";
@@ -225,13 +226,13 @@
                         <template slot="button-content">
                             <i class="fas fa-download"></i> Download
                         </template>
-                        <b-dropdown-item disabled>Download all to .zip</b-dropdown-item>
-                        @Html.ActionLink("Download all to .fasta", "DownloadDesigns", new { jobID = Model.Job.Id, sortOrder = Model.SortOrder, format = "fasta" }, new { @class = "dropdown-item", @role = "menuitem", @target = "_self" })
-                        @Html.ActionLink("Download all to .csv", "DownloadDesigns", new { jobID = Model.Job.Id, sortOrder = Model.SortOrder, format = "csv" }, new { @class = "dropdown-item", @role = "menuitem", @target = "_self" })
+                        @Html.ActionLink("Download all to .zip", "DownloadDesigns", new { jobID = Model.Job.Id, format = "fasta", filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = int.Parse(Model.FilterValue) }, new { @class = "dropdown-item", @role = "menuitem", @target = "_self" })
+                        @Html.ActionLink("Download all to .fasta", "DownloadDesigns", new { jobID = Model.Job.Id, format = "fasta", filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = int.Parse(Model.FilterValue) }, new { @class = "dropdown-item", @role = "menuitem", @target = "_self" })
+                        @Html.ActionLink("Download all to .csv", "DownloadDesigns", new { jobID = Model.Job.Id, format = "csv", filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = int.Parse(Model.FilterValue) }, new { @class = "dropdown-item", @role = "menuitem", @target = "_self" })
                         <b-dropdown-divider></b-dropdown-divider>
-                        <b-dropdown-item disabled>Download selected to .zip</b-dropdown-item>
-                        <b-dropdown-item disabled>Download selected to .fasta</b-dropdown-item>
-                        <b-dropdown-item disabled>Download selected to .csv</b-dropdown-item>
+                        <input type="button" id="zip" class="dropdown-item disabled" role="menuitem" value="Download selected to .zip" />
+                        <input type="button" id="fasta" class="dropdown-item disabled" role="menuitem" value="Download selected to .fasta" />
+                        <input type="button" id="csv" class="dropdown-item disabled" role="menuitem" value="Download selected to .csv" />
                     </b-dropdown>
                 </div>
 
@@ -265,7 +266,7 @@
                         <tbody>
                             @foreach (var item in Model.Designs.Data)
                             {
-                                <tr class="clickable-row" data-href="@Url.Action("Details", "Designs", new {id = item.Id})">
+                                <tr id="@item.JobId-@item.Id" class="clickable-row">
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Rank)
                                     </td>
@@ -333,9 +334,61 @@
     <script src="~/dist/details.js"></script>
     <script type="text/javascript">
         jQuery(document).ready(function ($) {
-            $(".clickable-row").click(function () {
-                window.location = $(this).data("href");
+            var selectedDesigns = JSON.parse(localStorage.getItem("selectedDesigns")) || {};
+            $.each(selectedDesigns, function (key, value) {
+                $('#' + key).addClass("selected");
             });
+            if (!jQuery.isEmptyObject(selectedDesigns)) {
+                $('#zip').removeClass("disabled");
+                $('#fasta').removeClass("disabled");
+                $('#csv').removeClass("disabled");
+            }
+
+            $(".clickable-row").click(function () {
+                if ($(this).hasClass("selected")) {
+                    $(this).removeClass("selected");
+                    delete selectedDesigns[this.id];
+                    if (jQuery.isEmptyObject(selectedDesigns)) {
+                        $('#zip').addClass("disabled");
+                        $('#fasta').addClass("disabled");
+                        $('#csv').addClass("disabled");
+                    }
+                } else {
+                    $(this).addClass("selected");
+                    selectedDesigns[this.id] = true;
+                    $('#zip').removeClass("disabled");
+                    $('#fasta').removeClass("disabled");
+                    $('#csv').removeClass("disabled");
+                }
+                localStorage.setItem("selectedDesigns", JSON.stringify(selectedDesigns));
+            });
+
+            function clickFunc(format) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Jobs/DownloadSelectedDesigns",
+                    data: {
+                        jobID: @Model.Job.Id,
+                        selectedDesigns: JSON.stringify(selectedDesigns),
+                        format: format
+                    },
+                    success: function (data) {
+                        window.location = '/Jobs/Download?fileGuid=' + data.fileGuid + '&fileName=' + data.fileName + '&fileType=' + data.fileType;
+                        $(".clickable-row.selected").each(function(i, obj) {
+                            $(this).removeClass("selected");
+                            delete selectedDesigns;
+                            localStorage.setItem("selectedDesigns", JSON.stringify({}));
+                            $('#zip').addClass("disabled");
+                            $('#fasta').addClass("disabled");
+                            $('#csv').addClass("disabled");
+                        })
+                    }
+                });
+            }
+
+            $('#zip').click(function () { return clickFunc("zip"); });
+            $('#fasta').click(function () { return clickFunc("fasta"); });
+            $('#csv').click(function () { return clickFunc("csv"); });
         });
     </script>
 }
