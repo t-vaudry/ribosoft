@@ -36,7 +36,7 @@ namespace Ribosoft.Controllers
         }
 
         // GET: Jobs
-        public async Task<IActionResult> Index(int pageNumber)
+        public async Task<IActionResult> Index(int pageNumber, string eMessage = "", string sMessage = "")
         {
             var user = await GetUser();
 
@@ -60,8 +60,33 @@ namespace Ribosoft.Controllers
             vm.Completed.TotalItems = await completedJobs.CountAsync();
             vm.Completed.PageNumber = pageNumber;
             vm.Completed.PageSize = pageSize;
+            vm.ErrorMessage = eMessage;
+            vm.SuccessMessage = sMessage;
 
             return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(JobIndexViewModel model)
+        {
+            int val;
+            if (Int32.TryParse(model.JobId, out val) && _context.Jobs.Any(job => job.Id == val))
+            {
+                // modify owner of job to current user
+                ApplicationUser user = await GetUser();
+                Job job = await _context.Jobs.SingleOrDefaultAsync(m => m.Id == Int32.Parse(model.JobId));
+                job.OwnerId = user.Id;
+                _context.Jobs.Update(job);
+                await _context.SaveChangesAsync();
+                model.SuccessMessage = "Successfully added Job!";
+            }
+            else
+            {
+                model.ErrorMessage = "Invalid Job Id!";
+            }
+
+            return RedirectToAction(nameof(Index), new { pageNumber = 1, eMessage = model.ErrorMessage, sMessage = model.SuccessMessage } );
         }
 
         // GET: Jobs/Details/5
