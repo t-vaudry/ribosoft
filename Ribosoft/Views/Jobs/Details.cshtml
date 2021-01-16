@@ -7,11 +7,18 @@
 }
 
 <h1 class="my-3">Job details</h1>
+
 <div id="app">
     <div class="card my-3 box-shadow">
         <div class="card-body">
             <h5 class="card-title border-bottom border-gray pb-2">Request information</h5>
             <dl class="row mb-0">
+                <dt class="col-md-2">
+                    @Html.DisplayNameFor(model => model.Job.Id)
+                </dt>
+                <dd class="col-md-10">
+                    @Html.DisplayFor(model => model.Job.Id)
+                </dd>
                 <dt class="col-md-2">
                     @Html.DisplayNameFor(model => model.Job.StatusMessage)
                 </dt>

@@ -17,6 +17,7 @@ namespace Ribosoft.Data
                 new ApplicationDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
                 await EnsureRole(serviceProvider, "Administrator");
+                await EnsureRole(serviceProvider, "Guest");
 
                 SeedDatabase(context);
             }

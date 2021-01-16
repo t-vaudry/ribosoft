@@ -46,6 +46,7 @@ namespace Ribosoft.Models
             this.Designs = new HashSet<Design>();
         }
 
+        [Display(Name = "Job Id")]
         public int Id { get; set; }
         public string OwnerId { get; set; }
         [Display(Name = "Job state")]
