@@ -148,3 +148,20 @@ html, body {
 tr.clickable-row {
     cursor: pointer;
 }
+
+tr.clickable-row.selected {
+    background-color: rgba(135, 206, 250, 0.3);
+}
+
+.mb-2 {
+    margin-right: 0.5em;
+}
+
+.dropdown-item.disabled {
+    pointer-events: none;
+}
+
+input.dropdown-item {
+    outline: 0;
+    cursor: pointer;
+}
