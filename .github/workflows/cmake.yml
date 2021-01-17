@@ -19,12 +19,12 @@ jobs:
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
-    
+
     - name: Install pipenv
       run: |
         pip install pipenv
         pipenv install
-    
+
     - name: Get library dependencies
       run: pipenv run python $GITHUB_WORKSPACE/ribosoft.py deps install --yes
 
@@ -56,12 +56,12 @@ jobs:
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
-    
+
     - name: Install pipenv
       run: |
         pip install pipenv
         pipenv install
-    
+
     - name: Get library dependencies
       run: pipenv run python ./ribosoft.py deps install --yes
 
@@ -97,15 +97,15 @@ jobs:
     - name: Install gcc & libomp
       shell: bash
       run: brew install gcc@10 libomp
-    
+
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
-    
+
     - name: Install pipenv
       run: |
         pip install pipenv
         pipenv install
-    
+
     - name: Get library dependencies
       run: pipenv run python $GITHUB_WORKSPACE/ribosoft.py deps install --yes
 
