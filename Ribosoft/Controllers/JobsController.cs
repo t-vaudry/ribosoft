@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +14,12 @@ using Ribosoft.Jobs;
 using Ribosoft.Models;
 using Ribosoft.Models.JobsViewModels;
 
+using System.IO;
+using ICSharpCode.SharpZipLib.Zip;
+using ICSharpCode.SharpZipLib.Core;
+using Newtonsoft.Json.Linq;
+using System.Web.Helpers;
+
 namespace Ribosoft.Controllers
 {
     public class JobsController : Controller
@@ -22,7 +28,7 @@ namespace Ribosoft.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
 
         public JobsController(
-            ApplicationDbContext context, 
+            ApplicationDbContext context,
             UserManager<ApplicationUser> userManager)
         {
             _context = context;
@@ -109,69 +115,7 @@ namespace Ribosoft.Controllers
 
             if (!String.IsNullOrEmpty(filterParam))
             {
-                StringBuilder sb = new StringBuilder(filterValue.ToString());
-                sb[sb.Length-1] = Convert.ToChar(Convert.ToInt32(sb[sb.Length-1])+1);
-                float upperBound = float.Parse(sb.ToString());
-
-                switch (filterParam)
-                {
-                    case "Rank":
-                        if (filterCondition == "gteq") {
-                            designs = designs.Where(d => d.Rank >= filterValue);
-                        } else if (filterCondition == "lteq") {
-                            designs = designs.Where(d => d.Rank <= filterValue);
-                        } else if (filterCondition == "eq") {
-                            designs = designs.Where(d => d.Rank == (int) filterValue);
-                        }
-                        break;
-                    case "HighestTemperatureScore":
-                        if (filterCondition == "gteq") {
-                            designs = designs.Where(d => d.HighestTemperatureScore >= filterValue);
-                        } else if (filterCondition == "lteq") {
-                            designs = designs.Where(d => d.HighestTemperatureScore <= filterValue);
-                        } else if (filterCondition == "eq") {
-                            designs = designs.Where(d => d.HighestTemperatureScore >= filterValue && d.HighestTemperatureScore < upperBound);
-                        }
-                        break;
-                    case "DesiredTemperatureScore":
-                        if (filterCondition == "gteq") {
-                            designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue);
-                        } else if (filterCondition == "lteq") {
-                            designs = designs.Where(d => d.DesiredTemperatureScore <= filterValue);
-                        } else if (filterCondition == "eq") {
-                            designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue && d.DesiredTemperatureScore < upperBound);
-                        }
-                        break;
-                    case "SpecificityScore":
-                        if (filterCondition == "gteq") {
-                            designs = designs.Where(d => d.SpecificityScore >= filterValue);
-                        } else if (filterCondition == "lteq") {
-                            designs = designs.Where(d => d.SpecificityScore <= filterValue);
-                        } else if (filterCondition == "eq") {
-                            designs = designs.Where(d => d.SpecificityScore >= filterValue && d.SpecificityScore < upperBound);
-                        }
-                        break;
-                    case "AcessibilityScore":
-                        if (filterCondition == "gteq") {
-                            designs = designs.Where(d => d.AccessibilityScore >= filterValue);
-                        } else if (filterCondition == "lteq") {
-                            designs = designs.Where(d => d.AccessibilityScore <= filterValue);
-                        } else if (filterCondition == "eq") {
-                            designs = designs.Where(d => d.AccessibilityScore >= filterValue && d.AccessibilityScore < upperBound);
-                        }
-                        break;
-                    case "StructureScore":
-                        if (filterCondition == "gteq") {
-                            designs = designs.Where(d => d.StructureScore >= filterValue);
-                        } else if (filterCondition == "lteq") {
-                            designs = designs.Where(d => d.StructureScore <= filterValue);
-                        } else if (filterCondition == "eq") {
-                            designs = designs.Where(d => d.StructureScore >= filterValue && d.StructureScore < upperBound);
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                FilterDesigns(ref designs, filterParam, filterCondition, filterValue);
             }
 
             int pageSize = 20;
@@ -195,7 +139,7 @@ namespace Ribosoft.Controllers
 
             switch (sortOrder)
             {
-                case "des_temp_desc": 
+                case "des_temp_desc":
                     designs = designs.OrderByDescending(d => d.DesiredTemperatureScore);
                     ViewBag.DesTempColumnTitle = "▼ |  " + ViewBag.DesTempColumnTitle;
                     break;
@@ -248,14 +192,14 @@ namespace Ribosoft.Controllers
             List<SelectListItem> filterParams = new List<SelectListItem>();
             List<SelectListItem> filterConditions = new List<SelectListItem>();
 
-            filterParams.Add(new SelectListItem { Text = "Rank", Value = "Rank", Selected=true });
+            filterParams.Add(new SelectListItem { Text = "Rank", Value = "Rank", Selected = true });
             filterParams.Add(new SelectListItem { Text = "Highest Temperature Score", Value = "HighestTemperatureScore" });
             filterParams.Add(new SelectListItem { Text = "Desired Temperature Score", Value = "DesiredTemperatureScore" });
             filterParams.Add(new SelectListItem { Text = "Specificity Score", Value = "SpecificityScore" });
             filterParams.Add(new SelectListItem { Text = "Acessibility Score", Value = "AcessibilityScore" });
             filterParams.Add(new SelectListItem { Text = "Structure Score", Value = "StructureScore" });
 
-            filterConditions.Add(new SelectListItem { Text = ">=", Value = "gteq", Selected=true });
+            filterConditions.Add(new SelectListItem { Text = ">=", Value = "gteq", Selected = true });
             filterConditions.Add(new SelectListItem { Text = "<=", Value = "lteq" });
             filterConditions.Add(new SelectListItem { Text = "=", Value = "eq" });
 
@@ -383,6 +327,254 @@ namespace Ribosoft.Controllers
             }
 
             return user;
+        }
+
+        public FileStreamResult DownloadDesigns(int jobID, string format, string filterParam, string filterCondition, float filterValue)
+        {
+            var designs = from d in _context.Designs where d.JobId == jobID select d;
+            if (!String.IsNullOrEmpty(filterParam))
+            {
+                FilterDesigns(ref designs, filterParam, filterCondition, filterValue);                
+            }
+            var payload = "";
+            var extension = "";
+            var type = "";
+            MemoryStream stream = new MemoryStream();
+            byte[] byteArray;
+            switch (format)
+            {
+                case "csv":
+                    payload += String.Format("Rank,DesiredTemperatureScore,HighestTemperatureScore,SpecificityScore,AccessibilityScore,StructureScore,CreatedAt,UpdatedAt,Sequence\n");
+                    extension = "csv";
+                    foreach (Design d in designs)
+                    {
+                        payload += String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
+                    }
+                    type = "text/plain";
+                    byteArray = Encoding.ASCII.GetBytes(payload);
+                    stream = new MemoryStream(byteArray);
+                    break;
+                case "zip":
+                    extension = "zip";
+                    type = "application/octet-stream";
+                    ZipOutputStream zipStream = new ZipOutputStream(stream);
+                    foreach (Design d in designs)
+                    {
+                        var newEntry = new ZipEntry("design" + d.Id + ".fasta");
+                        newEntry.DateTime = DateTime.Now;
+
+                        zipStream.PutNextEntry(newEntry);
+                        byteArray = Encoding.ASCII.GetBytes(String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence));
+
+                        MemoryStream inStream = new MemoryStream(byteArray);
+                        StreamUtils.Copy(inStream, zipStream, new byte[4096]);
+                        inStream.Close();
+                        zipStream.CloseEntry();
+                    }
+
+                    zipStream.IsStreamOwner = false;
+                    zipStream.Close();
+                    stream.Position = 0;
+                    break;
+                case "fasta":
+                    extension = "fasta";
+                    foreach (Design d in designs)
+                    {
+                        payload += String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
+                    }
+                    type = "text/plain";
+                    byteArray = Encoding.ASCII.GetBytes(payload);
+                    stream = new MemoryStream(byteArray);
+                    break;
+            }
+
+            return File(stream, type, String.Format("job{0}_bulk.{1}", jobID, extension));
+        }
+
+        public JsonResult DownloadSelectedDesigns(int jobID, string selectedDesigns, string format)
+        {
+            JObject obj = JObject.Parse(selectedDesigns);
+            string handle = Guid.NewGuid().ToString();
+            var designs = from d in _context.Designs where d.JobId == jobID select d;
+            var payload = "";
+            var extension = "";
+            var type = "";
+            MemoryStream stream = new MemoryStream();
+            byte[] byteArray;
+            switch (format)
+            {
+                case "csv":
+                    payload += String.Format("Rank,DesiredTemperatureScore,HighestTemperatureScore,SpecificityScore,AccessibilityScore,StructureScore,CreatedAt,UpdatedAt,Sequence\n");
+                    extension = "csv";
+                    foreach (Design d in designs)
+                    {
+                        if (obj.ContainsKey(jobID.ToString() + '-' + d.Id))
+                        {
+                            payload += String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
+                        }
+                    }
+                    type = "application/csv";
+                    byteArray = Encoding.ASCII.GetBytes(payload);
+                    stream = new MemoryStream(byteArray);
+                    break;
+                case "zip":
+                    extension = "zip";
+                    type = "application/octet-stream";
+                    ZipOutputStream zipStream = new ZipOutputStream(stream);
+                    foreach (Design d in designs)
+                    {
+                        if (obj.ContainsKey(jobID.ToString() + '-' + d.Id))
+                        {
+                            var newEntry = new ZipEntry("design" + d.Id + ".fasta");
+                            newEntry.DateTime = DateTime.Now;
+
+                            zipStream.PutNextEntry(newEntry);
+                            byteArray = Encoding.ASCII.GetBytes(String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence));
+
+                            MemoryStream inStream = new MemoryStream(byteArray);
+                            StreamUtils.Copy(inStream, zipStream, new byte[4096]);
+                            inStream.Close();
+                            zipStream.CloseEntry();
+                        }
+                    }
+
+                    zipStream.IsStreamOwner = false;
+                    zipStream.Close();
+                    stream.Position = 0;
+                    break;
+                case "fasta":
+                    extension = "fasta";
+                    foreach (Design d in designs)
+                    {
+                        if (obj.ContainsKey(jobID.ToString() + '-' + d.Id))
+                        {
+                            payload += String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
+                        }
+                    }
+                    type = "text/plain";
+                    byteArray = Encoding.ASCII.GetBytes(payload);
+                    stream = new MemoryStream(byteArray);
+                    break;
+            }
+
+            TempData[handle] = Convert.ToBase64String(stream.ToArray());
+            return new JsonResult(new { FileGuid = handle, FileName = String.Format("job{0}_bulk.{1}", jobID, extension), FileType = type });
+        }
+
+        [HttpGet]
+        public virtual ActionResult Download(string fileGuid, string fileName, string fileType)
+        {
+            if (TempData[fileGuid] != null)
+            {
+                byte[] data = Convert.FromBase64String(TempData[fileGuid] as string);
+                return File(data, fileType, fileName);
+            }
+            else
+            {
+                return new EmptyResult();
+            }
+        }
+
+        private void FilterDesigns(ref IQueryable<Design> designs, string filterParam, string filterCondition, float filterValue)
+        {
+            StringBuilder sb = new StringBuilder(filterValue.ToString());
+            sb[sb.Length - 1] = Convert.ToChar(Convert.ToInt32(sb[sb.Length - 1]) + 1);
+            float upperBound = float.Parse(sb.ToString());
+            switch(filterCondition)
+            {
+                case "gteq":
+                    GreaterThanOrEqualTo(ref designs, filterParam, filterValue);
+                    break;
+                case "lteq":
+                    LessThanOrEqualTo(ref designs, filterParam, filterValue);
+                    break;
+                case "eq":
+                    EqualTo(ref designs, filterParam, filterValue, upperBound);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void GreaterThanOrEqualTo(ref IQueryable<Design> designs, string filterParam, float filterValue)
+        {
+            switch (filterParam)
+            {
+                case "Rank":
+                    designs = designs.Where(d => d.Rank >= filterValue);
+                    break;
+                case "HighestTemperatureScore":
+                    designs = designs.Where(d => d.HighestTemperatureScore >= filterValue);
+                    break;
+                case "DesiredTemperatureScore":
+                    designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue);
+                    break;
+                case "SpecificityScore":
+                    designs = designs.Where(d => d.SpecificityScore >= filterValue);
+                    break;
+                case "AcessibilityScore":
+                    designs = designs.Where(d => d.AccessibilityScore >= filterValue);
+                    break;
+                case "StructureScore":
+                    designs = designs.Where(d => d.StructureScore >= filterValue);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void LessThanOrEqualTo(ref IQueryable<Design> designs, string filterParam, float filterValue)
+        {
+            switch (filterParam)
+            {
+                case "Rank":
+                    designs = designs.Where(d => d.Rank <= filterValue);
+                    break;
+                case "HighestTemperatureScore":
+                    designs = designs.Where(d => d.HighestTemperatureScore <= filterValue);
+                    break;
+                case "DesiredTemperatureScore":
+                    designs = designs.Where(d => d.DesiredTemperatureScore <= filterValue);
+                    break;
+                case "SpecificityScore":
+                    designs = designs.Where(d => d.SpecificityScore <= filterValue);
+                    break;
+                case "AcessibilityScore":
+                    designs = designs.Where(d => d.AccessibilityScore <= filterValue);
+                    break;
+                case "StructureScore":
+                    designs = designs.Where(d => d.StructureScore <= filterValue);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void EqualTo(ref IQueryable<Design> designs, string filterParam, float filterValue, float upperBound)
+        {
+            switch (filterParam)
+            {
+                case "Rank":
+                    designs = designs.Where(d => d.Rank == (int)filterValue);
+                    break;
+                case "HighestTemperatureScore":
+                    designs = designs.Where(d => d.HighestTemperatureScore >= filterValue && d.HighestTemperatureScore < upperBound);
+                    break;
+                case "DesiredTemperatureScore":
+                    designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue && d.DesiredTemperatureScore < upperBound);
+                    break;
+                case "SpecificityScore":
+                     designs = designs.Where(d => d.SpecificityScore >= filterValue && d.SpecificityScore < upperBound);
+                    break;
+                case "AcessibilityScore":
+                    designs = designs.Where(d => d.AccessibilityScore >= filterValue && d.AccessibilityScore < upperBound);
+                    break;
+                case "StructureScore":
+                    designs = designs.Where(d => d.StructureScore >= filterValue && d.StructureScore < upperBound);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

@@ -41,7 +41,7 @@ namespace Ribosoft.Controllers
             return View(design);
         }
 
-        public FileStreamResult DownloadFile(string jobID, string rank, string desiredTemperatureScore, string highestTemperatureScore, string specificityScore, string accessibilityScore, string structureScore, string createdAt, string updatedAt, string sequence)
+        public FileStreamResult DownloadDesign(string jobID, string rank, string desiredTemperatureScore, string highestTemperatureScore, string specificityScore, string accessibilityScore, string structureScore, string createdAt, string updatedAt, string sequence)
         {
             // TODO: Break up sequence into chunks of max line length
             var payload = String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}", rank, desiredTemperatureScore, highestTemperatureScore, specificityScore, accessibilityScore, structureScore, createdAt, updatedAt, sequence);

@@ -1,4 +1,5 @@
 ﻿@model Ribosoft.Models.JobsViewModels.JobDetailsViewModel
+@using System.Web
 
 @{
     ViewData["Title"] = "Job Details";
@@ -7,326 +8,394 @@
 
 <h1 class="my-3">Job details</h1>
 
-<div class="card my-3 box-shadow">
-    <div class="card-body">
-        <h5 class="card-title border-bottom border-gray pb-2">Request information</h5>
-        <dl class="row mb-0">
-            <dt class="col-md-2">
-                @Html.DisplayNameFor(model => model.Job.Id)
-            </dt>
-            <dd class="col-md-10">
-                @Html.DisplayFor(model => model.Job.Id)
-            </dd>
-            <dt class="col-md-2">
-                @Html.DisplayNameFor(model => model.Job.StatusMessage)
-            </dt>
-            <dd class="col-md-10">
-                @Html.DisplayFor(model => model.Job.StatusMessage)
-            </dd>
-            <dt class="col-md-2">
-                @Html.DisplayNameFor(model => model.Job.Ribozyme)
-            </dt>
-            <dd class="col-md-10">
-                @Html.DisplayFor(model => model.Job.Ribozyme.Name)
-            </dd>
-            <dt class="col-md-2">
-                @Html.DisplayNameFor(model => model.Job.RNAInput)
-            </dt>
-            <dd class="col-md-10">
-                <textarea class="form-control" rows="4" cols="80" readonly="readonly">@Model.Job.RNAInput</textarea>
-            </dd>
-            <dt class="col-md-4">
-                @Html.DisplayNameFor(model => model.Job.OpenReadingFrameStart)
-            </dt>
-            <dd class="col-md-2">
-                @Html.DisplayFor(model => model.Job.OpenReadingFrameStart)
-            </dd>
-            <dt class="col-md-4">
-                @Html.DisplayNameFor(model => model.Job.OpenReadingFrameEnd)
-            </dt>
-            <dd class="col-md-2">
-                @Html.DisplayFor(model => model.Job.OpenReadingFrameEnd)
-            </dd>
-            <dt class="col-md-3">
-                @Html.DisplayNameFor(model => model.Job.FivePrime)
-            </dt>
-            <dd class="col-md-1">
-                @Html.DisplayFor(model => model.Job.FivePrime)
-            </dd>
-            <dt class="col-md-3">
-                @Html.DisplayNameFor(model => model.Job.OpenReadingFrame)
-            </dt>
-            <dd class="col-md-1">
-                @Html.DisplayFor(model => model.Job.OpenReadingFrame)
-            </dd>
-            <dt class="col-md-3">
-                @Html.DisplayNameFor(model => model.Job.ThreePrime)
-            </dt>
-            <dd class="col-md-1">
-                @Html.DisplayFor(model => model.Job.ThreePrime)
-            </dd>
-            <dt class="col-md-2">
-                @Html.DisplayNameFor(model => model.Job.TargetEnvironment)
-            </dt>
-            <dd class="col-md-10">
-                @Html.DisplayFor(model => model.Job.TargetEnvironment)
-            </dd>
-            @if (Model.Job.TargetEnvironment == TargetEnvironment.InVivo && Model.Job.AssemblyId.HasValue)
-            {
-                <dt class="col-md-2">
-                    @Html.DisplayNameFor(model => model.Job.Assembly)
-                </dt>
-                <dd class="col-md-10">
-                    @Html.DisplayFor(model => model.Job.Assembly.OrganismName)
-                    (taxonomy <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=@(Model.Job.Assembly.TaxonomyId)">@Html.DisplayFor(model => model.Job.Assembly.TaxonomyId)</a>,
-                    species <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=@(Model.Job.Assembly.SpeciesId)">@Html.DisplayFor(model => model.Job.Assembly.SpeciesId)</a>)
-                    using assembly <a href="https://www.ncbi.nlm.nih.gov/assembly/@(Model.Job.Assembly.AccessionId)">@Html.DisplayFor(model => model.Job.Assembly.AssemblyName)</a>
-                </dd>
-                <dt class="col-md-2">
-                    @Html.DisplayNameFor(model => model.Job.SpecificityMethod)
-                </dt>
-                <dd class="col-md-10">
-                    @Html.DisplayFor(model => model.Job.SpecificityMethod)
-                </dd>
-            }
-            <dt class="col-md-2">
-                @Html.DisplayNameFor(model => model.Job.Temperature)
-            </dt>
-            <dd class="col-md-10">
-                @Html.DisplayFor(model => model.Job.Temperature)
-            </dd>
-            <dt class="col-md-2">
-                @Html.DisplayNameFor(model => model.Job.Na)
-            </dt>
-            <dd class="col-md-10">
-                @Html.DisplayFor(model => model.Job.Na)
-            </dd>
-            <dt class="col-md-2">
-                @Html.DisplayNameFor(model => model.Job.Probe)
-            </dt>
-            <dd class="col-md-10">
-                @Html.DisplayFor(model => model.Job.Probe)
-            </dd>
-            <dt class="col-md-2">
-                @Html.DisplayNameFor(model => model.Job.CreatedAt)
-            </dt>
-            <dd class="col-md-10">
-                @Html.DisplayFor(model => model.Job.CreatedAt)
-            </dd>
-        </dl>
-    </div>
-</div>
-
-<div class="card my-3 box-shadow">
-    <div class="card-body">
-        <label class="showMore card-title border-bottom border-gray pb-2" for="advancedSettings">Advanced settings</label>
-        <input id="advancedSettings" type="checkbox">
-        <div>
+<div id="app">
+    <div class="card my-3 box-shadow">
+        <div class="card-body">
+            <h5 class="card-title border-bottom border-gray pb-2">Request information</h5>
             <dl class="row mb-0">
-                <dt class="col-md-4">
-                    @Html.DisplayNameFor(model => model.Job.DesiredTempTolerance)
+                <dt class="col-md-2">
+                    @Html.DisplayNameFor(model => model.Job.Id)
                 </dt>
-                <dd class="col-md-8">
-                    @Html.DisplayFor(model => model.Job.DesiredTempTolerance)
+                <dd class="col-md-10">
+                    @Html.DisplayFor(model => model.Job.Id)
+                </dd>
+                <dt class="col-md-2">
+                    @Html.DisplayNameFor(model => model.Job.StatusMessage)
+                </dt>
+                <dd class="col-md-10">
+                    @Html.DisplayFor(model => model.Job.StatusMessage)
+                </dd>
+                <dt class="col-md-2">
+                    @Html.DisplayNameFor(model => model.Job.Ribozyme)
+                </dt>
+                <dd class="col-md-10">
+                    @Html.DisplayFor(model => model.Job.Ribozyme.Name)
+                </dd>
+                <dt class="col-md-2">
+                    @Html.DisplayNameFor(model => model.Job.RNAInput)
+                </dt>
+                <dd class="col-md-10">
+                    <textarea class="form-control" rows="4" cols="80" readonly="readonly">@Model.Job.RNAInput</textarea>
                 </dd>
                 <dt class="col-md-4">
-                    @Html.DisplayNameFor(model => model.Job.HighestTempTolerance)
+                    @Html.DisplayNameFor(model => model.Job.OpenReadingFrameStart)
                 </dt>
-                <dd class="col-md-8">
-                    @Html.DisplayFor(model => model.Job.HighestTempTolerance)
+                <dd class="col-md-2">
+                    @Html.DisplayFor(model => model.Job.OpenReadingFrameStart)
                 </dd>
                 <dt class="col-md-4">
-                    @Html.DisplayNameFor(model => model.Job.SpecificityTolerance)
+                    @Html.DisplayNameFor(model => model.Job.OpenReadingFrameEnd)
                 </dt>
-                <dd class="col-md-8">
-                    @Html.DisplayFor(model => model.Job.SpecificityTolerance)
+                <dd class="col-md-2">
+                    @Html.DisplayFor(model => model.Job.OpenReadingFrameEnd)
                 </dd>
-                <dt class="col-md-4">
-                    @Html.DisplayNameFor(model => model.Job.AccessibilityTolerance)
+                <dt class="col-md-3">
+                    @Html.DisplayNameFor(model => model.Job.FivePrime)
                 </dt>
-                <dd class="col-md-8">
-                    @Html.DisplayFor(model => model.Job.AccessibilityTolerance)
+                <dd class="col-md-1">
+                    @Html.DisplayFor(model => model.Job.FivePrime)
                 </dd>
-                <dt class="col-md-4">
-                    @Html.DisplayNameFor(model => model.Job.StructureTolerance)
+                <dt class="col-md-3">
+                    @Html.DisplayNameFor(model => model.Job.OpenReadingFrame)
                 </dt>
-                <dd class="col-md-8">
-                    @Html.DisplayFor(model => model.Job.StructureTolerance)
+                <dd class="col-md-1">
+                    @Html.DisplayFor(model => model.Job.OpenReadingFrame)
+                </dd>
+                <dt class="col-md-3">
+                    @Html.DisplayNameFor(model => model.Job.ThreePrime)
+                </dt>
+                <dd class="col-md-1">
+                    @Html.DisplayFor(model => model.Job.ThreePrime)
+                </dd>
+                <dt class="col-md-2">
+                    @Html.DisplayNameFor(model => model.Job.TargetEnvironment)
+                </dt>
+                <dd class="col-md-10">
+                    @Html.DisplayFor(model => model.Job.TargetEnvironment)
+                </dd>
+                @if (Model.Job.TargetEnvironment == TargetEnvironment.InVivo && Model.Job.AssemblyId.HasValue)
+                {
+                    <dt class="col-md-2">
+                        @Html.DisplayNameFor(model => model.Job.Assembly)
+                    </dt>
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.Job.Assembly.OrganismName)
+                        (taxonomy <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=@(Model.Job.Assembly.TaxonomyId)">@Html.DisplayFor(model => model.Job.Assembly.TaxonomyId)</a>,
+                        species <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=@(Model.Job.Assembly.SpeciesId)">@Html.DisplayFor(model => model.Job.Assembly.SpeciesId)</a>)
+                        using assembly <a href="https://www.ncbi.nlm.nih.gov/assembly/@(Model.Job.Assembly.AccessionId)">@Html.DisplayFor(model => model.Job.Assembly.AssemblyName)</a>
+                    </dd>
+                    <dt class="col-md-2">
+                        @Html.DisplayNameFor(model => model.Job.SpecificityMethod)
+                    </dt>
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.Job.SpecificityMethod)
+                    </dd>
+                }
+                <dt class="col-md-2">
+                    @Html.DisplayNameFor(model => model.Job.Temperature)
+                </dt>
+                <dd class="col-md-10">
+                    @Html.DisplayFor(model => model.Job.Temperature)
+                </dd>
+                <dt class="col-md-2">
+                    @Html.DisplayNameFor(model => model.Job.Na)
+                </dt>
+                <dd class="col-md-10">
+                    @Html.DisplayFor(model => model.Job.Na)
+                </dd>
+                <dt class="col-md-2">
+                    @Html.DisplayNameFor(model => model.Job.Probe)
+                </dt>
+                <dd class="col-md-10">
+                    @Html.DisplayFor(model => model.Job.Probe)
+                </dd>
+                <dt class="col-md-2">
+                    @Html.DisplayNameFor(model => model.Job.CreatedAt)
+                </dt>
+                <dd class="col-md-10">
+                    @Html.DisplayFor(model => model.Job.CreatedAt)
                 </dd>
             </dl>
         </div>
     </div>
-</div>
 
-<div class="card my-3 box-shadow">
-    <div class="card-body">
-        <h5 class="card-title">Progress</h5>
-        <div class="progress" style="height: 30px;">
-            @if (Model.Job.JobState == JobState.New || Model.Job.JobState == JobState.Started)
-            {
-                <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>    
-                <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
-                <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
-            }
-            else if (Model.Job.JobState == JobState.CandidateGenerator)
-            {
-                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>    
-                <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
-                <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
-            }
-            else if (Model.Job.JobState == JobState.QueuedPhase2)
-            {
-                <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>    
-                <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
-                <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
-            }
-            else if (Model.Job.JobState == JobState.Specificity)
-            {
-                <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>    
-                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
-                <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
-            }
-            else if (Model.Job.JobState == JobState.QueuedPhase3)
-            {
-                <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>    
-                <div class="progress-bar bg-success" role="progressbar" style="width: 34%" aria-valuenow="34" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
-                <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
-            }
-            else if (Model.Job.JobState == JobState.MultiObjectiveOptimization)
-            {
-                <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>    
-                <div class="progress-bar bg-success" role="progressbar" style="width: 34%" aria-valuenow="34" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
-                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
-            }
-            else if (Model.Job.JobState == JobState.Errored)
-            {
-                <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Errored</div>
-            }
-            else if (Model.Job.JobState == JobState.Completed)
-            {
-                <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Completed</div>
-            }
+    <div class="card my-3 box-shadow">
+        <div class="card-body">
+            <label class="showMore card-title border-bottom border-gray pb-2" for="advancedSettings">Advanced settings</label>
+            <input id="advancedSettings" type="checkbox">
+            <div>
+                <dl class="row mb-0">
+                    <dt class="col-md-4">
+                        @Html.DisplayNameFor(model => model.Job.DesiredTempTolerance)
+                    </dt>
+                    <dd class="col-md-8">
+                        @Html.DisplayFor(model => model.Job.DesiredTempTolerance)
+                    </dd>
+                    <dt class="col-md-4">
+                        @Html.DisplayNameFor(model => model.Job.HighestTempTolerance)
+                    </dt>
+                    <dd class="col-md-8">
+                        @Html.DisplayFor(model => model.Job.HighestTempTolerance)
+                    </dd>
+                    <dt class="col-md-4">
+                        @Html.DisplayNameFor(model => model.Job.SpecificityTolerance)
+                    </dt>
+                    <dd class="col-md-8">
+                        @Html.DisplayFor(model => model.Job.SpecificityTolerance)
+                    </dd>
+                    <dt class="col-md-4">
+                        @Html.DisplayNameFor(model => model.Job.AccessibilityTolerance)
+                    </dt>
+                    <dd class="col-md-8">
+                        @Html.DisplayFor(model => model.Job.AccessibilityTolerance)
+                    </dd>
+                    <dt class="col-md-4">
+                        @Html.DisplayNameFor(model => model.Job.StructureTolerance)
+                    </dt>
+                    <dd class="col-md-8">
+                        @Html.DisplayFor(model => model.Job.StructureTolerance)
+                    </dd>
+                </dl>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="card my-3 box-shadow">
-    <div class="card-body">
-        <div class="clearfix">
-            <h5 class="card-title float-md-left">Designs</h5>
-            <div class="d-none float-md-right mb-2" id="showFilterOptions">
-                <button class="btn btn-sm btn-primary" id="refineResults">Refine Results <i class="fas fa-filter"></i></button>
-            </div>
-            <div class="d-none float-md-right mb-2" id="filterOptions">
-                <div class="form-inline">
-                    @Html.DropDownListFor(x => x.FilterParam, Model.FilterParams, new {@class = "form-control form-control-sm custom-select custom-select-sm mb-2 mr-sm-2 mb-sm-0"})
-                    @Html.DropDownListFor(x => x.FilterCondition, Model.FilterConditions, new {@class = "form-control form-control-sm custom-select custom-select-sm mb-2 mr-sm-2 mb-sm-0"})
-                    <input type="number" step="any" asp-for="FilterValue" class="form-control form-control-sm mb-2 mr-sm-2 mb-sm-0">
-                    <button class="btn btn-sm btn-primary" id="filterSubmit">Filter <i class="fas fa-check"></i></button>
-                </div>
-                <p id="filterError" class="text-danger d-none">Input must be a number.</p>
-            </div>
-        </div>
-
-        <div class="table-responsive mb-2">
-            <table class="table table-hover mb-0">
-                <thead>
-                <tr>
-                    <th>
-                        @Html.ActionLink((string) ViewBag.RankColumnTitle, "Details", new {sortOrder = ViewBag.RankSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue})
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Designs.Data.First().Sequence)
-                    </th>
-                    <th>
-                        @Html.ActionLink((string) ViewBag.DesTempColumnTitle, "Details", new {sortOrder = ViewBag.DesTempSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue})
-                    </th>
-                    <th>
-                        @Html.ActionLink((string) ViewBag.HiTempColumnTitle, "Details", new {sortOrder = ViewBag.HiTempSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue})
-                    </th>
-                    <th>
-                        @Html.ActionLink((string) ViewBag.SpecColumnTitle, "Details", new {sortOrder = ViewBag.SpecSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue})
-                    </th>
-                    <th>
-                        @Html.ActionLink((string) ViewBag.AccessColumnTitle, "Details", new {sortOrder = ViewBag.AccessSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue})
-                    </th>
-                    <th>
-                        @Html.ActionLink((string) ViewBag.StructColumnTitle, "Details", new {sortOrder = ViewBag.StructSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue})
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var item in Model.Designs.Data)
+    <div class="card my-3 box-shadow">
+        <div class="card-body">
+            <h5 class="card-title">Progress</h5>
+            <div class="progress" style="height: 30px;">
+                @if (Model.Job.JobState == JobState.New || Model.Job.JobState == JobState.Started)
                 {
-                    <tr class="clickable-row" data-href="@Url.Action("Details", "Designs", new {id = item.Id})">
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Rank)
-                        </td>
-                        <td>
-                            <code style="word-break: break-all;">@Html.DisplayFor(modelItem => item.Sequence)</code>
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DesiredTemperatureScore)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.HighestTemperatureScore)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SpecificityScore)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.AccessibilityScore)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.StructureScore)
-                        </td>
-                    </tr>
+                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>
+                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
+                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
                 }
-                </tbody>
-            </table>
+                else if (Model.Job.JobState == JobState.CandidateGenerator)
+                {
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>
+                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
+                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
+                }
+                else if (Model.Job.JobState == JobState.QueuedPhase2)
+                {
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>
+                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
+                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
+                }
+                else if (Model.Job.JobState == JobState.Specificity)
+                {
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
+                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
+                }
+                else if (Model.Job.JobState == JobState.QueuedPhase3)
+                {
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 34%" aria-valuenow="34" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
+                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
+                }
+                else if (Model.Job.JobState == JobState.MultiObjectiveOptimization)
+                {
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 34%" aria-valuenow="34" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
+                }
+                else if (Model.Job.JobState == JobState.Errored)
+                {
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Errored</div>
+                }
+                else if (Model.Job.JobState == JobState.Completed)
+                {
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Completed</div>
+                }
+            </div>
         </div>
-
-        <cs-pager cs-paging-pagesize="@Model.Designs.PageSize"
-                  cs-paging-pagenumber="@Model.Designs.PageNumber"
-                  cs-paging-totalitems="@Model.Designs.TotalItems"
-                  asp-action="Details"
-                  asp-controller="Jobs"
-                  asp-route-id="@Model.Job.Id"
-                  asp-route-sortOrder="@Model.SortOrder"
-                  asp-route-filterParam="@Model.FilterParam"
-                  asp-route-filterCondition="@Model.FilterCondition"
-                  asp-route-filterValue="@Model.FilterValue"
-                  cs-pagenumber-param="pageNumber"
-                  cs-pager-ul-class="pagination mb-0"
-                  cs-pager-li-current-class="page-item active"
-                  cs-pager-li-other-class="page-item"
-                  cs-pager-li-non-active-class="page-item disabled"
-                  cs-pager-link-current-class="page-link"
-                  cs-pager-link-other-class="page-link"></cs-pager>
     </div>
-</div>
 
-<div class="clearfix">
-    <a asp-action="Index" class="btn btn-primary float-sm-left"><i class="fas fa-arrow-left ml-1"></i> Back to jobs</a>
+    <div class="card my-3 box-shadow">
+        <div class="card-body">
+            <div class="clearfix">
+                <h5 class="card-title float-md-left">Designs</h5>
+                <div class="d-none float-md-right mb-2" id="showFilterOptions">
+                    <button class="btn btn-sm btn-primary" v-on:click="refineResults" id="refineResults"><i class="fas fa-filter"></i> Refine Results</button>
+                </div>
+                <div class="d-none float-md-right mb-2" id="filterOptions">
+                    <div class="form-inline">
+                        @Html.DropDownListFor(x => x.FilterParam, Model.FilterParams, new { @class = "form-control form-control-sm custom-select custom-select-sm mb-2 mr-sm-2 mb-sm-0" })
+                        @Html.DropDownListFor(x => x.FilterCondition, Model.FilterConditions, new { @class = "form-control form-control-sm custom-select custom-select-sm mb-2 mr-sm-2 mb-sm-0" })
+                        <input type="number" step="any" asp-for="FilterValue" class="form-control form-control-sm mb-2 mr-sm-2 mb-sm-0">
+                        <button class="btn btn-sm btn-primary" v-on:click="filterSubmit" id="filterSubmit">Filter <i class="fas fa-check"></i></button>
+                    </div>
+                    <p id="filterError" class="text-danger d-none">Input must be a number.</p>
+                </div>
+                <div class="float-md-right mb-2">
+                    <b-dropdown id="ddown-right" size="sm" right variant="primary">
+                        <template slot="button-content">
+                            <i class="fas fa-download"></i> Download
+                        </template>
+                        @Html.ActionLink("Download all to .zip", "DownloadDesigns", new { jobID = Model.Job.Id, format = "fasta", filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = float.Parse(Model.FilterValue) }, new { @class = "dropdown-item", @role = "menuitem", @target = "_self" })
+                        @Html.ActionLink("Download all to .fasta", "DownloadDesigns", new { jobID = Model.Job.Id, format = "fasta", filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = float.Parse(Model.FilterValue) }, new { @class = "dropdown-item", @role = "menuitem", @target = "_self" })
+                        @Html.ActionLink("Download all to .csv", "DownloadDesigns", new { jobID = Model.Job.Id, format = "csv", filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = float.Parse(Model.FilterValue) }, new { @class = "dropdown-item", @role = "menuitem", @target = "_self" })
+                        <b-dropdown-divider></b-dropdown-divider>
+                        <input type="button" id="zip" class="dropdown-item disabled" role="menuitem" value="Download selected to .zip" />
+                        <input type="button" id="fasta" class="dropdown-item disabled" role="menuitem" value="Download selected to .fasta" />
+                        <input type="button" id="csv" class="dropdown-item disabled" role="menuitem" value="Download selected to .csv" />
+                    </b-dropdown>
+                </div>
 
-    @if (Model.Job.JobState == JobState.New || Model.Job.JobState == JobState.Started)
-    {
-        <a asp-action="Delete" asp-route-id="@Model.Job.Id" class="btn btn-danger float-sm-right">Cancel <i class="fas fa-trash ml-1"></i></a>
-    }
-    else
-    {
-        <a asp-action="Delete" asp-route-id="@Model.Job.Id" class="btn btn-danger float-sm-right">@(shouldCancel ? "Cancel" : "Delete") <i class="fas fa-trash ml-1"></i></a>
-    }
+                <div class="table-responsive mb-2">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.ActionLink((string)ViewBag.RankColumnTitle, "Details", new { sortOrder = ViewBag.RankSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue })
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Designs.Data.First().Sequence)
+                                </th>
+                                <th>
+                                    @Html.ActionLink((string)ViewBag.DesTempColumnTitle, "Details", new { sortOrder = ViewBag.DesTempSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue })
+                                </th>
+                                <th>
+                                    @Html.ActionLink((string)ViewBag.HiTempColumnTitle, "Details", new { sortOrder = ViewBag.HiTempSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue })
+                                </th>
+                                <th>
+                                    @Html.ActionLink((string)ViewBag.SpecColumnTitle, "Details", new { sortOrder = ViewBag.SpecSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue })
+                                </th>
+                                <th>
+                                    @Html.ActionLink((string)ViewBag.AccessColumnTitle, "Details", new { sortOrder = ViewBag.AccessSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue })
+                                </th>
+                                <th>
+                                    @Html.ActionLink((string)ViewBag.StructColumnTitle, "Details", new { sortOrder = ViewBag.StructSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue })
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Designs.Data)
+                            {
+                                <tr id="@item.JobId-@item.Id" class="clickable-row">
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Rank)
+                                    </td>
+                                    <td>
+                                        <code style="word-break: break-all;">@Html.DisplayFor(modelItem => item.Sequence)</code>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DesiredTemperatureScore)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.HighestTemperatureScore)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.SpecificityScore)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.AccessibilityScore)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.StructureScore)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <cs-pager cs-paging-pagesize="@Model.Designs.PageSize"
+                          cs-paging-pagenumber="@Model.Designs.PageNumber"
+                          cs-paging-totalitems="@Model.Designs.TotalItems"
+                          asp-action="Details"
+                          asp-controller="Jobs"
+                          asp-route-id="@Model.Job.Id"
+                          asp-route-sortOrder="@Model.SortOrder"
+                          asp-route-filterParam="@Model.FilterParam"
+                          asp-route-filterCondition="@Model.FilterCondition"
+                          asp-route-filterValue="@Model.FilterValue"
+                          cs-pagenumber-param="pageNumber"
+                          cs-pager-ul-class="pagination mb-0"
+                          cs-pager-li-current-class="page-item active"
+                          cs-pager-li-other-class="page-item"
+                          cs-pager-li-non-active-class="page-item disabled"
+                          cs-pager-link-current-class="page-link"
+                          cs-pager-link-other-class="page-link"></cs-pager>
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix">
+        <a asp-action="Index" class="btn btn-primary float-sm-left"><i class="fas fa-arrow-left ml-1"></i> Back to jobs</a>
+
+        @if (Model.Job.JobState == JobState.New || Model.Job.JobState == JobState.Started)
+        {
+            <a asp-action="Delete" asp-route-id="@Model.Job.Id" class="btn btn-danger float-sm-right">Cancel <i class="fas fa-trash ml-1"></i></a>
+        }
+        else
+        {
+            <a asp-action="Delete" asp-route-id="@Model.Job.Id" class="btn btn-danger float-sm-right">@(shouldCancel ? "Cancel" : "Delete") <i class="fas fa-trash ml-1"></i></a>
+        }
+    </div>
 </div>
 
 @section scripts
 {
     <script src="~/dist/details.js"></script>
     <script type="text/javascript">
-        jQuery(document).ready(function($) {
-            $(".clickable-row").click(function() {
-                window.location = $(this).data("href");
+        jQuery(document).ready(function ($) {
+            var selectedDesigns = JSON.parse(localStorage.getItem("selectedDesigns")) || {};
+            $.each(selectedDesigns, function (key, value) {
+                $('#' + key).addClass("selected");
             });
+            if (!jQuery.isEmptyObject(selectedDesigns)) {
+                $('#zip').removeClass("disabled");
+                $('#fasta').removeClass("disabled");
+                $('#csv').removeClass("disabled");
+            }
+
+            $(".clickable-row").click(function () {
+                if ($(this).hasClass("selected")) {
+                    $(this).removeClass("selected");
+                    delete selectedDesigns[this.id];
+                    if (jQuery.isEmptyObject(selectedDesigns)) {
+                        $('#zip').addClass("disabled");
+                        $('#fasta').addClass("disabled");
+                        $('#csv').addClass("disabled");
+                    }
+                } else {
+                    $(this).addClass("selected");
+                    selectedDesigns[this.id] = true;
+                    $('#zip').removeClass("disabled");
+                    $('#fasta').removeClass("disabled");
+                    $('#csv').removeClass("disabled");
+                }
+                localStorage.setItem("selectedDesigns", JSON.stringify(selectedDesigns));
+            });
+
+            function clickFunc(format) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Jobs/DownloadSelectedDesigns",
+                    data: {
+                        jobID: @Model.Job.Id,
+                        selectedDesigns: JSON.stringify(selectedDesigns),
+                        format: format
+                    },
+                    success: function (data) {
+                        window.location = '/Jobs/Download?fileGuid=' + data.fileGuid + '&fileName=' + data.fileName + '&fileType=' + data.fileType;
+                        $(".clickable-row.selected").each(function(i, obj) {
+                            $(this).removeClass("selected");
+                            delete selectedDesigns;
+                            localStorage.setItem("selectedDesigns", JSON.stringify({}));
+                            $('#zip').addClass("disabled");
+                            $('#fasta').addClass("disabled");
+                            $('#csv').addClass("disabled");
+                        })
+                    }
+                });
+            }
+
+            $('#zip').click(function () { return clickFunc("zip"); });
+            $('#fasta').click(function () { return clickFunc("fasta"); });
+            $('#csv').click(function () { return clickFunc("csv"); });
         });
     </script>
 }
