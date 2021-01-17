@@ -480,91 +480,97 @@ namespace Ribosoft.Controllers
             StringBuilder sb = new StringBuilder(filterValue.ToString());
             sb[sb.Length - 1] = Convert.ToChar(Convert.ToInt32(sb[sb.Length - 1]) + 1);
             float upperBound = float.Parse(sb.ToString());
+            switch(filterCondition)
+            {
+                case "gteq":
+                    GreaterThanOrEqualTo(ref designs, filterParam, filterValue);
+                    break;
+                case "lteq":
+                    LessThanOrEqualTo(ref designs, filterParam, filterValue);
+                    break;
+                case "eq":
+                    EqualTo(ref designs, filterParam, filterValue, upperBound);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void GreaterThanOrEqualTo(ref IQueryable<Design> designs, string filterParam, float filterValue)
+        {
             switch (filterParam)
             {
                 case "Rank":
-                    if (filterCondition == "gteq")
-                    {
-                        designs = designs.Where(d => d.Rank >= filterValue);
-                    }
-                    else if (filterCondition == "lteq")
-                    {
-                        designs = designs.Where(d => d.Rank <= filterValue);
-                    }
-                    else if (filterCondition == "eq")
-                    {
-                        designs = designs.Where(d => d.Rank == (int)filterValue);
-                    }
+                    designs = designs.Where(d => d.Rank >= filterValue);
                     break;
                 case "HighestTemperatureScore":
-                    if (filterCondition == "gteq")
-                    {
-                        designs = designs.Where(d => d.HighestTemperatureScore >= filterValue);
-                    }
-                    else if (filterCondition == "lteq")
-                    {
-                        designs = designs.Where(d => d.HighestTemperatureScore <= filterValue);
-                    }
-                    else if (filterCondition == "eq")
-                    {
-                        designs = designs.Where(d => d.HighestTemperatureScore >= filterValue && d.HighestTemperatureScore < upperBound);
-                    }
+                    designs = designs.Where(d => d.HighestTemperatureScore >= filterValue);
                     break;
                 case "DesiredTemperatureScore":
-                    if (filterCondition == "gteq")
-                    {
-                        designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue);
-                    }
-                    else if (filterCondition == "lteq")
-                    {
-                        designs = designs.Where(d => d.DesiredTemperatureScore <= filterValue);
-                    }
-                    else if (filterCondition == "eq")
-                    {
-                        designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue && d.DesiredTemperatureScore < upperBound);
-                    }
+                    designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue);
                     break;
                 case "SpecificityScore":
-                    if (filterCondition == "gteq")
-                    {
-                        designs = designs.Where(d => d.SpecificityScore >= filterValue);
-                    }
-                    else if (filterCondition == "lteq")
-                    {
-                        designs = designs.Where(d => d.SpecificityScore <= filterValue);
-                    }
-                    else if (filterCondition == "eq")
-                    {
-                        designs = designs.Where(d => d.SpecificityScore >= filterValue && d.SpecificityScore < upperBound);
-                    }
+                    designs = designs.Where(d => d.SpecificityScore >= filterValue);
                     break;
                 case "AcessibilityScore":
-                    if (filterCondition == "gteq")
-                    {
-                        designs = designs.Where(d => d.AccessibilityScore >= filterValue);
-                    }
-                    else if (filterCondition == "lteq")
-                    {
-                        designs = designs.Where(d => d.AccessibilityScore <= filterValue);
-                    }
-                    else if (filterCondition == "eq")
-                    {
-                        designs = designs.Where(d => d.AccessibilityScore >= filterValue && d.AccessibilityScore < upperBound);
-                    }
+                    designs = designs.Where(d => d.AccessibilityScore >= filterValue);
                     break;
                 case "StructureScore":
-                    if (filterCondition == "gteq")
-                    {
-                        designs = designs.Where(d => d.StructureScore >= filterValue);
-                    }
-                    else if (filterCondition == "lteq")
-                    {
-                        designs = designs.Where(d => d.StructureScore <= filterValue);
-                    }
-                    else if (filterCondition == "eq")
-                    {
-                        designs = designs.Where(d => d.StructureScore >= filterValue && d.StructureScore < upperBound);
-                    }
+                    designs = designs.Where(d => d.StructureScore >= filterValue);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void LessThanOrEqualTo(ref IQueryable<Design> designs, string filterParam, float filterValue)
+        {
+            switch (filterParam)
+            {
+                case "Rank":
+                    designs = designs.Where(d => d.Rank <= filterValue);
+                    break;
+                case "HighestTemperatureScore":
+                    designs = designs.Where(d => d.HighestTemperatureScore <= filterValue);
+                    break;
+                case "DesiredTemperatureScore":
+                    designs = designs.Where(d => d.DesiredTemperatureScore <= filterValue);
+                    break;
+                case "SpecificityScore":
+                    designs = designs.Where(d => d.SpecificityScore <= filterValue);
+                    break;
+                case "AcessibilityScore":
+                    designs = designs.Where(d => d.AccessibilityScore <= filterValue);
+                    break;
+                case "StructureScore":
+                    designs = designs.Where(d => d.StructureScore <= filterValue);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void EqualTo(ref IQueryable<Design> designs, string filterParam, float filterValue, float upperBound)
+        {
+            switch (filterParam)
+            {
+                case "Rank":
+                    designs = designs.Where(d => d.Rank == (int)filterValue);
+                    break;
+                case "HighestTemperatureScore":
+                    designs = designs.Where(d => d.HighestTemperatureScore >= filterValue && d.HighestTemperatureScore < upperBound);
+                    break;
+                case "DesiredTemperatureScore":
+                    designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue && d.DesiredTemperatureScore < upperBound);
+                    break;
+                case "SpecificityScore":
+                     designs = designs.Where(d => d.SpecificityScore >= filterValue && d.SpecificityScore < upperBound);
+                    break;
+                case "AcessibilityScore":
+                    designs = designs.Where(d => d.AccessibilityScore >= filterValue && d.AccessibilityScore < upperBound);
+                    break;
+                case "StructureScore":
+                    designs = designs.Where(d => d.StructureScore >= filterValue && d.StructureScore < upperBound);
                     break;
                 default:
                     break;
