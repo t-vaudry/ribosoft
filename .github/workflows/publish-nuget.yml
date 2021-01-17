@@ -29,7 +29,7 @@ jobs:
         source-url: https://api.nuget.org/v3/index.json
       env:
         NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_KEY}}
-        
+
     - name: Copy Nuspec
       shell: bash
       run: cp $GITHUB_WORKSPACE/.github/nuspec/RibosoftAlgo-linux.nuspec $GITHUB_WORKSPACE/RibosoftAlgo/nuget/RibosoftAlgo.nuspec
@@ -60,14 +60,14 @@ jobs:
       shell: bash
       working-directory: ${{runner.workspace}}/build
       run: dotnet nuget push ./bin/RibosoftAlgo.1.0.0.nupkg -k $NUGET_AUTH_TOKEN --skip-duplicate
-      
+
     - name: Publish to GitHub Packages
       shell: bash
       working-directory: ${{runner.workspace}}/build
       run: |
         dotnet nuget add source https://nuget.pkg.github.com/t-vaudry/index.json -n github -u t-vaudry -p ${{secrets.GITHUB_TOKEN}} --store-password-in-clear-text
         dotnet nuget push ./bin/RibosoftAlgo.1.0.0.nupkg -k ${{secrets.GITHUB_TOKEN}} --source "github" --skip-duplicate
-  
+
   publish-windows:
     runs-on: windows-latest
 
@@ -84,7 +84,7 @@ jobs:
         source-url: https://api.nuget.org/v3/index.json
       env:
         NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_KEY}}
-        
+
     - name: Copy Nuspec
       shell: bash
       working-directory: ${{runner.workspace}}/ribosoft
@@ -116,17 +116,17 @@ jobs:
       shell: bash
       working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
       run: dotnet nuget push ./bin/RibosoftAlgo.1.0.1.nupkg -k $NUGET_AUTH_TOKEN --skip-duplicate
-      
+
     - name: Publish to GitHub Packages
       shell: bash
       working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
       run: |
         dotnet nuget add source https://nuget.pkg.github.com/t-vaudry/index.json -n github -u t-vaudry -p ${{secrets.GITHUB_TOKEN}} --store-password-in-clear-text
         dotnet nuget push ./bin/RibosoftAlgo.1.0.1.nupkg -k ${{secrets.GITHUB_TOKEN}} --source "github" --skip-duplicate
-        
+
   publish-macos:
     runs-on: macOS-latest
-    
+
     steps:
     - uses: actions/checkout@v2
     - name: Setup python
@@ -147,7 +147,7 @@ jobs:
         source-url: https://api.nuget.org/v3/index.json
       env:
         NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_KEY}}
-    
+
     - name: Copy Nuspec
       shell: bash
       run: cp $GITHUB_WORKSPACE/.github/nuspec/RibosoftAlgo-osx.nuspec $GITHUB_WORKSPACE/RibosoftAlgo/nuget/RibosoftAlgo.nuspec
@@ -172,13 +172,13 @@ jobs:
       shell: bash
       working-directory: ${{runner.workspace}}/build
       run: cmake --build . --config $BUILD_TYPE
-      
+
     # Publish
     - name: Publish to Nuget
       shell: bash
       working-directory: ${{runner.workspace}}/build
       run: dotnet nuget push ./bin/RibosoftAlgo.1.0.2.nupkg -k $NUGET_AUTH_TOKEN --skip-duplicate
-      
+
     - name: Publish to GitHub Packages
       shell: bash
       working-directory: ${{runner.workspace}}/build
