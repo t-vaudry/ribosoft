@@ -28,7 +28,6 @@ namespace Ribosoft.MultiObjectiveOptimization
         protected MultiObjectiveOptimizationException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-
         }
     }
 }

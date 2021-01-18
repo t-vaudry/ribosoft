@@ -12,7 +12,6 @@ namespace Ribosoft.Biology
 
         public Nucleotide()
         {
-
         }
 
         public Nucleotide(Nucleotide other)

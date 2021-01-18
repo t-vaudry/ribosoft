@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Ribosoft.MultiObjectiveOptimization {
-
+namespace Ribosoft.MultiObjectiveOptimization 
+{
     public class MultiObjectiveOptimizer
     {
         public MultiObjectiveOptimizer()

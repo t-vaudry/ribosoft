@@ -250,8 +250,6 @@ namespace Ribosoft.Blast
             return builder.ToString();
         }
 
-
-
         /// <summary>
         /// Encodes an argument for passing into a program
         /// </summary>
