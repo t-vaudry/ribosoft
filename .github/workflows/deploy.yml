@@ -1,9 +1,9 @@
 name: Deployment to FungalGenomics
 
-on: 
+on:
   push:
     branches: master
-   
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
