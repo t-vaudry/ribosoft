@@ -158,27 +158,7 @@ namespace Ribosoft.CandidateGeneration
                     if (!isTarget)
                     {
                         //Determine if the nucleotide has a neighbour (bond or pseudoknot)
-                        switch (structure)
-                        {
-                            case '.': //Nothing to do
-                                break;
-                            case '(': //Start an open bond
-                                OpenBondIndices.Push(i);
-                                break;
-                            case ')': //Close an open bond
-                                neighbourIndex = OpenBondIndices.Pop();
-                                NeighboursIndices.Add(Tuple.Create(i, neighbourIndex.Value));
-                                break;
-                            case '[': //Start a pseudoknot
-                                OpenPseudoKnotIndices.Push(i);
-                                break;
-                            case ']': //Close a pseudoknot
-                                neighbourIndex = OpenPseudoKnotIndices.Pop();
-                                NeighboursIndices.Add(Tuple.Create(i, neighbourIndex.Value));
-                                break;
-                            default: //Should not happen
-                                throw new CandidateGenerationException("Unrecognized structure symbol encountered.");
-                        }
+                        HasNeighbor(structure, i, ref neighbourIndex);
                     }
                 }
 
@@ -237,6 +217,31 @@ namespace Ribosoft.CandidateGeneration
 
             //Validate that all open parentheses have been closed
             ValidateOpenBonds();
+        }
+
+        private void HasNeighbor(char structure, int i, ref int? neighbourIndex)
+        {
+            switch (structure)
+            {
+                case '.': //Nothing to do
+                    break;
+                case '(': //Start an open bond
+                    OpenBondIndices.Push(i);
+                    break;
+                case ')': //Close an open bond
+                    neighbourIndex = OpenBondIndices.Pop();
+                    NeighboursIndices.Add(Tuple.Create(i, neighbourIndex.Value));
+                    break;
+                case '[': //Start a pseudoknot
+                    OpenPseudoKnotIndices.Push(i);
+                    break;
+                case ']': //Close a pseudoknot
+                    neighbourIndex = OpenPseudoKnotIndices.Pop();
+                    NeighboursIndices.Add(Tuple.Create(i, neighbourIndex.Value));
+                    break;
+                default: //Should not happen
+                    throw new CandidateGenerationException("Unrecognized structure symbol encountered.");
+            }
         }
 
         public void TraverseSubstrate()
