@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Ribosoft.Models
+namespace Ribosoft.Models.RequestViewModels
 {
     [ValidationAttributes.ValidateRequest]
     public class RequestViewModel
@@ -34,7 +32,7 @@ namespace Ribosoft.Models
 
         [Required]
         [Display(Name = "Target regions")]
-        public TargetRegion[] TargetRegions { get; set; }
+        public TargetRegionViewModel[] TargetRegions { get; set; }
 
         [Required]
         public TargetEnvironment SelectedTargetEnvironment { get; set; }
@@ -110,9 +108,9 @@ namespace Ribosoft.Models
 
             TargetRegions = new[]
             {
-                new TargetRegion { Id = 1, Name = "5'UTR", Selected = true },
-                new TargetRegion { Id = 2, Name = "Open reading frame (ORF)", Selected = true },
-                new TargetRegion { Id = 3, Name = "3'UTR", Selected = true }
+                new TargetRegionViewModel { Id = 1, Name = "5'UTR", Selected = true },
+                new TargetRegionViewModel { Id = 2, Name = "Open reading frame (ORF)", Selected = true },
+                new TargetRegionViewModel { Id = 3, Name = "3'UTR", Selected = true }
             };
 
             TargetEnvironments = new List<TargetEnvironmentViewModel>
@@ -127,24 +125,5 @@ namespace Ribosoft.Models
                 new SpecificityMethodViewModel { Name = "Cleavage and hybridization", Value = SpecificityMethod.CleavageAndHybridization }
             };
         }
-    }
-
-    public class TargetRegion
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public bool Selected { get; set; }
-    }
-
-    public class TargetEnvironmentViewModel
-    {
-        public string Name { get; set; }
-        public TargetEnvironment Value { get; set; }
-    }
-
-    public class SpecificityMethodViewModel
-    {
-        public string Name { get; set; }
-        public SpecificityMethod Value { get; set; }
     }
 }
