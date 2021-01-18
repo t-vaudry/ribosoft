@@ -29,5 +29,6 @@ services:
       ConnectionStrings__NpgsqlConnection: "Host=db;Port=5432;Username=postgres;Password=postgres;Database=ribosoft;Pooling=true;"
       DB_CONTEXT: NpgsqlDbContext
       EntityFrameworkProvider: Npgsql
+      NODE_ENV: production
     depends_on:
       - "db"

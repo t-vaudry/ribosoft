@@ -37,7 +37,7 @@ namespace Ribosoft
         R_SYSTEM_ERROR_FIRST           = -2000,
         R_VIENNA_RNA_ERROR             = -2001,
         R_SYSTEM_ERROR_LAST            = -2999,
-    };
+    }
 
     public class RibosoftException : Exception
     {

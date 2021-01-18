@@ -12,7 +12,6 @@ namespace Ribosoft.Biology
 
         public Nucleotide()
         {
-
         }
 
         public Nucleotide(Nucleotide other)
@@ -31,83 +30,20 @@ namespace Ribosoft.Biology
         public void SetSymbol(char symbol)
         {
             Symbol = Char.ToUpper(symbol);
-            switch (Symbol)
-            {
-                case 'A':
-                    Bases.Add('A');
-                    IsBase = true;
-                    break;
-                case 'C':
-                    Bases.Add('C');
-                    IsBase = true;
-                    break;
-                case 'G':
-                    Bases.Add('G');
-                    IsBase = true;
-                    break;
-                case 'U':
-                    Bases.Add('U');
-                    IsBase = true;
-                    break;
-                case 'T':
-                    Bases.Add('T');
-                    IsBase = true;
-                    break;
-                case 'W':
-                    Bases.Add('A');
-                    Bases.Add('U');
-                    break;
-                case 'S':
-                    Bases.Add('C');
-                    Bases.Add('G');
-                    break;
-                case 'M':
-                    Bases.Add('A');
-                    Bases.Add('C');
-                    break;
-                case 'K':
-                    Bases.Add('G');
-                    Bases.Add('U');
-                    break;
-                case 'R':
-                    Bases.Add('A');
-                    Bases.Add('G');
-                    break;
-                case 'Y':
-                    Bases.Add('C');
-                    Bases.Add('U');
-                    break;
-                case 'B':
-                    Bases.Add('C');
-                    Bases.Add('G');
-                    Bases.Add('U');
-                    break;
-                case 'D':
-                    Bases.Add('A');
-                    Bases.Add('G');
-                    Bases.Add('U');
-                    break;
-                case 'H':
-                    Bases.Add('A');
-                    Bases.Add('C');
-                    Bases.Add('U');
-                    break;
-                case 'V':
-                    Bases.Add('A');
-                    Bases.Add('C');
-                    Bases.Add('G');
-                    break;
-                case 'N':
-                    Bases.Add('A');
-                    Bases.Add('C');
-                    Bases.Add('G');
-                    Bases.Add('U');
-                    break;
-                case '-': //For nucleotides that will be set later
-                    break;
-                default:
-                    throw new RibosoftException(R_STATUS.R_INVALID_NUCLEOTIDE, String.Format("Invalid nucleotide base {0} was provided.", Symbol));
-            }
+            IsBase = Symbol.Equals('A') || Symbol.Equals('C') || Symbol.Equals('G') || Symbol.Equals('U');
+            if (new List<char> { 'A', 'D', 'H', 'M', 'N', 'R', 'V', 'W' }.Contains(Symbol))
+                Bases.Add('A');
+            if (new List<char> { 'B', 'C', 'H', 'M', 'N', 'S', 'V', 'Y' }.Contains(Symbol))
+                Bases.Add('C');
+            if (new List<char> { 'B', 'D', 'G', 'K', 'N', 'R', 'S', 'V' }.Contains(Symbol))
+                Bases.Add('G');
+            if (new List<char> { 'B', 'D', 'H', 'K', 'N', 'U', 'W', 'Y' }.Contains(Symbol))
+                Bases.Add('U');
+            if (Symbol == 'T')
+                Bases.Add('T');
+            
+            if (Bases.Count == 0)
+                throw new RibosoftException(R_STATUS.R_INVALID_NUCLEOTIDE, String.Format("Invalid nucleotide base {0} was provided.", Symbol));
         }
 
         public char GetComplement()
