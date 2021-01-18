@@ -18,7 +18,6 @@ using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Core;
 using Newtonsoft.Json.Linq;
-using System.Web.Helpers;
 
 namespace Ribosoft.Controllers
 {
@@ -336,58 +335,9 @@ namespace Ribosoft.Controllers
             {
                 FilterDesigns(ref designs, filterParam, filterCondition, filterValue);                
             }
-            var payload = "";
-            var extension = "";
-            var type = "";
-            MemoryStream stream = new MemoryStream();
-            byte[] byteArray;
-            switch (format)
-            {
-                case "csv":
-                    payload += String.Format("Rank,DesiredTemperatureScore,HighestTemperatureScore,SpecificityScore,AccessibilityScore,StructureScore,CreatedAt,UpdatedAt,Sequence\n");
-                    extension = "csv";
-                    foreach (Design d in designs)
-                    {
-                        payload += String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
-                    }
-                    type = "text/plain";
-                    byteArray = Encoding.ASCII.GetBytes(payload);
-                    stream = new MemoryStream(byteArray);
-                    break;
-                case "zip":
-                    extension = "zip";
-                    type = "application/octet-stream";
-                    ZipOutputStream zipStream = new ZipOutputStream(stream);
-                    foreach (Design d in designs)
-                    {
-                        var newEntry = new ZipEntry("design" + d.Id + ".fasta");
-                        newEntry.DateTime = DateTime.Now;
-
-                        zipStream.PutNextEntry(newEntry);
-                        byteArray = Encoding.ASCII.GetBytes(String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence));
-
-                        MemoryStream inStream = new MemoryStream(byteArray);
-                        StreamUtils.Copy(inStream, zipStream, new byte[4096]);
-                        inStream.Close();
-                        zipStream.CloseEntry();
-                    }
-
-                    zipStream.IsStreamOwner = false;
-                    zipStream.Close();
-                    stream.Position = 0;
-                    break;
-                case "fasta":
-                    extension = "fasta";
-                    foreach (Design d in designs)
-                    {
-                        payload += String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
-                    }
-                    type = "text/plain";
-                    byteArray = Encoding.ASCII.GetBytes(payload);
-                    stream = new MemoryStream(byteArray);
-                    break;
-            }
-
+            MemoryStream stream;
+            string extension, type;
+            DownloadFiles(designs, null, format, out stream, out extension, out type);
             return File(stream, type, String.Format("job{0}_bulk.{1}", jobID, extension));
         }
 
@@ -396,67 +346,9 @@ namespace Ribosoft.Controllers
             JObject obj = JObject.Parse(selectedDesigns);
             string handle = Guid.NewGuid().ToString();
             var designs = from d in _context.Designs where d.JobId == jobID select d;
-            var payload = "";
-            var extension = "";
-            var type = "";
-            MemoryStream stream = new MemoryStream();
-            byte[] byteArray;
-            switch (format)
-            {
-                case "csv":
-                    payload += String.Format("Rank,DesiredTemperatureScore,HighestTemperatureScore,SpecificityScore,AccessibilityScore,StructureScore,CreatedAt,UpdatedAt,Sequence\n");
-                    extension = "csv";
-                    foreach (Design d in designs)
-                    {
-                        if (obj.ContainsKey(jobID.ToString() + '-' + d.Id))
-                        {
-                            payload += String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
-                        }
-                    }
-                    type = "application/csv";
-                    byteArray = Encoding.ASCII.GetBytes(payload);
-                    stream = new MemoryStream(byteArray);
-                    break;
-                case "zip":
-                    extension = "zip";
-                    type = "application/octet-stream";
-                    ZipOutputStream zipStream = new ZipOutputStream(stream);
-                    foreach (Design d in designs)
-                    {
-                        if (obj.ContainsKey(jobID.ToString() + '-' + d.Id))
-                        {
-                            var newEntry = new ZipEntry("design" + d.Id + ".fasta");
-                            newEntry.DateTime = DateTime.Now;
-
-                            zipStream.PutNextEntry(newEntry);
-                            byteArray = Encoding.ASCII.GetBytes(String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence));
-
-                            MemoryStream inStream = new MemoryStream(byteArray);
-                            StreamUtils.Copy(inStream, zipStream, new byte[4096]);
-                            inStream.Close();
-                            zipStream.CloseEntry();
-                        }
-                    }
-
-                    zipStream.IsStreamOwner = false;
-                    zipStream.Close();
-                    stream.Position = 0;
-                    break;
-                case "fasta":
-                    extension = "fasta";
-                    foreach (Design d in designs)
-                    {
-                        if (obj.ContainsKey(jobID.ToString() + '-' + d.Id))
-                        {
-                            payload += String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
-                        }
-                    }
-                    type = "text/plain";
-                    byteArray = Encoding.ASCII.GetBytes(payload);
-                    stream = new MemoryStream(byteArray);
-                    break;
-            }
-
+            MemoryStream stream;
+            string extension, type;
+            DownloadFiles(designs, obj, format, out stream, out extension, out type );
             TempData[handle] = Convert.ToBase64String(stream.ToArray());
             return new JsonResult(new { FileGuid = handle, FileName = String.Format("job{0}_bulk.{1}", jobID, extension), FileType = type });
         }
@@ -575,6 +467,78 @@ namespace Ribosoft.Controllers
                 default:
                     break;
             }
+        }
+
+        private void DownloadFiles(IQueryable<Design> designs, JObject obj, string format, out MemoryStream stream, out string extension, out string type)
+        {
+            var payload = "";
+            stream = new MemoryStream();
+            byte[] byteArray;
+            switch (format)
+            {
+                case "csv":
+                    payload += String.Format("Rank,DesiredTemperatureScore,HighestTemperatureScore,SpecificityScore,AccessibilityScore,StructureScore,CreatedAt,UpdatedAt,Sequence\n");
+                    extension = "csv";
+                    foreach (Design d in designs)
+                    {
+                        if (obj == null || obj.ContainsKey(d.JobId.ToString() + '-' + d.Id.ToString()))
+                        {
+                            payload += String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
+                        }
+                    }
+                    type = "application/csv";
+                    byteArray = Encoding.ASCII.GetBytes(payload);
+                    stream = new MemoryStream(byteArray);
+                    break;
+                case "zip":
+                    extension = "zip";
+                    type = "application/octet-stream";
+                    ZipOutputStream zipStream = new ZipOutputStream(stream);
+                    foreach (Design d in designs)
+                    {
+                        if (obj == null || obj.ContainsKey(d.JobId.ToString() + '-' + d.Id.ToString()))
+                        {
+                            AddToZip(ref zipStream, d);
+                        }
+                    }
+
+                    zipStream.IsStreamOwner = false;
+                    zipStream.Close();
+                    stream.Position = 0;
+                    break;
+                case "fasta":
+                    extension = "fasta";
+                    foreach (Design d in designs)
+                    {
+                        if (obj == null || obj.ContainsKey(d.JobId.ToString() + '-' + d.Id.ToString()))
+                        {
+                            payload += String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
+                        }
+                    }
+                    type = "text/plain";
+                    byteArray = Encoding.ASCII.GetBytes(payload);
+                    stream = new MemoryStream(byteArray);
+                    break;
+                default:
+                    extension = "";
+                    type = "";
+                    break;
+            }
+        }
+
+        private void AddToZip(ref ZipOutputStream zipStream, Design d)
+        {
+            byte[] byteArray;
+            var newEntry = new ZipEntry("design" + d.Id + ".fasta");
+            newEntry.DateTime = DateTime.Now;
+
+            zipStream.PutNextEntry(newEntry);
+            byteArray = Encoding.ASCII.GetBytes(String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence));
+
+            MemoryStream inStream = new MemoryStream(byteArray);
+            StreamUtils.Copy(inStream, zipStream, new byte[4096]);
+            inStream.Close();
+            zipStream.CloseEntry();
         }
     }
 }
