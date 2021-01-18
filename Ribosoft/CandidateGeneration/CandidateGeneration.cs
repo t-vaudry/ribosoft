@@ -8,7 +8,6 @@ using Ribosoft.Biology;
 
 namespace Ribosoft.CandidateGeneration
 {
-
     public struct SmallestSetSubstrateInfo
     {
         public int StartIndex;
@@ -90,23 +89,19 @@ namespace Ribosoft.CandidateGeneration
             //
             //*********************
 
-
             //*********************
             //1- Get user input
             //*********************
-
             GetUserInput(ribozymeSeq, ribozymeStruc, substrateSeq, substrateStruc, rnaInput);
 
             //*********************
             //1b)- Get repeat notation info
             //*********************
-
             GetRepeatNotationInfo();
 
             //*********************
             //2- Generate the tree structures
             //*********************
-
             GenerateStructure(NodesAtDepthSequence, Ribozyme.Sequence, Ribozyme.Structure, true);
 
             //This is making the assumption that the substrate has no bonds/pseudoknots, only empty or targets
@@ -115,9 +110,7 @@ namespace Ribosoft.CandidateGeneration
             //*********************
             //3, 4- Traverse ribozyme & substrate trees
             //*********************
-
             TraverseRibozyme();
-
             if (GetLargestSetSubstrateRegion())
                 GetSubstrates();
             else
@@ -126,30 +119,12 @@ namespace Ribosoft.CandidateGeneration
             //*********************
             //5- Handle repeat notations at extremities
             //*********************
-
             HandleExtremityRepeats();
 
             //*********************
             //6- Finish generating sequences based on cut sites and create list of all permutations of sequences + accepted cut sites
             //*********************
-
             return CompleteSequencesWithCutSiteInfo();
-
-            //Console.WriteLine("Amount of sequences (no cut site): {0}", Sequences.Count);
-            //Console.WriteLine("Amount of sequences to send: {0}", SequencesToSend.Count);
-
-            //Console.WriteLine("\nAccepted cut sites: ");
-            //foreach (Tuple<Sequence, String> cutsite in SubstrateInfo)
-            //{
-            //    Console.WriteLine(cutsite.Item1.GetString());
-            //}
-
-
-            //Console.WriteLine("Sending sequences: ");
-            //foreach (Sequence seq in SequencesToSend)
-            //    Console.WriteLine(seq.GetString());
-
-            //Console.ReadLine();
         }
 
         public void GenerateStructure(List<List<Node>> nodesAtDepth, String inputSequence, String inputStructure, bool isRibozyme)
@@ -760,7 +735,7 @@ namespace Ribosoft.CandidateGeneration
             }
 
             List<int> indices = new List<int>();
-            for (int index = 0; ; index += value.Length)
+            for (int index = 0;; index += value.Length)
             {
                 index = str.IndexOf(value, index);
                 if (index == -1)
