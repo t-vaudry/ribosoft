@@ -34,12 +34,12 @@ namespace Ribosoft.Controllers
             return View(await _context.Assemblies.ToListAsync());
         }
 
-        public async Task<IActionResult> Rescan()
+        public IActionResult Rescan()
         {
-            BackgroundJob.Enqueue<UpdateAssemblyDatabase>(x => x.Rescan(JobCancellationToken.Null));
-            
+            BackgroundJob.Enqueue<UpdateAssemblyDatabase>(x => x.Rescan(JobCancellationToken.Null));    
+
             TempData["Alert"] = "A rescan has been triggered! It may take a few minutes.";
-           
+
             return RedirectToAction(nameof(Index));
         }
     }

@@ -81,7 +81,7 @@
                         <div class="col-md-8">
                             <p class="mb-0">
                                 <span class="d-block">
-                                    @Html.Partial("JobStateBadge", item.JobState)
+                                    @await Html.PartialAsync("JobStateBadge", item.JobState)
                                     <strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong> <span class="text-muted">on @item.CreatedAt</span> <span class="text-muted">[@Html.DisplayNameFor(modelItem => item.Id): @item.Id]</span>
                                 </span>
                                 <code>@(item.RNAInput.Length > 80 ? item.RNAInput.Substring(0, 80) + "..." : item.RNAInput)</code>
