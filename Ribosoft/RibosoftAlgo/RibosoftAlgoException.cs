@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ribosoft.RibosoftAlgo
+namespace Ribosoft
 {
     public class RibosoftAlgoException : Exception
     {

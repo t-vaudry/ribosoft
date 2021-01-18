@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace Ribosoft.RibosoftAlgo
+namespace Ribosoft
 {
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
     public struct FoldOutput
