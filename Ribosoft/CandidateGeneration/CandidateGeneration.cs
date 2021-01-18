@@ -162,35 +162,18 @@ namespace Ribosoft.CandidateGeneration
                     }
                 }
 
-                //Make a node for each possible nucleotide at the current depth (if input is not a base) and set its parents to be all nodes at the previous depth
-                //Case 1: The structure is not null (we are processing ribozyme) and the nucloetide is a target. Its base will be determined uniquely by the substrate nucleotide it bonds to
-                if (isTarget && isRibozyme)
+                List<char> baseList = isTarget && isRibozyme ? new List<char> { nucleotide.Symbol } : nucleotide.Bases;
+                foreach (char baseChar in baseList)
                 {
-                    Node currentNode = new Node(new Nucleotide(nucleotide.Symbol), i, neighbourIndex);
+                    Node currentNode = new Node(new Nucleotide(baseChar), i, neighbourIndex);
 
                     if (latestNonRepeatIndex > 0)
                     {
                         currentNode.Parents = nodesAtDepth[latestNonRepeatIndex - 1];
                     }
 
+                    //Add this node to the nodes at the current depth
                     depth_i.Add(currentNode);
-                }
-                //Case 2: There is no input structure (we are processing substrate) or there is a structure, but this nucleotide does not bond to the substrate.
-                //In either case, the base will not be determined by a bond, so develop all possibilities
-                else
-                {
-                    foreach (char baseChar in nucleotide.Bases)
-                    {
-                        Node currentNode = new Node(new Nucleotide(baseChar), i, neighbourIndex);
-
-                        if (latestNonRepeatIndex > 0)
-                        {
-                            currentNode.Parents = nodesAtDepth[latestNonRepeatIndex - 1];
-                        }
-
-                        //Add this node to the nodes at the current depth
-                        depth_i.Add(currentNode);
-                    }
                 }
 
                 //Go to the previous depth and set all nodes' children to nodes of current depth
