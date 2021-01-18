@@ -236,14 +236,7 @@ namespace Ribosoft.CandidateGeneration
             }
 
             //Validate that all open parentheses have been closed
-            if (OpenBondIndices.Count != 0)
-            {
-                throw new CandidateGenerationException("Unclosed bond found '('. Input may be faulty.");
-            }
-            if (OpenPseudoKnotIndices.Count != 0)
-            {
-                throw new CandidateGenerationException("Unclosed pseudoknot found '{'. Input may be faulty.");
-            }
+            ValidateOpenBonds();
         }
 
         public void TraverseSubstrate()
@@ -717,6 +710,18 @@ namespace Ribosoft.CandidateGeneration
 
                     currentCount++;
                 }
+            }
+        }
+
+        private void ValidateOpenBonds()
+        {
+            if (OpenBondIndices.Count != 0)
+            {
+                throw new CandidateGenerationException("Unclosed bond found '('. Input may be faulty.");
+            }
+            if (OpenPseudoKnotIndices.Count != 0)
+            {
+                throw new CandidateGenerationException("Unclosed pseudoknot found '{'. Input may be faulty.");
             }
         }
 
