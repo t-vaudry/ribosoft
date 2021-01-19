@@ -18,7 +18,18 @@ namespace Ribosoft.Models.RibozymeViewModel
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         [ValidationAttributes.RepeatNotations(50)]
         [ValidationAttributes.Nucleotide]
-        public string Sequence { get; set; }
+        private string sequence;
+        public string Sequence
+        { 
+            get
+            {
+                return this.sequence;
+            }
+            set
+            {
+                this.sequence = value.Replace("t", "u").Replace("T", "U");
+            }
+        }
 
         [Required(AllowEmptyStrings = false)]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
@@ -32,7 +43,18 @@ namespace Ribosoft.Models.RibozymeViewModel
         [StringLength(200, MinimumLength = 1)]
         [Display(Name = "Substrate template")]
         [ValidationAttributes.Nucleotide]
-        public string SubstrateTemplate { get; set; }
+        private string substrateTemplate;
+        public string SubstrateTemplate
+        {
+            get
+            {
+                return this.substrateTemplate;
+            }
+            set
+            {
+                this.substrateTemplate = value.Replace("t", "u").Replace("T", "U");
+            }
+        }
 
         [Required(AllowEmptyStrings = false)]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
