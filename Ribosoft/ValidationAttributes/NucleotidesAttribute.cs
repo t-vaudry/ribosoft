@@ -10,7 +10,7 @@ namespace Ribosoft.ValidationAttributes
         private string _pattern;
         public NucleotideAttribute()
         {
-            _pattern = @"^['A','C','G','U','R','Y','K','M','S','W','B','D','H','V','N','a','c','g','u','r','y','k','m','s','w','b','d','h','v','n']+$";
+            _pattern = @"^['A','C','G','U','T','R','Y','K','M','S','W','B','D','H','V','N','a','c','g','u','t','r','y','k','m','s','w','b','d','h','v','n']+$";
         }
 
         public override bool IsValid(object value)
@@ -23,7 +23,7 @@ namespace Ribosoft.ValidationAttributes
 
         public override string FormatErrorMessage(string name)
         {
-            return String.Format(CultureInfo.CurrentCulture, name+" must only contain the following upper or lower case values: A, C, G, U, R, Y, K, M, S, W, B, D, H, V, N", name);
+            return String.Format(CultureInfo.CurrentCulture, name+" must only contain the following upper or lower case values: A, C, G, U, T, R, Y, K, M, S, W, B, D, H, V, N", name);
         }
     }
 }
