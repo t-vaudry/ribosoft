@@ -26,7 +26,7 @@ namespace Ribosoft.Models.RequestViewModels
             }
             set
             {
-                this.inputSequence = value.ToUpper();
+                this.inputSequence = value.Replace("\n", "").Replace("\r", "").ToUpper();
             }
         }
         private string inputSequence;
