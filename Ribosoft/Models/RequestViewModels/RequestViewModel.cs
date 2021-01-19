@@ -18,7 +18,18 @@ namespace Ribosoft.Models.RequestViewModels
         ErrorMessage = "Sequence must only contain the following characters: A, C, G, T, U, R, Y, K, M, S, W, B, D, H, V, N")]
         [DataType(DataType.Text)]
         [Display(Name = "Input sequence")]
-        public string InputSequence { get; set; }
+        public string InputSequence 
+        { 
+            get
+            {
+                return this.inputSequence;
+            }
+            set
+            {
+                this.inputSequence = value.ToUpper();
+            }
+        }
+        private string inputSequence;
 
         [Required]
         [ValidationAttributes.OpenReadingFrame]
