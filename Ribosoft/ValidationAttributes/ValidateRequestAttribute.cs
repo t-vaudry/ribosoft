@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.ComponentModel.DataAnnotations;
 using Ribosoft.Models;
+using Ribosoft.Models.RequestViewModels;
 
 namespace Ribosoft.ValidationAttributes
 {

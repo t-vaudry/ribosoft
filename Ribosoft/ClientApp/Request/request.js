@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import VueResource from 'vue-resource';
-import vSelect from 'vue-select'
+import vSelect from 'vue-select';
 
 Vue.use(VueResource);
-Vue.component('v-select', vSelect)
+Vue.component('v-select', vSelect);
 
 var app = new Vue({
     el: "#app",

@@ -1,0 +1,22 @@
+name: Deployment to FungalGenomics
+
+on:
+  push:
+    branches: master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      MASTER_DEPLOY_URL: ${{ secrets.MASTER_DEPLOY_URL }}
+      encrypted_201caca5971a_key: ${{secrets.ENCRYPTED_201CACA5971A_KEY}}
+      encrypted_201caca5971a_iv: ${{secrets.ENCRYPTED_201CACA5971A_IV}}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Deploy application
+        shell: bash
+        run: |
+          mkdir -p $HOME/.ssh
+          chmod +x $GITHUB_WORKSPACE/.github/deploy/deploy.sh
+          $GITHUB_WORKSPACE/.github/deploy/deploy.sh "$MASTER_DEPLOY_URL" "${GITHUB_REF##*/}"

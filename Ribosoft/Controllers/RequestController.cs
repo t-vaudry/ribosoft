@@ -12,6 +12,7 @@ using Ribosoft.Models;
 using Ribosoft.GenbankRequests;
 using Ribosoft.Jobs;
 using Ribosoft.Data;
+using Ribosoft.Models.RequestViewModels;
 
 namespace Ribosoft.Controllers
 {
