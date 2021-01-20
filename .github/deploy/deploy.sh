@@ -19,5 +19,6 @@ chmod 600 .github/deploy/deploy_key
 ssh-add .github/deploy/deploy_key
 
 # deploy to remote git repo
+git fetch --unshallow
 git remote add deploy $DEPLOY_URL
 git push --force --quiet deploy $DEPLOY_BRANCH
