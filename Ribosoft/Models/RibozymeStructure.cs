@@ -17,7 +17,19 @@ namespace Ribosoft.Models
         [DataType(DataType.Text)]
         [ValidationAttributes.RepeatNotations(50)]
         [ValidationAttributes.Nucleotide]
-        public string Sequence { get; set; }
+        public string Sequence 
+        { 
+            get
+            {
+                return this.sequence;
+            }
+            set
+            {
+                this.sequence = value.Replace("t", "u").Replace("T", "U");
+            }
+        }
+        private string sequence;
+
         [Required]
         [RegularExpression(@"^[.()\[\]a-z0-9]+$",
         ErrorMessage = "Sequence structure must only contain ., (, ), [, ], letters, or numbers")]
@@ -27,7 +39,19 @@ namespace Ribosoft.Models
         [Required]
         [Display(Name = "Substrate Template")]
         [ValidationAttributes.Nucleotide]
-        public string SubstrateTemplate { get; set; }
+        public string SubstrateTemplate 
+        { 
+            get
+            {
+                return this.substrateTemplate;
+            }
+            set
+            {
+                this.substrateTemplate = value.Replace("t", "u").Replace("T", "U");
+            }
+        }
+        private string substrateTemplate;
+
         [Required]
         [Display(Name = "Substrate Structure")]
         [RegularExpression(@"^[\.a-z0-9]+$",

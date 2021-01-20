@@ -18,5 +18,8 @@ namespace Ribosoft.Models.AccountViewModels
 
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
+
+        [Display(Name = "Please note: Guests are not able to return to view jobs after leaving the web service. To view job results, keep the Job Id on hand, and it can be reviewed when returning. Use for short jobs; longer jobs should be done with a full login.")]
+        public bool Guest { get; set; }
     }
 }

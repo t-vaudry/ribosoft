@@ -10,6 +10,7 @@
     "ajv": "^6.2.1",
     "aspnet-webpack": "^2.0.3",
     "bootstrap": "^4.0.0",
+    "bootstrap-vue": "^2.0.0-rc.11",
     "css-loader": "^0.28.0",
     "event-source-polyfill": "^0.0.12",
     "expose-loader": "^0.7.5",
@@ -33,7 +34,7 @@
     "webpack-hot-middleware": "^2.21.2"
   },
   "dependencies": {
-    "npm": "^5.7.1"
+    "npm": "^6.14.6"
   },
   "scripts": {
     "start": "webpack --config webpack.config.js --watch --progress --profile",

@@ -1,5 +1,0 @@
-click>=6.0,<7.0
-click-log>=0.2,<0.3
-colorama>=0.3,<0.4
-requests>=2.18,<2.19
-enum34>=1.1,<1.2

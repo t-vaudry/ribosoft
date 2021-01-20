@@ -8,7 +8,6 @@ using Ribosoft.Biology;
 
 namespace Ribosoft.CandidateGeneration
 {
-
     public struct SmallestSetSubstrateInfo
     {
         public int StartIndex;
@@ -90,23 +89,19 @@ namespace Ribosoft.CandidateGeneration
             //
             //*********************
 
-
             //*********************
             //1- Get user input
             //*********************
-
             GetUserInput(ribozymeSeq, ribozymeStruc, substrateSeq, substrateStruc, rnaInput);
 
             //*********************
             //1b)- Get repeat notation info
             //*********************
-
             GetRepeatNotationInfo();
 
             //*********************
             //2- Generate the tree structures
             //*********************
-
             GenerateStructure(NodesAtDepthSequence, Ribozyme.Sequence, Ribozyme.Structure, true);
 
             //This is making the assumption that the substrate has no bonds/pseudoknots, only empty or targets
@@ -115,9 +110,7 @@ namespace Ribosoft.CandidateGeneration
             //*********************
             //3, 4- Traverse ribozyme & substrate trees
             //*********************
-
             TraverseRibozyme();
-
             if (GetLargestSetSubstrateRegion())
                 GetSubstrates();
             else
@@ -126,30 +119,12 @@ namespace Ribosoft.CandidateGeneration
             //*********************
             //5- Handle repeat notations at extremities
             //*********************
-
             HandleExtremityRepeats();
 
             //*********************
             //6- Finish generating sequences based on cut sites and create list of all permutations of sequences + accepted cut sites
             //*********************
-
             return CompleteSequencesWithCutSiteInfo();
-
-            //Console.WriteLine("Amount of sequences (no cut site): {0}", Sequences.Count);
-            //Console.WriteLine("Amount of sequences to send: {0}", SequencesToSend.Count);
-
-            //Console.WriteLine("\nAccepted cut sites: ");
-            //foreach (Tuple<Sequence, String> cutsite in SubstrateInfo)
-            //{
-            //    Console.WriteLine(cutsite.Item1.GetString());
-            //}
-
-
-            //Console.WriteLine("Sending sequences: ");
-            //foreach (Sequence seq in SequencesToSend)
-            //    Console.WriteLine(seq.GetString());
-
-            //Console.ReadLine();
         }
 
         public void GenerateStructure(List<List<Node>> nodesAtDepth, String inputSequence, String inputStructure, bool isRibozyme)
@@ -183,59 +158,22 @@ namespace Ribosoft.CandidateGeneration
                     if (!isTarget)
                     {
                         //Determine if the nucleotide has a neighbour (bond or pseudoknot)
-                        switch (structure)
-                        {
-                            case '.': //Nothing to do
-                                break;
-                            case '(': //Start an open bond
-                                OpenBondIndices.Push(i);
-                                break;
-                            case ')': //Close an open bond
-                                neighbourIndex = OpenBondIndices.Pop();
-                                NeighboursIndices.Add(Tuple.Create(i, neighbourIndex.Value));
-                                break;
-                            case '[': //Start a pseudoknot
-                                OpenPseudoKnotIndices.Push(i);
-                                break;
-                            case ']': //Close a pseudoknot
-                                neighbourIndex = OpenPseudoKnotIndices.Pop();
-                                NeighboursIndices.Add(Tuple.Create(i, neighbourIndex.Value));
-                                break;
-                            default: //Should not happen
-                                throw new CandidateGenerationException("Unrecognized structure symbol encountered.");
-                        }
+                        HasNeighbor(structure, i, ref neighbourIndex);
                     }
                 }
 
-                //Make a node for each possible nucleotide at the current depth (if input is not a base) and set its parents to be all nodes at the previous depth
-                //Case 1: The structure is not null (we are processing ribozyme) and the nucloetide is a target. Its base will be determined uniquely by the substrate nucleotide it bonds to
-                if (isTarget && isRibozyme)
+                List<char> baseList = isTarget && isRibozyme ? new List<char> { nucleotide.Symbol } : nucleotide.Bases;
+                foreach (char baseChar in baseList)
                 {
-                    Node currentNode = new Node(new Nucleotide(nucleotide.Symbol), i, neighbourIndex);
+                    Node currentNode = new Node(new Nucleotide(baseChar), i, neighbourIndex);
 
                     if (latestNonRepeatIndex > 0)
                     {
                         currentNode.Parents = nodesAtDepth[latestNonRepeatIndex - 1];
                     }
 
+                    //Add this node to the nodes at the current depth
                     depth_i.Add(currentNode);
-                }
-                //Case 2: There is no input structure (we are processing substrate) or there is a structure, but this nucleotide does not bond to the substrate.
-                //In either case, the base will not be determined by a bond, so develop all possibilities
-                else
-                {
-                    foreach (char baseChar in nucleotide.Bases)
-                    {
-                        Node currentNode = new Node(new Nucleotide(baseChar), i, neighbourIndex);
-
-                        if (latestNonRepeatIndex > 0)
-                        {
-                            currentNode.Parents = nodesAtDepth[latestNonRepeatIndex - 1];
-                        }
-
-                        //Add this node to the nodes at the current depth
-                        depth_i.Add(currentNode);
-                    }
                 }
 
                 //Go to the previous depth and set all nodes' children to nodes of current depth
@@ -261,13 +199,31 @@ namespace Ribosoft.CandidateGeneration
             }
 
             //Validate that all open parentheses have been closed
-            if (OpenBondIndices.Count != 0)
+            ValidateOpenBonds();
+        }
+
+        private void HasNeighbor(char structure, int i, ref int? neighbourIndex)
+        {
+            switch (structure)
             {
-                throw new CandidateGenerationException("Unclosed bond found '('. Input may be faulty.");
-            }
-            if (OpenPseudoKnotIndices.Count != 0)
-            {
-                throw new CandidateGenerationException("Unclosed pseudoknot found '{'. Input may be faulty.");
+                case '.': //Nothing to do
+                    break;
+                case '(': //Start an open bond
+                    OpenBondIndices.Push(i);
+                    break;
+                case ')': //Close an open bond
+                    neighbourIndex = OpenBondIndices.Pop();
+                    NeighboursIndices.Add(Tuple.Create(i, neighbourIndex.Value));
+                    break;
+                case '[': //Start a pseudoknot
+                    OpenPseudoKnotIndices.Push(i);
+                    break;
+                case ']': //Close a pseudoknot
+                    neighbourIndex = OpenPseudoKnotIndices.Pop();
+                    NeighboursIndices.Add(Tuple.Create(i, neighbourIndex.Value));
+                    break;
+                default: //Should not happen
+                    throw new CandidateGenerationException("Unrecognized structure symbol encountered.");
             }
         }
 
@@ -745,6 +701,18 @@ namespace Ribosoft.CandidateGeneration
             }
         }
 
+        private void ValidateOpenBonds()
+        {
+            if (OpenBondIndices.Count != 0)
+            {
+                throw new CandidateGenerationException("Unclosed bond found '('. Input may be faulty.");
+            }
+            if (OpenPseudoKnotIndices.Count != 0)
+            {
+                throw new CandidateGenerationException("Unclosed pseudoknot found '{'. Input may be faulty.");
+            }
+        }
+
         public bool IsTarget(char b)
         {
             return ((b >= 'a' && b <= 'z') ||
@@ -760,7 +728,7 @@ namespace Ribosoft.CandidateGeneration
             }
 
             List<int> indices = new List<int>();
-            for (int index = 0; ; index += value.Length)
+            for (int index = 0;; index += value.Length)
             {
                 index = str.IndexOf(value, index);
                 if (index == -1)

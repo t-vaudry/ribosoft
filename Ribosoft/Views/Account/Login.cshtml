@@ -1,7 +1,6 @@
 ﻿@using System.Collections.Generic
 @using System.Linq
 @using Microsoft.AspNetCore.Http
-@using Microsoft.AspNetCore.Http.Authentication
 @model LoginViewModel
 @inject SignInManager<ApplicationUser> SignInManager
 
@@ -47,6 +46,22 @@
                                     <p>
                                         <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]">Register as a new user?</a>
                                     </p>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title border-bottom border-gray pb-2 mb-3">Continue as guest</h5>
+                    <form asp-action="GuestLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Guest"></label>
+                                    <input asp-for="Guest" class="form-check-input" hidden checked/>
+                                </div>
+                                <div class="form-group mt-3">
+                                    <button type="submit" class="btn btn-primary">Continue as guest</button>
                                 </div>
                             </div>
                         </div>

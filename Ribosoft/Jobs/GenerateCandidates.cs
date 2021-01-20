@@ -46,7 +46,7 @@ namespace Ribosoft.Jobs
             var job = GetJob(jobId);
 
             // TODO - temporarily catch retried jobs
-            await DoStage(job, JobState.Errored, j => j.JobState != JobState.New, async (j, c) => {}, cancellationToken);
+            await DoStage(job, JobState.Errored, j => j.JobState != JobState.New, async (j, c) => { await Task.FromResult<object>(null); }, cancellationToken);
 
             // run candidate generator
             await DoStage(job, JobState.CandidateGenerator, j => j.JobState == JobState.New, RunCandidateGenerator, cancellationToken);
@@ -55,12 +55,14 @@ namespace Ribosoft.Jobs
             await DoStage(job, JobState.QueuedPhase2, j => j.JobState == JobState.CandidateGenerator && j.TargetEnvironment == TargetEnvironment.InVivo, async (j, c) =>
                 {
                     BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase2(j.Id, c));
+                    await Task.FromResult<object>(null);
                 }, cancellationToken);
             
             // queue phase 3 job for in-vitro runs, skipping phase 2 (MOO)
             await DoStage(job, JobState.QueuedPhase3, j => j.JobState == JobState.CandidateGenerator && j.TargetEnvironment == TargetEnvironment.InVitro, async (j, c) =>
             {
                 BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase3(j.Id, c));
+                await Task.FromResult<object>(null);
             }, cancellationToken);
         }
 
@@ -71,7 +73,7 @@ namespace Ribosoft.Jobs
             var job = GetJob(jobId);
             
             // TODO - temporarily catch retried jobs
-            await DoStage(job, JobState.Errored, j => j.JobState != JobState.QueuedPhase2, async (j, c) => {}, cancellationToken);
+            await DoStage(job, JobState.Errored, j => j.JobState != JobState.QueuedPhase2, async (j, c) => { await Task.FromResult<object>(null); }, cancellationToken);
 
             // run blast to calculate specificity
             await DoStage(job, JobState.Specificity, j => j.JobState == JobState.QueuedPhase2, RunBlast, cancellationToken);
@@ -80,6 +82,7 @@ namespace Ribosoft.Jobs
             await DoStage(job, JobState.QueuedPhase3, j => j.JobState == JobState.Specificity, async (j, c) =>
             {
                 BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase3(j.Id, c));
+                await Task.FromResult<object>(null);
             }, cancellationToken);
         }
         
@@ -89,7 +92,7 @@ namespace Ribosoft.Jobs
             var job = GetJob(jobId);
             
             // TODO - temporarily catch retried jobs
-            await DoStage(job, JobState.Errored, j => j.JobState != JobState.QueuedPhase3, async (j, c) => {}, cancellationToken);
+            await DoStage(job, JobState.Errored, j => j.JobState != JobState.QueuedPhase3, async (j, c) => { await Task.FromResult<object>(null); }, cancellationToken);
 
             // run multi-objective optimization
             await DoStage(job, JobState.MultiObjectiveOptimization, j => j.JobState == JobState.QueuedPhase3, MultiObjectiveOptimize, cancellationToken);
@@ -334,6 +337,7 @@ namespace Ribosoft.Jobs
             
             var designs = _db.Designs
                              .Where(d => d.JobId == job.Id)
+                             .AsEnumerable()
                              .GroupBy(d => new { d.CutsiteIndex, d.SubstrateSequenceLength });
 
             foreach (var designGroup in designs)

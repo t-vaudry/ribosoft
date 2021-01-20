@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Ribosoft.Biology;
 using Ribosoft.MultiObjectiveOptimization;
 
-namespace Ribosoft {
-
+namespace Ribosoft 
+{
     public class Candidate
     {
         public Sequence Sequence { get; set; }
