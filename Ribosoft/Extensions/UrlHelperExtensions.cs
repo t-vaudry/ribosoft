@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Ribosoft.Controllers;
 
-namespace Microsoft.AspNetCore.Mvc
+namespace Ribosoft.Extensions
 {
     public static class UrlHelperExtensions
     {
