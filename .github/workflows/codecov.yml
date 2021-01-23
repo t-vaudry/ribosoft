@@ -56,4 +56,4 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: ${{runner.workspace}}/ribosoft/RibosoftAlgo/coverage-cpp.xml
+        files: RibosoftAlgo/coverage-cpp.xml
