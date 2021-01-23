@@ -1,4 +1,4 @@
-name: CodeCov
+name: Generate Codecov report
 
 on: [push, workflow_dispatch]
 
@@ -21,9 +21,6 @@ jobs:
       uses: crazy-max/ghaction-chocolatey@v1
       with:
         args: install opencppcoverage
-
-    - name: Setup path
-      run: set PATH=C:\Program Files\OpenCppCoverage;%PATH%
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
