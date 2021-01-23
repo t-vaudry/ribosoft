@@ -5,7 +5,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Ribosoft.Services;
 
-namespace Ribosoft.Services
+namespace Ribosoft.Extensions
 {
     public static class EmailSenderExtensions
     {
