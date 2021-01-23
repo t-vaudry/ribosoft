@@ -45,7 +45,7 @@ jobs:
 
     - name: Generate report
       shell: bash
-      working-directory: "C:\Program Files\OpenCppCoverage"
+      working-directory: C:\Program Files\OpenCppCoverage
       run: OpenCppCoverage.exe --export_type cobertura:coverage-cpp.xml --sources=${{runner.workspace}}/ribosoft/RibosoftAlgo/src --modules=${{runner.workspace}}/ribosoft/RibosoftAlgo/build/*.dll -- ${{runner.workspace}}/ribosoft/RibosoftAlgo/build/bin/Debug/tests.exe
 
     - name: Upload report
@@ -53,4 +53,4 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage-cpp.xml
-        directory: "C:\Program Files\OpenCppCoverage"
+        directory: C:\Program Files\OpenCppCoverage
