@@ -47,6 +47,14 @@ jobs:
       shell: bash
       run: echo "C:\Program Files\OpenCppCoverage" >> $GITHUB_PATH
 
+    - name: Install node modules
+      shell: bash
+      working-directory: ${{runner.workspace}}/ribosoft/Ribosoft
+      run: |
+        npm install
+        node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js
+        node node_modules/webpack/bin/webpack.js
+
     - name: Generate C++ report
       shell: cmd
       working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo
