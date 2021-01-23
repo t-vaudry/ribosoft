@@ -1,6 +1,10 @@
 name: Generate Codecov report
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
+      - develop
 
 env:
   BUILD_TYPE: Debug
@@ -38,7 +42,7 @@ jobs:
       working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
       run: cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
-    - name: Build
+    - name: Build RibosoftAlgo
       shell: bash
       working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
       run: cmake --build . --config $BUILD_TYPE
@@ -55,6 +59,9 @@ jobs:
         node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js
         node node_modules/webpack/bin/webpack.js
 
+    - name: Build Ribosoft
+      run: dotnet build Ribosoft.sln --configuration Debug
+
     - name: Generate C++ report
       shell: cmd
       working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo
@@ -63,7 +70,7 @@ jobs:
     - name: Generate C-Sharp report
       shell: cmd
       working-directory: ${{runner.workspace}}/ribosoft
-      run: OpenCover.Console.exe -register:user -target:"C:\Program Files\dotnet\dotnet.exe" -targetargs:"test Ribosoft.Tests" -filter:"+[Ribosoft*]* -[Ribosoft.Tests*]* -[*]Ribosoft.Controllers.* -[*]Ribosoft.Data.* -[*]Ribosoft.Extensions.* -[*]Ribosoft.Jobs.* -[*]Ribosoft.Services.* -[*]Ribosoft.Resources.* -[*]*.cshtml"  -output:".\coverage-csharp.xml"
+      run: OpenCover.Console.exe -register:user -target:"C:\Program Files\dotnet\dotnet.exe" -targetargs:"test Ribosoft.Tests" -filter:"+[Ribosoft*]* -[Ribosoft.Tests*]* -[*]Ribosoft.Controllers.* -[*]Ribosoft.Data.* -[*]Ribosoft.Extensions.* -[*]Ribosoft.Jobs.* -[*]Ribosoft.Services.* -[*]Ribosoft.Resources.* -[*]*.cshtml"  -output:"coverage-csharp.xml"
       
     - name: Upload report
       uses: codecov/codecov-action@v1
