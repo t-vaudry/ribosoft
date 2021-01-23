@@ -45,12 +45,12 @@ jobs:
 
     - name: Generate report
       shell: bash
-      working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo
-      run: OpenCppCoverage --export_type cobertura:coverage-cpp.xml --sources="${{runner.workspace}}/ribosoft/RibosoftAlgo/src" --modules="${{runner.workspace}}/ribosoft/RibosoftAlgo/build/*.dll" -- build/bin/Debug/tests.exe
+      working-directory: "C:\Program Files\OpenCppCoverage"
+      run: OpenCppCoverage.exe --export_type cobertura:coverage-cpp.xml --sources=${{runner.workspace}}/ribosoft/RibosoftAlgo/src --modules=${{runner.workspace}}/ribosoft/RibosoftAlgo/build/*.dll -- ${{runner.workspace}}/ribosoft/RibosoftAlgo/build/bin/Debug/tests.exe
 
     - name: Upload report
       uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage-cpp.xml
-        directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo/
+        directory: "C:\Program Files\OpenCppCoverage"
