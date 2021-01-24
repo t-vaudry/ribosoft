@@ -1,7 +1,10 @@
-name: Ribosoft2@FungalGenomics Uptime
+name: Ribosoft2 FungalGenomics Uptime
 
 on:
   workflow_dispatch:
+    inputs:
+      msg:
+        description: 'Message'
   push:
     branches:
       - master
