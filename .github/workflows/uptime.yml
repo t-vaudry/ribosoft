@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - master
+      - uptime-workflow
   schedule:
     - cron: '0 12 * * *'
 
