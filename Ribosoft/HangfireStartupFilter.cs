@@ -8,17 +8,33 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Ribosoft.Jobs;
 
+//!< \namespace Ribosoft
 namespace Ribosoft
 {
+    /*! \class HangfireStartupFilter
+     * \brief This class is used to configure Hangfire for the application.
+     */
     public class HangfireStartupFilter : IStartupFilter
     {
+        /*! \property _configuration
+         * \brief IConfiguration object for Hangfire setup
+         */
         private readonly IConfiguration _configuration;
         
+        /*!
+         * \brief Default constructor
+         * \param configuration IConfiguration object for Hangfire setup
+         */
         public HangfireStartupFilter(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
+        /*! \fn Configure
+         * \brief Configuration function
+         * \param next Action for ApplicationBuilder
+         * \return builder Action<IApplicationBuiler>
+         */
         public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
         {
             return builder =>

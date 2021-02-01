@@ -82,7 +82,11 @@ jobs:
 
   build-macos:
     runs-on: macOS-latest
-
+    if:
+      contains('
+        refs/heads/master
+        refs/heads/develop
+      ', github.ref)
     steps:
     - uses: actions/checkout@v2
     - name: Setup python

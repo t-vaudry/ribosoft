@@ -10,24 +10,62 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Ribosoft.Extensions;
 using Ribosoft.Models;
 using Ribosoft.Models.ManageViewModels;
 using Ribosoft.Services;
 
 namespace Ribosoft.Controllers
 {
+    /*! \class ManageController
+     * \brief Controller class for the management of accounts
+     */
     [Route("[controller]/[action]")]
     public class ManageController : Controller
     {
+        /*! \property _userManager
+         * \brief Local application user manager
+         */
         private readonly UserManager<ApplicationUser> _userManager;
+
+        /*! \property _signInManager
+         * \brief Local application sign in manager
+         */
         private readonly SignInManager<ApplicationUser> _signInManager;
+
+        /*! \property _emailSender
+         * \brief Local application email sender
+         */
         private readonly IEmailSender _emailSender;
+
+        /*! \property _logger
+         * \brief Local logging service
+         */
         private readonly ILogger _logger;
+
+        /*! \property _urlEncoder
+         * \brief Local URL encoder
+         */
         private readonly UrlEncoder _urlEncoder;
 
+        /*! \property AuthenticatorUriFormat
+         * \brief Authenticator URI formate
+         */
         private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
+
+        /*! \property RecoveryCodesKey
+         * \brief String name of RecoveryCodesKey
+         */
         private const string RecoveryCodesKey = nameof(RecoveryCodesKey);
 
+        /*! \fn ManageController
+         * \brief Default constructor
+         * \param userManager Application user manager
+         * \param signInManager Application sign in manager
+         * \param emailSender Application email sender
+         * \param logger Logging service
+         * \param urlEncoder URL encoder
+         */
         public ManageController(
           UserManager<ApplicationUser> userManager,
           SignInManager<ApplicationUser> signInManager,
@@ -42,9 +80,16 @@ namespace Ribosoft.Controllers
             _urlEncoder = urlEncoder;
         }
 
+        /*! \property StatusMessage
+         * \brief Status message stored in temp data
+         */
         [TempData]
         public string StatusMessage { get; set; }
 
+        /*!
+         * \brief HTTP GET request for the manage account page
+         * \return View of the manage account index
+         */
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -66,6 +111,11 @@ namespace Ribosoft.Controllers
             return View(model);
         }
 
+        /*!
+         * \brief HTTP POST request to update account information
+         * \param model Model object of index view
+         * \return View of the manage account index
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(IndexViewModel model)
@@ -105,6 +155,11 @@ namespace Ribosoft.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /*! \fn SendVerificationEmail
+         * \brief HTTP POST request to send verification email for account
+         * \param model Model object of index view
+         * \return View of the manage account index
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SendVerificationEmail(IndexViewModel model)
@@ -129,6 +184,10 @@ namespace Ribosoft.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /*!
+         * \brief HTTP GET request for change password page
+         * \return View of the change password index
+         */
         [HttpGet]
         public async Task<IActionResult> ChangePassword()
         {
@@ -148,6 +207,11 @@ namespace Ribosoft.Controllers
             return View(model);
         }
 
+        /*!
+         * \brief HTTP POST request to submit change of password
+         * \param model Model object of change password view
+         * \return View of the change password index
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
@@ -177,6 +241,10 @@ namespace Ribosoft.Controllers
             return RedirectToAction(nameof(ChangePassword));
         }
 
+        /*!
+         * \brief HTTP GET request for set password page
+         * \return View of the set password index
+         */
         [HttpGet]
         public async Task<IActionResult> SetPassword()
         {
@@ -197,6 +265,11 @@ namespace Ribosoft.Controllers
             return View(model);
         }
 
+        /*!
+         * \brief HTTP POST request to set password
+         * \param model Model object of the set password view
+         * \return View of the set password index
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SetPassword(SetPasswordViewModel model)
@@ -225,6 +298,10 @@ namespace Ribosoft.Controllers
             return RedirectToAction(nameof(SetPassword));
         }
 
+        /*! \fn ExternalLogins
+         * \brief HTTP GET request to the external logins page
+         * \return View of the external logins index
+         */
         [HttpGet]
         public async Task<IActionResult> ExternalLogins()
         {
@@ -244,6 +321,10 @@ namespace Ribosoft.Controllers
             return View(model);
         }
 
+        /*! \fn LinkLogin
+         * \brief HTTP POST request to link an external login to the current user
+         * \param provider External login provider
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LinkLogin(string provider)
@@ -257,6 +338,10 @@ namespace Ribosoft.Controllers
             return new ChallengeResult(provider, properties);
         }
 
+        /*! \fn LinkLoginCallback
+         * \brief HTTP GET request to add the external login
+         * \return View of the external logins index
+         */
         [HttpGet]
         public async Task<IActionResult> LinkLoginCallback()
         {
@@ -285,6 +370,11 @@ namespace Ribosoft.Controllers
             return RedirectToAction(nameof(ExternalLogins));
         }
 
+        /*! \fn RemoveLogin
+         * \brief HTTP POST request to remove the external login
+         * \param model Model object of the remove login view
+         * \return View of the external logins index
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveLogin(RemoveLoginViewModel model)
@@ -306,6 +396,10 @@ namespace Ribosoft.Controllers
             return RedirectToAction(nameof(ExternalLogins));
         }
 
+        /*! \fn TwoFactorAuthentication
+         * \brief HTTP GET request for two-factor authentication page
+         * \return View of the two-factor authentication index
+         */
         [HttpGet]
         public async Task<IActionResult> TwoFactorAuthentication()
         {
@@ -325,6 +419,10 @@ namespace Ribosoft.Controllers
             return View(model);
         }
 
+        /*! \fn Disable2faWarning
+         * \brief HTTP GET request for disabled two-factor authentication warning page
+         * \return View of the disabled two-factor authentication index
+         */
         [HttpGet]
         public async Task<IActionResult> Disable2faWarning()
         {
@@ -342,6 +440,10 @@ namespace Ribosoft.Controllers
             return View(nameof(Disable2fa));
         }
 
+        /*! \fn Disable2fa
+         * \brief HTTP POST request to disable two-factor authentication
+         * \return View of the two-factor authentication index
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Disable2fa()
@@ -362,6 +464,10 @@ namespace Ribosoft.Controllers
             return RedirectToAction(nameof(TwoFactorAuthentication));
         }
 
+        /*!
+         * \brief HTTP GET request for enable authenticator page
+         * \return View of the enable authenticator index
+         */
         [HttpGet]
         public async Task<IActionResult> EnableAuthenticator()
         {
@@ -377,6 +483,11 @@ namespace Ribosoft.Controllers
             return View(model);
         }
 
+        /*!
+         * \brief HTTP POST request to enable two-factor authentication
+         * \param model Model object of the enable authenticator view
+         * \return View of the show recovery codes index
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EnableAuthenticator(EnableAuthenticatorViewModel model)
@@ -414,6 +525,10 @@ namespace Ribosoft.Controllers
             return RedirectToAction(nameof(ShowRecoveryCodes));
         }
 
+        /*! \fn ShowRecoveryCodes
+         * \brief HTTP GET request for the show recovery codes page
+         * \return View of the show recovery codes index
+         */
         [HttpGet]
         public IActionResult ShowRecoveryCodes()
         {
@@ -427,12 +542,20 @@ namespace Ribosoft.Controllers
             return View(model);
         }
 
+        /*! \fn ResetAuthenticatorWarning
+         * \brief HTTP GET request for the reset authenticator warning page
+         * \return View of the reset authenticator index
+         */
         [HttpGet]
         public IActionResult ResetAuthenticatorWarning()
         {
             return View(nameof(ResetAuthenticator));
         }
 
+        /*! \fn ResetAuthenticator
+         * \brief HTTP POST request to reset the authentication app key
+         * \return View of the enable authenticator index
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetAuthenticator()
@@ -450,6 +573,10 @@ namespace Ribosoft.Controllers
             return RedirectToAction(nameof(EnableAuthenticator));
         }
 
+        /*! \fn GenerateRecoveryCodesWarning
+         * \brief HTTP GET request for the generate recovery codes warning page
+         * \return View of the generate recovery codes index
+         */
         [HttpGet]
         public async Task<IActionResult> GenerateRecoveryCodesWarning()
         {
@@ -467,6 +594,10 @@ namespace Ribosoft.Controllers
             return View(nameof(GenerateRecoveryCodes));
         }
 
+        /*! \fn GenerateRecoveryCodes
+         * \brief HTTP POST request to generate new two-factor authentication recovery codes
+         * \return View of the show recovery codes index
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GenerateRecoveryCodes()
@@ -492,6 +623,10 @@ namespace Ribosoft.Controllers
 
         #region Helpers
 
+        /*! \fn AddErrors
+         * \brief Helper function to add errors to the model
+         * \param result Result with errors to add
+         */
         private void AddErrors(IdentityResult result)
         {
             foreach (var error in result.Errors)
@@ -500,6 +635,11 @@ namespace Ribosoft.Controllers
             }
         }
 
+        /*! \fn FormatKey
+         * \brief Helper function to format key
+         * \param unformattedKey Unformatted key
+         * \return Formatted key
+         */
         private string FormatKey(string unformattedKey)
         {
             var result = new StringBuilder();
@@ -517,6 +657,12 @@ namespace Ribosoft.Controllers
             return result.ToString().ToLowerInvariant();
         }
 
+        /*! \fn GenerateQrCodeUri
+         * \brief Helper function to generate the QR code URI
+         * \param email Email address
+         * \param unformattedKey Unformatted key
+         * \return String of QR code URI
+         */
         private string GenerateQrCodeUri(string email, string unformattedKey)
         {
             return string.Format(
@@ -525,7 +671,12 @@ namespace Ribosoft.Controllers
                 _urlEncoder.Encode(email),
                 unformattedKey);
         }
-        
+
+        /*! \fn LoadSharedKeyAndQrCodeUriAsync
+         * \brief Helper function to load shared key and the QR code URI
+         * \param user Current application user
+         * \param model Model object of the enable authenticator view
+         */
         private async Task LoadSharedKeyAndQrCodeUriAsync(ApplicationUser user, EnableAuthenticatorViewModel model)
         {
             var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);

@@ -1,0 +1,79 @@
+name: Generate Codecov report
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+
+env:
+  BUILD_TYPE: Debug
+
+jobs:
+  codecov:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+        architecture: x64
+
+    - name: Setup chocolatey
+      uses: crazy-max/ghaction-chocolatey@v1
+      with:
+        args: install opencppcoverage opencover.portable
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
+
+    - name: Install pipenv
+      run: |
+        pip install pipenv
+        pipenv install
+
+    - name: Get library dependencies
+      run: pipenv run python ./ribosoft.py deps install --yes
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
+      run: cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+
+    - name: Build RibosoftAlgo
+      shell: bash
+      working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
+      run: cmake --build . --config $BUILD_TYPE
+
+    - name: Add to path
+      shell: bash
+      run: echo "C:\Program Files\OpenCppCoverage" >> $GITHUB_PATH
+
+    - name: Install node modules
+      shell: bash
+      working-directory: ${{runner.workspace}}/ribosoft/Ribosoft
+      run: |
+        npm install
+        node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js
+        node node_modules/webpack/bin/webpack.js
+
+    - name: Build Ribosoft
+      run: dotnet build Ribosoft.sln --configuration Debug
+
+    - name: Generate C++ report
+      shell: cmd
+      working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo
+      run: OpenCppCoverage --export_type cobertura:coverage-cpp.xml --sources=${{runner.workspace}}\ribosoft\RibosoftAlgo\src --modules=${{runner.workspace}}\ribosoft\RibosoftAlgo\build\*.dll -- build\bin\Debug\tests.exe
+
+    - name: Generate C-Sharp report
+      shell: cmd
+      working-directory: ${{runner.workspace}}/ribosoft
+      run: OpenCover.Console.exe -register:user -target:"C:\Program Files\dotnet\dotnet.exe" -targetargs:"test Ribosoft.sln --configuration Debug" -searchdirs:".\Ribosoft\bin\Debug\netcoreapp3.1" -filter:"+[Ribosoft*]* -[Ribosoft.Tests*]* -[*]Ribosoft.Controllers.* -[*]Ribosoft.Data.* -[*]Ribosoft.Extensions.* -[*]Ribosoft.Jobs.* -[*]Ribosoft.Services.* -[*]Ribosoft.Resources.* -[*]*.cshtml"  -output:"coverage-csharp.xml" -oldstyle -log:All
+
+    - name: Upload report
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: RibosoftAlgo/coverage-cpp.xml,coverage-csharp.xml
