@@ -6,13 +6,22 @@ using System.Threading.Tasks;
 
 namespace Ribosoft.Models.ManageViewModels
 {
+    /*! \class ChangePasswordViewModel
+     * \brief Model class for the change password view
+     */
     public class ChangePasswordViewModel
     {
+        /*! \property OldPassword
+         * \brief Current password
+         */
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Current password")]
         public string OldPassword { get; set; }
 
+        /*! \property vm
+         * \brief Set password view model object
+         */
         public SetPasswordViewModel vm { get; set; }
     }
 }

@@ -8,15 +8,28 @@ using System.Text.RegularExpressions;
 
 namespace Ribosoft.Blast
 {
+    /*! \class Blaster
+     * \brief Object class for the blaster functionality
+     */
     public class Blaster
     {
+        /*! \property Parameters
+         * \brief Parameters used for the BLAST command
+         */
         public BlastParameters Parameters { get; set; }
 
+        /*!
+         * \brief Default constructor
+         */
         public Blaster()
         {
             Parameters = new BlastParameters();
         }
 
+        /*! \fn IsAvailable
+         * \brief Function to check that BLAST command line tools are available
+         * \return Boolean for availability
+         */
         public bool IsAvailable()
         {
             var process = new Process
@@ -60,6 +73,11 @@ namespace Ribosoft.Blast
             return true;
         }
 
+        /*! \fn GetAvailableDatabases
+         * \brief Returns list of BLAST databases available for use
+         * \param path Path to the databases
+         * \return List of available databases
+         */
         public IList<Database> GetAvailableDatabases(string path)
         {
             var args = string.Format("-list {0} -recursive -list_outfmt \"%f\t%t\t%d\t%l\t%n\t%U\"", EncodeParameterArgument(path));
@@ -152,11 +170,20 @@ namespace Ribosoft.Blast
             return databases;
         }
         
+        /*!
+         * \brief Wrapper function to call run
+         * \return stdout string
+         */
         public string Run()
         {
             return Run(this.Parameters);
         }
 
+        /*!
+         * \brief Runner function to execute the BLASTn command
+         * \param parameters BLAST command line parameters
+         * \return stdout string
+         */
         public string Run(BlastParameters parameters)
         {
             var process = new Process
@@ -194,6 +221,11 @@ namespace Ribosoft.Blast
             return output;
         }
 
+        /*! \fn BuildArgumentString
+         * \brief Builds string of arguments for the BLAST command line tool
+         * \param parameters List of parameters
+         * \return String of arguments
+         */
         public string BuildArgumentString(BlastParameters parameters)
         {
             var builder = new StringBuilder();
@@ -250,12 +282,11 @@ namespace Ribosoft.Blast
             return builder.ToString();
         }
 
-        /// <summary>
-        /// Encodes an argument for passing into a program
-        /// </summary>
-        /// <param name="original">The value that should be received by the program</param>
-        /// <returns>The value which needs to be passed to the program for the original value 
-        /// to come through</returns>
+        /*! \fn EncodeParameterArgument
+         * \brief Encodes an argument for passing into a program
+         * \param original The value that should be received by the program
+         * \return The value which needs to be passed to the program for the original value to come through
+         */
         public static string EncodeParameterArgument(string original)
         {
             if (string.IsNullOrEmpty(original))

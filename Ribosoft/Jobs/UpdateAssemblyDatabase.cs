@@ -9,17 +9,37 @@ using Ribosoft.Models;
 
 namespace Ribosoft.Jobs
 {
+    /*! \class UpdateAssemblyDatabase
+     * \brief Job class for updating the assemply database
+     */
     public class UpdateAssemblyDatabase
     {
+        /*! \property _configuration
+         * \brief Local application configuration
+         */
         private readonly IConfiguration _configuration;
+
+        /*! \property _db
+         * \brief Local application database context
+         */
         private readonly ApplicationDbContext _db;
-        
+
+        /*! \fn UpdateAssemblyDatabase
+         * \brief Default constructor
+         * \param options Application database context
+         * \param configuration Application configuration
+         */
         public UpdateAssemblyDatabase(DbContextOptions<ApplicationDbContext> options, IConfiguration configuration)
         {
             _db =  new ApplicationDbContext(options);
             _configuration = configuration;
         }
-        
+
+        /*! \fn Rescan
+         * \brief Rescan the configuration path for more assembly databases
+         * \param cancellationToken Cancellation token
+         * \return List of assemblies
+         */
         [Queue("blast")]
         [AutomaticRetry(Attempts = 0)]
         public async Task Rescan(IJobCancellationToken cancellationToken)

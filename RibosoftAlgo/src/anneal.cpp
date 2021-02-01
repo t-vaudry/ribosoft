@@ -12,11 +12,12 @@
 #include <melting.h>
 
 //! \namespace ribosoft
-RIBOSOFT_NAMESPACE_START
+namespace ribosoft {
 
 std::mutex melting_mutex; //!< Mutex to lock access to MELTING library
 
-/*! \brief Annealing Temperature Score
+/*!
+ * \brief Annealing Temperature Score
  * Used to calculate the annealing temperature of the ribozyme to the
  * substrate. Using the MELTING library by Le Novère. MELTING, a free
  * tool to compute the melting temperature of nucleic acid duplex. 
@@ -28,12 +29,12 @@ std::mutex melting_mutex; //!< Mutex to lock access to MELTING library
  * - R_INVALID_CONCENTRATION | na_concentration or probe_concentration are out of range
  *
  ***************************************************************************************
- * @param sequence Substrate sequence
- * @param structure Substrate structure to determine binding regions
- * @param na_concentration Sodium (Na+) concentration (in moles)
- * @param probe_concentration Nucleic acid concentration in excess (in moles)
- * @param temp Out variable for annealing temperature score
- * @return Status Code
+ * \param sequence Substrate sequence
+ * \param structure Substrate structure to determine binding regions
+ * \param na_concentration Sodium (Na+) concentration (in moles)
+ * \param probe_concentration Nucleic acid concentration in excess (in moles)
+ * \param temp Out variable for annealing temperature score
+ * \return Status Code
  */
 R_STATUS anneal(const char* sequence, const char* structure, const float na_concentration, const float probe_concentration, float& temp)
 {
@@ -87,4 +88,4 @@ R_STATUS anneal(const char* sequence, const char* structure, const float na_conc
     return R_SUCCESS::R_STATUS_OK;
 }
 
-RIBOSOFT_NAMESPACE_END
+}

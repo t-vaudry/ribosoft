@@ -10,10 +10,20 @@ using Microsoft.Extensions.DependencyInjection;
 using NLog.Web;
 using Ribosoft.Data;
 
+//!< \namespace Ribosoft
 namespace Ribosoft
 {
+    /*! \class Program
+     * \brief Object class for the Program
+     */
     public class Program
     {
+        /*! \fn Main 
+         * \brief Main program function
+         * Sets up the main web host and the logger
+         * Also initializes the application database
+         * \param args Array of string arguments
+         */
         public static void Main(string[] args)
         {
             var host = BuildMainWebHost(args);
@@ -36,11 +46,21 @@ namespace Ribosoft
             host.Run();
         }
 
+        /*! \fn BuildWebHost 
+         * \brief Function to build the web host
+         * \param args Array of string arguments
+         * \return obj IWebHost object
+         */
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
                 .Build();
 
+        /*! \fn BuildMainWebHost 
+         * \brief Function to build the main web host
+         * \param args Array of string arguments
+         * \return obj IWebHost object
+         */
         public static IWebHost BuildMainWebHost(string[] args)
         {
             var config = new ConfigurationBuilder()
