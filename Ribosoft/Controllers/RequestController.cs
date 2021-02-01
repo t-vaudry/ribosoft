@@ -16,12 +16,32 @@ using Ribosoft.Models.RequestViewModels;
 
 namespace Ribosoft.Controllers
 {
+    /*! \class RequestController
+     * \brief Controller class for the request page
+     */
     public class RequestController : Controller
     {
+        /*! \property _context
+         * \brief Local application database context
+         */
         private readonly ApplicationDbContext _context;
+
+        /*! \property _userManager
+         * \brief Manager of application users
+         */
         private readonly UserManager<ApplicationUser> _userManager;
+
+        /*! \property _configuration
+         * \brief Local application configuration
+         */
         private readonly IConfiguration _configuration;
 
+        /*! \fn RequestController
+         * \brief Default constructor
+         * \param context Application database context
+         * \param userManager Application user manager
+         * \param configuration Application configuration
+         */
         public RequestController(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
@@ -32,6 +52,10 @@ namespace Ribosoft.Controllers
             _configuration = configuration;
         }
 
+        /*!
+         * \brief HTTP GET request for request page
+         * \return View of the request index
+         */
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -51,6 +75,11 @@ namespace Ribosoft.Controllers
             return View(viewModel);
         }
 
+        /*!
+         * \brief HTTP POST request to submit request form
+         * \param model Request view model object, containing information pertaining to submitted request
+         * \return View based on results
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(RequestViewModel model)
@@ -111,6 +140,11 @@ namespace Ribosoft.Controllers
             return View(model);
         }
 
+        /*! \fn GetSequenceFromGenbank
+         * \brief HTTP GET request to retrieve RNA sequence from GenBank
+         * \param accession Accession number
+         * \return JSON result with RNA sequence, open reading frame indices
+         */
         [HttpGet]
         public async Task<JsonResult> GetSequenceFromGenbank(string accession)
         {
@@ -133,6 +167,10 @@ namespace Ribosoft.Controllers
             return Json(response);
         }
 
+        /*! \fn GetUser
+         * \brief Helper function to retrieve current user
+         * \return Current user
+         */
         private async Task<ApplicationUser> GetUser()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -144,6 +182,11 @@ namespace Ribosoft.Controllers
             return user;
         }
 
+        /*! \fn ExceededMaxRequests
+         * \brief Helper function to determine if user has exceeded the maximum number of requests
+         * \param user Current user
+         * \return Boolean result of check
+         */
         private async Task<bool> ExceededMaxRequests(ApplicationUser user)
         {
             return await _context.Jobs.CountAsync(j => j.OwnerId == user.Id) >= 20;

@@ -21,11 +21,26 @@ using Newtonsoft.Json.Linq;
 
 namespace Ribosoft.Controllers
 {
+    /*! \class JobsController
+     * \brief Controller class for the jobs
+     */
     public class JobsController : Controller
     {
+        /*! \property _context
+         * \brief Local application database context
+         */
         private readonly ApplicationDbContext _context;
+
+        /*! \property _userManager
+         * \brief Local user manager
+         */
         private readonly UserManager<ApplicationUser> _userManager;
 
+        /*! \fn JobsController
+         * \brief Default constructor
+         * \param context Application database context
+         * \param userManager User manager
+         */
         public JobsController(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager)
@@ -34,7 +49,13 @@ namespace Ribosoft.Controllers
             _userManager = userManager;
         }
 
-        // GET: Jobs
+        /*!
+         * \brief HTTP GET request for job main page
+         * \param pageNumber Page number of the job
+         * \param eMessage Error message to display
+         * \param sMessage Success message to display
+         * \return View of the job index
+         */
         public async Task<IActionResult> Index(int pageNumber, string eMessage = "", string sMessage = "")
         {
             var user = await GetUser();
@@ -65,6 +86,12 @@ namespace Ribosoft.Controllers
             return View(vm);
         }
 
+        /*!
+         * \brief HTTP POST request for job form submission
+         * This request will attempt to transfer ownership of a job to the current user
+         * \param model Model of job index view
+         * \return View of the job index
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(JobIndexViewModel model)
@@ -88,7 +115,16 @@ namespace Ribosoft.Controllers
             return RedirectToAction(nameof(Index), new { pageNumber = 1, eMessage = model.ErrorMessage, sMessage = model.SuccessMessage } );
         }
 
-        // GET: Jobs/Details/5
+        /*!
+         * \brief HTTP GET request for job details page
+         * \param id Job ID
+         * \param sortOrder String of current sort order
+         * \param pageNumber Page number of the details
+         * \param filterParam String value of the parameter to filter on
+         * \param filterCondition String value of which condition to apply to filter
+         * \param filterValue String value of the value to filter
+         * \return View of the details index
+         */
         public async Task<IActionResult> Details(int? id, string sortOrder, int pageNumber, string filterParam, string filterCondition, float filterValue)
         {
             if (id == null)
@@ -219,16 +255,21 @@ namespace Ribosoft.Controllers
             return View(vm);
         }
 
-        // GET: Jobs/Create
+        /*!
+         * \brief HTTP GET request for job create page
+         * \return View of the create index
+         */
         public IActionResult Create()
         {
             ViewData["RibozymeId"] = new SelectList(_context.Ribozymes, "Id", "Name");
             return View();
         }
 
-        // POST: Jobs/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /*!
+         * \brief HTTP POST request for job create form submission
+         * \param job Job to create
+         * \return View of the details index
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("RibozymeId,RNAInput")] Job job)
@@ -252,7 +293,11 @@ namespace Ribosoft.Controllers
             return View(job);
         }
 
-        // GET: Jobs/Delete/5
+        /*! \fn Delete
+         * \brief HTTP GET request for delete job page
+         * \param id Job ID
+         * \return View of the job delete index
+         */
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -276,7 +321,11 @@ namespace Ribosoft.Controllers
             return View(job);
         }
 
-        // POST: Jobs/Delete/5
+        /*! \fn DeleteConfirmed
+         * \brief HTTP POST request to confirm deletion of job
+         * \param id Job ID
+         * \return View of the jobs index
+         */
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -312,11 +361,20 @@ namespace Ribosoft.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /*! \fn JobExists
+         * \brief Helper function to check if job exists
+         * \param id Job ID
+         * \return Boolean results from the check
+         */
         private bool JobExists(int id)
         {
             return _context.Jobs.Any(e => e.Id == id);
         }
 
+        /*! \fn GetUser
+         * \brief Helper function to retrieve the current user
+         * \return Current application user
+         */
         private async Task<ApplicationUser> GetUser()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -328,6 +386,15 @@ namespace Ribosoft.Controllers
             return user;
         }
 
+        /*! \fn DownloadDesigns
+         * \brief HTTP GET request to bulk download designs
+         * \param jobID Job ID
+         * \param format File format (ie. CSV, FASTA, ZIP)
+         * \param filterParam String value of the parameter to filter on
+         * \param filterCondition String value of which condition to apply to filter
+         * \param filterValue String value of the value to filter
+         * \return File stream of downloaded designs
+         */
         public FileStreamResult DownloadDesigns(int jobID, string format, string filterParam, string filterCondition, float filterValue)
         {
             var designs = from d in _context.Designs where d.JobId == jobID select d;
@@ -341,6 +408,13 @@ namespace Ribosoft.Controllers
             return File(stream, type, String.Format("job{0}_bulk.{1}", jobID, extension));
         }
 
+        /*! \fn DownloadSelectedDesigns
+         * \brief HTTP GET request to bulk download selected designs
+         * \param jobID Job ID
+         * \param selectedDesigns List of selected design ids
+         * \param format File format (ie. CSV, FASTA, ZIP)
+         * \return JSON results of files to download
+         */
         public JsonResult DownloadSelectedDesigns(int jobID, string selectedDesigns, string format)
         {
             JObject obj = JObject.Parse(selectedDesigns);
@@ -353,6 +427,13 @@ namespace Ribosoft.Controllers
             return new JsonResult(new { FileGuid = handle, FileName = String.Format("job{0}_bulk.{1}", jobID, extension), FileType = type });
         }
 
+        /*! \fn Download
+         * \brief HTTP GET request to download files stored in temp storage
+         * \param fileGuid Guid referencing temp storage elements
+         * \param fileName Name of file to download
+         * \param fileType File type
+         * \return File stream of downloaded designs
+         */
         [HttpGet]
         public virtual ActionResult Download(string fileGuid, string fileName, string fileType)
         {
@@ -367,6 +448,13 @@ namespace Ribosoft.Controllers
             }
         }
 
+        /*! \fn FilterDesigns
+         * \brief Helper function to filter designs
+         * \param designs List of designs
+         * \param filterParam String value of the parameter to filter on
+         * \param filterCondition String value of which condition to apply to filter
+         * \param filterValue Value of the value to filter
+         */
         private void FilterDesigns(ref IQueryable<Design> designs, string filterParam, string filterCondition, float filterValue)
         {
             StringBuilder sb = new StringBuilder(filterValue.ToString());
@@ -388,6 +476,12 @@ namespace Ribosoft.Controllers
             }
         }
 
+        /*! \fn GreaterThanOrEqualTo
+         * \brief Helper function to filter by greater than or equal to
+         * \param designs List of designs
+         * \param filterParam String value of the parameter to filter on
+         * \param filterValue Value of the value to filter
+         */
         private void GreaterThanOrEqualTo(ref IQueryable<Design> designs, string filterParam, float filterValue)
         {
             switch (filterParam)
@@ -415,6 +509,12 @@ namespace Ribosoft.Controllers
             }
         }
 
+        /*! \fn LessThanOrEqualTo
+         * \brief Helper function to filter by less than or equal to
+         * \param designs List of designs
+         * \param filterParam String value of the parameter to filter on
+         * \param filterValue Value of the value to filter
+         */
         private void LessThanOrEqualTo(ref IQueryable<Design> designs, string filterParam, float filterValue)
         {
             switch (filterParam)
@@ -442,6 +542,13 @@ namespace Ribosoft.Controllers
             }
         }
 
+        /*! \fn EqualTo
+         * \brief Helper function to filter by equal to
+         * \param designs List of designs
+         * \param filterParam String value of the parameter to filter on
+         * \param filterValue Value of the value to filter
+         * \param upperBound Upper bound value for equality
+         */
         private void EqualTo(ref IQueryable<Design> designs, string filterParam, float filterValue, float upperBound)
         {
             switch (filterParam)
@@ -469,6 +576,15 @@ namespace Ribosoft.Controllers
             }
         }
 
+        /*! \fn DownloadFiles
+         * \brief Function to perform the file creation
+         * \param designs List of designs
+         * \param obj List of selected designs, if needed
+         * \param format File format (ie. CSV, FASTA, ZIP)
+         * \param stream Output memory stream
+         * \param extension File extension (ie. .csv, .fasta, .zip)
+         * \param type File type
+         */
         private void DownloadFiles(IQueryable<Design> designs, JObject obj, string format, out MemoryStream stream, out string extension, out string type)
         {
             var payload = "";
@@ -526,6 +642,11 @@ namespace Ribosoft.Controllers
             }
         }
 
+        /*! \fn AddToZip
+         * \brief Helper function to add design to ZIP
+         * \param zipStream Output stream for zip
+         * \param d Design to add
+         */
         private void AddToZip(ref ZipOutputStream zipStream, Design d)
         {
             byte[] byteArray;

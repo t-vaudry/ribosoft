@@ -8,38 +8,105 @@ using Ribosoft.Biology;
 
 namespace Ribosoft.CandidateGeneration
 {
+    /*! \struct SmallestSetSubstrateInfo
+     * \brief Structure for the smallest substrate info
+     */
     public struct SmallestSetSubstrateInfo
     {
+        /*! \property StartIndex
+         * \brief Index for beginning of substrate
+         */
         public int StartIndex;
+
+        /*! \property EndIndex
+         * \brief Index for end of substrate
+         */
         public int EndIndex;
+
+        /*! \property SubstrateBase
+         * \brief Substrate base string
+         */
         public String SubstrateBase;
     }
 
+    /*! \class CandidateGenerator
+     * \brief Object class for the candidate generator
+     */
     public class CandidateGenerator
     {
+        /*! \property SmallestSubstarteInfo
+         * \brief Smallest substrate information
+         */
         public SmallestSetSubstrateInfo SmallestSubstarteInfo;
+        
+        /*! \property NeighboursIndices
+         * \brief List of neighbour indices
+         */
         public List<Tuple<int, int>> NeighboursIndices { get; set; }
 
+        /*! \property Ribozyme
+         * \brief Current ribozyme template
+         */
         public Ribozyme Ribozyme { get; set; }
 
+        /*! \property Sequences
+         * \brief List of sequences from candidate generation
+         */
         public List<Sequence> Sequences { get; set; }
+        
+        /*! \property SubstrateInfo
+         * \brief List of substrate information
+         */
         public List<SubstrateInfo> SubstrateInfo { get; set; }
 
-        //Holds the index equivalencies of bonding ribozyme/substrate pairs
+        /*! \property RibozymeSubstrateIndexPairs
+         * \brief Holds the index equivalencies of bonding ribozyme/substrate pairs
+         */
         public List<Tuple<int, int>> RibozymeSubstrateIndexPairs { get; set; }
 
+        /*! \property InputRNASequence
+         * \brief Input RNA sequence from request
+         */
         public String InputRNASequence { get; set; }
 
+        /*! \property NodesAtDepthSequence
+         * \brief List of lists, containing nodes at each depth
+         */
         private List<List<Node>> NodesAtDepthSequence;
+        
+        /*! \property NodesAtDepthCutSite
+         * \brief List of lists, containing nodes at each cutsite
+         */
         private List<List<Node>> NodesAtDepthCutSite;
 
+        /*! \property OpenBondIndices
+         * \brief Stack of open bond indices
+         */
         private Stack<int> OpenBondIndices { get; set; }
+        
+        /*! \property OpenPseudoKnotIndices
+         * \brief Stack of open pseudoknot indices
+         */
         private Stack<int> OpenPseudoKnotIndices { get; set; }
 
+        /*! \property RepeatStructureSymbols
+         * \brief List of repeat structure symbols
+         */
         private List<int> RepeatStructureSymbols { get; set; }
+        
+        /*! \property RepeatRegions
+         * \brief List of of tuples, containing the indices of repeat regions
+         */
         private List<Tuple<int, int>> RepeatRegions { get; set; }
+        
+        /*! \property SubstrateBaseStructure
+         * \brief Substrate base structure string
+         */
         private String SubstrateBaseStructure { get; set; }
 
+        /*
+         * \brief Default constructor
+         */
         public CandidateGenerator()
         {
             NeighboursIndices = new List<Tuple<int, int>>();
@@ -54,6 +121,9 @@ namespace Ribosoft.CandidateGeneration
             RepeatRegions = new List<Tuple<int, int>>();
         }
 
+        /*! \fn Clear
+         * \brief Function to reset the candidate generator
+         */
         public void Clear()
         {
             NeighboursIndices.Clear();
@@ -68,27 +138,32 @@ namespace Ribosoft.CandidateGeneration
             RepeatRegions.Clear();
         }
 
+        /*! \fn GenerateCandidates
+         * \brief The core of the program, the main functionality. This function builds the tree structure of nodes to generate the candidates set up for evaluation to then be ranked.
+         * Here is a summary of the process.
+         * A- Get all permutations of ribozyme sequence:
+         *   a) Generate structure
+         *   b) Do regular traversal BUT if current idx is in list of RNA link indices, just add X and continue
+         * B- Generate cut site tree
+         * C- Traverse cut site tree to generate a list of all possible cut sites
+         * D- Foreach cut site, if not found in RNA input, delete.
+         * E- Foreach remaining cutsite:
+         *   a) Find complement
+         *     i) foreach ribozyme sequence (A-), copy, and replace Xi with list of RNA link indices[i] (ignoring any -). Add to list to send to algo
+         * F- Foreach repeat notation:
+         *   a) Add to existing valid cutsites
+         *   b) Find which of these new cutsites are valid
+         *   c) Complete new ribozyme with this new cutsite
+         * G- Send list generated in E- to algo
+         * \param ribozymeSeq Ribozyme sequence
+         * \param ribozymeStruc Ribozyme structure
+         * \param substrateSeq Substrate sequence
+         * \param substrateStruc Substrate structure
+         * \param rnaInput Input RNA sequence
+         * \return List of candidates
+         */
         public IEnumerable<Candidate> GenerateCandidates(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
         {
-            //*********************
-            //
-            //A- Get all permutations of ribozyme sequence:
-            //  a) Generate structure
-            //  b) Do regular traversal BUT if current idx is in list of RNA link indices, just add X and continue
-            //B- Generate cut site tree
-            //C- Traverse cut site tree to generate a list of all possible cut sites
-            //D- Foreach cut site, if not found in RNA input, delete.
-            //E- Foreach remaining cutsite:
-            //  a) Find complement
-            //      i) foreach ribozyme sequence (A-), copy, and replace Xi with list of RNA link indices[i] (ignoring any -). Add to list to send to algo
-            //F- Foreach repeat notation:
-            //  a) Add to existing valid cutsites
-            //  b) Find which of these new cutsites are valid
-            //  c) Complete new ribozyme with this new cutsite
-            //G- Send list generated in E- to algo
-            //
-            //*********************
-
             //*********************
             //1- Get user input
             //*********************
@@ -127,6 +202,13 @@ namespace Ribosoft.CandidateGeneration
             return CompleteSequencesWithCutSiteInfo();
         }
 
+        /*! \fn GenerateStructure
+         * \brief 
+         * \param nodesAtDepth List of nodes at each depth
+         * \param inputSequence RNA sequence
+         * \param inputStructure RNA structure
+         * \param isRibozyme Is this a ribozyme
+         */
         public void GenerateStructure(List<List<Node>> nodesAtDepth, String inputSequence, String inputStructure, bool isRibozyme)
         {
             int depth = inputSequence.Length;
@@ -202,6 +284,12 @@ namespace Ribosoft.CandidateGeneration
             ValidateOpenBonds();
         }
 
+        /*! \fn HasNeighbor
+         * \brief Check for if the current structure element has a neighbor in the sequence
+         * \param structure Structure character
+         * \param i Index of current element
+         * \param neighbourIndex Index for neighbour element, if exists
+         */
         private void HasNeighbor(char structure, int i, ref int? neighbourIndex)
         {
             switch (structure)
@@ -227,11 +315,18 @@ namespace Ribosoft.CandidateGeneration
             }
         }
 
+        /*! \fn TraverseSubstrate
+         * \brief Function to traverse the substrate nodes at the cutsite
+         */
         public void TraverseSubstrate()
         {
             foreach (Node rootNode in NodesAtDepthCutSite[0])
                 TraverseNoStructure(new Sequence(Ribozyme.SubstrateSequence.Length), rootNode);
         }
+
+        /*! \fn TraverseRibozyme
+         * \brief Function to traverse the ribozyme sequence nodes
+         */
         public void TraverseRibozyme()
         {
             foreach (Node rootNode in NodesAtDepthSequence[0])
@@ -244,7 +339,10 @@ namespace Ribosoft.CandidateGeneration
             }
         }
 
-        //Find the longest specified (A, C, G, U) portion of the substrate
+        /*! \fn GetLargestSetSubstrateRegion
+         * \brief Find the longest specified (A, C, G, U) portion of the substrate
+         * \return Success code
+         */
         public bool GetLargestSetSubstrateRegion()
         {
             int tmpStart = -1;
@@ -294,7 +392,9 @@ namespace Ribosoft.CandidateGeneration
             return success;
         }
 
-        //Get the substrates that are found in the RNA input
+        /*! \fn GetSubstrates
+         * \brief Get the substrates that are found in the RNA input
+         */
         public void GetSubstrates()
         {
             //Locations of specified substrate portion within the RNA input
@@ -371,6 +471,11 @@ namespace Ribosoft.CandidateGeneration
             }
         }
 
+        /*! \fn TraverseNoStructure
+         * \brief Traverse the current sequence at the current node
+         * \param currentSequence Current sequence
+         * \param currentNode Current node
+         */
         public void TraverseNoStructure(Sequence currentSequence, Node currentNode)
         {
             currentSequence.Nucleotides.Add(currentNode.Nucleotide);
@@ -391,6 +496,11 @@ namespace Ribosoft.CandidateGeneration
             }
         }
 
+        /*! \fn TraverseSequence
+         * \brief Traverse the current sequence
+         * \param currentSequence Current sequence
+         * \param currentNode Current node
+         */
         public void TraverseSequence(Sequence currentSequence, Node currentNode)
         {
             currentSequence.Nucleotides.Add(currentNode.Nucleotide);
@@ -454,6 +564,14 @@ namespace Ribosoft.CandidateGeneration
             }
         }
 
+        /*! \fn GetUserInput
+         * \brief Get the user's input and create the ribozyme
+         * \param ribozymeSeq Ribozyme template sequence
+         * \param ribozymeStruc Ribozyme template structure
+         * \param substrateSeq Substrate template sequence
+         * \param substrateStruc Substrate template structure
+         * \param rnaInput Input RNA
+         */
         public void GetUserInput(String ribozymeSeq, String ribozymeStruc, String substrateSeq, String substrateStruc, String rnaInput)
         {
             if (ribozymeSeq.Length != ribozymeStruc.Length)
@@ -470,6 +588,9 @@ namespace Ribosoft.CandidateGeneration
             InputRNASequence = rnaInput;
         }
 
+        /*! \fn GetRepeatNotationInfo
+         * \brief Get the repeat notation information
+         */
         public void GetRepeatNotationInfo()
         {
             StringBuilder baseStructure = new System.Text.StringBuilder();
@@ -545,6 +666,10 @@ namespace Ribosoft.CandidateGeneration
             SubstrateBaseStructure = baseStructure.ToString();
         }
 
+        /*! \fn CompleteSequencesWithCutSiteInfo
+         * \brief Complete the candidate sequences with the cutsite information
+         * \return List of completed candidates
+         */
         public IEnumerable<Candidate> CompleteSequencesWithCutSiteInfo()
         {
             //First, build the mapping between substrate and ribozyme
@@ -629,6 +754,11 @@ namespace Ribosoft.CandidateGeneration
             }
         }
 
+        /*! \fn RemoveUnusedRepeats
+         * \brief Remove any unused repeat notations for current candidate
+         * \param structure Current candidate structure
+         * \param sequence Current candidate sequence
+         */
         private void RemoveUnusedRepeats(ref String structure, Sequence sequence)
         {
             for (int i = sequence.GetLength() - 1; i > -1; i--)
@@ -641,6 +771,9 @@ namespace Ribosoft.CandidateGeneration
             }
         }
 
+        /*! \fn HandleExtremityRepeats
+         * \brief Handle extremity repeat notation elements in the current candidate
+         */
         public void HandleExtremityRepeats()
         {
             foreach (Tuple<int, int> repeatRegion in RepeatRegions)
@@ -701,6 +834,9 @@ namespace Ribosoft.CandidateGeneration
             }
         }
 
+        /*! \fn ValidateOpenBonds
+         * \brief Validate that all bonds have been closed
+         */
         private void ValidateOpenBonds()
         {
             if (OpenBondIndices.Count != 0)
@@ -713,6 +849,11 @@ namespace Ribosoft.CandidateGeneration
             }
         }
 
+        /*! \fn IsTarget
+         * \brief Check if the current structure element is on target
+         * \param b Structure element
+         * \return Check value
+         */
         public bool IsTarget(char b)
         {
             return ((b >= 'a' && b <= 'z') ||
@@ -720,6 +861,12 @@ namespace Ribosoft.CandidateGeneration
                         (b >= '0' && b <= '9'));
         }
 
+        /*! \fn AllIndicesOf
+         * \brief Retrieve all indices of a value in a string
+         * \param str String to check
+         * \param value Value to look for
+         * \return List of indices
+         */
         public static List<int> AllIndicesOf(string str, string value)
         {
             if (String.IsNullOrEmpty(value))

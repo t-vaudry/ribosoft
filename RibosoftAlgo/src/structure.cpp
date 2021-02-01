@@ -10,11 +10,12 @@
 #include "functions.h"
 
 //! \namespace ribosoft
-RIBOSOFT_NAMESPACE_START
+namespace ribosoft {
 
 std::mutex tree_edit_distance_mutex; //!< Mutex used to lock access to ViennaRNA library function `tree_edit_distance`
 
-/*! \brief Structure score
+/*!
+ * \brief Structure score
  * Used to calculate a comparison between two secondary structures, using ViennaRNA
  *
  * Understanding return values:
@@ -73,4 +74,4 @@ DLL_PUBLIC R_STATUS structure(const char* candidate, const char* ideal, /*out*/ 
     return R_SUCCESS::R_STATUS_OK;
 }
 
-RIBOSOFT_NAMESPACE_END
+}

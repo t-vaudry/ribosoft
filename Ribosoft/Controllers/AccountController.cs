@@ -17,14 +17,35 @@ using Ribosoft.Services;
 
 namespace Ribosoft.Controllers
 {
+    /*! \class AccountController
+     * \brief Controller class for the accounts
+     */
     [Route("[controller]/[action]")]
     public class AccountController : Controller
     {
+        /*! \property _userManager
+         * \brief Manager of application users
+         */
         private readonly UserManager<ApplicationUser> _userManager;
+
+        /*! \property _signInManager
+         * \brief Manager of sign ins
+         */
         private readonly SignInManager<ApplicationUser> _signInManager;
+
+        /*! \property _emailSender
+         * \brief Sender for emails
+         */
         private readonly IEmailSender _emailSender;
+
+        /*! \property _logger
+         * \brief Log service object
+         */
         private readonly ILogger _logger;
 
+        /*!
+         * \brief Default constructor
+         */
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -37,9 +58,17 @@ namespace Ribosoft.Controllers
             _logger = logger;
         }
 
+        /*! \property ErrorMessage
+         * \brief Error message string used by the controller
+         */
         [TempData]
         public string ErrorMessage { get; set; }
 
+        /*!
+         * \brief HTTP GET for the login index view
+         * \param returnUrl Return URL
+         * \return Login view
+         */
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Login(string returnUrl = null)
@@ -51,6 +80,12 @@ namespace Ribosoft.Controllers
             return View();
         }
 
+        /*!
+         * \brief HTTP POST for logging in as an account user
+         * \param model Model object of the login view
+         * \param returnUrl Return URL
+         * \return View based on result
+         */
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -87,6 +122,12 @@ namespace Ribosoft.Controllers
             return View(model);
         }
 
+        /*! \fn GuestLogin
+         * \brief HTTP POST for logging in as a guest user
+         * \param model Model object of the login view
+         * \param returnUrl Return URL
+         * \return View based on result
+         */
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -107,6 +148,12 @@ namespace Ribosoft.Controllers
             return RedirectToLocal(returnUrl);
         }
 
+        /*!
+         * \brief HTTP GET for login view for two-factor authentication
+         * \param rememberMe Boolean to remember current user
+         * \param returnUrl Return URL
+         * \return Login with two-factor auth view
+         */
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> LoginWith2fa(bool rememberMe, string returnUrl = null)
@@ -125,6 +172,13 @@ namespace Ribosoft.Controllers
             return View(model);
         }
 
+        /*!
+         * \brief HTTP POST for login with two-factor authentication
+         * \param model Model object of the login view
+         * \param rememberMe Boolean to remember current user
+         * \param returnUrl Return URL
+         * \return View based on result
+         */
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -163,6 +217,11 @@ namespace Ribosoft.Controllers
             }
         }
 
+        /*!
+         * \brief HTTP GET for logging in with recovery code
+         * \param returnUrl Return URL
+         * \return View for login with recovery code
+         */
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> LoginWithRecoveryCode(string returnUrl = null)
@@ -179,6 +238,12 @@ namespace Ribosoft.Controllers
             return View();
         }
 
+        /*!
+         * \brief HTTP POST for logging in with recovery code
+         * \param model Model object of the login view
+         * \param returnUrl Return URL
+         * \return View based on result
+         */
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -217,6 +282,10 @@ namespace Ribosoft.Controllers
             }
         }
 
+        /*! \fn Lockout
+         * \brief HTTP GET for lockout page
+         * \return View for lockout of user
+         */
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Lockout()
@@ -224,6 +293,11 @@ namespace Ribosoft.Controllers
             return View();
         }
 
+        /*!
+         * \brief HTTP GET for registering a new account
+         * \param returnUrl Return URL
+         * \return View for registering new account
+         */
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
@@ -232,6 +306,12 @@ namespace Ribosoft.Controllers
             return View();
         }
 
+        /*!
+         * \brief HTTP POST for registering a new account
+         * \param model Model object of the register view
+         * \param returnUrl Return URL
+         * \return View based on result
+         */
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -261,6 +341,10 @@ namespace Ribosoft.Controllers
             return View(model);
         }
 
+        /*! \fn Logout
+         * \brief HTTP POST for logging out
+         * \return View of home page
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
@@ -270,6 +354,12 @@ namespace Ribosoft.Controllers
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
+        /*! \fn ExternalLogin
+         * \brief HTTP POST for logging in as an account externally
+         * \param provider External provider string
+         * \param returnUrl Return URL
+         * \return View based on result
+         */
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -281,6 +371,12 @@ namespace Ribosoft.Controllers
             return Challenge(properties, provider);
         }
 
+        /*! \fn ExternalLoginCallback
+         * \brief HTTP GET for callback of external login
+         * \param returnUrl Return URL
+         * \param remoteError String for errors from external login
+         * \return View based on result
+         */
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
@@ -317,6 +413,12 @@ namespace Ribosoft.Controllers
             }
         }
 
+        /*! \fn ExternalLoginConfirmation
+         * \brief HTTP POST for confirming logging in externally
+         * \param model Model object of the login view
+         * \param returnUrl Return URL
+         * \return View based on result
+         */
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -349,6 +451,12 @@ namespace Ribosoft.Controllers
             return View(nameof(ExternalLogin), model);
         }
 
+        /*! \fn ConfirmEmail
+         * \brief HTTP GET for confirmation email
+         * \param userId User's id
+         * \param code Code
+         * \return View based on result
+         */
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
@@ -366,6 +474,10 @@ namespace Ribosoft.Controllers
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
+        /*!
+         * \brief HTTP GET for view of forget password
+         * \return View for forgot password
+         */
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ForgotPassword()
@@ -373,6 +485,11 @@ namespace Ribosoft.Controllers
             return View();
         }
 
+        /*!
+         * \brief HTTP POST for forgetting password
+         * \param model Model object of the forgot password view
+         * \return View based on result
+         */
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -400,6 +517,10 @@ namespace Ribosoft.Controllers
             return View(model);
         }
 
+        /*! \fn ForgotPasswordConfirmation
+         * \brief HTTP GET for forgot password confirmation
+         * \return View of login screen
+         */
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ForgotPasswordConfirmation()
@@ -407,6 +528,11 @@ namespace Ribosoft.Controllers
             return View();
         }
 
+        /*!
+         * \brief HTTP GET for reset password view
+         * \param code Code for password reset
+         * \return View for reset password
+         */
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ResetPassword(string code = null)
@@ -419,6 +545,11 @@ namespace Ribosoft.Controllers
             return View(model);
         }
 
+        /*!
+         * \brief HTTP POST for resetting password
+         * \param model Model object of the reset password view
+         * \return View based on result
+         */
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -443,6 +574,10 @@ namespace Ribosoft.Controllers
             return View();
         }
 
+        /*! \fn ResetPasswordConfirmation
+         * \brief HTTP GET for reset password confirmation
+         * \return View for reset password
+         */
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ResetPasswordConfirmation()
@@ -450,6 +585,10 @@ namespace Ribosoft.Controllers
             return View();
         }
 
+        /*! \fn AccessDenied
+         * \brief HTTP GET for access denied view
+         * \return View for login page
+         */
         [HttpGet]
         public IActionResult AccessDenied()
         {
@@ -458,6 +597,10 @@ namespace Ribosoft.Controllers
 
         #region Helpers
 
+        /*! \fn AddErrors
+         * \brief Helper function to add errors to the model
+         * \param result Identity result logs errors, and are added to the model
+         */
         private void AddErrors(IdentityResult result)
         {
             foreach (var error in result.Errors)
@@ -466,6 +609,11 @@ namespace Ribosoft.Controllers
             }
         }
 
+        /*! \fn RedirectToLocal
+         * \brief Helper function to redirect locally
+         * \param returnUrl Return URL
+         * \return View based on returnUrl
+         */
         private IActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))
