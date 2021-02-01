@@ -2,7 +2,7 @@ name: Generate Codecov report
 
 on:
   push:
-    branches: 
+    branches:
       - master
       - develop
 
