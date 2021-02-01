@@ -13,16 +13,30 @@ using System.Text;
 
 namespace Ribosoft.Controllers
 {
+    /*! \class DesignsController
+     * \brief Controller class for the designs of a ribozyme
+     */
     public class DesignsController : Controller
     {
+        /*! \property _context
+         * \brief Local application database context
+         */
         private readonly ApplicationDbContext _context;
 
+        /*! \fn DesignsController
+         * \brief Default constructor
+         * \param context Application database context
+         */
         public DesignsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Designs/Details/5
+        /*! \fn Details
+         * \brief HTTP GET for view of details of a design
+         * \param id Design id
+         * \return View of details from design, if found
+         */
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -41,6 +55,20 @@ namespace Ribosoft.Controllers
             return View(design);
         }
 
+        /*! \fn DownloadDesign
+         * \brief HTTP GET to download FASTA file of current design
+         * \param jobID Job ID, used for filename
+         * \param rank Design rank
+         * \param desiredTemperatureScore Design desired temperature score
+         * \param highestTemperatureScore Design highest temperature score
+         * \param specificityScore Design specificity score
+         * \param accessibilityScore Design accessibility score
+         * \param structureScore Design structure score
+         * \param createdAt Design created at time
+         * \param updatedAt Design updated at time
+         * \param sequence Design ribozyme sequence
+         * \return FASTA file
+         */
         public FileStreamResult DownloadDesign(string jobID, string rank, string desiredTemperatureScore, string highestTemperatureScore, string specificityScore, string accessibilityScore, string structureScore, string createdAt, string updatedAt, string sequence)
         {
             // TODO: Break up sequence into chunks of max line length

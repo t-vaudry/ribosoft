@@ -5,16 +5,35 @@ using System.Text.RegularExpressions;
 
 namespace Ribosoft.ValidationAttributes
 {
+    /*! \class ValidStructureAttribute
+     * \brief Validation class for the structure bonds in a structure
+     */
     public class ValidStructureAttribute : ValidationAttribute
     {
+        /*! \property _isValid
+         * \brief Boolean of current state of attribute
+         */
         private bool _isValid;
+
+        /*! \property _errorMessage
+         * \brief Error message
+         */
         private string _errorMessage;
+
+        /*! \fn ValidStructureAttribute
+         * \brief Default constructor
+         */
         public ValidStructureAttribute()
         {
             _isValid = true;
             _errorMessage = "Invalid structure format, ensure all bonds and pseudo knots have matching closing symbols";
         }
 
+        /*! \fn IsValid
+         * \brief Validation function
+         * \param value Value to validate
+         * \return Boolean result of check
+         */
         public override bool IsValid(object value)
         {
             // Reset boolean and error message for second pass of validation
@@ -76,6 +95,11 @@ namespace Ribosoft.ValidationAttributes
             return _isValid;
         }
 
+        /*! \fn FormatErrorMessage
+         * \brief Function to format error message
+         * \param name Name of invalidated value
+         * \return Formatted error message
+         */
         public override string FormatErrorMessage(string name)
         {
             return String.Format(CultureInfo.CurrentCulture, _errorMessage, name);

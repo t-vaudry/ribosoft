@@ -11,53 +11,54 @@
 
 extern "C" {
     /**
-     *  @brief  Retrieve a #vrna_fold_compound_t data structure for single sequences and hybridizing sequences
+     *  @brief  Retrieve a vrna_fold_compound_t data structure for single sequences and hybridizing sequences
      *
-     *  This function provides an easy interface to obtain a prefilled #vrna_fold_compound_t by passing a single
+     *  This function provides an easy interface to obtain a prefilled vrna_fold_compound_t by passing a single
      *  sequence, or two contatenated sequences as input. For the latter, sequences need to be seperated by
      *  an '&' character like this: @verbatim char *sequence = "GGGG&CCCC"; @endverbatim
      *
      *  The optional parameter @p md_p can be used to specify the model details for successive computations
-     *  based on the content of the generated #vrna_fold_compound_t. Passing NULL will instruct the function
+     *  based on the content of the generated vrna_fold_compound_t. Passing NULL will instruct the function
      *  to use default model details.
      *  The third parameter @p options may be used to specify dynamic programming (DP) matrix requirements.
      *  Use the macros:
      *
-     *  - #VRNA_OPTION_MFE
-     *  - #VRNA_OPTION_PF
-     *  - #VRNA_OPTION_WINDOW
-     *  - #VRNA_OPTION_EVAL_ONLY
-     *  - #VRNA_OPTION_DEFAULT
+     *  - VRNA_OPTION_MFE
+     *  - VRNA_OPTION_PF
+     *  - VRNA_OPTION_WINDOW
+     *  - VRNA_OPTION_EVAL_ONLY
+     *  - VRNA_OPTION_DEFAULT
      *
-     *  to specify the required type of computations that will be performed with the #vrna_fold_compound_t.
+     *  to specify the required type of computations that will be performed with the vrna_fold_compound_t.
      *
      *  If you just need the folding compound serving as a container for your data, you can simply pass
-     *  #VRNA_OPTION_DEFAULT to the @p option parameter. This creates a #vrna_fold_compound_t without DP
+     *  VRNA_OPTION_DEFAULT to the @p option parameter. This creates a vrna_fold_compound_t without DP
      *  matrices, thus saving memory. Subsequent calls of any structure prediction function will then take
      *  care of allocating the memory required for the DP matrices.
      *  If you only intend to evaluate structures instead of actually predicting them, you may use the
-     *  #VRNA_OPTION_EVAL_ONLY macro. This will seriously speedup the creation of the #vrna_fold_compound_t.
+     *  VRNA_OPTION_EVAL_ONLY macro. This will seriously speedup the creation of the vrna_fold_compound_t.
      *
      *  @note The sequence string must be uppercase, and should contain only RNA (resp. DNA) alphabet depending
      *        on what energy parameter set is used
      *
-     *  @see  vrna_fold_compound_free(), vrna_fold_compound_comparative(), #vrna_md_t, #VRNA_OPTION_MFE,
-     *        #VRNA_OPTION_PF, #VRNA_OPTION_EVAL_ONLY, #VRNA_OPTION_WINDOW
+     *  @see  vrna_fold_compound_free(), vrna_fold_compound_comparative(), vrna_md_t, VRNA_OPTION_MFE,
+     *        VRNA_OPTION_PF, VRNA_OPTION_EVAL_ONLY, VRNA_OPTION_WINDOW
      *
      *  @param    sequence    A single sequence, or two concatenated sequences seperated by an '&' character
      *  @param    md_p        An optional set of model details
      *  @param    options     The options for DP matrices memory allocation
      *  @return               A prefilled vrna_fold_compound_t that can be readily used for computations
      */
-    vrna_fold_compound_t* vrna_fold_compound(const char*, vrna_md_t*, unsigned int);
+    vrna_fold_compound_t* vrna_fold_compound(const char* sequence, vrna_md_t* md_p, unsigned int options);
 }
 
 //! \namespace ribosoft
-RIBOSOFT_NAMESPACE_START
+namespace ribosoft {
 
 #define EPSILON 0.000001 //!< Epsilon to determine if equal to zero
 
-/*! \brief Fold
+/*!
+ * \brief Fold
  * Used to fold the RNA sequence and provide the probabilities
  * of each fold in the distribution. Folding is done using ViennaRNA
  *
@@ -66,10 +67,10 @@ RIBOSOFT_NAMESPACE_START
  * - R_VIENNA_RNA_ERROR | Error from ViennaRNA, contact us with more details.
  *
  ***************************************************************************************
- * @param sequence Ribozyme sequence
- * @param output Out variable for fold structures
- * @param size Out variable for the size of the fold_output
- * @return Status Code
+ * \param sequence Ribozyme sequence
+ * \param output Out variable for fold structures
+ * \param size Out variable for the size of the fold_output
+ * \return Status Code
  */
 DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*out*/ size_t& size)
 {
@@ -126,7 +127,8 @@ DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*o
     return R_SUCCESS::R_STATUS_OK;
 }
 
-/*! \brief Free memory from fold outputs
+/*!
+ * \brief Free memory from fold outputs
  * Used to free the memory from the fold structure
  *
  ***************************************************************************************
@@ -145,4 +147,4 @@ DLL_PUBLIC void fold_output_free(fold_output* output, size_t size)
     }
 }
 
-RIBOSOFT_NAMESPACE_END
+}

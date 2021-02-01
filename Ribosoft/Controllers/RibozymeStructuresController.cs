@@ -11,23 +11,40 @@ using Ribosoft.Models;
 
 namespace Ribosoft.Controllers
 {
+    /*! \class RibozymeStructuresController
+     * \brief Controller class for the ribozyme structures within the system
+     */
     public class RibozymeStructuresController : Controller
     {
+        /*! \property _context
+         * \brief Local application database context
+         */
         private readonly ApplicationDbContext _context;
 
+        /*! \fn RibozymeStructuresController
+         * \brief Default constructor
+         * \param context Application database context
+         */
         public RibozymeStructuresController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: RibozymeStructures
+        /*! \fn Index
+         * \brief HTTP GET request for ribozyme structures page
+         * \return View of ribozyme structures index
+         */
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.RibozymeStructures.Include(r => r.Ribozyme);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: RibozymeStructures/Details/5
+        /*! \fn Details
+         * \brief HTTP GET request for ribozyme structures details page
+         * \param id RibozymeStructure Id
+         * \return View of ribozyme structures details index
+         */
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,7 +63,11 @@ namespace Ribosoft.Controllers
             return View(ribozymeStructure);
         }
 
-        // GET: RibozymeStructures/Create
+        /*!
+         * \brief HTTP GET request for ribozyme structures create page
+         * \param ribozymeId Ribozyme Id
+         * \return View of ribozyme structures create index
+         */
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create(int? ribozymeId)
         {
@@ -65,9 +86,12 @@ namespace Ribosoft.Controllers
             return View();
         }
 
-        // POST: RibozymeStructures/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /*!
+         * \brief HTTP POST request for ribozyme structures create form submission
+         * \param ribozymeId Ribozyme Id
+         * \param ribozymeStructure Ribozyme Structure details for creation
+         * \return View of ribozyme structures details index
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
@@ -96,7 +120,11 @@ namespace Ribosoft.Controllers
             return View(ribozymeStructure);
         }
 
-        // GET: RibozymeStructures/Edit/5
+        /*!
+         * \brief HTTP GET request for ribozyme structures edit page
+         * \param id Ribozyme Structure Id
+         * \return View of ribozyme structures edit index
+         */
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -114,9 +142,12 @@ namespace Ribosoft.Controllers
             return View(ribozymeStructure);
         }
 
-        // POST: RibozymeStructures/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /*!
+         * \brief HTTP POST request for ribozyme structures edit form submission
+         * \param id Ribozyme Structure Id
+         * \param ribozymeStructure Ribozyme structure details for editing
+         * \return View of ribozyme structures details index
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
@@ -151,7 +182,11 @@ namespace Ribosoft.Controllers
             return View(ribozymeStructure);
         }
 
-        // GET: RibozymeStructures/Delete/5
+        /*! \fn Delete
+         * \brief HTTP GET request for ribozyme structures delete page
+         * \param id Ribozyme Structure Id
+         * \return View of ribozyme structures delete index
+         */
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -171,7 +206,11 @@ namespace Ribosoft.Controllers
             return View(ribozymeStructure);
         }
 
-        // POST: RibozymeStructures/Delete/5
+        /*! \fn DeleteConfirmed
+         * \brief HTTP POST request to delete ribozyme structure
+         * \param id Ribozyme Structure Id
+         * \return View of ribozyme structures details index
+         */
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
@@ -183,6 +222,11 @@ namespace Ribosoft.Controllers
             return RedirectToAction("Details", "Ribozymes", new { id = ribozymeStructure.RibozymeId });
         }
 
+        /*! \fn RibozymeStructureExists
+         * \brief Helper function to determine if ribozyme structure exists
+         * \param id Ribozyme Structure Id
+         * \return Boolean result of the check
+         */
         private bool RibozymeStructureExists(int id)
         {
             return _context.RibozymeStructures.Any(e => e.Id == id);

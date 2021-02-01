@@ -6,11 +6,17 @@ using System.Threading.Tasks;
 
 namespace Ribosoft.Models.AccountViewModels
 {
+	/*! \class LoginWithRecoveryCodeViewModel
+     * \brief Model class for the login with recovery code view
+     */
     public class LoginWithRecoveryCodeViewModel
     {
-            [Required]
-            [DataType(DataType.Text)]
-            [Display(Name = "Recovery Code")]
-            public string RecoveryCode { get; set; }
+        /*! \property RecoveryCode
+         * \brief Recovery code
+         */
+        [Required]
+        [DataType(DataType.Text)]
+        [Display(Name = "Recovery Code")]
+        public string RecoveryCode { get; set; }
     }
 }
