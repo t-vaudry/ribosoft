@@ -8,37 +8,87 @@ using Ribosoft.MultiObjectiveOptimization;
 
 namespace Ribosoft.Models
 {
+    /*! \class Design
+     * \brief Model class for the design of a ribozyme
+     */
     public class Design : BaseEntity, IRankable<OptimizeItem<float>>
     {
+        /*! \property Id
+         * \brief Design ID
+         */
         public int Id { get; set; }
+
+        /*! \property JobId
+         * \brief Job ID
+         */
         public int JobId { get; set; }
+
+        /*! \property Sequence
+         * \brief Ribozyme sequence
+         */
         [Display(Name = "Ribozyme Sequence")]
         public string Sequence { get; set; }
+
+        /*! \property Rank
+         * \brief Ribozyme rank
+         */
         public int Rank { get; set; }
 
         // fitness values
+        /*! \property DesiredTemperatureScore
+         * \brief Desired Temperature Score
+         */
         [Display(Name = "Desired Temperature Score")]
         [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? DesiredTemperatureScore { get; set; }
+
+        /*! \property HighestTemperatureScore
+         * \brief Highest Temperature Score
+         */
         [Display(Name = "Highest Temperature Score")]
         [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? HighestTemperatureScore { get; set; }
+
+        /*! \property SpecificityScore
+         * \brief Specificity Score
+         */
         [Display(Name = "Specificity Score")]
         [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? SpecificityScore { get; set; }
+
+        /*! \property AccessibilityScore
+         * \brief Accessibility Score
+         */
         [Display(Name = "Accessibility Score")]
         [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? AccessibilityScore { get; set; }
+
+        /*! \property StructureScore
+         * \brief Structure Score
+         */
         [Display(Name = "Structure Score")]
         [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? StructureScore { get; set; }
 
         // substrate sequence
+        /*! \property CutsiteIndex
+         * \brief Index of the ribozyme cut-site
+         */
         public int CutsiteIndex { get; set; }
+
+        /*! \property SubstrateSequenceLength
+         * \brief Length of the substrate sequence
+         */
         public int SubstrateSequenceLength { get; set; }
 
+        /*! \property Job
+         * \brief Job object
+         */
         public virtual Job Job { get; set; }
 
+        /*! \property Comparables
+         * \brief List of optimize item comparables
+         */
         [NotMapped]
         public virtual IEnumerable<OptimizeItem<float>> Comparables => new []
         {
@@ -49,8 +99,11 @@ namespace Ribosoft.Models
             new OptimizeItem<float>(StructureScore.GetValueOrDefault(), OptimizeType.MIN, Job.StructureTolerance.GetValueOrDefault())
         };
 
+        /*! \property SubstrateTargetSequence
+         * \brief Substrate Target Sequence
+         */
         [NotMapped]
-        [Display(Name = "Susbtrate Target Sequence")]
+        [Display(Name = "Substrate Target Sequence")]
         public string SubstrateTargetSequence
         {
             get

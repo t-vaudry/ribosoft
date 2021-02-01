@@ -18,8 +18,15 @@ using Hangfire.Logging.LogProviders;
 
 namespace Ribosoft
 {
+    /*! \class Startup
+     * \brief Object class for the Startup of the application and its properties
+     */
     public class Startup
     {
+        /*!
+         * \brief Default constructor
+         * \param env Web host environment
+         */
         public Startup(IWebHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -36,9 +43,15 @@ namespace Ribosoft
             Configuration = builder.Build();
         }
 
+        /*! \property Configuration
+         * \brief Startup configuration
+         */
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /*! \fn ConfigureServices
+         * \brief This method gets called by the runtime. Use this method to add services to the container.
+         * \param services Startup services
+         */
         public void ConfigureServices(IServiceCollection services)
         {
             var providerName = Configuration.GetValue("EntityFrameworkProvider", "SqlServer");
@@ -97,7 +110,12 @@ namespace Ribosoft
             services.AddCloudscribePagination();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /*! \fn Configure
+         * \brief This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+         * \param app Application builder
+         * \param env Web host environment
+         * \param serviceProvider Service provider
+         */
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())

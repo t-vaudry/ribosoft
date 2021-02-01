@@ -1,15 +1,15 @@
 #include "dll.h"
 
-#define RIBOSOFT_NAMESPACE_START namespace ribosoft {
-#define RIBOSOFT_NAMESPACE_END   }
-
 //! \namespace ribosoft
-RIBOSOFT_NAMESPACE_START
+namespace ribosoft {
 
-//! \typedef Status Code
+/*! \typedef R_STATUS
+ *  \brief Status Code
+ */
 typedef signed int R_STATUS;
 
-/*! \enum Success Codes
+/*! \enum R_SUCCESS
+ * \brief Success Codes
  * SUCCESS : Range (0)-(1000)
  */
 enum R_SUCCESS : R_STATUS {
@@ -17,7 +17,8 @@ enum R_SUCCESS : R_STATUS {
     R_SUCCESS_LAST                 =  1000, //!< NON-ASSOCIATED CODE
 };
 
-/*! \enum Application Error Codes
+/*! \enum R_APPLICATION_ERROR
+ *\brief Application Error Codes
  * APPLICATION ERROR : Range (-1)-(-999)
  */
 enum R_APPLICATION_ERROR : R_STATUS {
@@ -35,7 +36,8 @@ enum R_APPLICATION_ERROR : R_STATUS {
     R_APPLICATION_ERROR_LAST       =   -999, //!< NON-ASSOCIATED CODE
 };
 
-/*! \enum User Error Codes
+/*! \enum R_USER_ERROR
+ * \brief User Error Codes
  * USER ERROR : Range (-1000)-(-1999)
  */
 enum R_USER_ERROR : R_STATUS {
@@ -43,7 +45,8 @@ enum R_USER_ERROR : R_STATUS {
     R_USER_ERROR_LAST              = -1999, //!< NON-ASSOCIATED CODE
 };
 
-/*! \enum System Error Codes
+/*! \enum R_SYSTEM_ERROR
+ * \brief System Error Codes
  * SYSTEM ERROR : Range (-2000)-(-2999)
  */
 enum R_SYSTEM_ERROR : R_STATUS {
@@ -52,4 +55,4 @@ enum R_SYSTEM_ERROR : R_STATUS {
     R_SYSTEM_ERROR_LAST            = -2999, //!< NON-ASSOCIATED CODE
 };
 
-RIBOSOFT_NAMESPACE_END
+}

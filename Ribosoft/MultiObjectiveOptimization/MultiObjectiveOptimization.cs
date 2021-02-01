@@ -4,18 +4,25 @@ using System.Linq;
 
 namespace Ribosoft.MultiObjectiveOptimization 
 {
+    /*! \class MultiObjectiveOptimizer
+     * \brief Object class for the multi-objective optimization of ribozyme designs
+     */
     public class MultiObjectiveOptimizer
     {
+        /*! \fn MultiObjectiveOptimizer
+         * \brief Default constructor
+         */
         public MultiObjectiveOptimizer()
         {
         }
 
-        /* Optimization using Pareto Ranking
-        ** Recursive implementation where candidates are compared
-        ** to find dominated candidates. Those who are not dominated
-        ** are ranked, and removed from the list. This happens
-        ** recursively until there are no more candidates to rank.
-        */
+        /*! \fn Optimize<T>
+         * \brief Optimization using Pareto Ranking
+         * Recursive implementation where candidates are compared to find dominated candidates. Those who are not dominated are ranked, and removed from the list. This happens recursively until there are no more candidates to rank.
+         * \param candidates List of candidates
+         * \param rank Current rank
+         * \return List of ranked candidates
+         */
         public IList<T> Optimize<T>(IList<T> candidates, int rank) where T : class, IRankable<OptimizeItem<float>>
         {
             // If candidates are empty, return
@@ -62,11 +69,15 @@ namespace Ribosoft.MultiObjectiveOptimization
             return rankedCandidates;
         }
 
-        /* Pareto Dominance
-        ** A vector x dominates y:
-        **   1. If fi(x) <= fi(y) for all i functions of f, and
-        **   2. There is at least one i such that fi(x) < fi(y)
-        */
+        /*! \fn ParetoDominate
+         * \brief Function to determine Pareto Dominance
+         * A vector x dominates y:
+         *   1. If fi(x) <= fi(y) for all i functions of f, and
+         *   2. There is at least one i such that fi(x) < fi(y)
+         * \param victim Victim optimize item
+         * \param dominator Dominator optimize item
+         * \return Boolean result of dominance check
+         */
         private bool ParetoDominate(IRankable<OptimizeItem<float>> victim, IRankable<OptimizeItem<float>> dominator)
         {
             bool dominated = true;
