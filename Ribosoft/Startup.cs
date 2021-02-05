@@ -97,6 +97,8 @@ namespace Ribosoft
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 
+            services.AddDatabaseDeveloperPageExceptionFilter();
+
             services
                 .AddMvc(config =>
                 {
@@ -122,7 +124,7 @@ namespace Ribosoft
             {
                 app.UseDeveloperExceptionPage();
                 BrowserLinkExtensions.UseBrowserLink(app);
-                DatabaseErrorPageExtensions.UseDatabaseErrorPage(app);
+                app.UseMigrationsEndPoint();
             }
             else
             {
