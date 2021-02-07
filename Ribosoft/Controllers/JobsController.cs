@@ -105,11 +105,11 @@ namespace Ribosoft.Controllers
                 job.OwnerId = user.Id;
                 _context.Jobs.Update(job);
                 await _context.SaveChangesAsync();
-                model.SuccessMessage = "Successfully added Job!";
+                model.SuccessMessage = String.Format("Successfully added Job [{0}]!", model.JobId);
             }
             else
             {
-                model.ErrorMessage = "Invalid Job Id!";
+                model.ErrorMessage = String.Format("Invalid Job Id [{0}]!", model.JobId);
             }
 
             return RedirectToAction(nameof(Index), new { pageNumber = 1, eMessage = model.ErrorMessage, sMessage = model.SuccessMessage } );

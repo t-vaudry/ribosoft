@@ -11,14 +11,40 @@
     <h1 class="col-md-6">@ViewData["Title"]</h1>
     <div class="col-md-6 align-content-center d-flex">
         <form method="post" class="form-inline ml-auto">
-            <span class="text-danger mr-1">@Model.ErrorMessage</span>
-            <span class="text-success mr-1">@Model.SuccessMessage</span>
             <span data-toggle="tooltip" data-placement="left" title="@Localizer["AddJobTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
             <input asp-for="JobId" class="form-control mx-1" placeholder="Job Id">
             <button type="submit" class="btn btn-primary">Add</button>
         </form>
     </div>
 </div>
+
+@if (Model.SuccessMessage.Length > 0)
+{
+    <div class="my-3">
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h5 class="alert-heading">Success!</h5>
+            <hr>
+            <p class="mb-0">@Model.SuccessMessage</p>
+        </div>
+    </div>
+}
+
+@if (Model.ErrorMessage.Length > 0)
+{
+    <div class="my-3">
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h5 class="alert-heading">Error!</h5>
+            <hr>
+            <p class="mb-0">@Model.ErrorMessage</p>
+        </div>
+    </div>
+}
 
 @if (Model.InProgress.Any())
 {
