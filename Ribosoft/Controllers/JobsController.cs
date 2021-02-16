@@ -18,6 +18,8 @@ using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Core;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using static Ribosoft.Models.JobsViewModels.JobDetailsViewModel;
 
 namespace Ribosoft.Controllers
 {
@@ -120,12 +122,10 @@ namespace Ribosoft.Controllers
          * \param id Job ID
          * \param sortOrder String of current sort order
          * \param pageNumber Page number of the details
-         * \param filterParam String value of the parameter to filter on
-         * \param filterCondition String value of which condition to apply to filter
-         * \param filterValue String value of the value to filter
+         * \param filterData Base64 encoded string of JSON filter data
          * \return View of the details index
          */
-        public async Task<IActionResult> Details(int? id, string sortOrder, int pageNumber, string filterParam, string filterCondition, float filterValue)
+        public async Task<IActionResult> Details(int? id, string sortOrder, int pageNumber, string filterData)
         {
             if (id == null)
             {
@@ -148,9 +148,15 @@ namespace Ribosoft.Controllers
 
             var designs = from d in _context.Designs where d.JobId == job.Id select d;
 
-            if (!String.IsNullOrEmpty(filterParam))
+            List<Filter> filterList = new List<Filter>();
+            if (!string.IsNullOrEmpty(filterData))
             {
-                FilterDesigns(ref designs, filterParam, filterCondition, filterValue);
+                filterData = Encoding.UTF8.GetString(Convert.FromBase64String(filterData));
+                filterList = JsonConvert.DeserializeObject<List<Filter>>(filterData);
+                foreach (var filter in filterList)
+                {
+                    FilterDesigns(ref designs, filter.param, filter.condition, float.Parse(filter.value));
+                }
             }
 
             int pageSize = 20;
@@ -164,89 +170,58 @@ namespace Ribosoft.Controllers
             ViewBag.StructColumnTitle = "Structure Score";
             ViewBag.RankColumnTitle = "Rank";
 
-            ViewBag.DesTempSortParm = sortOrder == "des_temp_asc" ? "des_temp_desc" : "des_temp_asc";
-            ViewBag.HiTempSortParm = sortOrder == "hi_temp_asc" ? "hi_temp_desc" : "hi_temp_asc";
+            ViewBag.DesTempSortParm = sortOrder == "destemp_asc" ? "destemp_desc" : "destemp_asc";
+            ViewBag.HiTempSortParm = sortOrder == "hitemp_asc" ? "hitemp_desc" : "hitemp_asc";
             ViewBag.SpecSortParm = sortOrder == "spec_asc" ? "spec_desc" : "spec_asc";
             ViewBag.AccessSortParm = sortOrder == "access_asc" ? "access_desc" : "access_asc";
             ViewBag.StructSortParm = sortOrder == "struct_asc" ? "struct_desc" : "struct_asc";
             ViewBag.RankSortParm = sortOrder == "rank_asc" ? "rank_desc" : "rank_asc";
-            // ViewBag.RankSortParm = String.IsNullOrEmpty(sortOrder) ? "rank_asc" : "";
 
             switch (sortOrder)
             {
-                case "des_temp_desc":
+                case "destemp_desc":
                     designs = designs.OrderByDescending(d => d.DesiredTemperatureScore);
-                    ViewBag.DesTempColumnTitle = "▼ |  " + ViewBag.DesTempColumnTitle;
                     break;
-                case "des_temp_asc":
+                case "destemp_asc":
                     designs = designs.OrderBy(d => d.DesiredTemperatureScore);
-                    ViewBag.DesTempColumnTitle = "▲ | " + ViewBag.DesTempColumnTitle;
                     break;
-                case "hi_temp_desc":
+                case "hitemp_desc":
                     designs = designs.OrderByDescending(d => d.HighestTemperatureScore);
-                    ViewBag.HiTempColumnTitle = "▼ | " + ViewBag.HiTempColumnTitle;
                     break;
-                case "hi_temp_asc":
+                case "hitemp_asc":
                     designs = designs.OrderBy(d => d.HighestTemperatureScore);
-                    ViewBag.HiTempColumnTitle = "▲ | " + ViewBag.HiTempColumnTitle;
                     break;
                 case "spec_desc":
                     designs = designs.OrderByDescending(d => d.SpecificityScore);
-                    ViewBag.SpecColumnTitle = "▼ " + ViewBag.SpecColumnTitle;
                     break;
                 case "spec_asc":
                     designs = designs.OrderBy(d => d.SpecificityScore);
-                    ViewBag.SpecColumnTitle = "▲ | " + ViewBag.SpecColumnTitle;
                     break;
                 case "access_desc":
                     designs = designs.OrderByDescending(d => d.AccessibilityScore);
-                    ViewBag.AccessColumnTitle = "▼ | " + ViewBag.AccessColumnTitle;
                     break;
                 case "access_asc":
                     designs = designs.OrderBy(d => d.AccessibilityScore);
-                    ViewBag.AccessColumnTitle = "▲ | " + ViewBag.AccessColumnTitle;
                     break;
                 case "struct_desc":
                     designs = designs.OrderByDescending(d => d.StructureScore);
-                    ViewBag.StructColumnTitle = "▼ | " + ViewBag.StructColumnTitle;
                     break;
                 case "struct_asc":
                     designs = designs.OrderBy(d => d.StructureScore);
-                    ViewBag.StructColumnTitle = "▲ | " + ViewBag.StructColumnTitle;
                     break;
                 case "rank_desc":
                     designs = designs.OrderByDescending(d => d.Rank);
-                    ViewBag.RankColumnTitle = "▼ | " + ViewBag.RankColumnTitle;
                     break;
                 default:
                     designs = designs.OrderBy(d => d.Rank);
-                    ViewBag.RankColumnTitle = "▲ | " + ViewBag.RankColumnTitle;
                     break;
             }
-
-            List<SelectListItem> filterParams = new List<SelectListItem>();
-            List<SelectListItem> filterConditions = new List<SelectListItem>();
-
-            filterParams.Add(new SelectListItem { Text = "Rank", Value = "Rank", Selected = true });
-            filterParams.Add(new SelectListItem { Text = "Highest Temperature Score", Value = "HighestTemperatureScore" });
-            filterParams.Add(new SelectListItem { Text = "Desired Temperature Score", Value = "DesiredTemperatureScore" });
-            filterParams.Add(new SelectListItem { Text = "Specificity Score", Value = "SpecificityScore" });
-            filterParams.Add(new SelectListItem { Text = "Acessibility Score", Value = "AcessibilityScore" });
-            filterParams.Add(new SelectListItem { Text = "Structure Score", Value = "StructureScore" });
-
-            filterConditions.Add(new SelectListItem { Text = ">=", Value = "gteq", Selected = true });
-            filterConditions.Add(new SelectListItem { Text = "<=", Value = "lteq" });
-            filterConditions.Add(new SelectListItem { Text = "=", Value = "eq" });
 
             var vm = new JobDetailsViewModel();
 
             vm.Job = job;
             vm.SortOrder = sortOrder;
-            vm.FilterParams = filterParams;
-            vm.FilterConditions = filterConditions;
-            vm.FilterParam = filterParam;
-            vm.FilterCondition = filterCondition;
-            vm.FilterValue = filterValue.ToString();
+            vm.FilterList = filterList;
             vm.Designs.Data = await designs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
             vm.Designs.TotalItems = await designs.CountAsync();
             vm.Designs.PageNumber = pageNumber;
@@ -387,29 +362,34 @@ namespace Ribosoft.Controllers
         }
 
         /*! \fn DownloadDesigns
-         * \brief HTTP GET request to bulk download designs
+         * \brief HTTP POST request to bulk download designs
          * \param jobID Job ID
+         * \param filterData Base64 encoded string of JSON filter data
          * \param format File format (ie. CSV, FASTA, ZIP)
-         * \param filterParam String value of the parameter to filter on
-         * \param filterCondition String value of which condition to apply to filter
-         * \param filterValue String value of the value to filter
-         * \return File stream of downloaded designs
+         * \return JSON results of files to download
          */
-        public FileStreamResult DownloadDesigns(int jobID, string format, string filterParam, string filterCondition, float filterValue)
+        public JsonResult DownloadDesigns(int jobID, string filterData, string format)
         {
             var designs = from d in _context.Designs where d.JobId == jobID select d;
-            if (!String.IsNullOrEmpty(filterParam))
+            if (!string.IsNullOrEmpty(filterData))
             {
-                FilterDesigns(ref designs, filterParam, filterCondition, filterValue);                
+                filterData = Encoding.UTF8.GetString(Convert.FromBase64String(filterData));
+                var filterList = JsonConvert.DeserializeObject<List<Filter>>(filterData);
+                foreach (var filter in filterList)
+                {
+                    FilterDesigns(ref designs, filter.param, filter.condition, float.Parse(filter.value));
+                }
             }
+            string handle = Guid.NewGuid().ToString();
             MemoryStream stream;
             string extension, type;
             DownloadFiles(designs, null, format, out stream, out extension, out type);
-            return File(stream, type, String.Format("job{0}_bulk.{1}", jobID, extension));
+            TempData[handle] = Convert.ToBase64String(stream.ToArray());
+            return new JsonResult(new { FileGuid = handle, FileName = String.Format("job{0}_bulk.{1}", jobID, extension), FileType = type });
         }
 
         /*! \fn DownloadSelectedDesigns
-         * \brief HTTP GET request to bulk download selected designs
+         * \brief HTTP POST request to bulk download selected designs
          * \param jobID Job ID
          * \param selectedDesigns List of selected design ids
          * \param format File format (ie. CSV, FASTA, ZIP)
@@ -462,80 +442,83 @@ namespace Ribosoft.Controllers
             float upperBound = float.Parse(sb.ToString());
             switch(filterCondition)
             {
-                case "gteq":
-                    GreaterThanOrEqualTo(ref designs, filterParam, filterValue);
+                case "gt":
+                    GreaterThan(ref designs, filterParam, filterValue);
                     break;
-                case "lteq":
-                    LessThanOrEqualTo(ref designs, filterParam, filterValue);
+                case "lt":
+                    LessThan(ref designs, filterParam, filterValue);
                     break;
                 case "eq":
                     EqualTo(ref designs, filterParam, filterValue, upperBound);
                     break;
-                default:
-                    break;
-            }
-        }
-
-        /*! \fn GreaterThanOrEqualTo
-         * \brief Helper function to filter by greater than or equal to
-         * \param designs List of designs
-         * \param filterParam String value of the parameter to filter on
-         * \param filterValue Value of the value to filter
-         */
-        private void GreaterThanOrEqualTo(ref IQueryable<Design> designs, string filterParam, float filterValue)
-        {
-            switch (filterParam)
-            {
-                case "Rank":
-                    designs = designs.Where(d => d.Rank >= filterValue);
-                    break;
-                case "HighestTemperatureScore":
-                    designs = designs.Where(d => d.HighestTemperatureScore >= filterValue);
-                    break;
-                case "DesiredTemperatureScore":
-                    designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue);
-                    break;
-                case "SpecificityScore":
-                    designs = designs.Where(d => d.SpecificityScore >= filterValue);
-                    break;
-                case "AcessibilityScore":
-                    designs = designs.Where(d => d.AccessibilityScore >= filterValue);
-                    break;
-                case "StructureScore":
-                    designs = designs.Where(d => d.StructureScore >= filterValue);
+                case "ne":
+                    NotEqualTo(ref designs, filterParam, filterValue, upperBound);
                     break;
                 default:
                     break;
             }
         }
 
-        /*! \fn LessThanOrEqualTo
-         * \brief Helper function to filter by less than or equal to
+        /*! \fn GreaterThan
+         * \brief Helper function to filter by greater than
          * \param designs List of designs
          * \param filterParam String value of the parameter to filter on
          * \param filterValue Value of the value to filter
          */
-        private void LessThanOrEqualTo(ref IQueryable<Design> designs, string filterParam, float filterValue)
+        private void GreaterThan(ref IQueryable<Design> designs, string filterParam, float filterValue)
         {
             switch (filterParam)
             {
                 case "Rank":
-                    designs = designs.Where(d => d.Rank <= filterValue);
+                    designs = designs.Where(d => d.Rank > filterValue);
                     break;
                 case "HighestTemperatureScore":
-                    designs = designs.Where(d => d.HighestTemperatureScore <= filterValue);
+                    designs = designs.Where(d => d.HighestTemperatureScore > filterValue);
                     break;
                 case "DesiredTemperatureScore":
-                    designs = designs.Where(d => d.DesiredTemperatureScore <= filterValue);
+                    designs = designs.Where(d => d.DesiredTemperatureScore > filterValue);
                     break;
                 case "SpecificityScore":
-                    designs = designs.Where(d => d.SpecificityScore <= filterValue);
+                    designs = designs.Where(d => d.SpecificityScore > filterValue);
                     break;
-                case "AcessibilityScore":
-                    designs = designs.Where(d => d.AccessibilityScore <= filterValue);
+                case "AccessibilityScore":
+                    designs = designs.Where(d => d.AccessibilityScore > filterValue);
                     break;
                 case "StructureScore":
-                    designs = designs.Where(d => d.StructureScore <= filterValue);
+                    designs = designs.Where(d => d.StructureScore > filterValue);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /*! \fn LessThan
+         * \brief Helper function to filter by less than
+         * \param designs List of designs
+         * \param filterParam String value of the parameter to filter on
+         * \param filterValue Value of the value to filter
+         */
+        private void LessThan(ref IQueryable<Design> designs, string filterParam, float filterValue)
+        {
+            switch (filterParam)
+            {
+                case "Rank":
+                    designs = designs.Where(d => d.Rank < filterValue);
+                    break;
+                case "HighestTemperatureScore":
+                    designs = designs.Where(d => d.HighestTemperatureScore < filterValue);
+                    break;
+                case "DesiredTemperatureScore":
+                    designs = designs.Where(d => d.DesiredTemperatureScore < filterValue);
+                    break;
+                case "SpecificityScore":
+                    designs = designs.Where(d => d.SpecificityScore < filterValue);
+                    break;
+                case "AccessibilityScore":
+                    designs = designs.Where(d => d.AccessibilityScore < filterValue);
+                    break;
+                case "StructureScore":
+                    designs = designs.Where(d => d.StructureScore < filterValue);
                     break;
                 default:
                     break;
@@ -565,11 +548,45 @@ namespace Ribosoft.Controllers
                 case "SpecificityScore":
                      designs = designs.Where(d => d.SpecificityScore >= filterValue && d.SpecificityScore < upperBound);
                     break;
-                case "AcessibilityScore":
+                case "AccessibilityScore":
                     designs = designs.Where(d => d.AccessibilityScore >= filterValue && d.AccessibilityScore < upperBound);
                     break;
                 case "StructureScore":
                     designs = designs.Where(d => d.StructureScore >= filterValue && d.StructureScore < upperBound);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /*! \fn NotEqualTo
+         * \brief Helper function to filter by not equal to
+         * \param designs List of designs
+         * \param filterParam String value of the parameter to filter on
+         * \param filterValue Value of the value to filter
+         * \param upperBound Upper bound value for equality
+         */
+        private void NotEqualTo(ref IQueryable<Design> designs, string filterParam, float filterValue, float upperBound)
+        {
+            switch (filterParam)
+            {
+                case "Rank":
+                    designs = designs.Where(d => d.Rank != (int)filterValue);
+                    break;
+                case "HighestTemperatureScore":
+                    designs = designs.Where(d => d.HighestTemperatureScore < filterValue || d.HighestTemperatureScore > upperBound);
+                    break;
+                case "DesiredTemperatureScore":
+                    designs = designs.Where(d => d.DesiredTemperatureScore < filterValue || d.DesiredTemperatureScore > upperBound);
+                    break;
+                case "SpecificityScore":
+                    designs = designs.Where(d => d.SpecificityScore < filterValue || d.SpecificityScore > upperBound);
+                    break;
+                case "AccessibilityScore":
+                    designs = designs.Where(d => d.AccessibilityScore < filterValue || d.AccessibilityScore > upperBound);
+                    break;
+                case "StructureScore":
+                    designs = designs.Where(d => d.StructureScore < filterValue || d.StructureScore > upperBound);
                     break;
                 default:
                     break;
