@@ -181,7 +181,7 @@ input.dropdown-item {
 }
 
 .no-height {
-    min-height: 0px !important;
+    min-height: 0 !important;
 }
 
 option[value="null"], option[value="nn"] {

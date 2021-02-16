@@ -32,6 +32,7 @@ namespace Ribosoft.Models
         /*! \property Rank
          * \brief Ribozyme rank
          */
+        [Display(Name = "Rank")]
         public int Rank { get; set; }
 
         // fitness values

@@ -241,7 +241,7 @@
                             <tr>
                                 <th>
                                     <div class="d-flex align-items-center sortable">
-                                        @Html.Raw((string)ViewBag.RankColumnTitle)
+                                        @Html.DisplayNameFor(model => model.Designs.Data.First().Rank)
                                         <i id="ranksort" class="fas fa-sort"></i>
                                     </div>
                                 </th>
@@ -252,31 +252,31 @@
                                 </th>
                                 <th>
                                     <div class="d-flex align-items-center sortable">
-                                        @Html.Raw((string)ViewBag.DesTempColumnTitle)
+                                        @Html.DisplayNameFor(model => model.Designs.Data.First().DesiredTemperatureScore)
                                         <i id="destempsort" class="fas fa-sort"></i>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="d-flex align-items-center sortable">
-                                        @Html.Raw((string)ViewBag.HiTempColumnTitle)
+                                        @Html.DisplayNameFor(model => model.Designs.Data.First().HighestTemperatureScore)
                                         <i id="hitempsort" class="fas fa-sort"></i>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="d-flex align-items-center sortable">
-                                        @Html.Raw((string)ViewBag.SpecColumnTitle)
+                                        @Html.DisplayNameFor(model => model.Designs.Data.First().SpecificityScore)
                                         <i id="specsort" class="fas fa-sort"></i>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="d-flex align-items-center sortable">
-                                        @Html.Raw((string)ViewBag.AccessColumnTitle)
+                                        @Html.DisplayNameFor(model => model.Designs.Data.First().AccessibilityScore)
                                         <i id="accesssort" class="fas fa-sort"></i>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="d-flex align-items-center sortable">
-                                        @Html.Raw((string)ViewBag.StructColumnTitle)
+                                        @Html.DisplayNameFor(model => model.Designs.Data.First().StructureScore)
                                         <i id="structsort" class="fas fa-sort"></i>
                                     </div>
                                 </th>

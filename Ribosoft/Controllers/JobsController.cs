@@ -163,59 +163,7 @@ namespace Ribosoft.Controllers
             pageNumber = Math.Max(pageNumber, 1);
             int offset = (pageSize * pageNumber) - pageSize;
 
-            ViewBag.DesTempColumnTitle = "Desired Temperature Score";
-            ViewBag.HiTempColumnTitle = "Highest Temperature Score";
-            ViewBag.SpecColumnTitle = "Specificity Score";
-            ViewBag.AccessColumnTitle = "Accessibility Score";
-            ViewBag.StructColumnTitle = "Structure Score";
-            ViewBag.RankColumnTitle = "Rank";
-
-            ViewBag.DesTempSortParm = sortOrder == "destemp_asc" ? "destemp_desc" : "destemp_asc";
-            ViewBag.HiTempSortParm = sortOrder == "hitemp_asc" ? "hitemp_desc" : "hitemp_asc";
-            ViewBag.SpecSortParm = sortOrder == "spec_asc" ? "spec_desc" : "spec_asc";
-            ViewBag.AccessSortParm = sortOrder == "access_asc" ? "access_desc" : "access_asc";
-            ViewBag.StructSortParm = sortOrder == "struct_asc" ? "struct_desc" : "struct_asc";
-            ViewBag.RankSortParm = sortOrder == "rank_asc" ? "rank_desc" : "rank_asc";
-
-            switch (sortOrder)
-            {
-                case "destemp_desc":
-                    designs = designs.OrderByDescending(d => d.DesiredTemperatureScore);
-                    break;
-                case "destemp_asc":
-                    designs = designs.OrderBy(d => d.DesiredTemperatureScore);
-                    break;
-                case "hitemp_desc":
-                    designs = designs.OrderByDescending(d => d.HighestTemperatureScore);
-                    break;
-                case "hitemp_asc":
-                    designs = designs.OrderBy(d => d.HighestTemperatureScore);
-                    break;
-                case "spec_desc":
-                    designs = designs.OrderByDescending(d => d.SpecificityScore);
-                    break;
-                case "spec_asc":
-                    designs = designs.OrderBy(d => d.SpecificityScore);
-                    break;
-                case "access_desc":
-                    designs = designs.OrderByDescending(d => d.AccessibilityScore);
-                    break;
-                case "access_asc":
-                    designs = designs.OrderBy(d => d.AccessibilityScore);
-                    break;
-                case "struct_desc":
-                    designs = designs.OrderByDescending(d => d.StructureScore);
-                    break;
-                case "struct_asc":
-                    designs = designs.OrderBy(d => d.StructureScore);
-                    break;
-                case "rank_desc":
-                    designs = designs.OrderByDescending(d => d.Rank);
-                    break;
-                default:
-                    designs = designs.OrderBy(d => d.Rank);
-                    break;
-            }
+            SortDesigns(ref designs, sortOrder);
 
             var vm = new JobDetailsViewModel();
 
@@ -425,6 +373,61 @@ namespace Ribosoft.Controllers
             else
             {
                 return new EmptyResult();
+            }
+        }
+
+        /*! \fn SortDesigns
+         * \brief Helper function to sort designs
+         * \param designs List of designs
+         * \param sortOrder String containing sorting information
+         */
+        private void SortDesigns(ref IQueryable<Design> designs, string sortOrder)
+        {
+            ViewBag.DesTempSortParm = sortOrder == "destemp_asc" ? "destemp_desc" : "destemp_asc";
+            ViewBag.HiTempSortParm = sortOrder == "hitemp_asc" ? "hitemp_desc" : "hitemp_asc";
+            ViewBag.SpecSortParm = sortOrder == "spec_asc" ? "spec_desc" : "spec_asc";
+            ViewBag.AccessSortParm = sortOrder == "access_asc" ? "access_desc" : "access_asc";
+            ViewBag.StructSortParm = sortOrder == "struct_asc" ? "struct_desc" : "struct_asc";
+            ViewBag.RankSortParm = sortOrder == "rank_asc" ? "rank_desc" : "rank_asc";
+
+            switch (sortOrder)
+            {
+                case "destemp_desc":
+                    designs = designs.OrderByDescending(d => d.DesiredTemperatureScore);
+                    break;
+                case "destemp_asc":
+                    designs = designs.OrderBy(d => d.DesiredTemperatureScore);
+                    break;
+                case "hitemp_desc":
+                    designs = designs.OrderByDescending(d => d.HighestTemperatureScore);
+                    break;
+                case "hitemp_asc":
+                    designs = designs.OrderBy(d => d.HighestTemperatureScore);
+                    break;
+                case "spec_desc":
+                    designs = designs.OrderByDescending(d => d.SpecificityScore);
+                    break;
+                case "spec_asc":
+                    designs = designs.OrderBy(d => d.SpecificityScore);
+                    break;
+                case "access_desc":
+                    designs = designs.OrderByDescending(d => d.AccessibilityScore);
+                    break;
+                case "access_asc":
+                    designs = designs.OrderBy(d => d.AccessibilityScore);
+                    break;
+                case "struct_desc":
+                    designs = designs.OrderByDescending(d => d.StructureScore);
+                    break;
+                case "struct_asc":
+                    designs = designs.OrderBy(d => d.StructureScore);
+                    break;
+                case "rank_desc":
+                    designs = designs.OrderByDescending(d => d.Rank);
+                    break;
+                default:
+                    designs = designs.OrderBy(d => d.Rank);
+                    break;
             }
         }
 
