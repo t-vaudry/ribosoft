@@ -157,7 +157,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a61e14132526d7d16e9d7d1e938c86af9"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST for logging out.  <a href="../../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html#a61e14132526d7d16e9d7d1e938c86af9">More...</a><br /></td></tr>
 <tr class="separator:a61e14132526d7d16e9d7d1e938c86af9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15970d2efe57bc7e8bd193d12a5f8758"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html#a15970d2efe57bc7e8bd193d12a5f8758">Register</a> (<a class="el" href="../../d7/d1f/classRibosoft_1_1Models_1_1AccountViewModels_1_1RegisterViewModel.html">RegisterViewModel</a> model, string returnUrl=null)</td></tr>
-<tr class="memdesc:a15970d2efe57bc7e8bd193d12a5f8758"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST for registering a new account.  <a href="../../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html#a15970d2efe57bc7e8bd193d12a5f8758">More...</a><br /></td></tr>
+<tr class="memdesc:a15970d2efe57bc7e8bd193d12a5f8758"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST for registering a new account If the user is the first in the database, they are automatically set to Administrator.  <a href="../../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html#a15970d2efe57bc7e8bd193d12a5f8758">More...</a><br /></td></tr>
 <tr class="separator:a15970d2efe57bc7e8bd193d12a5f8758"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a45c620340d739992172cb69b4f4d0849"><td class="memItemLeft" align="right" valign="top">IActionResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html#a45c620340d739992172cb69b4f4d0849">Register</a> (string returnUrl=null)</td></tr>
 <tr class="memdesc:a45c620340d739992172cb69b4f4d0849"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET for registering a new account.  <a href="../../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html#a45c620340d739992172cb69b4f4d0849">More...</a><br /></td></tr>
@@ -238,7 +238,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 <p>HTTP GET for access denied view. </p>
 <dl class="section return"><dt>Returns</dt><dd>View for login page </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00593">593</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00597">597</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -274,7 +274,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00604">604</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00608">608</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -322,7 +322,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View based on result </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00462">462</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00466">466</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -370,7 +370,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View based on result </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00366">366</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00370">370</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -418,7 +418,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View based on result </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00382">382</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00386">386</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -466,7 +466,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View based on result </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00425">425</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00429">429</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -496,7 +496,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 <p>HTTP GET for view of forget password. </p>
 <dl class="section return"><dt>Returns</dt><dd>View for forgot password </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00483">483</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00487">487</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -533,7 +533,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View based on result </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00496">496</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00500">500</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -563,7 +563,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 <p>HTTP GET for forgot password confirmation. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of login screen </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00526">526</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00530">530</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -944,7 +944,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 <p>HTTP POST for logging out. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of home page </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00350">350</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00354">354</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -981,7 +981,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View based on returnUrl </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00617">617</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00621">621</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -1019,7 +1019,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </table>
 </div><div class="memdoc">
 
-<p>HTTP POST for registering a new account. </p>
+<p>HTTP POST for registering a new account If the user is the first in the database, they are automatically set to Administrator. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">model</td><td>Model object of the register view </td></tr>
@@ -1029,7 +1029,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View based on result </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00318">318</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00319">319</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -1103,7 +1103,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View based on result </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00556">556</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00560">560</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -1140,7 +1140,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View for reset password </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00538">538</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00542">542</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -1170,7 +1170,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 <p>HTTP GET for reset password confirmation. </p>
 <dl class="section return"><dt>Returns</dt><dd>View for reset password </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00583">583</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00587">587</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
