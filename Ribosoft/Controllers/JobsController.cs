@@ -163,6 +163,7 @@ namespace Ribosoft.Controllers
             pageNumber = Math.Max(pageNumber, 1);
             int offset = (pageSize * pageNumber) - pageSize;
 
+            SetSortParams(sortOrder);
             SortDesigns(ref designs, sortOrder);
 
             var vm = new JobDetailsViewModel();
@@ -376,12 +377,11 @@ namespace Ribosoft.Controllers
             }
         }
 
-        /*! \fn SortDesigns
-         * \brief Helper function to sort designs
-         * \param designs List of designs
+        /*! \fn SetSortParams
+         * \brief Helper function to set current sort parameters
          * \param sortOrder String containing sorting information
          */
-        private void SortDesigns(ref IQueryable<Design> designs, string sortOrder)
+        private void SetSortParams(string sortOrder)
         {
             ViewBag.DesTempSortParm = sortOrder == "destemp_asc" ? "destemp_desc" : "destemp_asc";
             ViewBag.HiTempSortParm = sortOrder == "hitemp_asc" ? "hitemp_desc" : "hitemp_asc";
@@ -389,7 +389,15 @@ namespace Ribosoft.Controllers
             ViewBag.AccessSortParm = sortOrder == "access_asc" ? "access_desc" : "access_asc";
             ViewBag.StructSortParm = sortOrder == "struct_asc" ? "struct_desc" : "struct_asc";
             ViewBag.RankSortParm = sortOrder == "rank_asc" ? "rank_desc" : "rank_asc";
+        }
 
+        /*! \fn SortDesigns
+         * \brief Helper function to sort designs
+         * \param designs List of designs
+         * \param sortOrder String containing sorting information
+         */
+        private void SortDesigns(ref IQueryable<Design> designs, string sortOrder)
+        {
             switch (sortOrder)
             {
                 case "destemp_desc":
