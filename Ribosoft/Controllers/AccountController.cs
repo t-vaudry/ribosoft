@@ -308,6 +308,7 @@ namespace Ribosoft.Controllers
 
         /*!
          * \brief HTTP POST for registering a new account
+         * If the user is the first in the database, they are automatically set to Administrator
          * \param model Model object of the register view
          * \param returnUrl Return URL
          * \return View based on result
@@ -325,7 +326,7 @@ namespace Ribosoft.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-                    if (!(_userManager.Users.Count() > 1))
+                    if (_userManager.Users.Count() <= 1)
                     {
                         await _userManager.AddToRoleAsync(user, "Administrator");
                     }
