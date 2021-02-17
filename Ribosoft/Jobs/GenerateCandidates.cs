@@ -272,7 +272,7 @@ namespace Ribosoft.Jobs
                         foreach (var candidate in candidates)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
-                            RunAlgorithms(candidate, job, ribozymeStructure);
+                            RunScoreAlgorithms(candidate, job, ribozymeStructure);
 
                             if (++batchCount % 100 == 0)
                             {
@@ -366,13 +366,13 @@ namespace Ribosoft.Jobs
             }
         }
 
-        /*! \fn RunAlgorithms
-         * \brief Helper function to run algorithms on candidates
+        /*! \fn RunScoreAlgorithms
+         * \brief Helper function to run score algorithms on candidates
          * \param candidate Current candidate
          * \param job Current job
          * \param ribozymeStructure Current ribozyme structure
          */
-        private void RunAlgorithms(Candidate candidate, Job job, RibozymeStructure ribozymeStructure)
+        private void RunScoreAlgorithms(Candidate candidate, Job job, RibozymeStructure ribozymeStructure)
         {
             var idealStructurePattern = new Regex(@"[^.^(^)]");
             string ideal = idealStructurePattern.Replace(candidate.Structure, ".");
