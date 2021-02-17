@@ -17,7 +17,7 @@ namespace Ribosoft.Models.JobsViewModels
         public struct Filter
         {
             /*! \property param
-             * \brief Filter paramerter
+             * \brief Filter parameter
              */
             public string param;
 
