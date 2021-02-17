@@ -1,62 +1,41 @@
 import Vue from 'vue';
 import { Dropdown } from 'bootstrap-vue/es/components';
 
+require('jquery/dist/jquery.js');
+require('jquery-ui/ui/core.js');
+require('jquery-ui/ui/widget.js');
+require('jquery-ui/ui/effects/effect-highlight.js');
+require('jquery-ui/ui/widgets/button.js');
+require('jquery-ui/ui/widgets/datepicker.js');
+require('structured-filter/js/structured-filter.js');
+
 Vue.use(Dropdown);
 
 var app = new Vue({
     el: "#app",
     methods: {
-        filterSubmit: function () {
-            var params = (new URL(document.location)).searchParams;
-            var filterParam = document.getElementById("FilterParam");
-            var filterCondition = document.getElementById("FilterCondition");
-            var filterValue = document.getElementById("FilterValue");
-            var url = document.URL;
-
-            if (params.has("sortOrder")) {
-                var sortOrder = params.get('sortOrder');
-                url = url.substring(0, url.indexOf('?'));
-                url += "?sortOrder=" + sortOrder + "&";
-            }
-            else {
-                url = url.substring(0, url.indexOf('?'));
-                url += "?";
-            }
-            url += "filterParam=" + filterParam.value;
-            url += "&filterCondition=" + filterCondition.value;
-            url += "&filterValue=" + filterValue.value;
-
-            var errorElement = document.getElementById("filterError");
-
-            if (filterValue.value != "" && !isNaN(filterValue.value)) {
-                if (!errorElement.classList.contains("d-none")) {
-                    errorElement.classList.toggle('d-none');
-                }
-
-                window.location.href = url;
-            } else {
-                if (errorElement.classList.contains("d-none")) {
-                    errorElement.classList.toggle('d-none');
-                }
-            }
-        },
         refineResults: function () {
-            var refineResults = document.getElementById("showFilterOptions");
-            var filterOptions = document.getElementById("filterOptions");
+            var newFilter = document.getElementsByClassName('evo-bNew')[0];
+            newFilter.classList.toggle('d-none');
 
-            refineResults.classList.toggle('d-none');
-            filterOptions.classList.toggle('d-none');
+            var editFilter = document.getElementsByClassName('evo-editFilter')[0];
+            editFilter.classList.toggle('d-none');
+
+            var addFilter = document.getElementsByClassName('evo-bAdd')[0];
+            addFilter.classList.toggle('d-none');
+
+            var delFilter = document.getElementsByClassName('evo-bDel')[0];
+            delFilter.classList.toggle('d-none');
+
+            var filterOptions = document.getElementById('filterOptions');
+            filterOptions.classList.toggle('border-0');
+            filterOptions.classList.toggle('no-height');
+
+            var searchFilters = document.getElementsByClassName('evo-searchFilters')[0];
+            Array.from(searchFilters.children).forEach(function (el) {
+                el.lastChild.classList.toggle('d-none');
+                el.classList.toggle('disabled-link');
+            });
         }
-    }
-});
-
-document.addEventListener("DOMContentLoaded", function() {
-    var params = (new URL(document.location)).searchParams;
-
-    if (params.has("filterParam")) {
-        document.getElementById("filterOptions").classList.toggle('d-none');
-    }
-    else {
-        document.getElementById("showFilterOptions").classList.toggle('d-none');
     }
 });
