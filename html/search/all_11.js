@@ -59,6 +59,7 @@ var searchData=
   ['run_335',['Run',['../d0/dcc/classRibosoft_1_1Blast_1_1Blaster.html#ab32f470345613e0e2a688f66d0509161',1,'Ribosoft.Blast.Blaster.Run()'],['../d0/dcc/classRibosoft_1_1Blast_1_1Blaster.html#a4442238850364a6fd7cf971f9ee528f1',1,'Ribosoft.Blast.Blaster.Run(BlastParameters parameters)']]],
   ['runblast_336',['RunBlast',['../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#a7e1ff21c99949964077aa6b929968bdf',1,'Ribosoft::Jobs::GenerateCandidates']]],
   ['runcandidategenerator_337',['RunCandidateGenerator',['../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#abaeec73660672bd1674d190897b11677',1,'Ribosoft::Jobs::GenerateCandidates']]],
-  ['runsequencerequest_338',['RunSequenceRequest',['../dd/df1/classRibosoft_1_1GenbankRequests_1_1GenbankRequest.html#af0f260a80d78d0287ed4abaa2955100b',1,'Ribosoft::GenbankRequests::GenbankRequest']]],
-  ['validationattributes_339',['ValidationAttributes',['../de/de1/namespaceRibosoft_1_1ValidationAttributes.html',1,'Ribosoft']]]
+  ['runscorealgorithms_338',['RunScoreAlgorithms',['../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#a8b89d4662ebb8048b2b1f0eb91521e38',1,'Ribosoft::Jobs::GenerateCandidates']]],
+  ['runsequencerequest_339',['RunSequenceRequest',['../dd/df1/classRibosoft_1_1GenbankRequests_1_1GenbankRequest.html#af0f260a80d78d0287ed4abaa2955100b',1,'Ribosoft::GenbankRequests::GenbankRequest']]],
+  ['validationattributes_340',['ValidationAttributes',['../de/de1/namespaceRibosoft_1_1ValidationAttributes.html',1,'Ribosoft']]]
 ];

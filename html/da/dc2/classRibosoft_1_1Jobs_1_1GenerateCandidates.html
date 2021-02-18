@@ -137,9 +137,15 @@ async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href
 <tr class="memitem:abaeec73660672bd1674d190897b11677"><td class="memItemLeft" align="right" valign="top">async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#abaeec73660672bd1674d190897b11677">RunCandidateGenerator</a> (<a class="el" href="../../d8/dc9/classRibosoft_1_1Models_1_1Job.html">Job</a> job, IJobCancellationToken cancellationToken)</td></tr>
 <tr class="memdesc:abaeec73660672bd1674d190897b11677"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function used to run candidate generation Generated candidates are then evaluated using the <a class="el" href="../../d8/d91/classRibosoft_1_1RibosoftAlgo.html" title="Wrapper class to import dll functionality from RibosoftAlgo nuget package.">RibosoftAlgo</a> library Finally candidates move onto Phase 2 (if in-vivo) or Phase 3 (if in-vitro)  <a href="../../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#abaeec73660672bd1674d190897b11677">More...</a><br /></td></tr>
 <tr class="separator:abaeec73660672bd1674d190897b11677"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b89d4662ebb8048b2b1f0eb91521e38"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#a8b89d4662ebb8048b2b1f0eb91521e38">RunScoreAlgorithms</a> (<a class="el" href="../../de/d83/classRibosoft_1_1Candidate.html">Candidate</a> candidate, <a class="el" href="../../d8/dc9/classRibosoft_1_1Models_1_1Job.html">Job</a> job, <a class="el" href="../../d4/de8/classRibosoft_1_1Models_1_1RibozymeStructure.html">RibozymeStructure</a> ribozymeStructure)</td></tr>
+<tr class="memdesc:a8b89d4662ebb8048b2b1f0eb91521e38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function to run score algorithms on candidates.  <a href="../../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#a8b89d4662ebb8048b2b1f0eb91521e38">More...</a><br /></td></tr>
+<tr class="separator:a8b89d4662ebb8048b2b1f0eb91521e38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ace716cfaa5d50654811f74b9a7487c"><td class="memItemLeft" align="right" valign="top">async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#a5ace716cfaa5d50654811f74b9a7487c">SendJobCompletionEmail</a> (<a class="el" href="../../d7/d9c/classRibosoft_1_1Models_1_1ApplicationUser.html">ApplicationUser</a> user)</td></tr>
 <tr class="memdesc:a5ace716cfaa5d50654811f74b9a7487c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use email sender to send job completion email.  <a href="../../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#a5ace716cfaa5d50654811f74b9a7487c">More...</a><br /></td></tr>
 <tr class="separator:a5ace716cfaa5d50654811f74b9a7487c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8600568a9bdece606f818f16199c72b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#a8600568a9bdece606f818f16199c72b6">SetTargetRegions</a> (<a class="el" href="../../d8/dc9/classRibosoft_1_1Models_1_1Job.html">Job</a> job, ref List&lt; string &gt; rnaInputs)</td></tr>
+<tr class="memdesc:a8600568a9bdece606f818f16199c72b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function to set the target regions for the job.  <a href="../../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#a8600568a9bdece606f818f16199c72b6">More...</a><br /></td></tr>
+<tr class="separator:a8600568a9bdece606f818f16199c72b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -287,7 +293,7 @@ readonly <a class="el" href="../../d8/d91/classRibosoft_1_1RibosoftAlgo.html">Ri
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>BLAST parameters </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00533">533</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00546">546</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -335,7 +341,7 @@ readonly <a class="el" href="../../d8/d91/classRibosoft_1_1RibosoftAlgo.html">Ri
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>SpecificityScore </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00504">504</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00517">517</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -382,7 +388,7 @@ readonly <a class="el" href="../../d8/d91/classRibosoft_1_1RibosoftAlgo.html">Ri
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00561">561</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00574">574</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -534,7 +540,7 @@ readonly <a class="el" href="../../d8/d91/classRibosoft_1_1RibosoftAlgo.html">Ri
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00399">399</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00412">412</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -722,7 +728,7 @@ readonly <a class="el" href="../../d8/d91/classRibosoft_1_1RibosoftAlgo.html">Ri
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00426">426</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00439">439</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -773,6 +779,60 @@ readonly <a class="el" href="../../d8/d91/classRibosoft_1_1RibosoftAlgo.html">Ri
 
 </div>
 </div>
+<a id="a8b89d4662ebb8048b2b1f0eb91521e38"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b89d4662ebb8048b2b1f0eb91521e38">&#9670;&nbsp;</a></span>RunScoreAlgorithms()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Ribosoft.Jobs.GenerateCandidates.RunScoreAlgorithms </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../de/d83/classRibosoft_1_1Candidate.html">Candidate</a>&#160;</td>
+          <td class="paramname"><em>candidate</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d8/dc9/classRibosoft_1_1Models_1_1Job.html">Job</a>&#160;</td>
+          <td class="paramname"><em>job</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d4/de8/classRibosoft_1_1Models_1_1RibozymeStructure.html">RibozymeStructure</a>&#160;</td>
+          <td class="paramname"><em>ribozymeStructure</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Helper function to run score algorithms on candidates. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">candidate</td><td>Current candidate </td></tr>
+    <tr><td class="paramname">job</td><td>Current job </td></tr>
+    <tr><td class="paramname">ribozymeStructure</td><td>Current ribozyme structure </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00375">375</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+
+</div>
+</div>
 <a id="a5ace716cfaa5d50654811f74b9a7487c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5ace716cfaa5d50654811f74b9a7487c">&#9670;&nbsp;</a></span>SendJobCompletionEmail()</h2>
 
@@ -805,7 +865,54 @@ readonly <a class="el" href="../../d8/d91/classRibosoft_1_1RibosoftAlgo.html">Ri
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00570">570</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00583">583</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+
+</div>
+</div>
+<a id="a8600568a9bdece606f818f16199c72b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8600568a9bdece606f818f16199c72b6">&#9670;&nbsp;</a></span>SetTargetRegions()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Ribosoft.Jobs.GenerateCandidates.SetTargetRegions </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d8/dc9/classRibosoft_1_1Models_1_1Job.html">Job</a>&#160;</td>
+          <td class="paramname"><em>job</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ref List&lt; string &gt;&#160;</td>
+          <td class="paramname"><em>rnaInputs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Helper function to set the target regions for the job. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">job</td><td>Current job </td></tr>
+    <tr><td class="paramname">rnaInputs</td><td>List of RNA inputs </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00336">336</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
