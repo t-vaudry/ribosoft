@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "eslintConfig": {
     "parserOptions": {
+      "ecmaVersion": 2020,
       "sourceType": "module"
     }
   },
