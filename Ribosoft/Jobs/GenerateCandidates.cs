@@ -224,38 +224,10 @@ namespace Ribosoft.Jobs
          */
         private async Task RunCandidateGenerator(Job job, IJobCancellationToken cancellationToken)
         {
-            var idealStructurePattern = new Regex(@"[^.^(^)]");
-
             List<string> rnaInputs = new List<string>();
-
-            if (job.FivePrime && job.OpenReadingFrame && job.ThreePrime)
+            if (job.FivePrime || job.OpenReadingFrame || job.ThreePrime)
             {
-                rnaInputs.Add(job.RNAInput);
-            }
-            else if (job.FivePrime && job.OpenReadingFrame)
-            {
-                rnaInputs.Add(job.RNAInput.Substring(0, job.OpenReadingFrameEnd));
-            }
-            else if (job.OpenReadingFrame && job.ThreePrime)
-            {
-                rnaInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameStart, job.RNAInput.Length - job.OpenReadingFrameStart - 1));
-            }
-            else if (job.FivePrime && job.ThreePrime)
-            {
-                rnaInputs.Add(job.RNAInput.Substring(0, job.OpenReadingFrameStart));
-                rnaInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameEnd, job.RNAInput.Length - job.OpenReadingFrameEnd - 1));
-            }
-            else if (job.FivePrime)
-            {
-                rnaInputs.Add(job.RNAInput.Substring(0, job.OpenReadingFrameStart));
-            }
-            else if (job.OpenReadingFrame)
-            {
-                rnaInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameStart, job.OpenReadingFrameEnd - job.OpenReadingFrameStart - 1));
-            }
-            else if (job.ThreePrime)
-            {
-                rnaInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameEnd, job.RNAInput.Length - job.OpenReadingFrameEnd - 1));
+                SetTargetRegions(job, ref rnaInputs);
             }
             else
             {
@@ -266,15 +238,12 @@ namespace Ribosoft.Jobs
             }
 
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
-
             foreach (var rnaInput in rnaInputs)
             {
                 foreach (var ribozymeStructure in job.Ribozyme.RibozymeStructures)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-
                     IEnumerable<Candidate> candidates;
-
                     try
                     {
                         // Candidate Generation
@@ -303,33 +272,7 @@ namespace Ribosoft.Jobs
                         foreach (var candidate in candidates)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
-
-                            string ideal = idealStructurePattern.Replace(candidate.Structure, ".");
-
-                            var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
-                                candidate.SubstrateStructure, job.Na.GetValueOrDefault(), job.Probe.GetValueOrDefault());
-                            /*if (temperatureScore < 0.0f || temperatureScore > 100.0f)
-                            {
-                                continue;
-                            }*/
-
-                            var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
-                                ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset);
-                            var structureScore = _ribosoftAlgo.Structure(candidate, ideal);
-
-                            _db.Designs.Add(new Design
-                            {
-                                JobId = job.Id,
-
-                                Sequence = candidate.Sequence.GetString(),
-                                CutsiteIndex = candidate.CutsiteIndices.First(),
-                                SubstrateSequenceLength = candidate.SubstrateSequence.Length,
-
-                                AccessibilityScore = accessibilityScore,
-                                StructureScore = structureScore,
-                                HighestTemperatureScore = temperatureScore,
-                                DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())
-                            });
+                            RunScoreAlgorithms(candidate, job, ribozymeStructure);
 
                             if (++batchCount % 100 == 0)
                             {
@@ -375,19 +318,89 @@ namespace Ribosoft.Jobs
                 return;
             }
 
-            float deltaDesiredTemperature = designs.Max(d => d.DesiredTemperatureScore.GetValueOrDefault()) - designs.Min(d => d.DesiredTemperatureScore.GetValueOrDefault());
-            float deltaHighestTemperature = designs.Max(d => d.HighestTemperatureScore.GetValueOrDefault()) - designs.Min(d => d.HighestTemperatureScore.GetValueOrDefault());
-            float deltaAccessibility = designs.Max(d => d.AccessibilityScore.GetValueOrDefault()) - designs.Min(d => d.AccessibilityScore.GetValueOrDefault());
-            float deltaStructure = designs.Max(d => d.StructureScore.GetValueOrDefault()) - designs.Min(d => d.StructureScore.GetValueOrDefault());
-
-            job.DesiredTempTolerance *= deltaDesiredTemperature;
-            job.HighestTempTolerance *= deltaHighestTemperature;
-            job.AccessibilityTolerance *= deltaAccessibility;
-            job.StructureTolerance *= deltaStructure;
+            job.DesiredTempTolerance *= designs.Max(d => d.DesiredTemperatureScore.GetValueOrDefault()) - designs.Min(d => d.DesiredTemperatureScore.GetValueOrDefault());
+            job.HighestTempTolerance *= designs.Max(d => d.HighestTemperatureScore.GetValueOrDefault()) - designs.Min(d => d.HighestTemperatureScore.GetValueOrDefault());
+            job.AccessibilityTolerance *= designs.Max(d => d.AccessibilityScore.GetValueOrDefault()) - designs.Min(d => d.AccessibilityScore.GetValueOrDefault());
+            job.StructureTolerance *= designs.Max(d => d.StructureScore.GetValueOrDefault()) - designs.Min(d => d.StructureScore.GetValueOrDefault());
 
             _db.ChangeTracker.AutoDetectChangesEnabled = true;
             _db.Jobs.Attach(job);
             await _db.SaveChangesAsync();
+        }
+
+        /*! \fn SetTargetRegions
+         * \brief Helper function to set the target regions for the job
+         * \param job Current job
+         * \param rnaInputs List of RNA inputs
+         */
+        private void SetTargetRegions(Job job, ref List<string> rnaInputs)
+        {
+            if (job.FivePrime && job.OpenReadingFrame && job.ThreePrime)
+            {
+                rnaInputs.Add(job.RNAInput);
+            }
+            else if (job.FivePrime && job.OpenReadingFrame)
+            {
+                rnaInputs.Add(job.RNAInput.Substring(0, job.OpenReadingFrameEnd));
+            }
+            else if (job.OpenReadingFrame && job.ThreePrime)
+            {
+                rnaInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameStart, job.RNAInput.Length - job.OpenReadingFrameStart - 1));
+            }
+            else if (job.FivePrime && job.ThreePrime)
+            {
+                rnaInputs.Add(job.RNAInput.Substring(0, job.OpenReadingFrameStart));
+                rnaInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameEnd, job.RNAInput.Length - job.OpenReadingFrameEnd - 1));
+            }
+            else if (job.FivePrime)
+            {
+                rnaInputs.Add(job.RNAInput.Substring(0, job.OpenReadingFrameStart));
+            }
+            else if (job.OpenReadingFrame)
+            {
+                rnaInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameStart, job.OpenReadingFrameEnd - job.OpenReadingFrameStart - 1));
+            }
+            else if (job.ThreePrime)
+            {
+                rnaInputs.Add(job.RNAInput.Substring(job.OpenReadingFrameEnd, job.RNAInput.Length - job.OpenReadingFrameEnd - 1));
+            }
+        }
+
+        /*! \fn RunScoreAlgorithms
+         * \brief Helper function to run score algorithms on candidates
+         * \param candidate Current candidate
+         * \param job Current job
+         * \param ribozymeStructure Current ribozyme structure
+         */
+        private void RunScoreAlgorithms(Candidate candidate, Job job, RibozymeStructure ribozymeStructure)
+        {
+            var idealStructurePattern = new Regex(@"[^.^(^)]");
+            string ideal = idealStructurePattern.Replace(candidate.Structure, ".");
+
+            var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
+                candidate.SubstrateStructure, job.Na.GetValueOrDefault(), job.Probe.GetValueOrDefault());
+            /*if (temperatureScore < 0.0f || temperatureScore > 100.0f)
+            {
+                continue;
+            }*/
+
+            var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
+                ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset);
+            var structureScore = _ribosoftAlgo.Structure(candidate, ideal);
+
+            _db.Designs.Add(new Design
+            {
+                JobId = job.Id,
+
+                Sequence = candidate.Sequence.GetString(),
+                CutsiteIndex = candidate.CutsiteIndices.First(),
+                SubstrateSequenceLength = candidate.SubstrateSequence.Length,
+
+                AccessibilityScore = accessibilityScore,
+                StructureScore = structureScore,
+                HighestTemperatureScore = temperatureScore,
+                DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())
+            });
         }
 
         /*! \fn MultiObjectiveOptimize
