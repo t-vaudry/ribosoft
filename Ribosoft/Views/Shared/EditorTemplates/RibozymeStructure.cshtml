@@ -1,0 +1,54 @@
+﻿@model Ribosoft.Models.RibozymeStructure
+
+<div class="ribozyme-structure card px-3 my-3">
+    <div class="form-group row mt-3 mb-2">
+        <h6 class="col-md-11">Ribozyme</h6>
+        <div class="col-md-1 px-0">
+            <button id="_0__" class="btn btn-danger float-right d-none" onclick="removeStructure(event, this)"><i class="fas fa-trash"></i></button>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label asp-for="Sequence" class="col-md-2 col-form-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Sequence" class="form-control" />
+            <span asp-validation-for="Sequence" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label asp-for="Structure" class="col-md-2 col-form-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Structure" class="form-control" />
+            <span asp-validation-for="Structure" class="text-danger"></span>
+        </div>
+    </div>
+
+    <h6 class="my-3">Substrate</h6>
+    <div class="form-group row">
+        <label asp-for="SubstrateTemplate" class="col-md-2 col-form-label"></label>
+        <div class="col-md-10">
+            <input asp-for="SubstrateTemplate" class="form-control" />
+            <span asp-validation-for="SubstrateTemplate" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label asp-for="SubstrateStructure" class="col-md-2 col-form-label"></label>
+        <div class="col-md-10">
+            <input asp-for="SubstrateStructure" class="form-control" />
+            <span asp-validation-for="SubstrateStructure" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Cutsite"></label>
+        <input asp-for="Cutsite" class="form-control" />
+        <span asp-validation-for="Cutsite" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-0">
+        <div class="checkbox">
+            <label>
+                <input asp-for="PostProcess" /> @Html.DisplayNameFor(model => model.PostProcess)
+            </label>
+        </div>
+    </div>
+</div>
