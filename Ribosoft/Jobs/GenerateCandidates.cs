@@ -231,7 +231,7 @@ namespace Ribosoft.Jobs
             }
             else
             {
-                job.JobState = JobState.Errored;
+                job.JobState = JobState.Warning;
                 job.StatusMessage = "No Target Region Selected!";
                 await _db.SaveChangesAsync();
                 return;
@@ -309,7 +309,7 @@ namespace Ribosoft.Jobs
             // Check that there are designs left
             if (!designs.Any())
             {
-                job.JobState = JobState.Errored;
+                job.JobState = JobState.Warning;
                 job.StatusMessage = "No designs returned from Candidate Generation!";
                 _logger.LogError("No designs returned from Candidate Generation!");
                 _db.ChangeTracker.AutoDetectChangesEnabled = true;
@@ -493,7 +493,7 @@ namespace Ribosoft.Jobs
             // Check that there are designs left
             if (!completedDesigns.Any())
             {
-                job.JobState = JobState.Errored;
+                job.JobState = JobState.Warning;
                 job.StatusMessage = "No designs returned from Candidate Generation!";
                 _logger.LogError("No designs returned from Candidate Generation!");
                 _db.Jobs.Attach(job);
