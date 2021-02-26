@@ -201,3 +201,7 @@ option[value="null"], option[value="nn"] {
 div.sortable {
     cursor: pointer !important;
 }
+
+.ribozyme-structure {
+    background-color: whitesmoke;
+}

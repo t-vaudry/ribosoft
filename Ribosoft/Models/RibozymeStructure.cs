@@ -15,24 +15,25 @@ namespace Ribosoft.Models
         /*! \property Id
          * \brief Ribozyme structure ID
          */
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         /*! \property RibozymeId
          * \brief Ribozyme ID
          */
-        public int RibozymeId { get; set; }
+        public int? RibozymeId { get; set; }
 
         /*! \property Cutsite
          * \brief Ribozyme cut-site
          */
         [Required]
+        [Range(0, 30000)]
         public int Cutsite { get; set; }
 
         /*! \property Sequence
          * \brief Ribozyme sequence template
          */
-        [Required]
-        [DataType(DataType.Text)]
+        [Required(AllowEmptyStrings = false)]
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         [ValidationAttributes.RepeatNotations(50)]
         [ValidationAttributes.Nucleotide]
         public string Sequence 
@@ -54,9 +55,9 @@ namespace Ribosoft.Models
         /*! \property Structure
          * \brief Ribozyme structure template
          */
-        [Required]
-        [RegularExpression(@"^[.()\[\]a-z0-9]+$",
-        ErrorMessage = "Sequence structure must only contain ., (, ), [, ], letters, or numbers")]
+        [Required(AllowEmptyStrings = false)]
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        [RegularExpression(@"^[.()\[\]a-z0-9]+$", ErrorMessage = "Sequence structure must only contain ., (, ), [, ], letters, or numbers")]
         [ValidationAttributes.UniqueAlphaNumericStructure]
         [ValidationAttributes.ValidStructure]
         public string Structure { get; set; }
@@ -64,8 +65,10 @@ namespace Ribosoft.Models
         /*! \property SubstrateTemplate
          * \brief Substrate sequence template
          */
-        [Required]
-        [Display(Name = "Substrate Template")]
+        [Required(AllowEmptyStrings = false)]
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        [StringLength(200, MinimumLength = 1)]
+        [Display(Name = "Substrate template")]
         [ValidationAttributes.Nucleotide]
         public string SubstrateTemplate 
         { 
@@ -86,10 +89,10 @@ namespace Ribosoft.Models
         /*! \property SubstrateStructure
          * \brief Substrate structure template
          */
-        [Required]
-        [Display(Name = "Substrate Structure")]
-        [RegularExpression(@"^[\.a-z0-9]+$",
-        ErrorMessage = "Subtrate structure must only contain ., letters, or numbers")]
+        [Required(AllowEmptyStrings = false)]
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        [Display(Name = "Substrate structure")]
+        [RegularExpression(@"^[\.a-z0-9]+$", ErrorMessage = "Subtrate structure must only contain ., letters, or numbers")]
         [ValidationAttributes.UniqueAlphaNumericStructure]
         public string SubstrateStructure { get; set; }
 
