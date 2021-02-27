@@ -2,13 +2,17 @@
 
 @if (Model == JobState.Completed)
 {
-    <span class="badge badge-success">Completed</span>    
+    <span class="badge badge-success">Completed</span>
 }
 else if (Model == JobState.Cancelled)
 {
-    <span class="badge badge-secondary">Cancelled</span>        
+    <span class="badge badge-secondary">Cancelled</span>
 }
 else if (Model == JobState.Errored)
 {
-    <span class="badge badge-danger">Errored</span>        
+    <span class="badge badge-danger">Errored</span>
+}
+else if (Model == JobState.Warning)
+{
+    <span class="badge badge-warning">Warning</span>
 }
