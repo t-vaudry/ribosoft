@@ -10,7 +10,7 @@ var searchData=
   ['phase2_269',['Phase2',['../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#a02dc96b641eb6ca5600f07b7479e8523',1,'Ribosoft::Jobs::GenerateCandidates']]],
   ['phase3_270',['Phase3',['../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#a149e160504678bfd4d2b060cb97b7fb8',1,'Ribosoft::Jobs::GenerateCandidates']]],
   ['phonenumber_271',['PhoneNumber',['../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#a24a6f3873330795c8228932dc634e9ba',1,'Ribosoft::Models::ManageViewModels::IndexViewModel']]],
-  ['postprocess_272',['PostProcess',['../d4/de8/classRibosoft_1_1Models_1_1RibozymeStructure.html#abbb8f710152b30cc6979dc5d348f8825',1,'Ribosoft.Models.RibozymeStructure.PostProcess()'],['../d8/dd7/classRibosoft_1_1Models_1_1RibozymeViewModel_1_1RibozymeCreateViewModel.html#ae73a867e3d437918a09422f0027ddf66',1,'Ribosoft.Models.RibozymeViewModel.RibozymeCreateViewModel.PostProcess()']]],
+  ['postprocess_272',['PostProcess',['../d4/de8/classRibosoft_1_1Models_1_1RibozymeStructure.html#abbb8f710152b30cc6979dc5d348f8825',1,'Ribosoft::Models::RibozymeStructure']]],
   ['probability_273',['Probability',['../df/d7c/structRibosoft_1_1FoldOutput.html#a55f9290f03d2169d52837342362c0f43',1,'Ribosoft::FoldOutput']]],
   ['probability_274',['probability',['../da/db7/structribosoft_1_1fold__output.html#af11b7d46e29cd27db3af26d39918f4ab',1,'ribosoft::fold_output']]],
   ['probe_275',['Probe',['../d8/dc9/classRibosoft_1_1Models_1_1Job.html#ab717bf11cc3ad062824d179d3de262db',1,'Ribosoft.Models.Job.Probe()'],['../d4/d20/classRibosoft_1_1Models_1_1RequestViewModels_1_1RequestViewModel.html#ab2792807666ec83ae2108fd3f923719a',1,'Ribosoft.Models.RequestViewModels.RequestViewModel.Probe()']]],
