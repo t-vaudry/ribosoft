@@ -10,15 +10,23 @@
 <div class="row my-3">
     <h1 class="col-md-6">@ViewData["Title"]</h1>
     <div class="col-md-6 align-content-center d-flex">
-        <form method="post" class="form-inline ml-auto">
+        <form asp-action="AddJob" method="post" class="form-inline ml-auto">
             <span data-toggle="tooltip" data-placement="left" title="@Localizer["AddJobTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
             <input asp-for="JobId" class="form-control mx-1" placeholder="Job Id">
             <button type="submit" class="btn btn-primary">Add</button>
         </form>
+        <form asp-action="DownloadJobs" class="form-inline ml-2">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-download mr-1"></i> Download</button>
+        </form>
+        <form asp-action="UploadJobs" enctype="multipart/form-data" method="post" class="form-inline ml-2">
+            <input type="file" asp-for="UploadFile" style="display:none" />
+            <button type="button" name="attach" id="attach-button" class="btn btn-primary"><i class="fas fa-upload mr-1"></i> Upload</button>
+            <button class="d-none" type="submit" id="attach-submit" />
+        </form>
     </div>
 </div>
 
-@if (Model.SuccessMessage.Length > 0)
+@if (Model.SuccessMessages.Count > 0)
 {
     <div class="my-3">
         <div class="alert alert-success" role="alert">
@@ -27,12 +35,17 @@
             </button>
             <h5 class="alert-heading"><i class="fas fa-check-circle mr-1"></i> Success!</h5>
             <hr>
-            <p class="mb-0">@Model.SuccessMessage</p>
+            <ul class="mb-0">
+                @foreach (string message in Model.SuccessMessages)
+                {
+                    <li>@(message)</li>
+                }
+            </ul>
         </div>
     </div>
 }
 
-@if (Model.ErrorMessage.Length > 0)
+@if (Model.ErrorMessages.Count > 0)
 {
     <div class="my-3">
         <div class="alert alert-danger" role="alert">
@@ -41,7 +54,12 @@
             </button>
             <h5 class="alert-heading"><i class="fas fa-exclamation-triangle mr-1"></i> Error!</h5>
             <hr>
-            <p class="mb-0">@Model.ErrorMessage</p>
+            <ul class="mb-0">
+                @foreach (string message in Model.ErrorMessages)
+                {
+                    <li>@(message)</li>
+                }
+            </ul>
         </div>
     </div>
 }
@@ -144,6 +162,18 @@
     <script>
         $(function() {
             $('[data-toggle="tooltip"]').tooltip();
+        });
+
+        var button = $('#attach-button');
+        var input = $('#UploadFile');
+        var submit = $('#attach-submit');
+
+        button.on('click', function (e) {
+            input.click();
+        });
+
+        input.on('change', function (e) {
+            submit.click();
         });
     </script>
 }
