@@ -96,28 +96,31 @@ namespace Ribosoft.ValidationAttributes
          */
         private bool IsValidRibozymeCreateViewModel(RibozymeCreateViewModel model)
         {
-            // Validate Cutsite is within Substrate Template
-            if (model.Cutsite > model.SubstrateTemplate.Length)
+            foreach (var structure in model.RibozymeStructures)
             {
-                return false;
-            }
+                // Validate Cutsite is within Substrate Template
+                if (structure.Cutsite > structure.SubstrateTemplate.Length)
+                {
+                    return false;
+                }
 
-            // Validate Sequence length matches Structure length
-            if (model.Sequence.Length != model.Structure.Length)
-            {
-                return false;
-            }
+                // Validate Sequence length matches Structure length
+                if (structure.Sequence.Length != structure.Structure.Length)
+                {
+                    return false;
+                }
 
-            // Validate Substrate Template length matches Substrate Structure length
-            if (model.SubstrateTemplate.Length != model.SubstrateStructure.Length)
-            {
-                return false;
-            }
+                // Validate Substrate Template length matches Substrate Structure length
+                if (structure.SubstrateTemplate.Length != structure.SubstrateStructure.Length)
+                {
+                    return false;
+                }
 
-            // Validate Structure and Substrate Structure alphanums are equivalent
-            if (!matchingAlphaNumerics(model.Structure, model.SubstrateStructure))
-            {
-                return false;
+                // Validate Structure and Substrate Structure alphanums are equivalent
+                if (!matchingAlphaNumerics(structure.Structure, structure.SubstrateStructure))
+                {
+                    return false;
+                }
             }
 
             return true;

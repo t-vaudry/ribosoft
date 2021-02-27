@@ -45,7 +45,7 @@
             <h5 class="float-sm-left card-title">Structures</h5>
             @if (User.IsInRole("Administrator"))
             {
-                <div class="float-sm-right"><a class="btn btn-sm btn-primary" asp-controller="RibozymeStructures" asp-action="Create" asp-route-ribozymeId="@Model.Id">Create <i class="fas fa-plus-circle ml-1"></i></a></div>
+                <div class="float-sm-right"><a class="btn btn-sm btn-primary" asp-controller="RibozymeStructures" asp-action="Create" asp-route-ribozymeId="@Model.Id">Add <i class="fas fa-plus-circle ml-1"></i></a></div>
             }
         </div>
 
@@ -69,38 +69,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach (var item in Model.RibozymeStructures)
-                {
-                    <tr>
-                        <td rowspan="2">
-                            @Html.DisplayFor(modelItem => item.Cutsite)
-                        </td>
-                        <td>
-                            <code>@Html.DisplayFor(modelItem => item.Sequence)</code>
-                        </td>
-                        <td>
-                            <code>@Html.DisplayFor(modelItem => item.SubstrateTemplate)</code>
-                        </td>
-                        <td rowspan="2">
-                            @Html.DisplayFor(modelItem => item.PostProcess)
-                        </td>
-                        @if (User.IsInRole("Administrator"))
-                        {
-                            <td rowspan="2" class="text-right">
-                                <a asp-controller="RibozymeStructures" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Edit</a>
-                                <a asp-controller="RibozymeStructures" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
-                            </td>
-                        }
-                    </tr>
-                    <tr>
-                        <td>
-                            <code>@Html.DisplayFor(modelItem => item.Structure)</code>
-                        </td>
-                        <td>
-                            <code>@Html.DisplayFor(modelItem => item.SubstrateStructure)</code>
-                        </td>
-                    </tr>
-                }
+                    @Html.DisplayFor(model => model.RibozymeStructures)
                 </tbody>
             </table>
         </div>

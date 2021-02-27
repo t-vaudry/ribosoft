@@ -70,7 +70,9 @@ namespace Ribosoft.Controllers
         [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
-            return View();
+            RibozymeCreateViewModel model = new RibozymeCreateViewModel();
+            model.RibozymeStructures.Add(new RibozymeStructure());
+            return View("Create", model);
         }
 
         /*!
@@ -81,7 +83,7 @@ namespace Ribosoft.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Create(RibozymeCreateViewModel model)
+        public async Task<IActionResult> Create([Bind("Name,RibozymeStructures")] RibozymeCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -92,20 +94,23 @@ namespace Ribosoft.Controllers
                 
                 _context.Add(ribozyme);
                 await _context.SaveChangesAsync();
-                
-                var ribozymeStructure = new RibozymeStructure
+
+                foreach (var structure in model.RibozymeStructures)
                 {
-                    RibozymeId = ribozyme.Id,
-                    Sequence = model.Sequence,
-                    Structure = model.Structure,
-                    SubstrateTemplate = model.SubstrateTemplate,
-                    SubstrateStructure = model.SubstrateStructure,
-                    Cutsite = model.Cutsite,
-                    PostProcess = model.PostProcess
-                };
-                
-                _context.Add(ribozymeStructure);
-                await _context.SaveChangesAsync();
+                    var ribozymeStructure = new RibozymeStructure
+                    {
+                        RibozymeId = ribozyme.Id,
+                        Sequence = structure.Sequence,
+                        Structure = structure.Structure,
+                        SubstrateTemplate = structure.SubstrateTemplate,
+                        SubstrateStructure = structure.SubstrateStructure,
+                        Cutsite = structure.Cutsite,
+                        PostProcess = structure.PostProcess
+                    };
+
+                    _context.Add(ribozymeStructure);
+                    await _context.SaveChangesAsync();
+                }
                 
                 return RedirectToAction(nameof(Details), "Ribozymes", new {id = ribozyme.Id});
             }
