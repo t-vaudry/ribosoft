@@ -2,6 +2,12 @@
   "name": "Ribosoft",
   "private": true,
   "version": "0.0.0",
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVersion": 2020,
+      "sourceType": "module"
+    }
+  },
   "devDependencies": {
     "@fortawesome/fontawesome": "^1.1.4",
     "@fortawesome/fontawesome-free-regular": "^5.0.8",
@@ -18,10 +24,13 @@
     "file-loader": "^1.1.0",
     "isomorphic-fetch": "^2.2.1",
     "jquery": "^3.3.1",
+    "jquery-ui": "^1.12.1",
+    "jquery-ui-themes": "^1.12.0",
     "jquery-validation": "^1.17.0",
     "jquery-validation-unobtrusive": "^3.2.6",
     "popper.js": "^1.12.9",
     "qrious": "^4.0.2",
+    "structured-filter": "^2.0.4",
     "style-loader": "^0.20.0",
     "uglifyjs-webpack-plugin": "^1.2.2",
     "url-loader": "^1.0.0",
