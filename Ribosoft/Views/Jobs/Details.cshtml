@@ -200,6 +200,10 @@
                     <div class="progress-bar bg-success" role="progressbar" style="width: 34%" aria-valuenow="34" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
                 }
+                else if (Model.Job.JobState == JobState.Warning)
+                {
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Warning</div>
+                }
                 else if (Model.Job.JobState == JobState.Errored)
                 {
                     <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Errored</div>
@@ -216,26 +220,17 @@
         <div class="card-body">
             <div class="clearfix">
                 <h5 class="card-title float-md-left">Designs</h5>
-                <div class="d-none float-md-right mb-2" id="showFilterOptions">
+                <div class="float-md-right mb-2" id="showFilterOptions">
                     <button class="btn btn-sm btn-primary" v-on:click="refineResults" id="refineResults"><i class="fas fa-filter"></i> Refine Results</button>
-                </div>
-                <div class="d-none float-md-right mb-2" id="filterOptions">
-                    <div class="form-inline">
-                        @Html.DropDownListFor(x => x.FilterParam, Model.FilterParams, new { @class = "form-control form-control-sm custom-select custom-select-sm mb-2 mr-sm-2 mb-sm-0" })
-                        @Html.DropDownListFor(x => x.FilterCondition, Model.FilterConditions, new { @class = "form-control form-control-sm custom-select custom-select-sm mb-2 mr-sm-2 mb-sm-0" })
-                        <input type="number" step="any" asp-for="FilterValue" class="form-control form-control-sm mb-2 mr-sm-2 mb-sm-0">
-                        <button class="btn btn-sm btn-primary" v-on:click="filterSubmit" id="filterSubmit">Filter <i class="fas fa-check"></i></button>
-                    </div>
-                    <p id="filterError" class="text-danger d-none">Input must be a number.</p>
                 </div>
                 <div class="float-md-right mb-2">
                     <b-dropdown id="ddown-right" size="sm" right variant="primary">
                         <template slot="button-content">
                             <i class="fas fa-download"></i> Download
                         </template>
-                        @Html.ActionLink("Download all to .zip", "DownloadDesigns", new { jobID = Model.Job.Id, format = "fasta", filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = float.Parse(Model.FilterValue) }, new { @class = "dropdown-item", @role = "menuitem", @target = "_self" })
-                        @Html.ActionLink("Download all to .fasta", "DownloadDesigns", new { jobID = Model.Job.Id, format = "fasta", filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = float.Parse(Model.FilterValue) }, new { @class = "dropdown-item", @role = "menuitem", @target = "_self" })
-                        @Html.ActionLink("Download all to .csv", "DownloadDesigns", new { jobID = Model.Job.Id, format = "csv", filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = float.Parse(Model.FilterValue) }, new { @class = "dropdown-item", @role = "menuitem", @target = "_self" })
+                        <input type="button" id="zipAll" class="dropdown-item" role="menuitem" value="Download all to .zip" />
+                        <input type="button" id="fastaAll" class="dropdown-item" role="menuitem" value="Download all to .fasta" />
+                        <input type="button" id="csvAll" class="dropdown-item" role="menuitem" value="Download all to .csv" />
                         <b-dropdown-divider></b-dropdown-divider>
                         <input type="button" id="zip" class="dropdown-item disabled" role="menuitem" value="Download selected to .zip" />
                         <input type="button" id="fasta" class="dropdown-item disabled" role="menuitem" value="Download selected to .fasta" />
@@ -244,29 +239,50 @@
                 </div>
 
                 <div class="table-responsive mb-2">
+                    <div id="filterOptions" class="mb-2"></div>
                     <table class="table table-hover mb-0">
                         <thead>
                             <tr>
                                 <th>
-                                    @Html.ActionLink((string)ViewBag.RankColumnTitle, "Details", new { sortOrder = ViewBag.RankSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue })
+                                    <div class="d-flex align-items-center sortable">
+                                        @Html.DisplayNameFor(model => model.Designs.Data.First().Rank)
+                                        <i id="ranksort" class="fas fa-sort"></i>
+                                    </div>
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Designs.Data.First().Sequence)
+                                    <div class="d-flex align-items-center">
+                                        @Html.DisplayNameFor(model => model.Designs.Data.First().Sequence)
+                                    </div>
                                 </th>
                                 <th>
-                                    @Html.ActionLink((string)ViewBag.DesTempColumnTitle, "Details", new { sortOrder = ViewBag.DesTempSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue })
+                                    <div class="d-flex align-items-center sortable">
+                                        @Html.DisplayNameFor(model => model.Designs.Data.First().DesiredTemperatureScore)
+                                        <i id="destempsort" class="fas fa-sort"></i>
+                                    </div>
                                 </th>
                                 <th>
-                                    @Html.ActionLink((string)ViewBag.HiTempColumnTitle, "Details", new { sortOrder = ViewBag.HiTempSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue })
+                                    <div class="d-flex align-items-center sortable">
+                                        @Html.DisplayNameFor(model => model.Designs.Data.First().HighestTemperatureScore)
+                                        <i id="hitempsort" class="fas fa-sort"></i>
+                                    </div>
                                 </th>
                                 <th>
-                                    @Html.ActionLink((string)ViewBag.SpecColumnTitle, "Details", new { sortOrder = ViewBag.SpecSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue })
+                                    <div class="d-flex align-items-center sortable">
+                                        @Html.DisplayNameFor(model => model.Designs.Data.First().SpecificityScore)
+                                        <i id="specsort" class="fas fa-sort"></i>
+                                    </div>
                                 </th>
                                 <th>
-                                    @Html.ActionLink((string)ViewBag.AccessColumnTitle, "Details", new { sortOrder = ViewBag.AccessSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue })
+                                    <div class="d-flex align-items-center sortable">
+                                        @Html.DisplayNameFor(model => model.Designs.Data.First().AccessibilityScore)
+                                        <i id="accesssort" class="fas fa-sort"></i>
+                                    </div>
                                 </th>
                                 <th>
-                                    @Html.ActionLink((string)ViewBag.StructColumnTitle, "Details", new { sortOrder = ViewBag.StructSortParm, pageNumber = Model.Designs.PageNumber, filterParam = Model.FilterParam, filterCondition = Model.FilterCondition, filterValue = Model.FilterValue })
+                                    <div class="d-flex align-items-center sortable">
+                                        @Html.DisplayNameFor(model => model.Designs.Data.First().StructureScore)
+                                        <i id="structsort" class="fas fa-sort"></i>
+                                    </div>
                                 </th>
                             </tr>
                         </thead>
@@ -308,9 +324,6 @@
                           asp-controller="Jobs"
                           asp-route-id="@Model.Job.Id"
                           asp-route-sortOrder="@Model.SortOrder"
-                          asp-route-filterParam="@Model.FilterParam"
-                          asp-route-filterCondition="@Model.FilterCondition"
-                          asp-route-filterValue="@Model.FilterValue"
                           cs-pagenumber-param="pageNumber"
                           cs-pager-ul-class="pagination mb-0"
                           cs-pager-li-current-class="page-item active"
@@ -338,7 +351,6 @@
 
 @section scripts
 {
-    <script src="~/dist/details.js"></script>
     <script type="text/javascript">
         jQuery(document).ready(function ($) {
             var selectedDesigns = JSON.parse(localStorage.getItem("selectedDesigns")) || {};
@@ -370,6 +382,123 @@
                 localStorage.setItem("selectedDesigns", JSON.stringify(selectedDesigns));
             });
 
+            $("#filterOptions").structFilter({
+                fields: [
+                    { id: "Rank", type: "number", label: "Rank" },
+                    { id: "HighestTemperatureScore", type: "number", label: "Highest Temperature Score" },
+                    { id: "DesiredTemperatureScore", type: "number", label: "Desired Temperature Score" },
+                    { id: "SpecificityScore", type: "number", label: "Specificity Score" },
+                    { id: "AccessibilityScore", type: "number", label: "Accessibility Score" },
+                    { id: "StructureScore", type: "number", label: "Structure Score" }
+                ]
+            });
+
+            @foreach( var filter in Model.FilterList )
+            {
+                @Html.Raw("$('#filterOptions').structFilter('addCondition', " + filter.GetJson() + ");");
+            }
+
+            var newFilter = document.getElementsByClassName('evo-bNew')[0];
+            newFilter.classList.toggle('d-none');
+
+            var filterOptions = document.getElementById('filterOptions');
+            filterOptions.classList.toggle('border-0');
+            filterOptions.classList.toggle('no-height');
+
+            var editFilter = document.getElementsByClassName('evo-editFilter')[0];
+            editFilter.classList.toggle('d-none');
+
+            var addFilter = document.getElementsByClassName('evo-bAdd')[0];
+            addFilter.classList.toggle('d-none');
+
+            var delFilter = document.getElementsByClassName('evo-bDel')[0];
+            delFilter.classList.toggle('d-none');
+
+            var searchFilters = document.getElementsByClassName('evo-searchFilters')[0];
+            Array.from(searchFilters.children).forEach(function (el) {
+                el.lastChild.classList.toggle('d-none');
+                el.classList.toggle('disabled-link');
+            });
+
+            $("#filterOptions").on("change.search", function (event) {
+                var filters = $("#filterOptions").structFilter("val");
+                $.each(filters,
+                    function (index, obj) {
+                        obj['param'] = obj['field']['value'];
+                        obj['condition'] = obj['operator']['value'];
+                        obj['value'] = obj['value']['value'];
+                        delete obj['operator'];
+                        delete obj['field'];
+                    }
+                );
+
+                var data = {
+                    sortOrder: '@Model.SortOrder',
+                    pageNumber: @Model.Designs.PageNumber,
+                    filterData: btoa(JSON.stringify(filters))
+                };
+
+                var encoded = $.param(data);
+                window.location.href = "/Jobs/Details/@Model.Job.Id?" + encoded;
+            });
+
+            function sortFunc(el) {
+                if (el[0].id.slice(0, -4) == '@Model.SortOrder'.split('_')[0]) {
+                    el[0].classList.remove(['fa-sort', 'fa-sort-up', 'fa-sort-down']);
+                    el[0].classList.add('@Model.SortOrder'.split('_')[1] == 'asc' ? 'fa-sort-up' : 'fa-sort-down');
+                } else {
+                    el[0].classList.remove(['fa-sort', 'fa-sort-up', 'fa-sort-down']);
+                    el[0].classList.add('fa-sort');
+                }
+            }
+
+            function sortClick(el) {
+                var type = el[0].id.slice(0, -4);
+                var sortOrder = '';
+                switch (type) {
+                    case 'rank':
+                        sortOrder = '@ViewBag.RankSortParm';
+                        break;
+                    case 'hitemp':
+                        sortOrder = '@ViewBag.HiTempSortParm';
+                        break;
+                    case 'destemp':
+                        sortOrder = '@ViewBag.DesTempSortParm';
+                        break;
+                    case 'access':
+                        sortOrder = '@ViewBag.AccessSortParm';
+                        break;
+                    case 'spec':
+                        sortOrder = '@ViewBag.SpecSortParm';
+                        break;
+                    case 'struct':
+                        sortOrder = '@ViewBag.StructSortParm';
+                        break;
+                    default:
+                        break;
+                }
+
+                var filters = $("#filterOptions").structFilter("val");
+                $.each(filters,
+                    function (index, obj) {
+                        obj['param'] = obj['field']['value'];
+                        obj['condition'] = obj['operator']['value'];
+                        obj['value'] = obj['value']['value'];
+                        delete obj['operator'];
+                        delete obj['field'];
+                    }
+                );
+
+                var data = {
+                    sortOrder: sortOrder,
+                    pageNumber: @Model.Designs.PageNumber,
+                    filterData: btoa(JSON.stringify(filters))
+                };
+
+                var encoded = $.param(data);
+                window.location.href = "/Jobs/Details/@Model.Job.Id?" + encoded;
+            }
+
             function clickFunc(format) {
                 $.ajax({
                     type: "POST",
@@ -393,9 +522,53 @@
                 });
             }
 
+            function clickFuncAll(format) {
+                var filters = $("#filterOptions").structFilter("val");
+                $.each(filters,
+                    function (index, obj) {
+                        obj['param'] = obj['field']['value'];
+                        obj['condition'] = obj['operator']['value'];
+                        obj['value'] = obj['value']['value'];
+                        delete obj['operator'];
+                        delete obj['field'];
+                    }
+                );
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Jobs/DownloadDesigns",
+                    data: {
+                        jobID: @Model.Job.Id,
+                        filterData: btoa(JSON.stringify(filters)),
+                        format: format
+                    },
+                    success: function (data) {
+                        window.location = '/Jobs/Download?fileGuid=' + data.fileGuid + '&fileName=' + data.fileName + '&fileType=' + data.fileType;
+                    }
+                });
+            }
+
             $('#zip').click(function () { return clickFunc("zip"); });
             $('#fasta').click(function () { return clickFunc("fasta"); });
             $('#csv').click(function () { return clickFunc("csv"); });
+            $('#zipAll').click(function () { return clickFuncAll("zip"); });
+            $('#fastaAll').click(function () { return clickFuncAll("fasta"); });
+            $('#csvAll').click(function () { return clickFuncAll("csv"); });
+
+            $('#ranksort').ready(function () { return sortFunc($('#ranksort')); })
+            $('#destempsort').ready(function () { return sortFunc($('#destempsort')); })
+            $('#hitempsort').ready(function () { return sortFunc($('#hitempsort')); })
+            $('#accesssort').ready(function () { return sortFunc($('#accesssort')); })
+            $('#specsort').ready(function () { return sortFunc($('#specsort')); })
+            $('#structsort').ready(function () { return sortFunc($('#structsort')); })
+
+            $('#ranksort').parent().click(function () { return sortClick($('#ranksort')); })
+            $('#destempsort').parent().click(function () { return sortClick($('#destempsort')); })
+            $('#hitempsort').parent().click(function () { return sortClick($('#hitempsort')); })
+            $('#accesssort').parent().click(function () { return sortClick($('#accesssort')); })
+            $('#specsort').parent().click(function () { return sortClick($('#specsort')); })
+            $('#structsort').parent().click(function () { return sortClick($('#structsort')); })
         });
     </script>
+    <script src="~/dist/details.js"></script>
 }

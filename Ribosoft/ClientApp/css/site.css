@@ -165,3 +165,39 @@ input.dropdown-item {
     outline: 0;
     cursor: pointer;
 }
+
+.evo-lBold, .evo-lLight {
+    font-size: 0.875rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.ui-button {
+    border-radius: 0.2rem !important;
+    padding: 0.4rem 0.6rem !important;
+}
+
+.disabled-link {
+    pointer-events: none;
+}
+
+.no-height {
+    min-height: 0 !important;
+}
+
+option[value="null"], option[value="nn"] {
+    display: none;
+}
+
+.fa-sort {
+    color: rgba(0, 123, 255, 0.5);
+    margin-left: 10px;
+}
+
+.fa-sort-up, .fa-sort-down {
+    color: rgba(0, 123, 255, 1);
+    margin-left: 10px;
+}
+
+div.sortable {
+    cursor: pointer !important;
+}

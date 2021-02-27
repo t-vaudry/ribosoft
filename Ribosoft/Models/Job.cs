@@ -9,7 +9,7 @@ namespace Ribosoft.Models
 {
     /*! \enum JobState
      * \brief State codes
-     * New, Started (unused), Completed, Cancelled, Errored, CandidateGenerator, MultiObjectiveOptimization, Specificity, QueuedPhase2, QueuedPhase3
+     * New, Started (unused), Completed, Cancelled, Warning, Errored, CandidateGenerator, MultiObjectiveOptimization, Specificity, QueuedPhase2, QueuedPhase3
      */
     public enum JobState
     {
@@ -17,6 +17,7 @@ namespace Ribosoft.Models
         Started, // UNUSED
         Completed,
         Cancelled,
+        Warning,
         Errored,
 
         CandidateGenerator,
@@ -260,6 +261,7 @@ namespace Ribosoft.Models
         public static Expression<Func<Job, bool>> Completed() =>
             j => j.JobState == JobState.Completed
                  || j.JobState == JobState.Errored
+                 || j.JobState == JobState.Warning
                  || j.JobState == JobState.Cancelled;
     }
 }
