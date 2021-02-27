@@ -6,7 +6,8 @@
 
 <h2 class="my-3">Create a ribozyme</h2>
 
-<form asp-action="Create">
+@using (Html.BeginForm("Create", "Ribozymes", FormMethod.Post))
+{
     <div class="card my-3 box-shadow">
         <div class="card-body">        
             <h5 class="card-title border-bottom border-gray pb-2 mb-3">Basic information</h5>
@@ -19,56 +20,12 @@
             </div>
         </div>
     </div>
-    
+
     <div class="card my-3 box-shadow">
-        <div class="card-body">        
-            <h5 class="card-title border-bottom border-gray pb-2 mb-3">Structure</h5>
-
-            <h6 class="my-3">Ribozyme</h6>
-
-            <div class="form-group row">
-                <label asp-for="Sequence" class="col-md-2 col-form-label"></label>
-                <div class="col-md-10">
-                    <input asp-for="Sequence" class="form-control" />
-                    <span asp-validation-for="Sequence" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label asp-for="Structure" class="col-md-2 col-form-label"></label>
-                <div class="col-md-10">
-                    <input asp-for="Structure" class="form-control" />
-                    <span asp-validation-for="Structure" class="text-danger"></span>
-                </div>
-            </div>
-            
-            <h6 class="my-3">Substrate</h6>
-            <div class="form-group row">
-                <label asp-for="SubstrateTemplate" class="col-md-2 col-form-label"></label>
-                <div class="col-md-10">
-                    <input asp-for="SubstrateTemplate" class="form-control" />
-                    <span asp-validation-for="SubstrateTemplate" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label asp-for="SubstrateStructure" class="col-md-2 col-form-label"></label>
-                <div class="col-md-10">
-                    <input asp-for="SubstrateStructure" class="form-control" />
-                    <span asp-validation-for="SubstrateStructure" class="text-danger"></span>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label asp-for="Cutsite"></label>
-                <input asp-for="Cutsite" class="form-control" />
-                <span asp-validation-for="Cutsite" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-0">
-                <div class="checkbox">
-                    <label>
-                        <input asp-for="PostProcess" /> @Html.DisplayNameFor(model => model.PostProcess)
-                    </label>
-                </div>
-            </div>
+        <div class="card-body">
+            <div class="float-md-right"><button id="AddStructure" type="button" class="btn btn-sm btn-primary">Add <i class="fas fa-plus-circle ml-1"></i></button></div>
+            <h5 class="card-title border-bottom border-gray pb-3 mb-3">Structures</h5>
+            @Html.EditorFor(model => model.RibozymeStructures)
         </div>
     </div>
 
@@ -76,8 +33,34 @@
         <a class="btn btn-secondary float-md-left" asp-controller="Ribozymes" asp-action="Index"><i class="fas fa-arrow-left mr-1"></i> Cancel</a>
         <input type="submit" value="Create" class="btn btn-primary float-md-right" />
     </div>   
-</form>
+}
 
-@section Scripts {
+@section scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        $('#AddStructure').click(function () {
+            var structures = $('.ribozyme-structure');
+            var count = structures.length;
+            var clone = structures.first().clone();
+            clone.html($(clone).html().replace(/\[0\]/g, '[' + count + ']'));
+            clone.html($(clone).html().replace(/_0__/g, '_' + count + '__'));
+            structures.last().after(clone);
+            clone.find('input').val('');
+            clone.find('button').removeClass('d-none');
+        });
+
+        function removeStructure(event, el) {
+            event.preventDefault();
+            var index = el.id.slice(1, -2);
+            var structures = $('.ribozyme-structure');
+            var count = structures.length;
+            structures.remove('div.ribozyme-structure:has(button#' + el.id + ')');
+            structures.splice(index, 1);
+            for (var i = index; i < count - 1; i++) {
+                var element = structures[i];
+                $(element).html($(element).html().replace(/\[[0-9]+\]/g, '[' + i + ']'));
+                $(element).html($(element).html().replace(/_[0-9]+__/g, '_' + i + '__'));
+            }
+        }
+    </script>
 }

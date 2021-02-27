@@ -227,7 +227,7 @@ namespace Ribosoft.Controllers
          * \param id Ribozyme Structure Id
          * \return Boolean result of the check
          */
-        private bool RibozymeStructureExists(int id)
+        private bool RibozymeStructureExists(int? id)
         {
             return _context.RibozymeStructures.Any(e => e.Id == id);
         }
