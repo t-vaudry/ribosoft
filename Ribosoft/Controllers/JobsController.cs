@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Text;
 using cloudscribe.Pagination.Models;
 using Hangfire;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -51,18 +52,16 @@ namespace Ribosoft.Controllers
 
         /*!
          * \brief HTTP GET request for job main page
-         * \param pageNumber Page number of the job
-         * \param eMessage Error message to display
-         * \param sMessage Success message to display
+         * \param model Model of the job index view
          * \return View of the job index
          */
-        public async Task<IActionResult> Index(int pageNumber, string eMessage = "", string sMessage = "")
+        public async Task<IActionResult> Index(JobIndexViewModel model)
         {
             var user = await GetUser();
 
             int pageSize = 20;
-            pageNumber = Math.Max(pageNumber, 1);
-            int offset = (pageSize * pageNumber) - pageSize;
+            model.Completed.PageNumber = Math.Max(model.Completed.PageNumber, 1);
+            int offset = (int)((pageSize * model.Completed.PageNumber) - pageSize);
 
             var vm = new JobIndexViewModel();
 
@@ -78,15 +77,15 @@ namespace Ribosoft.Controllers
             vm.InProgress = inProgressJobs;
             vm.Completed.Data = await completedJobs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
             vm.Completed.TotalItems = await completedJobs.CountAsync();
-            vm.Completed.PageNumber = pageNumber;
+            vm.Completed.PageNumber = model.Completed.PageNumber;
             vm.Completed.PageSize = pageSize;
-            vm.ErrorMessage = eMessage;
-            vm.SuccessMessage = sMessage;
+            vm.ErrorMessages = model.ErrorMessages;
+            vm.SuccessMessages = model.SuccessMessages;
 
             return View(vm);
         }
 
-        /*!
+        /*! \fn AddJob
          * \brief HTTP POST request for job form submission
          * This request will attempt to transfer ownership of a job to the current user
          * \param model Model of job index view
@@ -94,25 +93,143 @@ namespace Ribosoft.Controllers
          */
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(JobIndexViewModel model)
+        public async Task<IActionResult> AddJob(JobIndexViewModel model)
         {
+            ApplicationUser user = await GetUser();
+            model.ErrorMessages = new List<string>();
+            model.SuccessMessages = new List<string>();
+
             int val;
             if (Int32.TryParse(model.JobId, out val) && _context.Jobs.Any(job => job.Id == val))
             {
                 // modify owner of job to current user
-                ApplicationUser user = await GetUser();
                 Job job = await _context.Jobs.SingleOrDefaultAsync(m => m.Id == Int32.Parse(model.JobId));
                 job.OwnerId = user.Id;
                 _context.Jobs.Update(job);
                 await _context.SaveChangesAsync();
-                model.SuccessMessage = String.Format("Successfully added Job [{0}]!", model.JobId);
+                model.SuccessMessages.Add(String.Format("Successfully added Job [{0}]!", model.JobId));
             }
             else
             {
-                model.ErrorMessage = String.Format("Invalid Job Id [{0}]!", model.JobId);
+                model.ErrorMessages.Add(String.Format("Invalid Job Id [{0}]!", model.JobId));
             }
 
-            return RedirectToAction(nameof(Index), new { pageNumber = 1, eMessage = model.ErrorMessage, sMessage = model.SuccessMessage } );
+            int pageSize = 20;
+            model.Completed.PageNumber = Math.Max(model.Completed.PageNumber, 1);
+            int offset = (int)((pageSize * model.Completed.PageNumber) - pageSize);
+
+            var vm = new JobIndexViewModel();
+
+            var jobs = _context.Jobs
+                .Include(j => j.Owner)
+                .Include(j => j.Ribozyme)
+                .Where(j => j.OwnerId == user.Id)
+                .OrderByDescending(j => j.CreatedAt);
+
+            var inProgressJobs = jobs.Where(Job.InProgress());
+            var completedJobs = jobs.Where(Job.Completed());
+
+            vm.InProgress = inProgressJobs;
+            vm.Completed.Data = await completedJobs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
+            vm.Completed.TotalItems = await completedJobs.CountAsync();
+            vm.Completed.PageNumber = model.Completed.PageNumber;
+            vm.Completed.PageSize = pageSize;
+            vm.ErrorMessages = model.ErrorMessages;
+            vm.SuccessMessages = model.SuccessMessages;
+
+            return View("Index", vm);
+        }
+
+        /*! \fn DownloadJobs
+         * \brief HTTP POST request to download CSV of job ids
+         * This request will generate a CSV of all the current user's job ids
+         * \return File for download
+         */
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<FileStreamResult> DownloadJobs()
+        {
+            var user = await GetUser();
+            var jobs = from j in _context.Jobs where j.OwnerId == user.Id select j;
+            var payload = "";
+
+            foreach (Job j in jobs)
+            {
+                payload += j.Id.ToString() + ',';
+            }
+            payload = payload.Remove(payload.Length - 1);
+
+            byte[] byteArray = Encoding.ASCII.GetBytes(payload);
+            MemoryStream stream = new MemoryStream(byteArray);
+            return File(stream, "application/csv", "jobs.csv");
+        }
+
+        /*! \fn UploadJobs
+         * \brief HTTP POST request to bulk upload jobs
+         * This request will attempt to transfer ownership of jobs to the current user
+         * \param model Model of job index view
+         * \return View of the job index
+         */
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadJobs(JobIndexViewModel model)
+        {
+            ApplicationUser user = await GetUser();
+            model.ErrorMessages = new List<string>();
+            model.SuccessMessages = new List<string>();
+
+            if (model.UploadFile.Length > 0)
+            {
+                var result = new StringBuilder();
+                using (var reader = new StreamReader(model.UploadFile.OpenReadStream()))
+                {
+                    while (reader.Peek() >= 0)
+                        result.AppendLine(reader.ReadLine());
+                }
+                string data = result.ToString();
+                foreach (var id in data.Split(',').Select(sValue => sValue.Trim()).ToArray())
+                {
+                    int val;
+                    if (Int32.TryParse(id, out val) && _context.Jobs.Any(job => job.Id == val))
+                    {
+                        // modify owner of job to current user
+                        Job job = await _context.Jobs.SingleOrDefaultAsync(m => m.Id == Int32.Parse(id));
+                        job.OwnerId = user.Id;
+                        _context.Jobs.Update(job);
+                        await _context.SaveChangesAsync();
+                        model.SuccessMessages.Add(String.Format("Successfully added Job [{0}]!", id));
+                    }
+                    else
+                    {
+                        model.ErrorMessages.Add(String.Format("Invalid Job Id [{0}]!", id));
+                    }
+                }
+            }
+
+            int pageSize = 20;
+            model.Completed.PageNumber = Math.Max(model.Completed.PageNumber, 1);
+            int offset = (int)((pageSize * model.Completed.PageNumber) - pageSize);
+
+            var vm = new JobIndexViewModel();
+
+            var jobs = _context.Jobs
+                .Include(j => j.Owner)
+                .Include(j => j.Ribozyme)
+                .Where(j => j.OwnerId == user.Id)
+                .OrderByDescending(j => j.CreatedAt);
+
+            var inProgressJobs = jobs.Where(Job.InProgress());
+            var completedJobs = jobs.Where(Job.Completed());
+
+            vm.InProgress = inProgressJobs;
+            vm.Completed.Data = await completedJobs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
+            vm.Completed.TotalItems = await completedJobs.CountAsync();
+            vm.Completed.PageNumber = model.Completed.PageNumber;
+            vm.Completed.PageSize = pageSize;
+            vm.ErrorMessages = model.ErrorMessages;
+            vm.SuccessMessages = model.SuccessMessages;
+
+            return View("Index", vm);
         }
 
         /*!
