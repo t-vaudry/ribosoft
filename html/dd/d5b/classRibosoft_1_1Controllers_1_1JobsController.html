@@ -103,6 +103,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6e4b693d10da84feb7cf310c37bcd257"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a6e4b693d10da84feb7cf310c37bcd257">JobsController</a> (ApplicationDbContext context, UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Models_1_1ApplicationUser.html">ApplicationUser</a> &gt; userManager)</td></tr>
 <tr class="memdesc:a6e4b693d10da84feb7cf310c37bcd257"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a6e4b693d10da84feb7cf310c37bcd257">More...</a><br /></td></tr>
 <tr class="separator:a6e4b693d10da84feb7cf310c37bcd257"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af59a9d1aedf6af983a1b36d244794913"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#af59a9d1aedf6af983a1b36d244794913">AddJob</a> (<a class="el" href="../../d0/dcf/classRibosoft_1_1Models_1_1JobsViewModels_1_1JobIndexViewModel.html">JobIndexViewModel</a> model)</td></tr>
+<tr class="memdesc:af59a9d1aedf6af983a1b36d244794913"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST request for job form submission This request will attempt to transfer ownership of a job to the current user.  <a href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#af59a9d1aedf6af983a1b36d244794913">More...</a><br /></td></tr>
+<tr class="separator:af59a9d1aedf6af983a1b36d244794913"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a6169cf9fb15e64eb0840b2e8a47348"><td class="memItemLeft" align="right" valign="top">IActionResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a2a6169cf9fb15e64eb0840b2e8a47348">Create</a> ()</td></tr>
 <tr class="memdesc:a2a6169cf9fb15e64eb0840b2e8a47348"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET request for job create page.  <a href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a2a6169cf9fb15e64eb0840b2e8a47348">More...</a><br /></td></tr>
 <tr class="separator:a2a6169cf9fb15e64eb0840b2e8a47348"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -124,15 +127,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a42e338c7ba26f6b278e3ca861629030f"><td class="memItemLeft" align="right" valign="top">JsonResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a42e338c7ba26f6b278e3ca861629030f">DownloadDesigns</a> (int jobID, string filterData, string format)</td></tr>
 <tr class="memdesc:a42e338c7ba26f6b278e3ca861629030f"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST request to bulk download designs.  <a href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a42e338c7ba26f6b278e3ca861629030f">More...</a><br /></td></tr>
 <tr class="separator:a42e338c7ba26f6b278e3ca861629030f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04f58ebc55269380b355e235956feda8"><td class="memItemLeft" align="right" valign="top">async Task&lt; FileStreamResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a04f58ebc55269380b355e235956feda8">DownloadJobs</a> ()</td></tr>
+<tr class="memdesc:a04f58ebc55269380b355e235956feda8"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST request to download CSV of job ids This request will generate a CSV of all the current user's job ids.  <a href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a04f58ebc55269380b355e235956feda8">More...</a><br /></td></tr>
+<tr class="separator:a04f58ebc55269380b355e235956feda8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab27ca29ca2aa7bbf036cc84d7bc1d78b"><td class="memItemLeft" align="right" valign="top">JsonResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ab27ca29ca2aa7bbf036cc84d7bc1d78b">DownloadSelectedDesigns</a> (int jobID, string selectedDesigns, string format)</td></tr>
 <tr class="memdesc:ab27ca29ca2aa7bbf036cc84d7bc1d78b"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST request to bulk download selected designs.  <a href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ab27ca29ca2aa7bbf036cc84d7bc1d78b">More...</a><br /></td></tr>
 <tr class="separator:ab27ca29ca2aa7bbf036cc84d7bc1d78b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2776d39a8ae032d127f1278d2a57da8"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ae2776d39a8ae032d127f1278d2a57da8">Index</a> (int pageNumber, string eMessage=&quot;&quot;, string sMessage=&quot;&quot;)</td></tr>
-<tr class="memdesc:ae2776d39a8ae032d127f1278d2a57da8"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET request for job main page.  <a href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ae2776d39a8ae032d127f1278d2a57da8">More...</a><br /></td></tr>
-<tr class="separator:ae2776d39a8ae032d127f1278d2a57da8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f055282e0f1d105c629e914ac4e2aee"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a4f055282e0f1d105c629e914ac4e2aee">Index</a> (<a class="el" href="../../d0/dcf/classRibosoft_1_1Models_1_1JobsViewModels_1_1JobIndexViewModel.html">JobIndexViewModel</a> model)</td></tr>
-<tr class="memdesc:a4f055282e0f1d105c629e914ac4e2aee"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST request for job form submission This request will attempt to transfer ownership of a job to the current user.  <a href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a4f055282e0f1d105c629e914ac4e2aee">More...</a><br /></td></tr>
+<tr class="memdesc:a4f055282e0f1d105c629e914ac4e2aee"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET request for job main page.  <a href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a4f055282e0f1d105c629e914ac4e2aee">More...</a><br /></td></tr>
 <tr class="separator:a4f055282e0f1d105c629e914ac4e2aee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d10134682d9f91070862a05ae847318"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a7d10134682d9f91070862a05ae847318">UploadJobs</a> (<a class="el" href="../../d0/dcf/classRibosoft_1_1Models_1_1JobsViewModels_1_1JobIndexViewModel.html">JobIndexViewModel</a> model)</td></tr>
+<tr class="memdesc:a7d10134682d9f91070862a05ae847318"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST request to bulk upload jobs This request will attempt to transfer ownership of jobs to the current user.  <a href="../../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a7d10134682d9f91070862a05ae847318">More...</a><br /></td></tr>
+<tr class="separator:a7d10134682d9f91070862a05ae847318"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
@@ -184,7 +190,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Controller class for the jobs. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00029">29</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00030">30</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a6e4b693d10da84feb7cf310c37bcd257"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6e4b693d10da84feb7cf310c37bcd257">&#9670;&nbsp;</a></span>JobsController()</h2>
@@ -229,11 +235,48 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00046">46</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00047">47</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="af59a9d1aedf6af983a1b36d244794913"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af59a9d1aedf6af983a1b36d244794913">&#9670;&nbsp;</a></span>AddJob()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Ribosoft.Controllers.JobsController.AddJob </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d0/dcf/classRibosoft_1_1Models_1_1JobsViewModels_1_1JobIndexViewModel.html">JobIndexViewModel</a>&#160;</td>
+          <td class="paramname"><em>model</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>HTTP POST request for job form submission This request will attempt to transfer ownership of a job to the current user. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model</td><td>Model of job index view </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>View of the job index </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00098">98</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+
+</div>
+</div>
 <a id="aa01ee2b2eea8cd62aa2bb0a14977e4f9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa01ee2b2eea8cd62aa2bb0a14977e4f9">&#9670;&nbsp;</a></span>AddToZip()</h2>
 
@@ -277,7 +320,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00678">678</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00795">795</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -307,7 +350,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 <p>HTTP GET request for job create page. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of the create index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00186">186</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00303">303</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -344,7 +387,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of the details index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00199">199</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00316">316</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -381,7 +424,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of the job delete index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00225">225</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00342">342</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -418,7 +461,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of the jobs index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00255">255</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00372">372</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -480,7 +523,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of the details index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00128">128</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00245">245</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -535,7 +578,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>File stream of downloaded designs </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00367">367</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00484">484</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -590,7 +633,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>JSON results of files to download </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00320">320</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00437">437</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -665,7 +708,37 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00616">616</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00733">733</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+
+</div>
+</div>
+<a id="a04f58ebc55269380b355e235956feda8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04f58ebc55269380b355e235956feda8">&#9670;&nbsp;</a></span>DownloadJobs()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Ribosoft.Controllers.JobsController.DownloadJobs </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>HTTP POST request to download CSV of job ids This request will generate a CSV of all the current user's job ids. </p>
+<dl class="section return"><dt>Returns</dt><dd>File for download </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00152">152</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -720,7 +793,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>JSON results of files to download </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00347">347</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00464">464</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -781,7 +854,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00546">546</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00663">663</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -842,7 +915,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00449">449</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00566">566</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -872,7 +945,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 <p>Helper function to retrieve the current user. </p>
 <dl class="section return"><dt>Returns</dt><dd>Current application user </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00302">302</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00419">419</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -926,67 +999,12 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00479">479</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
-
-</div>
-</div>
-<a id="ae2776d39a8ae032d127f1278d2a57da8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae2776d39a8ae032d127f1278d2a57da8">&#9670;&nbsp;</a></span>Index() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">async Task&lt;IActionResult&gt; Ribosoft.Controllers.JobsController.Index </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>pageNumber</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>eMessage</em> = <code>&quot;&quot;</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>sMessage</em> = <code>&quot;&quot;</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>HTTP GET request for job main page. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">pageNumber</td><td>Page number of the job </td></tr>
-    <tr><td class="paramname">eMessage</td><td>Error message to display </td></tr>
-    <tr><td class="paramname">sMessage</td><td>Success message to display </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>View of the job index </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00061">61</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00596">596</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
 <a id="a4f055282e0f1d105c629e914ac4e2aee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4f055282e0f1d105c629e914ac4e2aee">&#9670;&nbsp;</a></span>Index() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f055282e0f1d105c629e914ac4e2aee">&#9670;&nbsp;</a></span>Index()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1009,16 +1027,16 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </table>
 </div><div class="memdoc">
 
-<p>HTTP POST request for job form submission This request will attempt to transfer ownership of a job to the current user. </p>
+<p>HTTP GET request for job main page. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">model</td><td>Model of job index view </td></tr>
+    <tr><td class="paramname">model</td><td>Model of the job index view </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of the job index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00099">99</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00060">60</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -1055,7 +1073,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Boolean results from the check </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00293">293</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00410">410</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -1109,7 +1127,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00512">512</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00629">629</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -1170,7 +1188,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00580">580</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00697">697</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -1206,7 +1224,7 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00384">384</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00501">501</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -1253,7 +1271,44 @@ readonly UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Model
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00399">399</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00516">516</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+
+</div>
+</div>
+<a id="a7d10134682d9f91070862a05ae847318"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d10134682d9f91070862a05ae847318">&#9670;&nbsp;</a></span>UploadJobs()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Ribosoft.Controllers.JobsController.UploadJobs </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d0/dcf/classRibosoft_1_1Models_1_1JobsViewModels_1_1JobIndexViewModel.html">JobIndexViewModel</a>&#160;</td>
+          <td class="paramname"><em>model</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>HTTP POST request to bulk upload jobs This request will attempt to transfer ownership of jobs to the current user. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model</td><td>Model of job index view </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>View of the job index </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00177">177</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
