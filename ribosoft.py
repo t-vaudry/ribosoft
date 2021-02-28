@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import sys
 import logging
 import click
 import click_log
@@ -13,6 +12,8 @@ import zipfile
 import shutil
 from functools import reduce
 from enum import Enum
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 if sys.version_info[0] != 3 and sys.version_info[1] < 5:
     print("This script requires Python version 3.5")
@@ -262,11 +263,23 @@ class DependencyFileParser(object):
 class Downloader(object):
     def fetch_catalog(self, url):
         try:
-            r = requests.get(url)
+            # retry on fail (max 5 retries with 1s progressive backoff between retries)
+            retry_strategy = Retry(
+                total=5,
+                backoff_factor=1,
+                status_forcelist=[429, 500, 502, 503, 504],
+                method_whitelist=['HEAD', 'GET', 'OPTIONS']
+            )
+            adapter = HTTPAdapter(max_retries=retry_strategy)
+            session = requests.Session()
+            session.mount('https://', adapter)
+            session.mount('http://', adapter)
+
+            r = session.get(url)
             r.raise_for_status()
             data = r.json()
-        except ConnectionError:
-            log.error('Failure fetching remote catalog: A connection could not be made')
+        except (requests.exceptions.RequestException, ConnectionError):
+            log.error('Failure fetching remote catalog: The request failed')
             raise
         except requests.HTTPError:
             log.error('Failure fetching remote catalog: The catalog does not exist')
