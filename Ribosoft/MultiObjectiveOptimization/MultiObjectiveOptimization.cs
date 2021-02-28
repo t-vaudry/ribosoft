@@ -177,7 +177,6 @@ namespace Ribosoft.MultiObjectiveOptimization
                         rankedCandidates.AddRange(UpdateRank(frontCandidates, ref rank));
                     }
 
-
                     if (candidates.Any())
                     {
                         // If only one candidate is left, skip the function call and simply assign it the current rank. 
