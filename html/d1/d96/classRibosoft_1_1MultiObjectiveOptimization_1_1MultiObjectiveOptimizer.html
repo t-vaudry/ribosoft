@@ -100,12 +100,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3e09a93b062f1956a6454de9aac9bb44"><td class="memItemLeft" align="right" valign="top">IList&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d96/classRibosoft_1_1MultiObjectiveOptimization_1_1MultiObjectiveOptimizer.html#a3e09a93b062f1956a6454de9aac9bb44">Optimize&lt; T &gt;</a> (IList&lt; T &gt; candidates, int rank)</td></tr>
 <tr class="memdesc:a3e09a93b062f1956a6454de9aac9bb44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optimization using Pareto Ranking Recursive implementation where candidates are compared to find dominated candidates. Those who are not dominated are ranked, and removed from the list. This happens recursively until there are no more candidates to rank.  <a href="../../d1/d96/classRibosoft_1_1MultiObjectiveOptimization_1_1MultiObjectiveOptimizer.html#a3e09a93b062f1956a6454de9aac9bb44">More...</a><br /></td></tr>
 <tr class="separator:a3e09a93b062f1956a6454de9aac9bb44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a574cd0a4d48cf98b5e32da2e62e42888"><td class="memItemLeft" align="right" valign="top">List&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d96/classRibosoft_1_1MultiObjectiveOptimization_1_1MultiObjectiveOptimizer.html#a574cd0a4d48cf98b5e32da2e62e42888">UpdateRank&lt; T &gt;</a> (List&lt; T &gt; candidates, ref int rank)</td></tr>
+<tr class="memdesc:a574cd0a4d48cf98b5e32da2e62e42888"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optimization using Partial Ranking Recursive implementation where candidates are compared to find partially dominating candidates. Those who are not partially dominated are ranked, and removed from the list. This happens recursively until there are no more candidates to rank.  <a href="../../d1/d96/classRibosoft_1_1MultiObjectiveOptimization_1_1MultiObjectiveOptimizer.html#a574cd0a4d48cf98b5e32da2e62e42888">More...</a><br /></td></tr>
+<tr class="separator:a574cd0a4d48cf98b5e32da2e62e42888"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
 <tr class="memitem:a2704cf03e71f829c1a038a6b9eb1690e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d96/classRibosoft_1_1MultiObjectiveOptimization_1_1MultiObjectiveOptimizer.html#a2704cf03e71f829c1a038a6b9eb1690e">ParetoDominate</a> (<a class="el" href="../../d0/db9/interfaceRibosoft_1_1MultiObjectiveOptimization_1_1IRankable.html">IRankable</a>&lt; <a class="el" href="../../dd/dd9/classRibosoft_1_1MultiObjectiveOptimization_1_1OptimizeItem.html">OptimizeItem</a>&lt; float &gt;&gt; victim, <a class="el" href="../../d0/db9/interfaceRibosoft_1_1MultiObjectiveOptimization_1_1IRankable.html">IRankable</a>&lt; <a class="el" href="../../dd/dd9/classRibosoft_1_1MultiObjectiveOptimization_1_1OptimizeItem.html">OptimizeItem</a>&lt; float &gt;&gt; dominator)</td></tr>
 <tr class="memdesc:a2704cf03e71f829c1a038a6b9eb1690e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to determine Pareto Dominance A vector x dominates y:  <a href="../../d1/d96/classRibosoft_1_1MultiObjectiveOptimization_1_1MultiObjectiveOptimizer.html#a2704cf03e71f829c1a038a6b9eb1690e">More...</a><br /></td></tr>
 <tr class="separator:a2704cf03e71f829c1a038a6b9eb1690e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1fabc80f0557cd27a33c741d144e929"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d96/classRibosoft_1_1MultiObjectiveOptimization_1_1MultiObjectiveOptimizer.html#af1fabc80f0557cd27a33c741d144e929">PartialDominate</a> (<a class="el" href="../../d0/db9/interfaceRibosoft_1_1MultiObjectiveOptimization_1_1IRankable.html">IRankable</a>&lt; <a class="el" href="../../dd/dd9/classRibosoft_1_1MultiObjectiveOptimization_1_1OptimizeItem.html">OptimizeItem</a>&lt; float &gt;&gt; victim, <a class="el" href="../../d0/db9/interfaceRibosoft_1_1MultiObjectiveOptimization_1_1IRankable.html">IRankable</a>&lt; <a class="el" href="../../dd/dd9/classRibosoft_1_1MultiObjectiveOptimization_1_1OptimizeItem.html">OptimizeItem</a>&lt; float &gt;&gt; dominator)</td></tr>
+<tr class="memdesc:af1fabc80f0557cd27a33c741d144e929"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to determine Partial Dominance A vector x partially dominates y:  <a href="../../d1/d96/classRibosoft_1_1MultiObjectiveOptimization_1_1MultiObjectiveOptimizer.html#af1fabc80f0557cd27a33c741d144e929">More...</a><br /></td></tr>
+<tr class="separator:af1fabc80f0557cd27a33c741d144e929"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Object class for the multi-objective optimization of ribozyme designs. </p>
@@ -218,7 +224,116 @@ Private Member Functions</h2></td></tr>
 </li>
 </ol>
 
-<p class="definition">Definition at line <a class="el" href="../../db/de8/MultiObjectiveOptimization_8cs_source.html#l00081">81</a> of file <a class="el" href="../../db/de8/MultiObjectiveOptimization_8cs_source.html">MultiObjectiveOptimization.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../db/de8/MultiObjectiveOptimization_8cs_source.html#l00085">85</a> of file <a class="el" href="../../db/de8/MultiObjectiveOptimization_8cs_source.html">MultiObjectiveOptimization.cs</a>.</p>
+
+</div>
+</div>
+<a id="af1fabc80f0557cd27a33c741d144e929"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af1fabc80f0557cd27a33c741d144e929">&#9670;&nbsp;</a></span>PartialDominate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Ribosoft.MultiObjectiveOptimization.MultiObjectiveOptimizer.PartialDominate </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d0/db9/interfaceRibosoft_1_1MultiObjectiveOptimization_1_1IRankable.html">IRankable</a>&lt; <a class="el" href="../../dd/dd9/classRibosoft_1_1MultiObjectiveOptimization_1_1OptimizeItem.html">OptimizeItem</a>&lt; float &gt;&gt;&#160;</td>
+          <td class="paramname"><em>victim</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d0/db9/interfaceRibosoft_1_1MultiObjectiveOptimization_1_1IRankable.html">IRankable</a>&lt; <a class="el" href="../../dd/dd9/classRibosoft_1_1MultiObjectiveOptimization_1_1OptimizeItem.html">OptimizeItem</a>&lt; float &gt;&gt;&#160;</td>
+          <td class="paramname"><em>dominator</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Function to determine Partial Dominance A vector x partially dominates y: </p>
+<ol type="1">
+<li>If (fi(x) &lt; fi(y)) &gt; (fi(x) &gt; fi(y)) for all i functions of f <dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">victim</td><td>Victim optimize item </td></tr>
+    <tr><td class="paramname">dominator</td><td>Dominator optimize item </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Boolean result of partial dominance check </dd></dl>
+</li>
+</ol>
+
+<p class="definition">Definition at line <a class="el" href="../../db/de8/MultiObjectiveOptimization_8cs_source.html#l00218">218</a> of file <a class="el" href="../../db/de8/MultiObjectiveOptimization_8cs_source.html">MultiObjectiveOptimization.cs</a>.</p>
+
+</div>
+</div>
+<a id="a574cd0a4d48cf98b5e32da2e62e42888"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a574cd0a4d48cf98b5e32da2e62e42888">&#9670;&nbsp;</a></span>UpdateRank&lt; T &gt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Ribosoft.MultiObjectiveOptimization.MultiObjectiveOptimizer.UpdateRank </td>
+          <td>(</td>
+          <td class="paramtype">List&lt; T &gt;&#160;</td>
+          <td class="paramname"><em>candidates</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ref int&#160;</td>
+          <td class="paramname"><em>rank</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Optimization using Partial Ranking Recursive implementation where candidates are compared to find partially dominating candidates. Those who are not partially dominated are ranked, and removed from the list. This happens recursively until there are no more candidates to rank. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">candidates</td><td>List of candidates </td></tr>
+    <tr><td class="paramname">rank</td><td>Current rank passed by reference </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>List of ranked candidates </dd></dl>
+<div class="typeconstraint">
+<dl><dt><b>Type Constraints</b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em>T</em></td><td>&#160;:</td><td valign="top"><em>class</em></td><td>&#160;</td></tr>
+<tr><td valign="top"><em>T</em></td><td>&#160;:</td><td valign="top"><em>IRankable</em></td><td>&#160;</td></tr>
+<tr><td valign="top"><em>T</em></td><td>&#160;:</td><td valign="top"><em>OptimizeItem&lt;float&gt;</em></td><td>&#160;</td></tr>
+</table>
+</dd>
+</dl>
+</div>
+
+<p class="definition">Definition at line <a class="el" href="../../db/de8/MultiObjectiveOptimization_8cs_source.html#l00127">127</a> of file <a class="el" href="../../db/de8/MultiObjectiveOptimization_8cs_source.html">MultiObjectiveOptimization.cs</a>.</p>
 
 </div>
 </div>
