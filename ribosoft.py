@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import sys
 import logging
 import click
 import click_log
@@ -13,6 +12,8 @@ import zipfile
 import shutil
 from functools import reduce
 from enum import Enum
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 if sys.version_info[0] != 3 and sys.version_info[1] < 5:
     print("This script requires Python version 3.5")
@@ -260,19 +261,36 @@ class DependencyFileParser(object):
 
 
 class Downloader(object):
+    def __init__(self):
+        # Set up requests with Retry mechanism (max 5 retries with 1s progressive backoff between retries)
+        retry_strategy = Retry(
+            total=5,
+            backoff_factor=1,
+            status_forcelist=[429, 500, 502, 503, 504],
+            method_whitelist=['HEAD', 'GET', 'OPTIONS']
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        session = requests.Session()
+        session.mount('https://', adapter)
+        session.mount('http://', adapter)
+        self.requests = session
+
     def fetch_catalog(self, url):
         try:
-            r = requests.get(url)
+            r = self.requests.get(url)
             r.raise_for_status()
             data = r.json()
-        except ConnectionError:
-            log.error('Failure fetching remote catalog: A connection could not be made')
+        except requests.HTTPError as e:
+            if e.response is not None and e.response.status_code == 404:
+                log.error('Failure fetching remote catalog: Catalog does not exist')
+            else:
+                log.error('Failure fetching remote catalog: Server returned bad status')
             raise
-        except requests.HTTPError:
-            log.error('Failure fetching remote catalog: The catalog does not exist')
+        except (requests.RequestException, ConnectionError):
+            log.error('Failure fetching remote catalog: Request failed')
             raise
         except ValueError:
-            log.error('Failure fetching remote catalog: The catalog is invalid')
+            log.error('Failure fetching remote catalog: Catalog is invalid')
             raise
 
         return Catalog(url, data)
@@ -280,7 +298,7 @@ class Downloader(object):
     def download_zip(self, destination, url, sha256):
         log.debug('Downloading \'{0}\' to \'{1}\''.format(url, destination))
         log.info('  downloading...')
-        r = requests.get(url, stream=True)
+        r = self.requests.get(url, stream=True)
         file_sha256 = hashlib.sha256()
 
         with tempfile.TemporaryFile() as f:

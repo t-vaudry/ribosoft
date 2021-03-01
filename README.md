@@ -18,7 +18,7 @@ URL : http://ribosoft2.fungalgenomics.ca
 Prerequisites:
 
 - mono (http://www.mono-project.com/download/)
-- .NET Core 3.1 (https://www.microsoft.com/net/learn/get-started)
+- .NET 5.0 (https://www.microsoft.com/net/learn/get-started)
 - cmake >=3.5 (https://cmake.org/download/)
 - Visual Studio 2019 with .NET Core development enabled 
 

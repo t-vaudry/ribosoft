@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Ribosoft.Models.RibozymeViewModel
@@ -9,6 +11,14 @@ namespace Ribosoft.Models.RibozymeViewModel
     [ValidationAttributes.ValidateRibozymeStructure]
     public class RibozymeCreateViewModel
     {
+        /*! \fn RibozymeCreateViewModel
+         * \brief Default constructor
+         */
+        public RibozymeCreateViewModel()
+        {
+            RibozymeStructures = new List<RibozymeStructure>();
+        }
+
         /*! \property Name
          * \brief Ribozyme name
          */
@@ -16,57 +26,10 @@ namespace Ribosoft.Models.RibozymeViewModel
         [Display(Name = "Ribozyme Name")]
         public string Name { get; set; }
 
-        /*! \property Cutsite
-         * \brief Ribozyme cut-site
+        /*! \property RibozymeStructures
+         * \brief List of ribozyme structures
          */
         [Required]
-        [Range(0, 30000)]
-        public int Cutsite { get; set; }
-
-        /*! \property Sequence
-         * \brief Ribozyme template sequence
-         */
-        [Required(AllowEmptyStrings = false)]
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
-        [ValidationAttributes.RepeatNotations(50)]
-        [ValidationAttributes.Nucleotide]
-        public string Sequence { get; set; }
-
-        /*! \property Structure
-         * \brief Ribozyme template structure
-         */
-        [Required(AllowEmptyStrings = false)]
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
-        [RegularExpression(@"^[.()\[\]a-z0-9]+$", ErrorMessage = "Sequence structure must only contain ., (, ), [, ], letters, or numbers")]
-        [ValidationAttributes.UniqueAlphaNumericStructure]
-        [ValidationAttributes.ValidStructure]
-        public string Structure { get; set; }
-
-        /*! \property SubstrateTemplate
-         * \brief Substrate template sequence
-         */
-        [Required(AllowEmptyStrings = false)]
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
-        [StringLength(200, MinimumLength = 1)]
-        [Display(Name = "Substrate template")]
-        [ValidationAttributes.Nucleotide]
-        public string SubstrateTemplate { get; set; }
-
-        /*! \property SubstrateStructure
-         * \brief Substrate template structure
-         */
-        [Required(AllowEmptyStrings = false)]
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
-        [Display(Name = "Substrate structure")]
-        [RegularExpression(@"^[\.a-z0-9]+$", ErrorMessage = "Subtrate structure must only contain ., letters, or numbers")]
-        [ValidationAttributes.UniqueAlphaNumericStructure]
-        public string SubstrateStructure { get; set; }
-
-        /*! \property PostProcess
-         * \brief Currently unused
-         */
-        [Required]
-        [Display(Name = "Post process?")]
-        public bool PostProcess { get; set; }
+        public List<RibozymeStructure> RibozymeStructures { get; set; }
     }
 }

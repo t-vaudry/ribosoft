@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Text;
 using cloudscribe.Pagination.Models;
 using Hangfire;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,6 +19,8 @@ using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Core;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using static Ribosoft.Models.JobsViewModels.JobDetailsViewModel;
 
 namespace Ribosoft.Controllers
 {
@@ -51,18 +54,16 @@ namespace Ribosoft.Controllers
 
         /*!
          * \brief HTTP GET request for job main page
-         * \param pageNumber Page number of the job
-         * \param eMessage Error message to display
-         * \param sMessage Success message to display
+         * \param model Model of the job index view
          * \return View of the job index
          */
-        public async Task<IActionResult> Index(int pageNumber, string eMessage = "", string sMessage = "")
+        public async Task<IActionResult> Index(JobIndexViewModel model)
         {
             var user = await GetUser();
 
             int pageSize = 20;
-            pageNumber = Math.Max(pageNumber, 1);
-            int offset = (pageSize * pageNumber) - pageSize;
+            model.Completed.PageNumber = Math.Max(model.Completed.PageNumber, 1);
+            int offset = (int)((pageSize * model.Completed.PageNumber) - pageSize);
 
             var vm = new JobIndexViewModel();
 
@@ -78,15 +79,15 @@ namespace Ribosoft.Controllers
             vm.InProgress = inProgressJobs;
             vm.Completed.Data = await completedJobs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
             vm.Completed.TotalItems = await completedJobs.CountAsync();
-            vm.Completed.PageNumber = pageNumber;
+            vm.Completed.PageNumber = model.Completed.PageNumber;
             vm.Completed.PageSize = pageSize;
-            vm.ErrorMessage = eMessage;
-            vm.SuccessMessage = sMessage;
+            vm.ErrorMessages = model.ErrorMessages;
+            vm.SuccessMessages = model.SuccessMessages;
 
             return View(vm);
         }
 
-        /*!
+        /*! \fn AddJob
          * \brief HTTP POST request for job form submission
          * This request will attempt to transfer ownership of a job to the current user
          * \param model Model of job index view
@@ -94,25 +95,143 @@ namespace Ribosoft.Controllers
          */
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(JobIndexViewModel model)
+        public async Task<IActionResult> AddJob(JobIndexViewModel model)
         {
+            ApplicationUser user = await GetUser();
+            model.ErrorMessages = new List<string>();
+            model.SuccessMessages = new List<string>();
+
             int val;
             if (Int32.TryParse(model.JobId, out val) && _context.Jobs.Any(job => job.Id == val))
             {
                 // modify owner of job to current user
-                ApplicationUser user = await GetUser();
                 Job job = await _context.Jobs.SingleOrDefaultAsync(m => m.Id == Int32.Parse(model.JobId));
                 job.OwnerId = user.Id;
                 _context.Jobs.Update(job);
                 await _context.SaveChangesAsync();
-                model.SuccessMessage = "Successfully added Job!";
+                model.SuccessMessages.Add(String.Format("Successfully added Job [{0}]!", model.JobId));
             }
             else
             {
-                model.ErrorMessage = "Invalid Job Id!";
+                model.ErrorMessages.Add(String.Format("Invalid Job Id [{0}]!", model.JobId));
             }
 
-            return RedirectToAction(nameof(Index), new { pageNumber = 1, eMessage = model.ErrorMessage, sMessage = model.SuccessMessage } );
+            int pageSize = 20;
+            model.Completed.PageNumber = Math.Max(model.Completed.PageNumber, 1);
+            int offset = (int)((pageSize * model.Completed.PageNumber) - pageSize);
+
+            var vm = new JobIndexViewModel();
+
+            var jobs = _context.Jobs
+                .Include(j => j.Owner)
+                .Include(j => j.Ribozyme)
+                .Where(j => j.OwnerId == user.Id)
+                .OrderByDescending(j => j.CreatedAt);
+
+            var inProgressJobs = jobs.Where(Job.InProgress());
+            var completedJobs = jobs.Where(Job.Completed());
+
+            vm.InProgress = inProgressJobs;
+            vm.Completed.Data = await completedJobs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
+            vm.Completed.TotalItems = await completedJobs.CountAsync();
+            vm.Completed.PageNumber = model.Completed.PageNumber;
+            vm.Completed.PageSize = pageSize;
+            vm.ErrorMessages = model.ErrorMessages;
+            vm.SuccessMessages = model.SuccessMessages;
+
+            return View("Index", vm);
+        }
+
+        /*! \fn DownloadJobs
+         * \brief HTTP POST request to download CSV of job ids
+         * This request will generate a CSV of all the current user's job ids
+         * \return File for download
+         */
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<FileStreamResult> DownloadJobs()
+        {
+            var user = await GetUser();
+            var jobs = from j in _context.Jobs where j.OwnerId == user.Id select j;
+            var payload = "";
+
+            foreach (Job j in jobs)
+            {
+                payload += j.Id.ToString() + ',';
+            }
+            payload = payload.Remove(payload.Length - 1);
+
+            byte[] byteArray = Encoding.ASCII.GetBytes(payload);
+            MemoryStream stream = new MemoryStream(byteArray);
+            return File(stream, "application/csv", "jobs.csv");
+        }
+
+        /*! \fn UploadJobs
+         * \brief HTTP POST request to bulk upload jobs
+         * This request will attempt to transfer ownership of jobs to the current user
+         * \param model Model of job index view
+         * \return View of the job index
+         */
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadJobs(JobIndexViewModel model)
+        {
+            ApplicationUser user = await GetUser();
+            model.ErrorMessages = new List<string>();
+            model.SuccessMessages = new List<string>();
+
+            if (model.UploadFile.Length > 0)
+            {
+                var result = new StringBuilder();
+                using (var reader = new StreamReader(model.UploadFile.OpenReadStream()))
+                {
+                    while (reader.Peek() >= 0)
+                        result.AppendLine(reader.ReadLine());
+                }
+                string data = result.ToString();
+                foreach (var id in data.Split(',').Select(sValue => sValue.Trim()).ToArray())
+                {
+                    int val;
+                    if (Int32.TryParse(id, out val) && _context.Jobs.Any(job => job.Id == val))
+                    {
+                        // modify owner of job to current user
+                        Job job = await _context.Jobs.SingleOrDefaultAsync(m => m.Id == Int32.Parse(id));
+                        job.OwnerId = user.Id;
+                        _context.Jobs.Update(job);
+                        await _context.SaveChangesAsync();
+                        model.SuccessMessages.Add(String.Format("Successfully added Job [{0}]!", id));
+                    }
+                    else
+                    {
+                        model.ErrorMessages.Add(String.Format("Invalid Job Id [{0}]!", id));
+                    }
+                }
+            }
+
+            int pageSize = 20;
+            model.Completed.PageNumber = Math.Max(model.Completed.PageNumber, 1);
+            int offset = (int)((pageSize * model.Completed.PageNumber) - pageSize);
+
+            var vm = new JobIndexViewModel();
+
+            var jobs = _context.Jobs
+                .Include(j => j.Owner)
+                .Include(j => j.Ribozyme)
+                .Where(j => j.OwnerId == user.Id)
+                .OrderByDescending(j => j.CreatedAt);
+
+            var inProgressJobs = jobs.Where(Job.InProgress());
+            var completedJobs = jobs.Where(Job.Completed());
+
+            vm.InProgress = inProgressJobs;
+            vm.Completed.Data = await completedJobs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
+            vm.Completed.TotalItems = await completedJobs.CountAsync();
+            vm.Completed.PageNumber = model.Completed.PageNumber;
+            vm.Completed.PageSize = pageSize;
+            vm.ErrorMessages = model.ErrorMessages;
+            vm.SuccessMessages = model.SuccessMessages;
+
+            return View("Index", vm);
         }
 
         /*!
@@ -120,12 +239,10 @@ namespace Ribosoft.Controllers
          * \param id Job ID
          * \param sortOrder String of current sort order
          * \param pageNumber Page number of the details
-         * \param filterParam String value of the parameter to filter on
-         * \param filterCondition String value of which condition to apply to filter
-         * \param filterValue String value of the value to filter
+         * \param filterData Base64 encoded string of JSON filter data
          * \return View of the details index
          */
-        public async Task<IActionResult> Details(int? id, string sortOrder, int pageNumber, string filterParam, string filterCondition, float filterValue)
+        public async Task<IActionResult> Details(int? id, string sortOrder, int pageNumber, string filterData)
         {
             if (id == null)
             {
@@ -148,105 +265,29 @@ namespace Ribosoft.Controllers
 
             var designs = from d in _context.Designs where d.JobId == job.Id select d;
 
-            if (!String.IsNullOrEmpty(filterParam))
+            List<Filter> filterList = new List<Filter>();
+            if (!string.IsNullOrEmpty(filterData))
             {
-                FilterDesigns(ref designs, filterParam, filterCondition, filterValue);
+                filterData = Encoding.UTF8.GetString(Convert.FromBase64String(filterData));
+                filterList = JsonConvert.DeserializeObject<List<Filter>>(filterData);
+                foreach (var filter in filterList)
+                {
+                    FilterDesigns(ref designs, filter.param, filter.condition, float.Parse(filter.value));
+                }
             }
 
             int pageSize = 20;
             pageNumber = Math.Max(pageNumber, 1);
             int offset = (pageSize * pageNumber) - pageSize;
 
-            ViewBag.DesTempColumnTitle = "Desired Temperature Score";
-            ViewBag.HiTempColumnTitle = "Highest Temperature Score";
-            ViewBag.SpecColumnTitle = "Specificity Score";
-            ViewBag.AccessColumnTitle = "Accessibility Score";
-            ViewBag.StructColumnTitle = "Structure Score";
-            ViewBag.RankColumnTitle = "Rank";
-
-            ViewBag.DesTempSortParm = sortOrder == "des_temp_asc" ? "des_temp_desc" : "des_temp_asc";
-            ViewBag.HiTempSortParm = sortOrder == "hi_temp_asc" ? "hi_temp_desc" : "hi_temp_asc";
-            ViewBag.SpecSortParm = sortOrder == "spec_asc" ? "spec_desc" : "spec_asc";
-            ViewBag.AccessSortParm = sortOrder == "access_asc" ? "access_desc" : "access_asc";
-            ViewBag.StructSortParm = sortOrder == "struct_asc" ? "struct_desc" : "struct_asc";
-            ViewBag.RankSortParm = sortOrder == "rank_asc" ? "rank_desc" : "rank_asc";
-            // ViewBag.RankSortParm = String.IsNullOrEmpty(sortOrder) ? "rank_asc" : "";
-
-            switch (sortOrder)
-            {
-                case "des_temp_desc":
-                    designs = designs.OrderByDescending(d => d.DesiredTemperatureScore);
-                    ViewBag.DesTempColumnTitle = "▼ |  " + ViewBag.DesTempColumnTitle;
-                    break;
-                case "des_temp_asc":
-                    designs = designs.OrderBy(d => d.DesiredTemperatureScore);
-                    ViewBag.DesTempColumnTitle = "▲ | " + ViewBag.DesTempColumnTitle;
-                    break;
-                case "hi_temp_desc":
-                    designs = designs.OrderByDescending(d => d.HighestTemperatureScore);
-                    ViewBag.HiTempColumnTitle = "▼ | " + ViewBag.HiTempColumnTitle;
-                    break;
-                case "hi_temp_asc":
-                    designs = designs.OrderBy(d => d.HighestTemperatureScore);
-                    ViewBag.HiTempColumnTitle = "▲ | " + ViewBag.HiTempColumnTitle;
-                    break;
-                case "spec_desc":
-                    designs = designs.OrderByDescending(d => d.SpecificityScore);
-                    ViewBag.SpecColumnTitle = "▼ " + ViewBag.SpecColumnTitle;
-                    break;
-                case "spec_asc":
-                    designs = designs.OrderBy(d => d.SpecificityScore);
-                    ViewBag.SpecColumnTitle = "▲ | " + ViewBag.SpecColumnTitle;
-                    break;
-                case "access_desc":
-                    designs = designs.OrderByDescending(d => d.AccessibilityScore);
-                    ViewBag.AccessColumnTitle = "▼ | " + ViewBag.AccessColumnTitle;
-                    break;
-                case "access_asc":
-                    designs = designs.OrderBy(d => d.AccessibilityScore);
-                    ViewBag.AccessColumnTitle = "▲ | " + ViewBag.AccessColumnTitle;
-                    break;
-                case "struct_desc":
-                    designs = designs.OrderByDescending(d => d.StructureScore);
-                    ViewBag.StructColumnTitle = "▼ | " + ViewBag.StructColumnTitle;
-                    break;
-                case "struct_asc":
-                    designs = designs.OrderBy(d => d.StructureScore);
-                    ViewBag.StructColumnTitle = "▲ | " + ViewBag.StructColumnTitle;
-                    break;
-                case "rank_desc":
-                    designs = designs.OrderByDescending(d => d.Rank);
-                    ViewBag.RankColumnTitle = "▼ | " + ViewBag.RankColumnTitle;
-                    break;
-                default:
-                    designs = designs.OrderBy(d => d.Rank);
-                    ViewBag.RankColumnTitle = "▲ | " + ViewBag.RankColumnTitle;
-                    break;
-            }
-
-            List<SelectListItem> filterParams = new List<SelectListItem>();
-            List<SelectListItem> filterConditions = new List<SelectListItem>();
-
-            filterParams.Add(new SelectListItem { Text = "Rank", Value = "Rank", Selected = true });
-            filterParams.Add(new SelectListItem { Text = "Highest Temperature Score", Value = "HighestTemperatureScore" });
-            filterParams.Add(new SelectListItem { Text = "Desired Temperature Score", Value = "DesiredTemperatureScore" });
-            filterParams.Add(new SelectListItem { Text = "Specificity Score", Value = "SpecificityScore" });
-            filterParams.Add(new SelectListItem { Text = "Acessibility Score", Value = "AcessibilityScore" });
-            filterParams.Add(new SelectListItem { Text = "Structure Score", Value = "StructureScore" });
-
-            filterConditions.Add(new SelectListItem { Text = ">=", Value = "gteq", Selected = true });
-            filterConditions.Add(new SelectListItem { Text = "<=", Value = "lteq" });
-            filterConditions.Add(new SelectListItem { Text = "=", Value = "eq" });
+            SetSortParams(sortOrder);
+            SortDesigns(ref designs, sortOrder);
 
             var vm = new JobDetailsViewModel();
 
             vm.Job = job;
             vm.SortOrder = sortOrder;
-            vm.FilterParams = filterParams;
-            vm.FilterConditions = filterConditions;
-            vm.FilterParam = filterParam;
-            vm.FilterCondition = filterCondition;
-            vm.FilterValue = filterValue.ToString();
+            vm.FilterList = filterList;
             vm.Designs.Data = await designs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
             vm.Designs.TotalItems = await designs.CountAsync();
             vm.Designs.PageNumber = pageNumber;
@@ -387,29 +428,34 @@ namespace Ribosoft.Controllers
         }
 
         /*! \fn DownloadDesigns
-         * \brief HTTP GET request to bulk download designs
+         * \brief HTTP POST request to bulk download designs
          * \param jobID Job ID
+         * \param filterData Base64 encoded string of JSON filter data
          * \param format File format (ie. CSV, FASTA, ZIP)
-         * \param filterParam String value of the parameter to filter on
-         * \param filterCondition String value of which condition to apply to filter
-         * \param filterValue String value of the value to filter
-         * \return File stream of downloaded designs
+         * \return JSON results of files to download
          */
-        public FileStreamResult DownloadDesigns(int jobID, string format, string filterParam, string filterCondition, float filterValue)
+        public JsonResult DownloadDesigns(int jobID, string filterData, string format)
         {
             var designs = from d in _context.Designs where d.JobId == jobID select d;
-            if (!String.IsNullOrEmpty(filterParam))
+            if (!string.IsNullOrEmpty(filterData))
             {
-                FilterDesigns(ref designs, filterParam, filterCondition, filterValue);                
+                filterData = Encoding.UTF8.GetString(Convert.FromBase64String(filterData));
+                var filterList = JsonConvert.DeserializeObject<List<Filter>>(filterData);
+                foreach (var filter in filterList)
+                {
+                    FilterDesigns(ref designs, filter.param, filter.condition, float.Parse(filter.value));
+                }
             }
+            string handle = Guid.NewGuid().ToString();
             MemoryStream stream;
             string extension, type;
             DownloadFiles(designs, null, format, out stream, out extension, out type);
-            return File(stream, type, String.Format("job{0}_bulk.{1}", jobID, extension));
+            TempData[handle] = Convert.ToBase64String(stream.ToArray());
+            return new JsonResult(new { FileGuid = handle, FileName = String.Format("job{0}_bulk.{1}", jobID, extension), FileType = type });
         }
 
         /*! \fn DownloadSelectedDesigns
-         * \brief HTTP GET request to bulk download selected designs
+         * \brief HTTP POST request to bulk download selected designs
          * \param jobID Job ID
          * \param selectedDesigns List of selected design ids
          * \param format File format (ie. CSV, FASTA, ZIP)
@@ -448,6 +494,68 @@ namespace Ribosoft.Controllers
             }
         }
 
+        /*! \fn SetSortParams
+         * \brief Helper function to set current sort parameters
+         * \param sortOrder String containing sorting information
+         */
+        private void SetSortParams(string sortOrder)
+        {
+            ViewBag.DesTempSortParm = sortOrder == "destemp_asc" ? "destemp_desc" : "destemp_asc";
+            ViewBag.HiTempSortParm = sortOrder == "hitemp_asc" ? "hitemp_desc" : "hitemp_asc";
+            ViewBag.SpecSortParm = sortOrder == "spec_asc" ? "spec_desc" : "spec_asc";
+            ViewBag.AccessSortParm = sortOrder == "access_asc" ? "access_desc" : "access_asc";
+            ViewBag.StructSortParm = sortOrder == "struct_asc" ? "struct_desc" : "struct_asc";
+            ViewBag.RankSortParm = sortOrder == "rank_asc" ? "rank_desc" : "rank_asc";
+        }
+
+        /*! \fn SortDesigns
+         * \brief Helper function to sort designs
+         * \param designs List of designs
+         * \param sortOrder String containing sorting information
+         */
+        private void SortDesigns(ref IQueryable<Design> designs, string sortOrder)
+        {
+            switch (sortOrder)
+            {
+                case "destemp_desc":
+                    designs = designs.OrderByDescending(d => d.DesiredTemperatureScore);
+                    break;
+                case "destemp_asc":
+                    designs = designs.OrderBy(d => d.DesiredTemperatureScore);
+                    break;
+                case "hitemp_desc":
+                    designs = designs.OrderByDescending(d => d.HighestTemperatureScore);
+                    break;
+                case "hitemp_asc":
+                    designs = designs.OrderBy(d => d.HighestTemperatureScore);
+                    break;
+                case "spec_desc":
+                    designs = designs.OrderByDescending(d => d.SpecificityScore);
+                    break;
+                case "spec_asc":
+                    designs = designs.OrderBy(d => d.SpecificityScore);
+                    break;
+                case "access_desc":
+                    designs = designs.OrderByDescending(d => d.AccessibilityScore);
+                    break;
+                case "access_asc":
+                    designs = designs.OrderBy(d => d.AccessibilityScore);
+                    break;
+                case "struct_desc":
+                    designs = designs.OrderByDescending(d => d.StructureScore);
+                    break;
+                case "struct_asc":
+                    designs = designs.OrderBy(d => d.StructureScore);
+                    break;
+                case "rank_desc":
+                    designs = designs.OrderByDescending(d => d.Rank);
+                    break;
+                default:
+                    designs = designs.OrderBy(d => d.Rank);
+                    break;
+            }
+        }
+
         /*! \fn FilterDesigns
          * \brief Helper function to filter designs
          * \param designs List of designs
@@ -462,80 +570,83 @@ namespace Ribosoft.Controllers
             float upperBound = float.Parse(sb.ToString());
             switch(filterCondition)
             {
-                case "gteq":
-                    GreaterThanOrEqualTo(ref designs, filterParam, filterValue);
+                case "gt":
+                    GreaterThan(ref designs, filterParam, filterValue);
                     break;
-                case "lteq":
-                    LessThanOrEqualTo(ref designs, filterParam, filterValue);
+                case "lt":
+                    LessThan(ref designs, filterParam, filterValue);
                     break;
                 case "eq":
                     EqualTo(ref designs, filterParam, filterValue, upperBound);
                     break;
-                default:
-                    break;
-            }
-        }
-
-        /*! \fn GreaterThanOrEqualTo
-         * \brief Helper function to filter by greater than or equal to
-         * \param designs List of designs
-         * \param filterParam String value of the parameter to filter on
-         * \param filterValue Value of the value to filter
-         */
-        private void GreaterThanOrEqualTo(ref IQueryable<Design> designs, string filterParam, float filterValue)
-        {
-            switch (filterParam)
-            {
-                case "Rank":
-                    designs = designs.Where(d => d.Rank >= filterValue);
-                    break;
-                case "HighestTemperatureScore":
-                    designs = designs.Where(d => d.HighestTemperatureScore >= filterValue);
-                    break;
-                case "DesiredTemperatureScore":
-                    designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue);
-                    break;
-                case "SpecificityScore":
-                    designs = designs.Where(d => d.SpecificityScore >= filterValue);
-                    break;
-                case "AcessibilityScore":
-                    designs = designs.Where(d => d.AccessibilityScore >= filterValue);
-                    break;
-                case "StructureScore":
-                    designs = designs.Where(d => d.StructureScore >= filterValue);
+                case "ne":
+                    NotEqualTo(ref designs, filterParam, filterValue, upperBound);
                     break;
                 default:
                     break;
             }
         }
 
-        /*! \fn LessThanOrEqualTo
-         * \brief Helper function to filter by less than or equal to
+        /*! \fn GreaterThan
+         * \brief Helper function to filter by greater than
          * \param designs List of designs
          * \param filterParam String value of the parameter to filter on
          * \param filterValue Value of the value to filter
          */
-        private void LessThanOrEqualTo(ref IQueryable<Design> designs, string filterParam, float filterValue)
+        private void GreaterThan(ref IQueryable<Design> designs, string filterParam, float filterValue)
         {
             switch (filterParam)
             {
                 case "Rank":
-                    designs = designs.Where(d => d.Rank <= filterValue);
+                    designs = designs.Where(d => d.Rank > filterValue);
                     break;
                 case "HighestTemperatureScore":
-                    designs = designs.Where(d => d.HighestTemperatureScore <= filterValue);
+                    designs = designs.Where(d => d.HighestTemperatureScore > filterValue);
                     break;
                 case "DesiredTemperatureScore":
-                    designs = designs.Where(d => d.DesiredTemperatureScore <= filterValue);
+                    designs = designs.Where(d => d.DesiredTemperatureScore > filterValue);
                     break;
                 case "SpecificityScore":
-                    designs = designs.Where(d => d.SpecificityScore <= filterValue);
+                    designs = designs.Where(d => d.SpecificityScore > filterValue);
                     break;
-                case "AcessibilityScore":
-                    designs = designs.Where(d => d.AccessibilityScore <= filterValue);
+                case "AccessibilityScore":
+                    designs = designs.Where(d => d.AccessibilityScore > filterValue);
                     break;
                 case "StructureScore":
-                    designs = designs.Where(d => d.StructureScore <= filterValue);
+                    designs = designs.Where(d => d.StructureScore > filterValue);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /*! \fn LessThan
+         * \brief Helper function to filter by less than
+         * \param designs List of designs
+         * \param filterParam String value of the parameter to filter on
+         * \param filterValue Value of the value to filter
+         */
+        private void LessThan(ref IQueryable<Design> designs, string filterParam, float filterValue)
+        {
+            switch (filterParam)
+            {
+                case "Rank":
+                    designs = designs.Where(d => d.Rank < filterValue);
+                    break;
+                case "HighestTemperatureScore":
+                    designs = designs.Where(d => d.HighestTemperatureScore < filterValue);
+                    break;
+                case "DesiredTemperatureScore":
+                    designs = designs.Where(d => d.DesiredTemperatureScore < filterValue);
+                    break;
+                case "SpecificityScore":
+                    designs = designs.Where(d => d.SpecificityScore < filterValue);
+                    break;
+                case "AccessibilityScore":
+                    designs = designs.Where(d => d.AccessibilityScore < filterValue);
+                    break;
+                case "StructureScore":
+                    designs = designs.Where(d => d.StructureScore < filterValue);
                     break;
                 default:
                     break;
@@ -565,11 +676,45 @@ namespace Ribosoft.Controllers
                 case "SpecificityScore":
                      designs = designs.Where(d => d.SpecificityScore >= filterValue && d.SpecificityScore < upperBound);
                     break;
-                case "AcessibilityScore":
+                case "AccessibilityScore":
                     designs = designs.Where(d => d.AccessibilityScore >= filterValue && d.AccessibilityScore < upperBound);
                     break;
                 case "StructureScore":
                     designs = designs.Where(d => d.StructureScore >= filterValue && d.StructureScore < upperBound);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /*! \fn NotEqualTo
+         * \brief Helper function to filter by not equal to
+         * \param designs List of designs
+         * \param filterParam String value of the parameter to filter on
+         * \param filterValue Value of the value to filter
+         * \param upperBound Upper bound value for equality
+         */
+        private void NotEqualTo(ref IQueryable<Design> designs, string filterParam, float filterValue, float upperBound)
+        {
+            switch (filterParam)
+            {
+                case "Rank":
+                    designs = designs.Where(d => d.Rank != (int)filterValue);
+                    break;
+                case "HighestTemperatureScore":
+                    designs = designs.Where(d => d.HighestTemperatureScore < filterValue || d.HighestTemperatureScore > upperBound);
+                    break;
+                case "DesiredTemperatureScore":
+                    designs = designs.Where(d => d.DesiredTemperatureScore < filterValue || d.DesiredTemperatureScore > upperBound);
+                    break;
+                case "SpecificityScore":
+                    designs = designs.Where(d => d.SpecificityScore < filterValue || d.SpecificityScore > upperBound);
+                    break;
+                case "AccessibilityScore":
+                    designs = designs.Where(d => d.AccessibilityScore < filterValue || d.AccessibilityScore > upperBound);
+                    break;
+                case "StructureScore":
+                    designs = designs.Where(d => d.StructureScore < filterValue || d.StructureScore > upperBound);
                     break;
                 default:
                     break;

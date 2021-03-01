@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using cloudscribe.Pagination.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Ribosoft.Models.JobsViewModels
 {
@@ -23,15 +25,21 @@ namespace Ribosoft.Models.JobsViewModels
          */
         public string JobId { get; set; }
 
-        /*! \property ErrorMessage
-         * \brief Error message string
+        /*! \property ErrorMessages
+         * \brief List of Error message strings
          */
-        public string ErrorMessage { get; set; }
+        public List<string> ErrorMessages { get; set; }
 
-        /*! \property SuccessMessage
-         * \brief Success message string
+        /*! \property SuccessMessages
+         * \brief List of Success message strings
          */
-        public string SuccessMessage { get; set; }
+        public List<string> SuccessMessages { get; set; }
+
+        /*! \property FileUpload.FormFile
+         * \brief Holder for uploaded jobs file
+         */
+        [BindProperty]
+        public IFormFile UploadFile { get; set; }
 
         /*! \fn JobIndexViewModel
          * \brief Default constructor
@@ -40,6 +48,8 @@ namespace Ribosoft.Models.JobsViewModels
         {
             InProgress = new List<Job>();
             Completed = new PagedResult<Job>();
+            ErrorMessages = new List<string>();
+            SuccessMessages = new List<string>();
         }
     }
 }
