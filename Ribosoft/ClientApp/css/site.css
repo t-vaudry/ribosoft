@@ -205,3 +205,70 @@ div.sortable {
 .ribozyme-structure {
     background-color: whitesmoke;
 }
+
+line.pseudoknot {
+    stroke: blue !important;
+}
+
+svg[data-prefix="fas"] {
+    min-width: unset !important;
+    min-height: unset !important;
+}
+
+.dot {
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    display: inline-block;
+    border-color: gray;
+    border-style: solid;
+    margin: 7px 10px 0;
+}
+
+.dot-orange {
+    background-color: orange;
+}
+
+.dot-white {
+    background-color: white;
+}
+
+.dot-red {
+    background-color: red;
+}
+
+.line {
+    border-left: 6px solid;
+    height: 25px;
+    margin: 0 10px 0 100px;
+}
+
+.line-red {
+    border-color: red;
+}
+
+.line-blue {
+    border-color: blue;
+}
+
+.line-grey {
+    border-color: grey;
+}
+
+#plotting-area {
+    height: 500px !important;
+    width: 750px !important;
+}
+
+#plotting-area > g > g:nth-child(2) {
+    transform: scale(1.5,1.5) translate(90px, 125px);
+}
+
+path.node {
+    display: none !important;
+}
+
+rect.background {
+    width: 750px !important;
+    height: 500px !important;
+}
