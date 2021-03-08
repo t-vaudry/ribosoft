@@ -35,7 +35,7 @@ namespace Ribosoft.Models.JobsViewModels
          */
         public List<string> SuccessMessages { get; set; }
 
-        /*! \property FileUpload.FormFile
+        /*! \property UploadFile
          * \brief Holder for uploaded jobs file
          */
         [BindProperty]
