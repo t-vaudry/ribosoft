@@ -65,7 +65,9 @@
                     <th>
                         @Html.DisplayNameFor(model => model.RibozymeStructures.First().PostProcess)
                     </th>
-                    <th></th>
+                    <th class="text-right">
+                        Actions
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -83,3 +85,99 @@
         <a asp-controller="Ribozymes" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger float-md-right">Delete <i class="fas fa-trash ml-1"></i></a>
     }
 </div>
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="ribozymeModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Visualization</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <h6>Legend</h6>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <span class="dot dot-orange" />
+                                </td>
+                                <td>
+                                    Ribozyme nucleotide
+                                </td>
+                                <td>
+                                    <span class="line line-red" />
+                                </td>
+                                <td>
+                                    Basepair
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="dot dot-white" />
+                                </td>
+                                <td>
+                                    Substrate nucleotide
+                                </td>
+                                <td>
+                                    <span class="line line-blue" />
+                                </td>
+                                <td>
+                                    Pseudoknot
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="dot dot-red" />
+                                </td>
+                                <td>
+                                    Cutsite
+                                </td>
+                                <td>
+                                    <span class="line line-grey" />
+                                </td>
+                                <td>
+                                    Backbone
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr/>
+                <div id="ribContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $('button[id^="rna_ss"]').click(function () {
+            var container = new fornac.FornaContainer('#ribContainer', { 'applyForce': true, 'allowPanningAndZooming': false, 'labelInterval': 0 });
+            var options = {
+                'structure': this.getAttribute('structure').replaceAll(/[a-z0-9]/ig, '(') + '&' + this.getAttribute('substructure').replaceAll(/[a-z0-9]/ig, ')'),
+                'sequence': this.getAttribute('sequence') + '&' + this.getAttribute('subsequence')
+            };
+            container.addRNA(options.structure, options);
+
+            var seqLen = this.getAttribute('sequence').length;
+            var subLen = this.getAttribute('subsequence').length;
+            var cutsite = parseInt(this.getAttribute('cutsite')) + this.getAttribute('subsequence').match(/[A-Z]/).index;
+
+            for (var idx = 1; idx <= Math.max(seqLen, subLen); idx++) {
+                if (idx <= Math.min(seqLen, subLen)) {
+                    $('circle[node_num="' + idx + '"]').get(0).style.fill = 'orange';
+                    $('circle[node_num="' + idx + '"]').get(1).style.fill = 'white';
+                } else {
+                    $('circle[node_num="' + idx + '"]').get(0).style.fill = seqLen > subLen ? 'orange' : 'white';
+                }
+
+                if (idx == cutsite || idx == cutsite + 1) {
+                    $('circle[node_num="' + idx + '"]').get(seqLen > subLen ? 1 : 0).style.fill = 'red';
+                }
+            }
+        });
+    </script>
+}
