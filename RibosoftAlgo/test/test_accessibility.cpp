@@ -40,11 +40,11 @@ TEST_CASE("Invalid cutsiteIndex", "[accessibility]") {
 
 TEST_CASE("Invalid cutsite", "[accessibility]") {
     float delta = -1.0f;
-    R_STATUS status = accessibility("AUGC", "fed..234", 200, -4, delta);
+    R_STATUS status = accessibility("AUGC", "fed..234", 2, -4, delta);
     REQUIRE(status == R_APPLICATION_ERROR::R_OUT_OF_RANGE);
     REQUIRE(delta == -1.0f);
 
-    status = accessibility("AUGC", "fed..234", 200, 20, delta);
+    status = accessibility("AUGC", "fed..234", 2, 20, delta);
     REQUIRE(status == R_APPLICATION_ERROR::R_OUT_OF_RANGE);
     REQUIRE(delta == -1.0f);
 }
@@ -54,4 +54,11 @@ TEST_CASE("Invalid template", "[accessibility]") {
     R_STATUS status = accessibility("AUGC", "fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234", 2, 2, delta);
     REQUIRE(status == R_APPLICATION_ERROR::R_INVALID_TEMPLATE_LENGTH);
     REQUIRE(delta == -1.0f);
+}
+
+TEST_CASE("Invalid constraints", "[accessibility]") {
+    float delta = -1.0f;
+    R_STATUS status = accessibility("CUUGAAGUGGUUUGUUGUGCUUGAAGAGACCCC","UUGUUGUAUCUACUACCUAGUGAUGUCGGUAUGUGUGCUAUGUGAC",4,11,delta);
+    REQUIRE(status == R_SUCCESS::R_STATUS_OK);
+    REQUIRE(delta == 5.6f);
 }
