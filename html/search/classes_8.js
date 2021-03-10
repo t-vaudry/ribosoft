@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['indexviewmodel_464',['IndexViewModel',['../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html',1,'Ribosoft::Models::ManageViewModels']]],
-  ['irankable_465',['IRankable',['../d0/db9/interfaceRibosoft_1_1MultiObjectiveOptimization_1_1IRankable.html',1,'Ribosoft::MultiObjectiveOptimization']]]
+  ['indexviewmodel_465',['IndexViewModel',['../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html',1,'Ribosoft::Models::ManageViewModels']]],
+  ['irankable_466',['IRankable',['../d0/db9/interfaceRibosoft_1_1MultiObjectiveOptimization_1_1IRankable.html',1,'Ribosoft::MultiObjectiveOptimization']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['blasttask_768',['BlastTask',['../d7/d7c/classRibosoft_1_1Blast_1_1BlastParameters.html#adb117bfc749c3c079333873eb36dbad4',1,'Ribosoft::Blast::BlastParameters']]]
+  ['blasttask_769',['BlastTask',['../d7/d7c/classRibosoft_1_1Blast_1_1BlastParameters.html#adb117bfc749c3c079333873eb36dbad4',1,'Ribosoft::Blast::BlastParameters']]]
 ];
