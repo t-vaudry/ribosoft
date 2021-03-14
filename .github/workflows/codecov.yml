@@ -34,8 +34,8 @@ jobs:
         pip install pipenv
         pipenv install
 
-    - name: Get library dependencies
-      run: pipenv run python ./ribosoft.py deps install --yes
+    - name: Install dependencies + Generate Python report
+      run: pipenv run pytest --cov-report=xml:coverage-python.xml --cov=. --cov-config=.coveragerc
 
     - name: Configure CMake
       shell: bash
@@ -76,4 +76,4 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: RibosoftAlgo/coverage-cpp.xml,coverage-csharp.xml
+        files: RibosoftAlgo/coverage-cpp.xml,coverage-csharp.xml,coverage-python.xml
