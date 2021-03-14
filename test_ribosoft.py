@@ -1,4 +1,4 @@
-from ribosoft import *
+from ribosoft import check, install
 from click.testing import CliRunner
 
 def test_check(capsys):
