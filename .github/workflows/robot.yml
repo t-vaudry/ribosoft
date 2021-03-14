@@ -11,19 +11,26 @@ jobs:
         runs-on: ubuntu-latest
         steps:
         - uses: actions/checkout@v2
-        - run: mkdir ${{github.workspace}}/reports
-        - name: Execute tests
-          uses: joonvena/robotframework-docker-action@v0.1
-          env:
-            BROWSER: chrome
-            ROBOT_TESTS_DIR: ${{github.workspace}}/test/tests
-            ROBOT_REPORTS_DIR: ${{github.workspace}}/reports
+        - name: Setup python
+          uses: actions/setup-python@v2
+          with:
+            python-version: 3.9
+            architecture: x64
+        - run: mkdir ${{github.workspace}}/test/reports
+        - name: Install pipenv
+          working-directory: ${{github.workspace}}/test
+          run: |
+            pip install pipenv
+            pipenv install
+        - name: Execute test
+          working-directory: ${{github.workspace}}/test
+          run: pipenv run robot tests/startup.robot --outputdir reports
         - name: Upload test results
           uses: actions/upload-artifact@v1
           if: always()
           with:
             name: reports
-            path: ${{github.workspace}}/reports
+            path: ${{github.workspace}}/test/reports
     
     generate_report:
         if: always()
