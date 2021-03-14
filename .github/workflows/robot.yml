@@ -11,18 +11,19 @@ jobs:
         runs-on: ubuntu-latest
         steps:
         - uses: actions/checkout@v2
+        - run: mkdir ${{github.workspace}}/reports
         - name: Execute tests
           uses: joonvena/robotframework-docker-action@v0.1
           env:
             BROWSER: chrome
-            ROBOT_TESTS_DIR: ${{runner.workspace}}/ribosoft/test/tests
-            ROBOT_REPORTS_DIR: ${{runner.workspace}}/ribosoft/test/reports
+            ROBOT_TESTS_DIR: ${{github.workspace}}/test/tests
+            ROBOT_REPORTS_DIR: ${{github.workspace}}/reports
         - name: Upload test results
           uses: actions/upload-artifact@v1
           if: always()
           with:
             name: reports
-            path: ${{runner.workspace}}/ribosoft/test/reports
+            path: ${{github.workspace}}/reports
     
     generate_report:
         if: always()
@@ -40,4 +41,4 @@ jobs:
             REPO_OWNER: ${{ secrets.OWNER }}
             COMMIT_SHA: ${{ github.sha }}
             REPOSITORY: ${{ secrets.REPOSITORY_NAME }}
-            REPORT_PATH: test/reports
+            REPORT_PATH: reports
