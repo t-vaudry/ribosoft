@@ -8,7 +8,7 @@ Test Teardown           Stop Ribosoft
 
 *** Variables ***
 ${URL}        http://localhost:5001
-${BROWSER}    Chrome
+${BROWSER}    headlesschrome
 ${TITLE}      Home Page - Ribosoft
 
 *** Test cases ***
