@@ -23,7 +23,7 @@ jobs:
             pipenv install
         - name: Execute test
           working-directory: ${{github.workspace}}/test
-          run: pipenv run robot tests/startup.robot --outputdir reports
+          run: pipenv run robot tests/startup.robot --outputdir ${{github.workspace}}/test/reports
         - name: Upload test results
           uses: actions/upload-artifact@v1
           if: always()
