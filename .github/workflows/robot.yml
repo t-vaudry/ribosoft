@@ -16,7 +16,6 @@ jobs:
           with:
             python-version: 3.9
             architecture: x64
-        - run: mkdir ${{github.workspace}}/test/reports
         - name: Install pipenv
           working-directory: ${{github.workspace}}/test
           run: |
