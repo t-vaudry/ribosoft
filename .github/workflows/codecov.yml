@@ -71,10 +71,12 @@ jobs:
     - name: Generate C-Sharp report
       shell: cmd
       working-directory: ${{runner.workspace}}/ribosoft
-      run: OpenCover.Console.exe -register:Path64 -target:"C:\Program Files\dotnet\dotnet.exe" -targetargs:"test Ribosoft.sln --configuration Debug --no-build" -searchdirs:"${{runner.workspace}}\ribosoft\Ribosoft\bin\Debug\net5.0" -filter:"+[*]* -[Ribosoft.Tests*]* -[*]Ribosoft.Controllers.* -[*]Ribosoft.Data.* -[*]Ribosoft.Extensions.* -[*]Ribosoft.Jobs.* -[*]Ribosoft.Services.* -[*]Ribosoft.Resources.* -[Ribosoft.Views]*"  -output:"coverage-csharp.xml" -oldStyle -log:All
+      run: |
+        dotnet test Ribosoft.sln --collect:"XPlat Code Coverage" --results-directory:. --settings:coverlet.runsettings
+        for /r . %x in (*.cobertura.xml) do move "%x" .
 
     - name: Upload report
       uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: RibosoftAlgo/coverage-cpp.xml,coverage-csharp.xml
+        files: RibosoftAlgo/coverage-cpp.xml,coverage.cobertura.xml
