@@ -75,7 +75,7 @@ jobs:
 
     - shell: cmd
       working-directory: ${{runner.workspace}}/ribosoft
-      run: for /r ${{runner.workspace}}/ribosoft %x in (*.cobertura.xml) do move "%x" ${{runner.workspace}}/ribosoft
+      run: for /r . %x in (*.cobertura.xml) do move %x .
 
     - name: Upload report
       uses: codecov/codecov-action@v1
