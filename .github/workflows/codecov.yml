@@ -71,9 +71,11 @@ jobs:
     - name: Generate C-Sharp report
       shell: cmd
       working-directory: ${{runner.workspace}}/ribosoft
-      run: |
-        dotnet test Ribosoft.sln --collect:"XPlat Code Coverage" --results-directory:. --settings:coverlet.runsettings
-        for /r . %x in (*.cobertura.xml) do move "%x" .
+      run: dotnet test Ribosoft.sln --collect:"XPlat Code Coverage" --results-directory:${{runner.workspace}}/ribosoft --settings:coverlet.runsettings
+
+    - shell: cmd
+      working-directory: ${{runner.workspace}}/ribosoft
+      run: for /r ${{runner.workspace}}/ribosoft %x in (*.cobertura.xml) do move "%x" ${{runner.workspace}}/ribosoft
 
     - name: Upload report
       uses: codecov/codecov-action@v1
