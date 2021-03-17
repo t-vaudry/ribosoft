@@ -9,5 +9,7 @@ click-log = "<0.3,>=0.2"
 colorama = ">=0.3,<0.4"
 requests = ">=2.18,<2.21"
 enum34 = ">=1.1,<1.2"
+pytest = ">=6.1.1"
+pytest-cov = ">=2.11.1"
 
 [dev-packages]
