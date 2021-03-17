@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Hangfire.Dashboard;
@@ -9,6 +10,7 @@ namespace Ribosoft
     /*! \class DashboardAuthorizationFilter
      * \brief Filter class for the authorization to view the dashboards
      */
+    [ExcludeFromCodeCoverage]
     public class DashboardAuthorizationFilter : IDashboardAuthorizationFilter
     {
         /*! \fn Authorize
