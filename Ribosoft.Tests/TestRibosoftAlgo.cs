@@ -52,6 +52,15 @@ namespace Ribosoft.Tests
         }
 
         [Fact]
+        public void TestValidateSequence()
+        {
+            RibosoftAlgo sdc = new RibosoftAlgo();
+
+            var code = sdc.ValidateSequence("AUGACGUGAUGCUAGA");
+            Assert.Equal(0, (double)code);
+        }
+
+        [Fact]
         public void TestValidateStructure()
         {
             RibosoftAlgo sdc = new RibosoftAlgo();
@@ -66,10 +75,11 @@ namespace Ribosoft.Tests
             RibosoftAlgo sdc = new RibosoftAlgo();
             Candidate candidate = new Candidate();
             candidate.SubstrateSequence = "UUGUUGU";
-            candidate.CutsiteIndices = new List<int>(11);
+            candidate.CutsiteIndices = new List<int>();
+            candidate.CutsiteIndices.Add(11);
 
             float val = sdc.Accessibility(candidate, "CUUGAAGUGGUUUGUUGUGCUUGAAGAGACCCC", 4);
-            Assert.Equal(0.0f, val);
+            Assert.Equal(3.3999999f, val);
         }
 
         [Fact]
@@ -91,6 +101,37 @@ namespace Ribosoft.Tests
 
             float val = sdc.Structure(candidate, ".(.().).");
             Assert.Equal(5.9977207f, val);
+        }
+
+        [Fact]
+        public void TestAccessibilityInvalid()
+        {
+            RibosoftAlgo sdc = new RibosoftAlgo();
+            Candidate candidate = new Candidate();
+            candidate.SubstrateSequence = "UUGUXGU";
+            candidate.CutsiteIndices = new List<int>();
+            candidate.CutsiteIndices.Add(77);
+
+            Assert.Throws<RibosoftAlgoException>(() => sdc.Accessibility(candidate, "CUUGAAGUGGUUUGUUGUGCUUGAAGAGACCCC", 4));
+        }
+
+        [Fact]
+        public void TestAnnealingInvalid()
+        {
+            RibosoftAlgo sdc = new RibosoftAlgo();
+            Candidate candidate = new Candidate();
+
+            Assert.Throws<RibosoftAlgoException>(() => sdc.Anneal(candidate, "AAUUUCCHJSGGGG", "0123abxyzABXYZ", 1.0f, 0.05f));
+        }
+
+        [Fact]
+        public void TestStructureInvalid()
+        {
+            RibosoftAlgo sdc = new RibosoftAlgo();
+            Candidate candidate = new Candidate();
+            candidate.Sequence = new Biology.Sequence("AUGCACGU");
+
+            Assert.Throws<RibosoftAlgoException>(() => sdc.Structure(candidate, ".)(.)..."));
         }
 
         [Fact]

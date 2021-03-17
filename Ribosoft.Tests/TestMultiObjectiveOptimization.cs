@@ -57,6 +57,57 @@ namespace Ribosoft.Tests
         }
 
         [Fact]
+        public void EqualOutput()
+        {
+            MultiObjectiveOptimization.MultiObjectiveOptimizer multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
+
+            Design one = new Design
+            {
+                AccessibilityScore = 1.0f,
+                HighestTemperatureScore = 10.0f,
+                DesiredTemperatureScore = 1.0f,
+                SpecificityScore = 1.0f,
+                StructureScore = 1.0f,
+                Job = new Job
+                {
+                    DesiredTempTolerance = 0.05f,
+                    HighestTempTolerance = 0.05f,
+                    SpecificityTolerance = 0.05f,
+                    AccessibilityTolerance = 0.05f,
+                    StructureTolerance = 0.05f
+                }
+            };
+
+            Design two = new Design
+            {
+                AccessibilityScore = 1.0f,
+                HighestTemperatureScore = 1.0f,
+                DesiredTemperatureScore = 1.0f,
+                SpecificityScore = 1.0f,
+                StructureScore = 0.0f,
+                Job = new Job
+                {
+                    DesiredTempTolerance = 0.05f,
+                    HighestTempTolerance = 0.05f,
+                    SpecificityTolerance = 0.05f,
+                    AccessibilityTolerance = 0.05f,
+                    StructureTolerance = 0.05f
+                }
+            };
+
+            List<Design> designs = new List<Design>
+            {
+                one,
+                two
+            };
+
+            multiObjectiveOptimizer.Optimize(designs, 1);
+
+            Assert.Equal(1, one.Rank);
+            Assert.Equal(1, two.Rank);
+        }
+
+        [Fact]
         public void PartialRanking()
         {
             MultiObjectiveOptimization.MultiObjectiveOptimizer multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
