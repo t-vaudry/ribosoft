@@ -365,5 +365,67 @@ namespace Ribosoft.Tests
                 Assert.Equal("List of Candidates is empty!", Exception.Message);
             }
         }
+
+        [Fact]
+        public void InvalidFitnessCriteriaCount()
+        {
+            MultiObjectiveOptimization.MultiObjectiveOptimizer multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
+
+            Design one = new Design
+            {
+                AccessibilityScore = 1.0f,
+                HighestTemperatureScore = 1.0f,
+                DesiredTemperatureScore = 1.0f,
+                StructureScore = 1.0f,
+                Job = new Job
+                {
+                    DesiredTempTolerance = 0.05f,
+                    HighestTempTolerance = 0.05f,
+                    SpecificityTolerance = 0.05f,
+                    AccessibilityTolerance = 0.05f,
+                    StructureTolerance = 0.05f
+                }
+            };
+
+            Design two = new Design
+            {
+                AccessibilityScore = 2.0f,
+                HighestTemperatureScore = 0.0f,
+                DesiredTemperatureScore = 2.0f,
+                SpecificityScore = 2.0f,
+                StructureScore = 2.0f,
+                Job = new Job
+                {
+                    DesiredTempTolerance = 0.05f,
+                    HighestTempTolerance = 0.05f,
+                    SpecificityTolerance = 0.05f,
+                    AccessibilityTolerance = 0.05f,
+                    StructureTolerance = 0.05f
+                }
+            };
+
+            List<Design> designs = new List<Design>
+            {
+                one,
+                two
+            };
+
+            try {
+                multiObjectiveOptimizer.Optimize(designs, 1);
+            } catch(MultiObjectiveOptimization.MultiObjectiveOptimizationException Exception) {
+                Assert.Equal(R_STATUS.R_FITNESS_VALUE_LENGTHS_DIFFER, Exception.Code);
+                Assert.Equal("Candidates have different number of fitness values!", Exception.Message);
+            }
+        }
+
+        [Fact]
+        public void TestMultiObjectiveOptimizationExceptionEdgeCases()
+        {
+            MultiObjectiveOptimization.MultiObjectiveOptimizationException ex = new MultiObjectiveOptimization.MultiObjectiveOptimizationException();
+            MultiObjectiveOptimization.MultiObjectiveOptimizationException cp = new MultiObjectiveOptimization.MultiObjectiveOptimizationException(0, "copy", ex);
+
+            Assert.Equal(0, (double)cp.Code);
+            Assert.Equal("copy", cp.Message);
+        }
     }
 }
