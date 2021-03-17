@@ -1,0 +1,13 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+robotframework = ">=3.0"
+robotframework-docker = ">=1.0.1"
+robotframework-requests = ">=0.8.1"
+robotframework-seleniumlibrary = ">=5.1.1"
+docutils = ">=0.16"
+
+[dev-packages]
