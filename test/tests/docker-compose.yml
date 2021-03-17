@@ -1,0 +1,34 @@
+version: '3.8'
+
+volumes:
+  pgdata:
+
+services:
+  db:
+     image: postgres:latest
+     container_name: db
+     restart: always
+     ports:
+       - 5432:5432
+     environment:
+       POSTGRES_USER: postgres
+       POSTGRES_PASSWORD: postgres
+       POSTGRES_DB: ribosoft
+     volumes:
+       - pgdata:/var/lib/postgresql/data
+
+  ribosoft:
+    image: tvaudryread/ribosoft:beta
+    container_name: ribosoft
+    ports:
+      - 5001:80
+    build:
+      context: ../../Ribosoft
+      dockerfile: Dockerfile
+    environment:
+      ConnectionStrings__NpgsqlConnection: "Host=db;Port=5432;Username=postgres;Password=postgres;Database=ribosoft;Pooling=true;"
+      DB_CONTEXT: NpgsqlDbContext
+      EntityFrameworkProvider: Npgsql
+      NODE_ENV: production
+    depends_on:
+      - "db"
