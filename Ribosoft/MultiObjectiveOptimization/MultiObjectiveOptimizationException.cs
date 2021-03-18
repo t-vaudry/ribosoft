@@ -44,15 +44,5 @@ namespace Ribosoft.MultiObjectiveOptimization
         {
             Code = code;
         }
-
-        /*!
-         * \brief Serialized constructor
-         * \param info Serialized information
-         * \param context Streaming context
-         */
-        protected MultiObjectiveOptimizationException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
     }
 }

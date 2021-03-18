@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace Ribosoft
     /*! \class Program
      * \brief Object class for the Program
      */
+    [ExcludeFromCodeCoverage]
     public class Program
     {
         /*! \fn Main 
