@@ -12,6 +12,7 @@ URL : http://ribosoft2.fungalgenomics.ca
 ![Publish RibosoftAlgo Nuget Package](https://github.com/t-vaudry/ribosoft/workflows/Publish%20RibosoftAlgo%20Nuget%20Package/badge.svg)
 ![Ribosoft .NET Core Builds](https://github.com/t-vaudry/ribosoft/workflows/Ribosoft%20.NET%20Core%20Builds/badge.svg)
 ![RibosoftAlgo CMake Builds](https://github.com/t-vaudry/ribosoft/workflows/RibosoftAlgo%20CMake%20Builds/badge.svg)
+[![Robot Framework Testing](https://github.com/t-vaudry/ribosoft/actions/workflows/robot.yml/badge.svg)](https://github.com/t-vaudry/ribosoft/actions/workflows/robot.yml)
 
 ## Building
 
