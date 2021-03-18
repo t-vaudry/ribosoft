@@ -1,6 +1,7 @@
 ﻿using Xunit;
 using Ribosoft.Models;
 using Ribosoft.Models.JobsViewModels;
+using System;
 
 namespace Ribosoft.Tests
 {
@@ -59,26 +60,44 @@ namespace Ribosoft.Tests
             filter.condition = "eq";
             filter.value = "1";
 
-            Assert.Equal("{\r\n  \"field\": {\r\n    \"label\": \"Rank\",\r\n    \"value\": \"Rank\"\r\n  },\r\n  \"operator\": {\r\n    \"label\": \"=\",\r\n    \"value\": \"eq\"\r\n  },\r\n  \"value\": {\r\n    \"label\": \"1\",\r\n    \"value\": \"1\"\r\n  }\r\n}", filter.GetJson());
+            string le = "";
+            OperatingSystem os = Environment.OSVersion;
+            PlatformID pid = os.Platform;
+            switch (pid)
+            {
+                case PlatformID.Unix:
+                case PlatformID.MacOSX:
+                    le = "\n";
+                    break;
+                case PlatformID.Win32NT:
+                case PlatformID.Win32S:
+                case PlatformID.Win32Windows:
+                case PlatformID.WinCE:
+                default:
+                    le = "\r\n";
+                    break;
+            }
+
+            Assert.Equal("{{0}  \"field\": {{0}    \"label\": \"Rank\",{0}    \"value\": \"Rank\"{0}  },{0}  \"operator\": {{0}    \"label\": \"=\",{0}    \"value\": \"eq\"{0}  },{0}  \"value\": {{0}    \"label\": \"1\",{0}    \"value\": \"1\"{0}  }{0}}".Replace("{0}", le), filter.GetJson());
 
             filter.param = "HighestTemperatureScore";
             filter.condition = "ne";
-            Assert.Equal("{\r\n  \"field\": {\r\n    \"label\": \"Highest Temperature Score\",\r\n    \"value\": \"HighestTemperatureScore\"\r\n  },\r\n  \"operator\": {\r\n    \"label\": \"!=\",\r\n    \"value\": \"ne\"\r\n  },\r\n  \"value\": {\r\n    \"label\": \"1\",\r\n    \"value\": \"1\"\r\n  }\r\n}", filter.GetJson());
+            Assert.Equal("{{0}  \"field\": {{0}    \"label\": \"Highest Temperature Score\",{0}    \"value\": \"HighestTemperatureScore\"{0}  },{0}  \"operator\": {{0}    \"label\": \"!=\",{0}    \"value\": \"ne\"{0}  },{0}  \"value\": {{0}    \"label\": \"1\",{0}    \"value\": \"1\"{0}  }{0}}".Replace("{0}", le), filter.GetJson());
 
             filter.param = "DesiredTemperatureScore";
             filter.condition = "gt";
-            Assert.Equal("{\r\n  \"field\": {\r\n    \"label\": \"Desired Temperature Score\",\r\n    \"value\": \"DesiredTemperatureScore\"\r\n  },\r\n  \"operator\": {\r\n    \"label\": \">\",\r\n    \"value\": \"gt\"\r\n  },\r\n  \"value\": {\r\n    \"label\": \"1\",\r\n    \"value\": \"1\"\r\n  }\r\n}", filter.GetJson());
+            Assert.Equal("{{0}  \"field\": {{0}    \"label\": \"Desired Temperature Score\",{0}    \"value\": \"DesiredTemperatureScore\"{0}  },{0}  \"operator\": {{0}    \"label\": \">\",{0}    \"value\": \"gt\"{0}  },{0}  \"value\": {{0}    \"label\": \"1\",{0}    \"value\": \"1\"{0}  }{0}}".Replace("{0}", le), filter.GetJson());
 
             filter.param = "AccessibilityScore";
             filter.condition = "lt";
-            Assert.Equal("{\r\n  \"field\": {\r\n    \"label\": \"Accessibility Score\",\r\n    \"value\": \"AccessibilityScore\"\r\n  },\r\n  \"operator\": {\r\n    \"label\": \"<\",\r\n    \"value\": \"lt\"\r\n  },\r\n  \"value\": {\r\n    \"label\": \"1\",\r\n    \"value\": \"1\"\r\n  }\r\n}", filter.GetJson());
+            Assert.Equal("{{0}  \"field\": {{0}    \"label\": \"Accessibility Score\",{0}    \"value\": \"AccessibilityScore\"{0}  },{0}  \"operator\": {{0}    \"label\": \"<\",{0}    \"value\": \"lt\"{0}  },{0}  \"value\": {{0}    \"label\": \"1\",{0}    \"value\": \"1\"{0}  }{0}}".Replace("{0}", le), filter.GetJson());
 
             filter.param = "SpecificityScore";
             filter.condition = "";
-            Assert.Equal("{\r\n  \"field\": {\r\n    \"label\": \"Specificity Score\",\r\n    \"value\": \"SpecificityScore\"\r\n  },\r\n  \"operator\": {\r\n    \"label\": \"\",\r\n    \"value\": \"\"\r\n  },\r\n  \"value\": {\r\n    \"label\": \"1\",\r\n    \"value\": \"1\"\r\n  }\r\n}", filter.GetJson());
+            Assert.Equal("{{0}  \"field\": {{0}    \"label\": \"Specificity Score\",{0}    \"value\": \"SpecificityScore\"{0}  },{0}  \"operator\": {{0}    \"label\": \"\",{0}    \"value\": \"\"{0}  },{0}  \"value\": {{0}    \"label\": \"1\",{0}    \"value\": \"1\"{0}  }{0}}".Replace("{0}", le), filter.GetJson());
 
             filter.param = "StructureScore";
-            Assert.Equal("{\r\n  \"field\": {\r\n    \"label\": \"Structure Score\",\r\n    \"value\": \"StructureScore\"\r\n  },\r\n  \"operator\": {\r\n    \"label\": \"\",\r\n    \"value\": \"\"\r\n  },\r\n  \"value\": {\r\n    \"label\": \"1\",\r\n    \"value\": \"1\"\r\n  }\r\n}", filter.GetJson());
+            Assert.Equal("{{0}  \"field\": {{0}    \"label\": \"Structure Score\",{0}    \"value\": \"StructureScore\"{0}  },{0}  \"operator\": {{0}    \"label\": \"\",{0}    \"value\": \"\"{0}  },{0}  \"value\": {{0}    \"label\": \"1\",{0}    \"value\": \"1\"{0}  }{0}}".Replace("{0}", le), filter.GetJson());
         }
 
         [Fact]
