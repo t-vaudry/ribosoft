@@ -5,7 +5,7 @@
       <DataCollector friendlyName="XPlat Code Coverage">
         <Configuration>
           <Format>cobertura</Format>          
-          <Exclude>[Ribosoft.Tests*]*,[*]Ribosoft.Controllers.*,[*]Ribosoft.Data.*,[*]Ribosoft.Extensions.*,[*]Ribosoft.Jobs.*,[*]Ribosoft.Services.*,[*]Ribosoft.Resources.*,[Ribosoft.Views]*</Exclude>
+          <Exclude>[Ribosoft.Tests*]*,[*]Ribosoft.Blast.*,[*]Ribosoft.Controllers.*,[*]Ribosoft.Data.*,[*]Ribosoft.Extensions.*,[*]Ribosoft.Jobs.*,[*]Ribosoft.Services.*,[*]Ribosoft.Resources.*,[Ribosoft.Views]*</Exclude>
           <Include>[Ribosoft*]*</Include>
           <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
           <SingleHit>false</SingleHit>

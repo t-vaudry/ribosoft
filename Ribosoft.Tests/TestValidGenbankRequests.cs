@@ -13,5 +13,12 @@ namespace Ribosoft.Tests
             Assert.Equal(0, result.OpenReadingFrameStart);
             Assert.Equal(220, result.OpenReadingFrameEnd);
         }
+
+        [Fact]
+        public void TestGenbankRequestsExceptionCtor()
+        {
+            GenbankRequestsException ex = new GenbankRequestsException();
+            Assert.NotNull(ex);
+        }
     }
 }
