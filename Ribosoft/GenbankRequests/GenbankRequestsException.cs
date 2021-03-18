@@ -34,15 +34,5 @@ namespace Ribosoft.GenbankRequests
             : base(message, inner)
         {
         }
-
-        /*!
-         * \brief Serialized constructor
-         * \param info Serialized exception info
-         * \param context Streaming context
-         */
-        protected GenbankRequestsException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
     }
 }

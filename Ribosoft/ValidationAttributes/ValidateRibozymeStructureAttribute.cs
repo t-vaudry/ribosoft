@@ -98,29 +98,10 @@ namespace Ribosoft.ValidationAttributes
         {
             foreach (var structure in model.RibozymeStructures)
             {
-                // Validate Cutsite is within Substrate Template
-                if (structure.Cutsite > structure.SubstrateTemplate.Length)
+                if(!IsValidRibozymeStructure(structure))
                 {
                     return false;
-                }
-
-                // Validate Sequence length matches Structure length
-                if (structure.Sequence.Length != structure.Structure.Length)
-                {
-                    return false;
-                }
-
-                // Validate Substrate Template length matches Substrate Structure length
-                if (structure.SubstrateTemplate.Length != structure.SubstrateStructure.Length)
-                {
-                    return false;
-                }
-
-                // Validate Structure and Substrate Structure alphanums are equivalent
-                if (!matchingAlphaNumerics(structure.Structure, structure.SubstrateStructure))
-                {
-                    return false;
-                }
+                }    
             }
 
             return true;
