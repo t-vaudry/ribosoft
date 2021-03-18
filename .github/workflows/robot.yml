@@ -1,0 +1,50 @@
+name: Robot Framework Testing
+
+on:
+  push:
+    branches: [ master, develop, test-robot ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v2
+        - name: Setup python
+          uses: actions/setup-python@v2
+          with:
+            python-version: 3.9
+            architecture: x64
+        - name: Install pipenv
+          working-directory: ${{github.workspace}}/test
+          run: |
+            pip install pipenv
+            pipenv install
+        - name: Execute test
+          working-directory: ${{github.workspace}}/test
+          run: pipenv run robot --outputdir ${{github.workspace}}/test/reports tests/startup.robot
+        - name: Upload test results
+          uses: actions/upload-artifact@v1
+          if: always()
+          with:
+            name: reports
+            path: ${{github.workspace}}/test/reports
+
+    generate_report:
+        if: always()
+        needs: [test]
+        runs-on: ubuntu-latest
+        steps:
+        - name: Download reports
+          uses: actions/download-artifact@v1
+          with:
+            name: reports
+        - name: Send report to commit
+          uses: joonvena/robotframework-reporter-action@v0.1
+          env:
+            GH_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            REPO_OWNER: ${{ secrets.OWNER }}
+            COMMIT_SHA: ${{ github.sha }}
+            REPOSITORY: ${{ secrets.REPOSITORY_NAME }}
+            REPORT_PATH: reports

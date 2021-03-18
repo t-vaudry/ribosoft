@@ -25,7 +25,7 @@ jobs:
     - name: Setup chocolatey
       uses: crazy-max/ghaction-chocolatey@v1
       with:
-        args: install opencppcoverage opencover.portable
+        args: install opencppcoverage
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
@@ -35,8 +35,8 @@ jobs:
         pip install pipenv
         pipenv install
 
-    - name: Get library dependencies
-      run: pipenv run python ./ribosoft.py deps install --yes
+    - name: Install dependencies + Generate Python report
+      run: pipenv run pytest --cov-report=xml:coverage-python.xml --cov=. --cov-config=.coveragerc
 
     - name: Configure CMake
       shell: bash
@@ -68,7 +68,7 @@ jobs:
       working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo
       run: OpenCppCoverage --export_type cobertura:coverage-cpp.xml --sources=${{runner.workspace}}\ribosoft\RibosoftAlgo\src --modules=${{runner.workspace}}\ribosoft\RibosoftAlgo\build\*.dll -- build\bin\Debug\tests.exe
 
-    - name: Generate C-Sharp report
+    - name: Generate C# report
       shell: cmd
       working-directory: ${{runner.workspace}}/ribosoft
       run: dotnet test Ribosoft.sln --collect:"XPlat Code Coverage" --results-directory:${{runner.workspace}}/ribosoft --settings:coverlet.runsettings
@@ -81,4 +81,4 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: RibosoftAlgo/coverage-cpp.xml,coverage.cobertura.xml
+        files: RibosoftAlgo/coverage-cpp.xml,coverage.cobertura.xml,coverage-python.xml
