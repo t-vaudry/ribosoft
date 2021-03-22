@@ -27,7 +27,8 @@ var searchData=
   ['getsubstrates_167',['GetSubstrates',['../d7/d95/classRibosoft_1_1CandidateGeneration_1_1CandidateGenerator.html#a4af61673a59df70cd9208ca389f8582c',1,'Ribosoft::CandidateGeneration::CandidateGenerator']]],
   ['getuser_168',['GetUser',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a7ab4bf13999521063d951b57a9355815',1,'Ribosoft.Controllers.JobsController.GetUser()'],['../d5/df2/classRibosoft_1_1Controllers_1_1RequestController.html#acf9942711a223d5ec683fe428bc9cb65',1,'Ribosoft.Controllers.RequestController.GetUser()']]],
   ['getuserinput_169',['GetUserInput',['../d7/d95/classRibosoft_1_1CandidateGeneration_1_1CandidateGenerator.html#a631628b631a8868979225597b855e09e',1,'Ribosoft::CandidateGeneration::CandidateGenerator']]],
-  ['greaterthan_170',['GreaterThan',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a2f61abab205a5380a195f7e8db64772c',1,'Ribosoft::Controllers::JobsController']]],
-  ['guest_171',['Guest',['../db/d48/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginViewModel.html#ab290bf8740ddd8dc95bcc595d455c3e7',1,'Ribosoft::Models::AccountViewModels::LoginViewModel']]],
-  ['guestlogin_172',['GuestLogin',['../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html#a615f98b6b2b2a9bdc1ea3fc79e0b4b25',1,'Ribosoft::Controllers::AccountController']]]
+  ['getviewmodel_170',['GetViewModel',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ac346b3038f7538fc7c7cb13240179aa8',1,'Ribosoft::Controllers::JobsController']]],
+  ['greaterthan_171',['GreaterThan',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a2f61abab205a5380a195f7e8db64772c',1,'Ribosoft::Controllers::JobsController']]],
+  ['guest_172',['Guest',['../db/d48/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginViewModel.html#ab290bf8740ddd8dc95bcc595d455c3e7',1,'Ribosoft::Models::AccountViewModels::LoginViewModel']]],
+  ['guestlogin_173',['GuestLogin',['../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html#a615f98b6b2b2a9bdc1ea3fc79e0b4b25',1,'Ribosoft::Controllers::AccountController']]]
 ];
