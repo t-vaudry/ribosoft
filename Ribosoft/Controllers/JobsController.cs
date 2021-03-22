@@ -60,31 +60,7 @@ namespace Ribosoft.Controllers
         public async Task<IActionResult> Index(JobIndexViewModel model)
         {
             var user = await GetUser();
-
-            int pageSize = 20;
-            model.Completed.PageNumber = Math.Max(model.Completed.PageNumber, 1);
-            int offset = (int)((pageSize * model.Completed.PageNumber) - pageSize);
-
-            var vm = new JobIndexViewModel();
-
-            var jobs = _context.Jobs
-                .Include(j => j.Owner)
-                .Include(j => j.Ribozyme)
-                .Where(j => j.OwnerId == user.Id)
-                .OrderByDescending(j => j.CreatedAt);
-
-            var inProgressJobs = jobs.Where(Job.InProgress());
-            var completedJobs = jobs.Where(Job.Completed());
-
-            vm.InProgress = inProgressJobs;
-            vm.Completed.Data = await completedJobs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
-            vm.Completed.TotalItems = await completedJobs.CountAsync();
-            vm.Completed.PageNumber = model.Completed.PageNumber;
-            vm.Completed.PageSize = pageSize;
-            vm.ErrorMessages = model.ErrorMessages;
-            vm.SuccessMessages = model.SuccessMessages;
-
-            return View(vm);
+            return View(await GetViewModel(user, model));
         }
 
         /*! \fn AddJob
@@ -116,30 +92,7 @@ namespace Ribosoft.Controllers
                 model.ErrorMessages.Add(String.Format("Invalid Job Id [{0}]!", model.JobId));
             }
 
-            int pageSize = 20;
-            model.Completed.PageNumber = Math.Max(model.Completed.PageNumber, 1);
-            int offset = (int)((pageSize * model.Completed.PageNumber) - pageSize);
-
-            var vm = new JobIndexViewModel();
-
-            var jobs = _context.Jobs
-                .Include(j => j.Owner)
-                .Include(j => j.Ribozyme)
-                .Where(j => j.OwnerId == user.Id)
-                .OrderByDescending(j => j.CreatedAt);
-
-            var inProgressJobs = jobs.Where(Job.InProgress());
-            var completedJobs = jobs.Where(Job.Completed());
-
-            vm.InProgress = inProgressJobs;
-            vm.Completed.Data = await completedJobs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
-            vm.Completed.TotalItems = await completedJobs.CountAsync();
-            vm.Completed.PageNumber = model.Completed.PageNumber;
-            vm.Completed.PageSize = pageSize;
-            vm.ErrorMessages = model.ErrorMessages;
-            vm.SuccessMessages = model.SuccessMessages;
-
-            return View("Index", vm);
+            return View("Index", await GetViewModel(user, model));
         }
 
         /*! \fn DownloadJobs
@@ -208,30 +161,7 @@ namespace Ribosoft.Controllers
                 }
             }
 
-            int pageSize = 20;
-            model.Completed.PageNumber = Math.Max(model.Completed.PageNumber, 1);
-            int offset = (int)((pageSize * model.Completed.PageNumber) - pageSize);
-
-            var vm = new JobIndexViewModel();
-
-            var jobs = _context.Jobs
-                .Include(j => j.Owner)
-                .Include(j => j.Ribozyme)
-                .Where(j => j.OwnerId == user.Id)
-                .OrderByDescending(j => j.CreatedAt);
-
-            var inProgressJobs = jobs.Where(Job.InProgress());
-            var completedJobs = jobs.Where(Job.Completed());
-
-            vm.InProgress = inProgressJobs;
-            vm.Completed.Data = await completedJobs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
-            vm.Completed.TotalItems = await completedJobs.CountAsync();
-            vm.Completed.PageNumber = model.Completed.PageNumber;
-            vm.Completed.PageSize = pageSize;
-            vm.ErrorMessages = model.ErrorMessages;
-            vm.SuccessMessages = model.SuccessMessages;
-
-            return View("Index", vm);
+            return View("Index", await GetViewModel(user, model));
         }
 
         /*!
@@ -492,6 +422,40 @@ namespace Ribosoft.Controllers
             {
                 return new EmptyResult();
             }
+        }
+
+        /*! \fn GetViewModel
+         * \brief Helper function to get the view model object
+         * \param user Current user
+         * \param model Current model
+         * \return View model object
+         */
+        private async Task<JobIndexViewModel> GetViewModel(ApplicationUser user, JobIndexViewModel model)
+        {
+            int pageSize = 20;
+            model.Completed.PageNumber = Math.Max(model.Completed.PageNumber, 1);
+            int offset = (int)((pageSize * model.Completed.PageNumber) - pageSize);
+
+            var vm = new JobIndexViewModel();
+
+            var jobs = _context.Jobs
+                .Include(j => j.Owner)
+                .Include(j => j.Ribozyme)
+                .Where(j => j.OwnerId == user.Id)
+                .OrderByDescending(j => j.CreatedAt);
+
+            var inProgressJobs = jobs.Where(Job.InProgress());
+            var completedJobs = jobs.Where(Job.Completed());
+
+            vm.InProgress = inProgressJobs;
+            vm.Completed.Data = await completedJobs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
+            vm.Completed.TotalItems = await completedJobs.CountAsync();
+            vm.Completed.PageNumber = model.Completed.PageNumber;
+            vm.Completed.PageSize = pageSize;
+            vm.ErrorMessages = model.ErrorMessages;
+            vm.SuccessMessages = model.SuccessMessages;
+
+            return vm;
         }
 
         /*! \fn SetSortParams
