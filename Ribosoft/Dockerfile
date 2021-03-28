@@ -8,6 +8,8 @@ RUN apt-get -y install mono-complete --no-install-recommends
 WORKDIR /src
 COPY . .
 COPY .docker/appsettings.json /src/appsettings.json
+COPY .docker/20210327162902_PreloadRibozymes.cs /src/Data/Migrations/NpgsqlMigrations/20210327162902_PreloadRibozymes.cs
+COPY .docker/20210327162902_PreloadRibozymes.Designer.cs /src/Data/Migrations/NpgsqlMigrations/20210327162902_PreloadRibozymes.Designer.cs
 
 RUN npm install
 RUN node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js
