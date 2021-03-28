@@ -23,8 +23,8 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
                     { 8, "Default Twister Sister" },
                     { 9, "Default Yarrowia - GUC" },
                     { 10, "Default Pistol II" },
-                    { 11, "Extended Hammerhead" },
-                    { 12, "Theophylline Aptazyme" }
+                    { 11, "Default Extended Hammerhead" },
+                    { 12, "Default Theophylline Aptazyme" }
                 });
 
             migrationBuilder.InsertData(
@@ -58,16 +58,6 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
                     { 24, 6, Convert.ToBoolean(0), 11, "nnnnnnnnNNAAUNNNNNCUGAUGAGUCGCUGAAAUGCGACGAAACNNNnnnnnnnnnn", "0123456789...abcde.......(((((......)))))...fghijklmnopqrst", "tsrqponmlkjihgf.edcba9876543210", "nnnnnnnnnnNNNGUCNNNNNNNnnnnnnnn" },
                     { 25, 6, Convert.ToBoolean(0), 12, "nnnnnnnnnnnnNNNNNNCUGAUGAGCCUGGAUACCAGCCGAAAGGCCCUUGGCAGUUAGACGAAACNNNnnnnnnnnnn", "0123456789abcdefgh.......(.((((...((.(((....)))....))...)))).)...ijklmnopqrstuvw", "wvutsrqponmlkji.hgfedcba9876543210", "nnnnnnnnnnNNNGUCNNNNNNnnnnnnnnnnnn" }
                 });
-
-            migrationBuilder.InsertData(
-                table: "Ribozymes",
-                columns: new[] { "Id", "Name" },
-                values: new object[] { 2, "Default Yarrowia" });
-
-            migrationBuilder.InsertData(
-                table: "RibozymeStructures",
-                columns: new[] { "Id", "Cutsite", "PostProcess", "RibozymeId", "Sequence", "Structure", "SubstrateStructure", "SubstrateTemplate" },
-                values: new object[] { 2, 7, Convert.ToBoolean(0), 2, "CGUGGUUAGGGCCACGUUAAAUAGNNNNUUAAGCCCUAAGCGNNNNNNnnnnnn", "((((.[[[[[[.))))........0123.....]]]]]]...456789abcdef", "nnnnnnNNNNNNGUNNNN", "fedcba987654..3210" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
