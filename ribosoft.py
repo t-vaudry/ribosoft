@@ -28,7 +28,7 @@ install_path = os.path.join(root_dir, '.deps/')
 
 
 class Log(object):
-    def __init__(self, name=__name__, level=logging.DEBUG):
+    def __init__(self, name=__name__, level=logging.ERROR):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(level)
 

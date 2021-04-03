@@ -15,12 +15,14 @@ using Ribosoft.Data;
 using Ribosoft.Models;
 using Ribosoft.Services;
 using Hangfire.Logging.LogProviders;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Ribosoft
 {
     /*! \class Startup
      * \brief Object class for the Startup of the application and its properties
      */
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         /*!

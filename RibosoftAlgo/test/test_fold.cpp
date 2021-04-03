@@ -24,6 +24,7 @@ TEST_CASE("default", "[fold]") {
     }
 
     REQUIRE(temp == Approx(1.00f).epsilon(0.05f));
+    fold_output_free(output, size);
 }
 
 TEST_CASE("valid", "[fold]") {
@@ -45,6 +46,7 @@ TEST_CASE("valid", "[fold]") {
     }
 
     REQUIRE(temp == Approx(1.00f).epsilon(0.05f));
+    fold_output_free(output, size);
 }
 
 TEST_CASE("invalid sequence", "[fold]") {

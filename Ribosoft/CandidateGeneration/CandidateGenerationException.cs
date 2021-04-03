@@ -34,15 +34,5 @@ namespace Ribosoft.CandidateGeneration
             : base(message, inner)
         {
         }
-
-        /*!
-         * \brief Constructor
-         * \param info Serialization information
-         * \param context Streaming context
-         */
-        protected CandidateGenerationException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
     }
 }

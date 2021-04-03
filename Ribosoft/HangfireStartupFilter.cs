@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
@@ -14,6 +15,7 @@ namespace Ribosoft
     /*! \class HangfireStartupFilter
      * \brief This class is used to configure Hangfire for the application.
      */
+    [ExcludeFromCodeCoverage]
     public class HangfireStartupFilter : IStartupFilter
     {
         /*! \property _configuration

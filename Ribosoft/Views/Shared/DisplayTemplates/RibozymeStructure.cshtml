@@ -14,13 +14,9 @@
         <td rowspan="2">
             @Html.DisplayFor(model => model.PostProcess)
         </td>
-        @if (User.IsInRole("Administrator"))
-        {
-            <td rowspan="2" class="text-right">
-                <a asp-controller="RibozymeStructures" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-secondary">Edit</a>
-                <a asp-controller="RibozymeStructures" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-danger">Delete</a>
-            </td>
-        }
+        <td class="text-right">
+            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg" id="rna_ss_@Model.Id" sequence="@Model.Sequence" structure="@Model.Structure" subsequence="@Model.SubstrateTemplate" substructure="@Model.SubstrateStructure" cutsite="@Model.Cutsite">View</button>
+        </td>
     </tr>
     <tr>
         <td>
@@ -29,5 +25,12 @@
         <td>
             <code>@Html.DisplayFor(model => model.SubstrateStructure)</code>
         </td>
+        @if (User.IsInRole("Administrator"))
+        {
+            <td rowspan="2" class="text-right">
+                <a asp-controller="RibozymeStructures" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-secondary">Edit</a>
+                <a asp-controller="RibozymeStructures" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        }
     </tr>
 </tbody>
