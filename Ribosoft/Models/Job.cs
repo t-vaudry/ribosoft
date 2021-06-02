@@ -155,6 +155,27 @@ namespace Ribosoft.Models
         [Display(Name = "Open reading frame end index")]
         public int OpenReadingFrameEnd { get; set; }
 
+        [Display(Name = "Snake Sequence")]
+        public string SnakeSequence { get; set; }
+
+        [Display(Name = "Stem I Temperature (℃)")]
+        public float? StemITemperature { get; set; }
+
+        [Display(Name = "Stem III Temperature (℃)")]
+        public float? StemIIITemperature { get; set; }
+
+        [Display(Name = "Lower StemII Length")]
+        public int? LowerStemIILength { get; set; }
+
+        [Display(Name = "Bulge Length")]
+        public int? BulgeLength { get; set; }
+
+        [Display(Name = "Upper StemII Length")]
+        public int? UpperStemIILength { get; set; }
+
+        [Display(Name = "Loop Length")]
+        public int? LoopLength { get; set; }
+
         /*! \property TargetEnvironment
          * \brief Target environment
          */

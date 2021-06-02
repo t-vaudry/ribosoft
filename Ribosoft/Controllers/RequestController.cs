@@ -111,6 +111,19 @@ namespace Ribosoft.Controllers
                 job.OwnerId = user.Id;
                 job.JobState = JobState.New;
 
+                if ((model.SnakeSequence.Length <= (model.LowerStemIILength + model.BulgeLength + model.UpperStemIILength + model.LoopLength)) &&
+                    (model.SnakeSequence.Length > (model.LowerStemIILength + model.BulgeLength + model.UpperStemIILength)))
+                    job.SnakeSequence = model.SnakeSequence.Replace('T', 'U');
+                else
+                    job.SnakeSequence = "";
+
+                job.StemITemperature = model.StemITemperature;
+                job.StemIIITemperature = model.StemIIITemperature;
+                job.LowerStemIILength = model.LowerStemIILength;
+                job.BulgeLength = model.BulgeLength;
+                job.UpperStemIILength = model.UpperStemIILength;
+                job.LoopLength = model.LoopLength;
+
                 if (model.SelectedTargetEnvironment == TargetEnvironment.InVivo && model.InVivoEnvironment.HasValue)
                 {
                     job.TargetEnvironment = TargetEnvironment.InVivo;

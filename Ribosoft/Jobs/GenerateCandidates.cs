@@ -246,13 +246,125 @@ namespace Ribosoft.Jobs
                     IEnumerable<Candidate> candidates;
                     try
                     {
-                        // Candidate Generation
-                        candidates = candidateGenerator.GenerateCandidates(
-                            ribozymeStructure.Sequence,
-                            ribozymeStructure.Structure,
-                            ribozymeStructure.SubstrateTemplate,
-                            ribozymeStructure.SubstrateStructure,
-                            rnaInput);
+                        if (String.IsNullOrEmpty(job.SnakeSequence))
+                        {
+                            // Candidate Generation
+                            candidates = candidateGenerator.GenerateCandidates(
+                                ribozymeStructure.Sequence,
+                                ribozymeStructure.Structure,
+                                ribozymeStructure.SubstrateTemplate,
+                                ribozymeStructure.SubstrateStructure,
+                                rnaInput);
+                        }
+                        else
+                        {
+                            string startSearchString = "CUGAUGA";
+                            int startSearchStringPosition = ribozymeStructure.Sequence.IndexOf(startSearchString);
+                            int startSearchStringLength = startSearchString.Length;
+
+                            string endSearchString = "GAAAC";
+                            int endSearchStringPosition = ribozymeStructure.Sequence.IndexOf(endSearchString);
+                            int endSearchStringLength = endSearchString.Length;
+
+                            string modifiedSequence = ribozymeStructure.Sequence.Substring(0, startSearchStringPosition + startSearchStringLength);
+                            string modifiedStructure = ribozymeStructure.Structure.Substring(0, startSearchStringPosition + startSearchStringLength);
+
+                            //add snake(end, end-lowerstemIIlength) to sequence
+                            modifiedSequence += job.SnakeSequence.Substring(0, job.LowerStemIILength.Value);
+
+                            //add anything except snake(end - lowerStenIIlength, end - lowerStenIIlength - bulge) to sequence
+                            modifiedSequence += job.SnakeSequence.Substring(job.LowerStemIILength.Value, job.BulgeLength.Value).Replace('A', 'B').Replace('C', 'D').Replace('G', 'H').Replace('U', 'V');
+
+                            //add snake(end - lowerStemIIlength - bulge, end - lowerStenIIlength - bulge - upperstemIIlength)
+                            modifiedSequence += job.SnakeSequence.Substring(job.LowerStemIILength.Value + job.BulgeLength.Value, job.UpperStemIILength.Value);
+
+                            //add loop not part of snake to sequence
+                            modifiedSequence += new String(
+                                'N',
+                                job.LowerStemIILength.Value +
+                                job.BulgeLength.Value +
+                                job.UpperStemIILength.Value +
+                                job.LoopLength.Value -
+                                job.SnakeSequence.Length);
+
+                            char[] reverseArray = job.SnakeSequence.ToCharArray();
+                            Array.Reverse(reverseArray);
+
+                            string complementSnake = new string(reverseArray);
+
+                            for (int i = 0; i < complementSnake.Length; i++)
+                            {
+                                char currentChar = complementSnake[i];
+
+                                if (currentChar == 'A')
+                                    complementSnake = complementSnake.Remove(i, 1).Insert(i, "U");
+                                else if (currentChar == 'C')
+                                    complementSnake = complementSnake.Remove(i, 1).Insert(i, "G");
+                                else if (currentChar == 'G')
+                                    complementSnake = complementSnake.Remove(i, 1).Insert(i, "C");
+                                else if (currentChar == 'U')
+                                    complementSnake = complementSnake.Remove(i, 1).Insert(i, "A");
+                            }
+
+                            modifiedSequence += complementSnake;
+
+
+                            //add complement of snake(end - lowerStenIIlength - bulge - upperstemIIlength, beginning) to sequence
+
+                            /*modifiedSequence += new String(
+                                'N',
+                                2 * job.LowerStemIILength.Value +
+                                2 * job.BulgeLength.Value +
+                                2 * job.UpperStemIILength.Value +
+                                job.LoopLength.Value -
+                                job.SnakeSequence.Length);
+
+                            string complementSnake = job.SnakeSequence;
+
+                            for (int i = 0; i < complementSnake.Length; i++)
+                            {
+                                char currentChar = complementSnake[i];
+
+                                if (currentChar == 'A')
+                                    complementSnake = complementSnake.Remove(i, 1).Insert(i, "U");
+                                else if (currentChar == 'C')
+                                    complementSnake = complementSnake.Remove(i, 1).Insert(i, "G");
+                                else if (currentChar == 'G')
+                                    complementSnake = complementSnake.Remove(i, 1).Insert(i, "C");
+                                else if (currentChar == 'U')
+                                    complementSnake = complementSnake.Remove(i, 1).Insert(i, "A");
+                            }
+
+                            modifiedSequence += complementSnake;
+                            */
+
+                            modifiedStructure +=
+                                new String('(', job.LowerStemIILength.Value) +
+                                new String('.', job.BulgeLength.Value) +
+                                new String('(', job.UpperStemIILength.Value) +
+                                new String('.', job.LoopLength.Value) +
+                                new String(')', job.UpperStemIILength.Value) +
+                                new String('.', job.BulgeLength.Value) +
+                                new String(')', job.LowerStemIILength.Value);
+
+                            int endOfStemIIPosition = 
+                                startSearchStringPosition +
+                                startSearchStringLength +
+                                2 * job.LowerStemIILength.Value +
+                                2 * job.BulgeLength.Value +
+                                2 * job.UpperStemIILength.Value +
+                                job.LoopLength.Value;
+
+                            modifiedSequence += ribozymeStructure.Sequence.Substring(endSearchStringPosition);
+                            modifiedStructure += ribozymeStructure.Structure.Substring(endSearchStringPosition);
+
+                            candidates = candidateGenerator.GenerateCandidates(
+                                modifiedSequence,
+                                modifiedStructure,
+                                ribozymeStructure.SubstrateTemplate,
+                                ribozymeStructure.SubstrateStructure,
+                                rnaInput);
+                        }
                     }
                     catch (CandidateGeneration.CandidateGenerationException e)
                     {
@@ -269,8 +381,12 @@ namespace Ribosoft.Jobs
                         uint batchCount = 0;
                         _db.ChangeTracker.AutoDetectChangesEnabled = false;
 
+                        int testingAnk = 0;
+
                         foreach (var candidate in candidates)
                         {
+                            testingAnk++;
+
                             cancellationToken.ThrowIfCancellationRequested();
                             RunScoreAlgorithms(candidate, job, ribozymeStructure);
 

@@ -93,6 +93,56 @@
             </div>
         </div>
 
+        <!-- Regions for Dr. Kharma -->
+        <div class="my-3 p-3 bg-white rounded box-shadow">
+            <h6 class="border-bottom border-gray pb-2">Dr. Kharma</h6>
+            <div class="form-row mb-2">
+                <label asp-for="SnakeSequence"></label>
+                <input asp-for="SnakeSequence" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("SnakeSequence")">
+                <span asp-validation-for="SnakeSequence" class="invalid-feedback"></span>
+            </div>
+
+            <div class="form-row mb-2">
+                <div class="form-group col-md-6 mb-0">
+                    <label asp-for="StemITemperature"></label>
+                    <input asp-for="StemITemperature" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("StemITemperature")">
+                    <span asp-validation-for="StemITemperature" class="invalid-feedback"></span>
+                </div>
+
+                <div class="form-group col-md-6 mb-0">
+                    <label asp-for="StemIIITemperature"></label>
+                    <input asp-for="StemIIITemperature" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("StemIIITemperature")">
+                    <span asp-validation-for="StemIIITemperature" class="invalid-feedback"></span>
+                </div>
+            </div>
+
+            <div class="form-row mb-2">
+                <div class="form-group col-md-3 mb-0">
+                    <label asp-for="LowerStemIILength"></label>
+                    <input asp-for="LowerStemIILength" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("LowerStemIILength")">
+                    <span asp-validation-for="LowerStemIILength" class="invalid-feedback"></span>
+                </div>
+
+                <div class="form-group col-md-3 mb-0">
+                    <label asp-for="BulgeLength"></label>
+                    <input asp-for="BulgeLength" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("BulgeLength")">
+                    <span asp-validation-for="BulgeLength" class="invalid-feedback"></span>
+                </div>
+
+                <div class="form-group col-md-3 mb-0">
+                    <label asp-for="UpperStemIILength"></label>
+                    <input asp-for="UpperStemIILength" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("UpperStemIILength")">
+                    <span asp-validation-for="UpperStemIILength" class="invalid-feedback"></span>
+                </div>
+
+                <div class="form-group col-md-3 mb-0">
+                    <label asp-for="LoopLength"></label>
+                    <input asp-for="LoopLength" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("LoopLength")">
+                    <span asp-validation-for="LoopLength" class="invalid-feedback"></span>
+                </div>
+            </div>
+        </div>
+
         <!-- Regions for Target Design -->
         <div class="my-3 p-3 bg-white rounded box-shadow">
             <div class="clearfix border-bottom border-gray mb-2">
@@ -105,8 +155,8 @@
                     <div class="form-check form-check-inline">
                         <input type="checkbox" class="form-check-input" asp-for="@Model.TargetRegions[i].Selected">
                         <label class="form-check-label" asp-for="@Model.TargetRegions[i].Selected">@Model.TargetRegions[i].Name</label>
-                        <input type="hidden" asp-for="@Model.TargetRegions[i].Id"/>
-                        <input type="hidden" asp-for="@Model.TargetRegions[i].Name"/>
+                        <input type="hidden" asp-for="@Model.TargetRegions[i].Id" />
+                        <input type="hidden" asp-for="@Model.TargetRegions[i].Name" />
                     </div>
                 }
                 <span asp-validation-for="TargetRegions" class="text-danger"></span>
@@ -123,7 +173,7 @@
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" asp-for="SelectedTargetEnvironment" type="radio" value="@item.Value" v-on:change="targetEnvironment" id="targetEnvironment@(item.Value)">
                         <label class="form-check-label" for="targetEnvironment@(item.Value)">@item.Name</label>
-                    </div> 
+                    </div>
                 }
                 <span asp-validation-for="SelectedTargetEnvironment" class="text-danger"></span>
             </div>
@@ -147,7 +197,7 @@
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" asp-for="SelectedSpecificityMethod" type="radio" value="@item.Value" id="specificity@(item.Value)">
                         <label class="form-check-label" for="specificity@(item.Value)">@item.Name</label>
-                    </div> 
+                    </div>
                 }
                 <span asp-validation-for="SelectedSpecificityMethod" class="text-danger"></span>
                 <span data-toggle="tooltip" data-placement="right" title="@Localizer["SpecificityTooltip"]"><i class="fas fa-question-circle text-info"></i></span>

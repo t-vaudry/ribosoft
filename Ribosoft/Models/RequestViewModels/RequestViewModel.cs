@@ -60,6 +60,57 @@ namespace Ribosoft.Models.RequestViewModels
         [Display(Name = "Open reading frame end index")]
         public int OpenReadingFrameEnd { get; set; }
 
+        [StringLength(30000)]
+        [RegularExpression(@"^['A','C','G','T','U','R','Y','K','M','S','W','B','D','H','V','N']+$",
+        ErrorMessage = "Sequence must only contain the following characters: A, C, G, T, U, R, Y, K, M, S, W, B, D, H, V, N")]
+        [DataType(DataType.Text)]
+        [Display(Name = "Snake sequence")]
+
+        public string SnakeSequence
+        {
+            get
+            {
+                return this.snakeSequence;
+            }
+            set
+            {
+                if (String.IsNullOrEmpty(value))
+                {
+                    this.snakeSequence = "";
+                }
+                else
+                {
+                    this.snakeSequence = value.Replace("\n", "").Replace("\r", "").ToUpper();
+                }
+            }
+        }
+        /*! \property inputSequence
+         * \brief Input RNA sequence
+         */
+        private string snakeSequence;
+
+        [Required]
+        [Range(-270.0f, 900.0f)]
+        [Display(Name = "Stem I Temperature (℃)")]
+        public float StemITemperature { get; set; }
+
+        [Required]
+        [Range(-270.0f, 900.0f)]
+        [Display(Name = "Stem III Temperature (℃)")]
+        public float StemIIITemperature { get; set; }
+
+        [Display(Name = "Lower StemII Length")]
+        public int LowerStemIILength { get; set; }
+
+        [Display(Name = "Bulge Length")]
+        public int BulgeLength { get; set; }
+
+        [Display(Name = "Upper StemII Length")]
+        public int UpperStemIILength { get; set; }
+
+        [Display(Name = "Loop Length")]
+        public int LoopLength { get; set; }
+
         /*! \property TargetRegions
          * \brief Array of target regions to cover in request
          */
