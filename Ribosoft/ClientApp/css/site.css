@@ -237,6 +237,10 @@ svg[data-prefix="fas"] {
     background-color: red;
 }
 
+.dot-green {
+    background-color: black;
+}
+
 .line {
     border-left: 6px solid;
     height: 25px;

@@ -64,15 +64,16 @@ namespace Ribosoft.Controllers
          * \param specificityScore Design specificity score
          * \param accessibilityScore Design accessibility score
          * \param structureScore Design structure score
+         * \param malformationScore Design malformation score
          * \param createdAt Design created at time
          * \param updatedAt Design updated at time
          * \param sequence Design ribozyme sequence
          * \return FASTA file
          */
-        public FileStreamResult DownloadDesign(string jobID, string rank, string desiredTemperatureScore, string highestTemperatureScore, string specificityScore, string accessibilityScore, string structureScore, string createdAt, string updatedAt, string sequence)
+        public FileStreamResult DownloadDesign(string jobID, string rank, string desiredTemperatureScore, string highestTemperatureScore, string specificityScore, string accessibilityScore, string structureScore, string malformationScore, string createdAt, string updatedAt, string sequence)
         {
             // TODO: Break up sequence into chunks of max line length
-            var payload = String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}", rank, desiredTemperatureScore, highestTemperatureScore, specificityScore, accessibilityScore, structureScore, createdAt, updatedAt, sequence);
+            var payload = String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | MalformationScore {6} |CreatedAt {7} | UpdatedAt {8}\n{9}", rank, desiredTemperatureScore, highestTemperatureScore, specificityScore, accessibilityScore, structureScore, malformationScore, createdAt, updatedAt, sequence);
 
             var byteArray = Encoding.ASCII.GetBytes(payload);
             var stream = new MemoryStream(byteArray);

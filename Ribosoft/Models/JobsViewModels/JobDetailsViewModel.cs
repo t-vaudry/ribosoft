@@ -65,6 +65,8 @@ namespace Ribosoft.Models.JobsViewModels
                         return "Specificity Score";
                     case "StructureScore":
                         return "Structure Score";
+                    case "MalformationScore":
+                        return "Malformation Score";
                     case "eq":
                         return "=";
                     case "ne":

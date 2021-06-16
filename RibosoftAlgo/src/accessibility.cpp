@@ -219,8 +219,8 @@ DLL_PUBLIC R_STATUS accessibility(const char* rna, const char* substrateSequence
     char* constraintMFEStructure = new char[length + 1];
     unsigned int constraint_options = VRNA_CONSTRAINT_DB_DEFAULT;
     vrna_fold_compound_t* constraintFoldCompound = vrna_fold_compound(subSequence, NULL, VRNA_OPTION_DEFAULT);
-    vrna_constraints_add(constraintFoldCompound, (const char *) constraints, constraint_options);
-    float constraintMFE = (float) vrna_mfe(constraintFoldCompound, constraintMFEStructure);
+    vrna_constraints_add(constraintFoldCompound, (const char *) constraints, constraint_options); //constraints applied here
+    float constraintMFE = (float) vrna_mfe(constraintFoldCompound, constraintMFEStructure); //actual fold here, returns value only, not the structure. 
 
     // Get absolute value of delta(MFE)
     delta = std::fabs(constraintMFE - defaultMFE);

@@ -269,13 +269,10 @@ namespace Ribosoft.Jobs
                             string modifiedSequence = ribozymeStructure.Sequence.Substring(0, startSearchStringPosition + startSearchStringLength);
                             string modifiedStructure = ribozymeStructure.Structure.Substring(0, startSearchStringPosition + startSearchStringLength);
 
-                            //add snake(end, end-lowerstemIIlength) to sequence
                             modifiedSequence += job.SnakeSequence.Substring(0, job.LowerStemIILength.Value);
 
-                            //add anything except snake(end - lowerStenIIlength, end - lowerStenIIlength - bulge) to sequence
                             modifiedSequence += job.SnakeSequence.Substring(job.LowerStemIILength.Value, job.BulgeLength.Value).Replace('A', 'B').Replace('C', 'D').Replace('G', 'H').Replace('U', 'V');
 
-                            //add snake(end - lowerStemIIlength - bulge, end - lowerStenIIlength - bulge - upperstemIIlength)
                             modifiedSequence += job.SnakeSequence.Substring(job.LowerStemIILength.Value + job.BulgeLength.Value, job.UpperStemIILength.Value);
 
                             //add loop not part of snake to sequence
@@ -308,36 +305,6 @@ namespace Ribosoft.Jobs
 
                             modifiedSequence += complementSnake;
 
-
-                            //add complement of snake(end - lowerStenIIlength - bulge - upperstemIIlength, beginning) to sequence
-
-                            /*modifiedSequence += new String(
-                                'N',
-                                2 * job.LowerStemIILength.Value +
-                                2 * job.BulgeLength.Value +
-                                2 * job.UpperStemIILength.Value +
-                                job.LoopLength.Value -
-                                job.SnakeSequence.Length);
-
-                            string complementSnake = job.SnakeSequence;
-
-                            for (int i = 0; i < complementSnake.Length; i++)
-                            {
-                                char currentChar = complementSnake[i];
-
-                                if (currentChar == 'A')
-                                    complementSnake = complementSnake.Remove(i, 1).Insert(i, "U");
-                                else if (currentChar == 'C')
-                                    complementSnake = complementSnake.Remove(i, 1).Insert(i, "G");
-                                else if (currentChar == 'G')
-                                    complementSnake = complementSnake.Remove(i, 1).Insert(i, "C");
-                                else if (currentChar == 'U')
-                                    complementSnake = complementSnake.Remove(i, 1).Insert(i, "A");
-                            }
-
-                            modifiedSequence += complementSnake;
-                            */
-
                             modifiedStructure +=
                                 new String('(', job.LowerStemIILength.Value) +
                                 new String('.', job.BulgeLength.Value) +
@@ -346,14 +313,6 @@ namespace Ribosoft.Jobs
                                 new String(')', job.UpperStemIILength.Value) +
                                 new String('.', job.BulgeLength.Value) +
                                 new String(')', job.LowerStemIILength.Value);
-
-                            int endOfStemIIPosition = 
-                                startSearchStringPosition +
-                                startSearchStringLength +
-                                2 * job.LowerStemIILength.Value +
-                                2 * job.BulgeLength.Value +
-                                2 * job.UpperStemIILength.Value +
-                                job.LoopLength.Value;
 
                             modifiedSequence += ribozymeStructure.Sequence.Substring(endSearchStringPosition);
                             modifiedStructure += ribozymeStructure.Structure.Substring(endSearchStringPosition);
@@ -438,6 +397,7 @@ namespace Ribosoft.Jobs
             job.HighestTempTolerance *= designs.Max(d => d.HighestTemperatureScore.GetValueOrDefault()) - designs.Min(d => d.HighestTemperatureScore.GetValueOrDefault());
             job.AccessibilityTolerance *= designs.Max(d => d.AccessibilityScore.GetValueOrDefault()) - designs.Min(d => d.AccessibilityScore.GetValueOrDefault());
             job.StructureTolerance *= designs.Max(d => d.StructureScore.GetValueOrDefault()) - designs.Min(d => d.StructureScore.GetValueOrDefault());
+            job.MalformationTolerance *= designs.Max(d => d.MalformationScore.GetValueOrDefault()) - designs.Min(d => d.MalformationScore.GetValueOrDefault());
 
             _db.ChangeTracker.AutoDetectChangesEnabled = true;
             _db.Jobs.Attach(job);
@@ -502,21 +462,59 @@ namespace Ribosoft.Jobs
 
             var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
                 ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset);
-            var structureScore = _ribosoftAlgo.Structure(candidate, ideal);
 
-            _db.Designs.Add(new Design
+            if (String.IsNullOrEmpty(job.SnakeSequence))
             {
-                JobId = job.Id,
+                string dummy = "";
+                var structureScore = _ribosoftAlgo.Structure(candidate, ideal, ref dummy);
 
-                Sequence = candidate.Sequence.GetString(),
-                CutsiteIndex = candidate.CutsiteIndices.First(),
-                SubstrateSequenceLength = candidate.SubstrateSequence.Length,
+                _db.Designs.Add(new Design
+                {
+                    JobId = job.Id,
 
-                AccessibilityScore = accessibilityScore,
-                StructureScore = structureScore,
-                HighestTemperatureScore = temperatureScore,
-                DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())
-            });
+                    Sequence = candidate.Sequence.GetString(),
+                    CutsiteIndex = candidate.CutsiteIndices.First(),
+                    SubstrateSequenceLength = candidate.SubstrateSequence.Length,
+
+                    AccessibilityScore = accessibilityScore,
+                    StructureScore = structureScore,
+                    HighestTemperatureScore = temperatureScore,
+                    DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())
+                });
+            }
+            else
+            {
+                string endSearchString = "GAAAC";
+                int endSearchStringPosition = candidate.Sequence.GetString().IndexOf(endSearchString);
+
+                string structureStructure = "";
+                var structureScore = _ribosoftAlgo.Structure(candidate, ideal, ref structureStructure);
+
+                string malformationStructure = "";
+                var malformationScore = _ribosoftAlgo.Malformation(
+                    candidate,
+                    ideal,
+                    ref malformationStructure,
+                    endSearchStringPosition - job.SnakeSequence.Length,
+                    job.SnakeSequence.Length);
+
+                _db.Designs.Add(new Design
+                {
+                    JobId = job.Id,
+
+                    Sequence = candidate.Sequence.GetString(),
+                    Structure = structureStructure,
+                    CutsiteIndex = candidate.CutsiteIndices.First(),
+                    SubstrateSequenceLength = candidate.SubstrateSequence.Length,
+
+                    AccessibilityScore = accessibilityScore,
+                    StructureScore = structureScore,
+                    MalformationScore = malformationScore,
+                    MalformationStructure = malformationStructure,
+                    HighestTemperatureScore = temperatureScore,
+                    DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())
+                });
+            }
         }
 
         /*! \fn MultiObjectiveOptimize

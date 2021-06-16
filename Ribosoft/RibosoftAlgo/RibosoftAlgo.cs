@@ -76,6 +76,16 @@ namespace Ribosoft
         [DllImport("RibosoftAlgo")]
         private static extern R_STATUS fold(string sequence, out IntPtr output, out int size);
 
+        /*! \fn snakefold
+         * \brief DllImport from RibosoftAlgo of snakefold
+         * \param sequence RNA sequence
+         * \param output Output pointer to the list of fold outputs
+         * \param size Out value of the size of the list
+         * \return status Status code
+         */
+        [DllImport("RibosoftAlgo")]
+        private static extern R_STATUS snakefold(string sequence, out IntPtr output, out int size, int startOfSnakeSequence, int snakeLength);
+
         /*! \fn fold_output_free
          * \brief DllImport from RibosoftAlgo of fold_output_free
          * \param output Pointer to fold output list
@@ -200,15 +210,44 @@ namespace Ribosoft
             return foldOutputs;
         }
 
+        /*! \fn SnakeFold
+         * \brief Algorithm function to fold an RNA sequence given a snake sequence
+         * \param sequence Sequence to be folded
+         * \return foldOutputs List of fold outputs, including the structure and its probability
+         */
+        public IList<FoldOutput> SnakeFold(string sequence, int startOfSnakeSequence, int snakeLength)
+        {
+            R_STATUS status = snakefold(sequence, out IntPtr outputPtr, out int size, startOfSnakeSequence, snakeLength);
+
+            if (status != R_STATUS.R_STATUS_OK)
+            {
+                throw new RibosoftAlgoException(status);
+            }
+
+            var currentPtr = outputPtr;
+            var foldOutputs = new FoldOutput[size];
+            var foldOutputSize = Marshal.SizeOf<FoldOutput>();
+
+            for (int i = 0; i < size; ++i, currentPtr += foldOutputSize)
+            {
+                foldOutputs[i] = Marshal.PtrToStructure<FoldOutput>(currentPtr);
+            }
+
+            fold_output_free(outputPtr, size);
+
+            return foldOutputs;
+        }
+
         /*! \fn Structure
          * \brief Algorithm function to determine the accuracy of the predicted structure to the ideal structure
          * \param candidate Candidate being evaluated
          * \param ideal Ideal ribozyme structure
          * \return structureScore Float evaluation score value
          */
-        public float Structure(Candidate candidate, string ideal)
+        public float Structure(Candidate candidate, string ideal, ref string structureStructure)
         {
             float structureScore = 0.0f;
+            float? bestStructureScore = null;
 
             var foldOutputs = Fold(candidate.Sequence.GetString());
 
@@ -221,10 +260,55 @@ namespace Ribosoft
                     throw new RibosoftAlgoException(status);
                 }
 
-                structureScore += distance * output.Probability;
+                float currentStructureScore = distance * output.Probability;
+
+                if (bestStructureScore == null || (currentStructureScore < bestStructureScore))
+                {
+                    bestStructureScore = currentStructureScore;
+                    structureStructure = output.Structure;
+                }
+
+                structureScore += currentStructureScore;
             }
 
             return structureScore;
+        }
+
+        /*! \fn Malformation
+         * \brief Algorithm function to determine the accuracy of the predicted structure to the ideal structure
+         * \param candidate Candidate being evaluated
+         * \param ideal Ideal ribozyme structure
+         * \return malformationScore Float evaluation score value
+         */
+        public float Malformation(Candidate candidate, string ideal, ref string malformationStructure, int startOfSnakeSequence, int snakeLength)
+        {
+            float malformationScore = 0.0f;
+            float? bestMalformationScore = null;
+
+            var foldOutputs = SnakeFold(candidate.Sequence.GetString(), startOfSnakeSequence, snakeLength);
+
+            foreach (var output in foldOutputs)
+            {
+                R_STATUS status = structure(output.Structure, ideal, out float distance);
+
+                if (status != R_STATUS.R_STATUS_OK)
+                {
+                    throw new RibosoftAlgoException(status);
+                }
+
+                float currentMalformationScore = -1 * distance * output.Probability;
+
+                if (bestMalformationScore == null || (currentMalformationScore < bestMalformationScore))
+                {
+                    bestMalformationScore = currentMalformationScore;
+                    malformationStructure = output.Structure;
+                }
+
+
+                malformationScore += currentMalformationScore;
+            }
+
+            return malformationScore;
         }
     }
 }

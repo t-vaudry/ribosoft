@@ -6,6 +6,7 @@ set(SOURCE_FILES
     anneal.cpp
     validation.cpp
     fold.cpp
+    snakefold.cpp
     structure.cpp
     accessibility.cpp
     )

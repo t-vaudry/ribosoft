@@ -212,6 +212,14 @@ namespace Ribosoft.Models.RequestViewModels
         [Display(Name = "Structure Tolerance")]
         public float StructureTolerance { get; set; }
 
+        /*! \property MalformationTolerance
+         * \brief Tolerance for malformation
+         */
+        [Required]
+        [Range(0.0f, 1.0f)]
+        [Display(Name = "Malformation Tolerance")]
+        public float MalformationTolerance { get; set; }
+
         /*! \property MaxRequests
          * \brief Maximum number of requests per user
          */
@@ -238,6 +246,7 @@ namespace Ribosoft.Models.RequestViewModels
             SpecificityTolerance = 0.05f;
             AccessibilityTolerance = 0.05f;
             StructureTolerance = 0.05f;
+            MalformationTolerance = 0.05f;
 
             TargetRegions = new[]
             {

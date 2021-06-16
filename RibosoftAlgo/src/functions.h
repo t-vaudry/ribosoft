@@ -56,6 +56,13 @@ extern "C" DLL_PUBLIC R_STATUS anneal(const char* sequence, const char* structur
  */
 extern "C" DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*out*/ size_t& size);
 
+/*! \fn snakefold
+ * \brief snakefold
+ * Fold function used to snakefold sequence with ViennaRNA
+ * @file snakefold.cpp
+ */
+extern "C" DLL_PUBLIC R_STATUS snakefold(const char* sequence, /*out*/ fold_output * &output, /*out*/ size_t & size, int startOfSnakeSequence, int snakeLength);
+
 /*! \fn fold_output_free
  * \brief fold_output_free
  * Function to free fold structure memory

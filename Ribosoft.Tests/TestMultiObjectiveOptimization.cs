@@ -18,12 +18,14 @@ namespace Ribosoft.Tests
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
                 StructureScore = 1.0f,
+                MalformationScore = 1.0f,
                 Job = new Job {
                     DesiredTempTolerance = 0.05f,
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 
@@ -34,13 +36,15 @@ namespace Ribosoft.Tests
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
                 StructureScore = 1.0f,
+                MalformationScore = 1.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 
@@ -68,13 +72,15 @@ namespace Ribosoft.Tests
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
                 StructureScore = 1.0f,
+                MalformationScore = 1.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 
@@ -85,13 +91,15 @@ namespace Ribosoft.Tests
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
                 StructureScore = 0.0f,
+                MalformationScore = 0.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 
@@ -119,13 +127,15 @@ namespace Ribosoft.Tests
                 DesiredTemperatureScore = 2.0f,
                 SpecificityScore = 2.0f,
                 StructureScore = 3.0f,
+                MalformationScore = 3.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 
@@ -136,13 +146,15 @@ namespace Ribosoft.Tests
                 DesiredTemperatureScore = 3.0f,
                 SpecificityScore = 2.0f,
                 StructureScore = 2.0f,
+                MalformationScore = 2.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 
@@ -153,13 +165,15 @@ namespace Ribosoft.Tests
                 DesiredTemperatureScore = 4.0f,
                 SpecificityScore = 3.0f,
                 StructureScore = 1.0f,
+                MalformationScore = 1.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 
@@ -170,13 +184,15 @@ namespace Ribosoft.Tests
                 DesiredTemperatureScore = 4.0f,
                 SpecificityScore = 3.0f,
                 StructureScore = 1.0f,
+                MalformationScore = 1.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 
@@ -187,13 +203,15 @@ namespace Ribosoft.Tests
                 DesiredTemperatureScore = 7.0f,
                 SpecificityScore = 1.0f,
                 StructureScore = 7.0f,
+                MalformationScore = 7.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 
@@ -227,13 +245,15 @@ namespace Ribosoft.Tests
                 DesiredTemperatureScore = 10.0f,
                 SpecificityScore = 10.0f,
                 StructureScore = 10.0f,
+                MalformationScore = 10.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 
@@ -244,13 +264,15 @@ namespace Ribosoft.Tests
                 DesiredTemperatureScore = 15.0f,
                 SpecificityScore = 15.0f,
                 StructureScore = 5.0f,
+                MalformationScore = 5.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 
@@ -261,13 +283,15 @@ namespace Ribosoft.Tests
                 DesiredTemperatureScore = 20.0f,
                 SpecificityScore = 5.0f,
                 StructureScore = 10.0f,
+                MalformationScore = 10.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 
@@ -297,13 +321,15 @@ namespace Ribosoft.Tests
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
                 StructureScore = 1.0f,
+                MalformationScore = 1.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 
@@ -314,13 +340,15 @@ namespace Ribosoft.Tests
                 DesiredTemperatureScore = 2.0f,
                 SpecificityScore = 2.0f,
                 StructureScore = 2.0f,
+                MalformationScore = 2.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 
@@ -348,13 +376,15 @@ namespace Ribosoft.Tests
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
                 StructureScore = 1.0f,
+                MalformationScore = 1.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 
@@ -365,13 +395,15 @@ namespace Ribosoft.Tests
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
                 StructureScore = 1.0f,
+                MalformationScore = 1.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 
@@ -385,7 +417,8 @@ namespace Ribosoft.Tests
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 
@@ -428,13 +461,15 @@ namespace Ribosoft.Tests
                 HighestTemperatureScore = 1.0f,
                 DesiredTemperatureScore = 1.0f,
                 StructureScore = 1.0f,
+                MalformationScore = 1.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 
@@ -445,13 +480,15 @@ namespace Ribosoft.Tests
                 DesiredTemperatureScore = 2.0f,
                 SpecificityScore = 2.0f,
                 StructureScore = 2.0f,
+                MalformationScore = 2.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
                     HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
-                    StructureTolerance = 0.05f
+                    StructureTolerance = 0.05f,
+                    MalformationTolerance = 0.05f
                 }
             };
 

@@ -224,6 +224,12 @@ namespace Ribosoft.Models
         [Display(Name = "Structure Tolerance")]
         public float? StructureTolerance { get; set; }
 
+        /*! \property MalformationTolerance
+         * \brief Malformation Tolerance
+         */
+        [Display(Name = "Malformation Tolerance")]
+        public float? MalformationTolerance { get; set; }
+
         /*! \property Owner
          * \brief Application owner
          */

@@ -141,6 +141,14 @@
                                 <td>
                                     Backbone
                                 </td>
+                            <tr>
+                                <td>
+                                    <span class="dot dot-green" />
+                                </td>
+                                <td>
+                                    StemII
+                                </td>
+                            </tr>
                             </tr>
                         </tbody>
                     </table>
@@ -155,7 +163,7 @@
 @section scripts {
     <script type="text/javascript">
         $('button[id^="rna_ss"]').click(function () {
-            var container = new fornac.FornaContainer('#ribContainer', { 'applyForce': true, 'allowPanningAndZooming': false, 'labelInterval': 0 });
+            var container = new fornac.FornaContainer('#ribContainer', { 'applyForce': true, 'allowPanningAndZooming': true, 'labelInterval': 0 });
             var options = {
                 'structure': this.getAttribute('structure').replaceAll(/[a-z0-9]/ig, '(') + '&' + this.getAttribute('substructure').replaceAll(/[a-z0-9]/ig, ')'),
                 'sequence': this.getAttribute('sequence') + '&' + this.getAttribute('subsequence')
@@ -177,6 +185,18 @@
                 if (idx == cutsite || idx == cutsite + 1) {
                     $('circle[node_num="' + idx + '"]').get(seqLen > subLen ? 1 : 0).style.fill = 'red';
                 }
+            }
+
+            var startString = "CUGAUGA";
+            var lengthOfStart = startString.length;
+
+            var endString = "GAAAC";
+
+            var startOfStemII = this.getAttribute('sequence').indexOf(startString) + lengthOfStart;
+            var endOfStemII = this.getAttribute('sequence').indexOf(endString);
+
+            for (var idx = startOfStemII + 1; idx <= endOfStemII; idx++) {
+                $('circle[node_num="' + idx + '"]').get(0).style.fill = 'green';
             }
         });
     </script>

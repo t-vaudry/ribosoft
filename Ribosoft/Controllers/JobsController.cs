@@ -469,6 +469,7 @@ namespace Ribosoft.Controllers
             ViewBag.SpecSortParm = sortOrder == "spec_asc" ? "spec_desc" : "spec_asc";
             ViewBag.AccessSortParm = sortOrder == "access_asc" ? "access_desc" : "access_asc";
             ViewBag.StructSortParm = sortOrder == "struct_asc" ? "struct_desc" : "struct_asc";
+            ViewBag.MalforSortParm = sortOrder == "malfor_asc" ? "malfor_desc" : "malfor_asc";
             ViewBag.RankSortParm = sortOrder == "rank_asc" ? "rank_desc" : "rank_asc";
         }
 
@@ -510,6 +511,12 @@ namespace Ribosoft.Controllers
                     break;
                 case "struct_asc":
                     designs = designs.OrderBy(d => d.StructureScore);
+                    break;
+                case "malfor_desc":
+                    designs = designs.OrderByDescending(d => d.MalformationScore);
+                    break;
+                case "malfor_asc":
+                    designs = designs.OrderBy(d => d.MalformationScore);
                     break;
                 case "rank_desc":
                     designs = designs.OrderByDescending(d => d.Rank);
@@ -579,6 +586,9 @@ namespace Ribosoft.Controllers
                 case "StructureScore":
                     designs = designs.Where(d => d.StructureScore > filterValue);
                     break;
+                case "MalformationScore":
+                    designs = designs.Where(d => d.MalformationScore > filterValue);
+                    break;
                 default:
                     break;
             }
@@ -611,6 +621,9 @@ namespace Ribosoft.Controllers
                     break;
                 case "StructureScore":
                     designs = designs.Where(d => d.StructureScore < filterValue);
+                    break;
+                case "MalformationScore":
+                    designs = designs.Where(d => d.MalformationScore < filterValue);
                     break;
                 default:
                     break;
@@ -646,6 +659,9 @@ namespace Ribosoft.Controllers
                 case "StructureScore":
                     designs = designs.Where(d => d.StructureScore >= filterValue && d.StructureScore < upperBound);
                     break;
+                case "MalformationScore":
+                    designs = designs.Where(d => d.MalformationScore >= filterValue && d.MalformationScore < upperBound);
+                    break;
                 default:
                     break;
             }
@@ -680,6 +696,9 @@ namespace Ribosoft.Controllers
                 case "StructureScore":
                     designs = designs.Where(d => d.StructureScore < filterValue || d.StructureScore > upperBound);
                     break;
+                case "MalformationScore":
+                    designs = designs.Where(d => d.MalformationScore < filterValue || d.MalformationScore > upperBound);
+                    break;
                 default:
                     break;
             }
@@ -702,13 +721,13 @@ namespace Ribosoft.Controllers
             switch (format)
             {
                 case "csv":
-                    payload += String.Format("Rank,DesiredTemperatureScore,HighestTemperatureScore,SpecificityScore,AccessibilityScore,StructureScore,CreatedAt,UpdatedAt,Sequence\n");
+                    payload += String.Format("Rank,DesiredTemperatureScore,HighestTemperatureScore,SpecificityScore,AccessibilityScore,StructureScore,MalformationScore,CreatedAt,UpdatedAt,Sequence\n");
                     extension = "csv";
                     foreach (Design d in designs)
                     {
                         if (obj == null || obj.ContainsKey(d.JobId.ToString() + '-' + d.Id.ToString()))
                         {
-                            payload += String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
+                            payload += String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.MalformationScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
                         }
                     }
                     type = "application/csv";
@@ -737,7 +756,7 @@ namespace Ribosoft.Controllers
                     {
                         if (obj == null || obj.ContainsKey(d.JobId.ToString() + '-' + d.Id.ToString()))
                         {
-                            payload += String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
+                            payload += String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | MalformationScore {6} |CreatedAt {7} | UpdatedAt {8}\n{9}\n\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.MalformationScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
                         }
                     }
                     type = "text/plain";
@@ -763,7 +782,7 @@ namespace Ribosoft.Controllers
             newEntry.DateTime = DateTime.Now;
 
             zipStream.PutNextEntry(newEntry);
-            byteArray = Encoding.ASCII.GetBytes(String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence));
+            byteArray = Encoding.ASCII.GetBytes(String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | MalformationScore {6} |CreatedAt {7} | UpdatedAt {8}\n{9}\n\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.MalformationScore, d.CreatedAt, d.UpdatedAt, d.Sequence));
 
             MemoryStream inStream = new MemoryStream(byteArray);
             StreamUtils.Copy(inStream, zipStream, new byte[4096]);

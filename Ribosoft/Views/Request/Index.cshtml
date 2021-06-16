@@ -255,6 +255,11 @@
                     <input asp-for="StructureTolerance" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("StructureTolerance")">
                     <span asp-validation-for="StructureTolerance" class="invalid-feedback"></span>
                 </div>
+                <div class="form-group">
+                    <label asp-for="MalformationTolerance"></label>
+                    <input asp-for="MalformationTolerance" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("MalformationTolerance")">
+                    <span asp-validation-for="MalformationTolerance" class="invalid-feedback"></span>
+                </div>
             </div>
         </div>
 

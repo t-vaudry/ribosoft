@@ -58,7 +58,7 @@ namespace ribosoft {
 #define EPSILON 0.000001 //!< Epsilon to determine if equal to zero
 
 /*!
- * \brief Fold
+ * \brief SnakeFold
  * Used to fold the RNA sequence and provide the probabilities
  * of each fold in the distribution. Folding is done using ViennaRNA
  *
@@ -72,7 +72,7 @@ namespace ribosoft {
  * \param size Out variable for the size of the fold_output
  * \return Status Code
  */
-DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*out*/ size_t& size)
+DLL_PUBLIC R_STATUS snakefold(const char* sequence, /*out*/ fold_output*& output, /*out*/ size_t& size, int startOfSnakeSequence, int snakeLength)
 {
     // validate input sequence
     R_STATUS status = validate_sequence(sequence);
@@ -82,9 +82,19 @@ DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*o
 
     size_t length = strlen(sequence);
 
+    char* constraints = new char[length + 1];
+    memset(constraints, '.', length);
+
+    for (idx_t i = startOfSnakeSequence; i < startOfSnakeSequence + snakeLength; ++i) {
+        constraints[i] = 'x';
+    }
+
+    constraints[length] = '\0';
+
     // get a vrna_fold_compound with default settings
     vrna_fold_compound_t *vc = vrna_fold_compound(sequence, NULL, VRNA_OPTION_DEFAULT);
-    //can add constraints here, like in accessibility.cpp
+    unsigned int constraint_options = VRNA_CONSTRAINT_DB_DEFAULT;
+    vrna_constraints_add(vc, (const char*)constraints, constraint_options);
 
     // fold with suboptimal structures
     // TODO: consider passing energy range from user input
@@ -126,26 +136,6 @@ DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*o
     free(pf_struc);
 
     return R_SUCCESS::R_STATUS_OK;
-}
-
-/*!
- * \brief Free memory from fold outputs
- * Used to free the memory from the fold structure
- *
- ***************************************************************************************
- * @param output Fold structure to be freed
- * @param size Size of the output
- */
-DLL_PUBLIC void fold_output_free(fold_output* output, size_t size)
-{
-    if (output) {
-        for (int i = 0; i < size; ++i) {
-            delete[] output[i].structure;
-            output[i].structure = nullptr;
-        }
-
-        delete[] output;
-    }
 }
 
 }

@@ -98,6 +98,9 @@ namespace Ribosoft.Tests
 
             filter.param = "StructureScore";
             Assert.Equal("{{0}  \"field\": {{0}    \"label\": \"Structure Score\",{0}    \"value\": \"StructureScore\"{0}  },{0}  \"operator\": {{0}    \"label\": \"\",{0}    \"value\": \"\"{0}  },{0}  \"value\": {{0}    \"label\": \"1\",{0}    \"value\": \"1\"{0}  }{0}}".Replace("{0}", le), filter.GetJson());
+
+            filter.param = "MalformationScore";
+            Assert.Equal("{{0}  \"field\": {{0}    \"label\": \"Malformation Score\",{0}    \"value\": \"MalformationScore\"{0}  },{0}  \"operator\": {{0}    \"label\": \"\",{0}    \"value\": \"\"{0}  },{0}  \"value\": {{0}    \"label\": \"1\",{0}    \"value\": \"1\"{0}  }{0}}".Replace("{0}", le), filter.GetJson());
         }
 
         [Fact]

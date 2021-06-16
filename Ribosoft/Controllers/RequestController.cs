@@ -103,6 +103,7 @@ namespace Ribosoft.Controllers
                 job.SpecificityTolerance = model.SpecificityTolerance;
                 job.AccessibilityTolerance = model.AccessibilityTolerance;
                 job.StructureTolerance = model.StructureTolerance;
+                job.MalformationTolerance = model.MalformationTolerance;
                 job.FivePrime = model.TargetRegions.Any(tr => tr.Id == 1 && tr.Selected);
                 job.OpenReadingFrame = model.TargetRegions.Any(tr => tr.Id == 2 && tr.Selected);
                 job.ThreePrime = model.TargetRegions.Any(tr => tr.Id == 3 && tr.Selected);
