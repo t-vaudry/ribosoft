@@ -179,12 +179,6 @@ namespace Ribosoft.Models
         [Display(Name = "Desired Temperature Tolerance")]
         public float? DesiredTempTolerance { get; set; }
 
-        /*! \property HighestTempTolerance
-         * \brief Highest Temperature Tolerance
-         */
-        [Display(Name = "Highest Temperature Tolerance")]
-        public float? HighestTempTolerance { get; set; }
-
         /*! \property SpecificityTolerance
          * \brief Specificity Tolerance
          */

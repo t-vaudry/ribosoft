@@ -14,13 +14,11 @@ namespace Ribosoft.Tests
 
             Design one = new Design {
                 AccessibilityScore = 1.0f,
-                HighestTemperatureScore = 1.0f,
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
                 StructureScore = 1.0f,
                 Job = new Job {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
@@ -30,14 +28,12 @@ namespace Ribosoft.Tests
             Design two = new Design
             {
                 AccessibilityScore = 1.0f,
-                HighestTemperatureScore = 1.0f,
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
                 StructureScore = 1.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
@@ -64,14 +60,12 @@ namespace Ribosoft.Tests
             Design one = new Design
             {
                 AccessibilityScore = 1.0f,
-                HighestTemperatureScore = 10.0f,
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
                 StructureScore = 1.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
@@ -81,14 +75,12 @@ namespace Ribosoft.Tests
             Design two = new Design
             {
                 AccessibilityScore = 1.0f,
-                HighestTemperatureScore = 1.0f,
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
                 StructureScore = 0.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
@@ -115,14 +107,12 @@ namespace Ribosoft.Tests
             Design one = new Design
             {
                 AccessibilityScore = 3.0f,
-                HighestTemperatureScore = 10.0f,
                 DesiredTemperatureScore = 2.0f,
                 SpecificityScore = 2.0f,
                 StructureScore = 3.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
@@ -132,14 +122,12 @@ namespace Ribosoft.Tests
             Design two = new Design
             {
                 AccessibilityScore = 2.0f,
-                HighestTemperatureScore = 9.0f,
                 DesiredTemperatureScore = 3.0f,
                 SpecificityScore = 2.0f,
                 StructureScore = 2.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
@@ -149,14 +137,12 @@ namespace Ribosoft.Tests
             Design three = new Design
             {
                 AccessibilityScore = 1.0f,
-                HighestTemperatureScore = 8.0f,
                 DesiredTemperatureScore = 4.0f,
                 SpecificityScore = 3.0f,
                 StructureScore = 1.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
@@ -166,14 +152,12 @@ namespace Ribosoft.Tests
             Design four = new Design
             {
                 AccessibilityScore = 1.0f,
-                HighestTemperatureScore = 8.0f,
                 DesiredTemperatureScore = 4.0f,
                 SpecificityScore = 3.0f,
                 StructureScore = 1.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
@@ -183,14 +167,12 @@ namespace Ribosoft.Tests
             Design five = new Design
             {
                 AccessibilityScore = 7.0f,
-                HighestTemperatureScore = 4.0f,
                 DesiredTemperatureScore = 7.0f,
                 SpecificityScore = 1.0f,
                 StructureScore = 7.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
@@ -223,14 +205,12 @@ namespace Ribosoft.Tests
             Design one = new Design
             {
                 AccessibilityScore = 10.0f,
-                HighestTemperatureScore = 10.0f,
                 DesiredTemperatureScore = 10.0f,
                 SpecificityScore = 10.0f,
                 StructureScore = 10.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
@@ -240,14 +220,12 @@ namespace Ribosoft.Tests
             Design two = new Design
             {
                 AccessibilityScore = 15.0f,
-                HighestTemperatureScore = 15.0f,
                 DesiredTemperatureScore = 15.0f,
                 SpecificityScore = 15.0f,
                 StructureScore = 5.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
@@ -257,14 +235,12 @@ namespace Ribosoft.Tests
             Design three = new Design
             {
                 AccessibilityScore = 5.0f,
-                HighestTemperatureScore = 12.05f,
                 DesiredTemperatureScore = 20.0f,
                 SpecificityScore = 5.0f,
                 StructureScore = 10.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
@@ -293,14 +269,12 @@ namespace Ribosoft.Tests
             Design one = new Design
             {
                 AccessibilityScore = 1.0f,
-                HighestTemperatureScore = 1.0f,
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
                 StructureScore = 1.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
@@ -310,14 +284,12 @@ namespace Ribosoft.Tests
             Design two = new Design
             {
                 AccessibilityScore = 2.0f,
-                HighestTemperatureScore = 0.0f,
                 DesiredTemperatureScore = 2.0f,
                 SpecificityScore = 2.0f,
                 StructureScore = 2.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
@@ -344,14 +316,12 @@ namespace Ribosoft.Tests
             Design one = new Design
             {
                 AccessibilityScore = 1.0f,
-                HighestTemperatureScore = 1.0f,
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
                 StructureScore = 1.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
@@ -361,14 +331,12 @@ namespace Ribosoft.Tests
             Design two = new Design
             {
                 AccessibilityScore = 1.0f,
-                HighestTemperatureScore = 1.0f,
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
                 StructureScore = 1.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
@@ -378,11 +346,9 @@ namespace Ribosoft.Tests
             Design three = new Design
             {
                 AccessibilityScore = 1.0f,
-                HighestTemperatureScore = 1.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
@@ -425,13 +391,11 @@ namespace Ribosoft.Tests
             Design one = new Design
             {
                 AccessibilityScore = 1.0f,
-                HighestTemperatureScore = 1.0f,
                 DesiredTemperatureScore = 1.0f,
                 StructureScore = 1.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
@@ -441,14 +405,12 @@ namespace Ribosoft.Tests
             Design two = new Design
             {
                 AccessibilityScore = 2.0f,
-                HighestTemperatureScore = 0.0f,
                 DesiredTemperatureScore = 2.0f,
                 SpecificityScore = 2.0f,
                 StructureScore = 2.0f,
                 Job = new Job
                 {
                     DesiredTempTolerance = 0.05f,
-                    HighestTempTolerance = 0.05f,
                     SpecificityTolerance = 0.05f,
                     AccessibilityTolerance = 0.05f,
                     StructureTolerance = 0.05f
