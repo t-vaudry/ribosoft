@@ -465,7 +465,6 @@ namespace Ribosoft.Controllers
         private void SetSortParams(string sortOrder)
         {
             ViewBag.DesTempSortParm = sortOrder == "destemp_asc" ? "destemp_desc" : "destemp_asc";
-            ViewBag.HiTempSortParm = sortOrder == "hitemp_asc" ? "hitemp_desc" : "hitemp_asc";
             ViewBag.SpecSortParm = sortOrder == "spec_asc" ? "spec_desc" : "spec_asc";
             ViewBag.AccessSortParm = sortOrder == "access_asc" ? "access_desc" : "access_asc";
             ViewBag.StructSortParm = sortOrder == "struct_asc" ? "struct_desc" : "struct_asc";
