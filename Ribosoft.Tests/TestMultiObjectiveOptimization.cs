@@ -59,7 +59,7 @@ namespace Ribosoft.Tests
 
             Design one = new Design
             {
-                AccessibilityScore = 1.0f,
+                AccessibilityScore = 0.0f,
                 DesiredTemperatureScore = 1.0f,
                 SpecificityScore = 1.0f,
                 StructureScore = 1.0f,
