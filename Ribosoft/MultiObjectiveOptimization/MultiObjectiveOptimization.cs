@@ -146,7 +146,7 @@ namespace Ribosoft.MultiObjectiveOptimization
             // If all candidates are dominated, rank them all equally
             if (frontCandidates.Any())
             {
-                // If the number of initial candidates and the number of fron candidates are the same, we have a circular "rank" (A beats B beats C beats A)
+                // If the number of initial candidates and the number of front candidates are the same, we have a circular "rank" (A beats B beats C beats A)
                 // Assign them the same rank
                 if (candidates.Count() == frontCandidates.Count())
                 {
