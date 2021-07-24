@@ -99,7 +99,6 @@ namespace Ribosoft.Controllers
                 job.Na = model.Na;
                 job.Probe = model.Probe;
                 job.DesiredTempTolerance = model.DesiredTemperatureTolerance;
-                job.HighestTempTolerance = model.HighestTemperatureTolerance;
                 job.SpecificityTolerance = model.SpecificityTolerance;
                 job.AccessibilityTolerance = model.AccessibilityTolerance;
                 job.StructureTolerance = model.StructureTolerance;

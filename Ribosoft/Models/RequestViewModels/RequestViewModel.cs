@@ -129,14 +129,6 @@ namespace Ribosoft.Models.RequestViewModels
         [Display(Name = "Desired Temperature Tolerance")]
         public float DesiredTemperatureTolerance { get; set; }
 
-        /*! \property HighestTemperatureTolerance
-         * \brief Tolerance for highest temperature
-         */
-        [Required]
-        [Range(0.0f, 1.0f)]
-        [Display(Name = "Highest Temperature Tolerance")]
-        public float HighestTemperatureTolerance { get; set; }
-
         /*! \property SpecificityTolerance
          * \brief Tolerance for specifity
          */
@@ -183,7 +175,6 @@ namespace Ribosoft.Models.RequestViewModels
             ExceededMaxRequests = false;
 
             DesiredTemperatureTolerance = 0.05f;
-            HighestTemperatureTolerance = 0.05f;
             SpecificityTolerance = 0.05f;
             AccessibilityTolerance = 0.05f;
             StructureTolerance = 0.05f;

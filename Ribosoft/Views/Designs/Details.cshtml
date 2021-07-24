@@ -35,12 +35,6 @@
                 @Html.DisplayFor(model => model.DesiredTemperatureScore)
             </dd>
             <dt class="col-md-3">
-                @Html.DisplayNameFor(model => model.HighestTemperatureScore)
-            </dt>
-            <dd class="col-md-9">
-                @Html.DisplayFor(model => model.HighestTemperatureScore)
-            </dd>
-            <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.SpecificityScore)
             </dt>
             <dd class="col-md-9">
@@ -62,7 +56,7 @@
                 Download
             </dt>
             <dd class="col-md-9">
-                @Html.ActionLink("FASTA File", "DownloadDesign", new {jobID = Model.JobId, rank = Model.Rank, desiredTemperatureScore = Model.DesiredTemperatureScore, highestTemperatureScore = Model.HighestTemperatureScore, specificityScore = Model.SpecificityScore, accessibilityScore = Model.AccessibilityScore, structureScore = Model.StructureScore, createdAt = Model.CreatedAt, updatedAt = Model.UpdatedAt, sequence = Model.Sequence}, new { @class = "btn btn-sm btn-primary"})
+                @Html.ActionLink("FASTA File", "DownloadDesign", new {jobID = Model.JobId, rank = Model.Rank, desiredTemperatureScore = Model.DesiredTemperatureScore, specificityScore = Model.SpecificityScore, accessibilityScore = Model.AccessibilityScore, structureScore = Model.StructureScore, createdAt = Model.CreatedAt, updatedAt = Model.UpdatedAt, sequence = Model.Sequence}, new { @class = "btn btn-sm btn-primary"})
             </dd>
         </dl>
     </div>
