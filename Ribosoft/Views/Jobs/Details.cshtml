@@ -132,12 +132,6 @@
                         @Html.DisplayFor(model => model.Job.DesiredTempTolerance)
                     </dd>
                     <dt class="col-md-4">
-                        @Html.DisplayNameFor(model => model.Job.HighestTempTolerance)
-                    </dt>
-                    <dd class="col-md-8">
-                        @Html.DisplayFor(model => model.Job.HighestTempTolerance)
-                    </dd>
-                    <dt class="col-md-4">
                         @Html.DisplayNameFor(model => model.Job.SpecificityTolerance)
                     </dt>
                     <dd class="col-md-8">
@@ -265,12 +259,6 @@
                                 </th>
                                 <th>
                                     <div class="d-flex align-items-center sortable">
-                                        @Html.DisplayNameFor(model => model.Designs.Data.First().HighestTemperatureScore)
-                                        <i id="hitempsort" class="fas fa-sort"></i>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="d-flex align-items-center sortable">
                                         @Html.DisplayNameFor(model => model.Designs.Data.First().SpecificityScore)
                                         <i id="specsort" class="fas fa-sort"></i>
                                     </div>
@@ -301,9 +289,6 @@
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.DesiredTemperatureScore)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.HighestTemperatureScore)
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.SpecificityScore)
@@ -375,10 +360,6 @@
                             <td>Desired temperature corresponds to the annealing temperature of the binding arms of the designed ribozyme to the input substrate, and how close it is to the desired temperature of the experiment.</td>
                         </tr>
                         <tr>
-                            <th scope="row">@Html.DisplayNameFor(model => model.Designs.Data.First().HighestTemperatureScore)</th>
-                            <td>Highest temperature corresponds to the annealing temperature of the binding arms of the designed ribozyme to the input substrate, and how high the temperature of the experiment can range.</td>
-                        </tr>
-                        <tr>
                             <th scope="row">@Html.DisplayNameFor(model => model.Designs.Data.First().SpecificityScore)</th>
                             <td>Ribozyme specificity evaluates the number of cut-site matches that occur in an in-vivo experiment. In other words, will the ribozyme be cleaving many other sequences in an in-vivo experiment, or has it been designed specifically enough to only focus on the targeted sequence.</td>
                         </tr>
@@ -433,7 +414,6 @@
             $("#filterOptions").structFilter({
                 fields: [
                     { id: "Rank", type: "number", label: "Rank" },
-                    { id: "HighestTemperatureScore", type: "number", label: "Highest Temperature Score" },
                     { id: "DesiredTemperatureScore", type: "number", label: "Desired Temperature Score" },
                     { id: "SpecificityScore", type: "number", label: "Specificity Score" },
                     { id: "AccessibilityScore", type: "number", label: "Accessibility Score" },

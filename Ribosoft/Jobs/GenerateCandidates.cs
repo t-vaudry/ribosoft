@@ -319,7 +319,6 @@ namespace Ribosoft.Jobs
             }
 
             job.DesiredTempTolerance *= designs.Max(d => d.DesiredTemperatureScore.GetValueOrDefault()) - designs.Min(d => d.DesiredTemperatureScore.GetValueOrDefault());
-            job.HighestTempTolerance *= designs.Max(d => d.HighestTemperatureScore.GetValueOrDefault()) - designs.Min(d => d.HighestTemperatureScore.GetValueOrDefault());
             job.AccessibilityTolerance *= designs.Max(d => d.AccessibilityScore.GetValueOrDefault()) - designs.Min(d => d.AccessibilityScore.GetValueOrDefault());
             job.StructureTolerance *= designs.Max(d => d.StructureScore.GetValueOrDefault()) - designs.Min(d => d.StructureScore.GetValueOrDefault());
 
@@ -379,10 +378,6 @@ namespace Ribosoft.Jobs
 
             var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
                 candidate.SubstrateStructure, job.Na.GetValueOrDefault(), job.Probe.GetValueOrDefault());
-            /*if (temperatureScore < 0.0f || temperatureScore > 100.0f)
-            {
-                continue;
-            }*/
 
             var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
                 ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset);
@@ -398,7 +393,6 @@ namespace Ribosoft.Jobs
 
                 AccessibilityScore = accessibilityScore,
                 StructureScore = structureScore,
-                HighestTemperatureScore = temperatureScore,
                 DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())
             });
         }

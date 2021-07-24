@@ -43,13 +43,6 @@ namespace Ribosoft.Models
         [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? DesiredTemperatureScore { get; set; }
 
-        /*! \property HighestTemperatureScore
-         * \brief Highest Temperature Score
-         */
-        [Display(Name = "Highest Temperature Score")]
-        [DisplayFormat(DataFormatString="{0:0.###}")]
-        public float? HighestTemperatureScore { get; set; }
-
         /*! \property SpecificityScore
          * \brief Specificity Score
          */
@@ -94,7 +87,6 @@ namespace Ribosoft.Models
         public virtual IEnumerable<OptimizeItem<float>> Comparables => new []
         {
             new OptimizeItem<float>(DesiredTemperatureScore.GetValueOrDefault(), OptimizeType.MIN, Job.DesiredTempTolerance.GetValueOrDefault()),
-            new OptimizeItem<float>(HighestTemperatureScore.GetValueOrDefault(), OptimizeType.MAX, Job.HighestTempTolerance.GetValueOrDefault()),
             new OptimizeItem<float>(SpecificityScore.GetValueOrDefault(), OptimizeType.MIN, Job.SpecificityTolerance.GetValueOrDefault()),
             new OptimizeItem<float>(AccessibilityScore.GetValueOrDefault(), OptimizeType.MIN, Job.AccessibilityTolerance.GetValueOrDefault()),
             new OptimizeItem<float>(StructureScore.GetValueOrDefault(), OptimizeType.MIN, Job.StructureTolerance.GetValueOrDefault())
