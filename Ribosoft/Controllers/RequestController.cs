@@ -109,6 +109,7 @@ namespace Ribosoft.Controllers
                 job.OpenReadingFrameEnd = model.OpenReadingFrameEnd;
                 job.OwnerId = user.Id;
                 job.JobState = JobState.New;
+                job.TargetTemperature = model.TargetTemperature;
 
                 if (model.SelectedTargetEnvironment == TargetEnvironment.InVivo && model.InVivoEnvironment.HasValue)
                 {

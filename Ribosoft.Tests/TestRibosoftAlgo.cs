@@ -88,7 +88,7 @@ namespace Ribosoft.Tests
             RibosoftAlgo sdc = new RibosoftAlgo();
             Candidate candidate = new Candidate();
 
-            float val = sdc.Anneal(candidate, "AAUUUCCCCGGGGG", "0123abxyzABXYZ", 1.0f, 0.05f);
+            float val = sdc.Anneal(candidate, "AAUUUCCCCGGGGG", "0123abxyzABXYZ", 1.0f, 0.05f, 37.0f);
             Assert.Equal(89.6045f, val);
         }
 
@@ -121,7 +121,7 @@ namespace Ribosoft.Tests
             RibosoftAlgo sdc = new RibosoftAlgo();
             Candidate candidate = new Candidate();
 
-            Assert.Throws<RibosoftAlgoException>(() => sdc.Anneal(candidate, "AAUUUCCHJSGGGG", "0123abxyzABXYZ", 1.0f, 0.05f));
+            Assert.Throws<RibosoftAlgoException>(() => sdc.Anneal(candidate, "AAUUUCCHJSGGGG", "0123abxyzABXYZ", 1.0f, 0.05f, 37.0f));
         }
 
         [Fact]
