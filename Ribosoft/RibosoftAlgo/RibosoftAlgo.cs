@@ -60,11 +60,12 @@ namespace Ribosoft
          * \param structure RNA structure
          * \param na_concentration Concentration of sodium
          * \param probe_concentration Concentration of probe
+         * \param target_temp Target temperature of binding arms
          * \param temp Out parameter for the evaluation score
          * \return status Status code
          */
         [DllImport("RibosoftAlgo")]
-        private static extern R_STATUS anneal(string sequence, string structure, float na_concentration, float probe_concentration, out float temp);
+        private static extern R_STATUS anneal(string sequence, string structure, float na_concentration, float probe_concentration, float target_temp, out float temp);
 
         /*! \fn fold
          * \brief DllImport from RibosoftAlgo of fold
@@ -154,13 +155,14 @@ namespace Ribosoft
          * \param structure Estimated structure of the ribozyme
          * \param naConcentration Concentration of sodium
          * \param probeConcentration Concentration of probe
+         * \param targetTemp Target temperature of binding arms
          * \return temperatureScore Float evaluation score value
          */
-        public float Anneal(Candidate candidate, string targetSequence, string structure, float naConcentration, float probeConcentration)
+        public float Anneal(Candidate candidate, string targetSequence, string structure, float naConcentration, float probeConcentration, float targetTemp)
         {
             float temperatureScore = 0.0f;
 
-            R_STATUS status = anneal(targetSequence, structure, naConcentration, probeConcentration, out float delta);
+            R_STATUS status = anneal(targetSequence, structure, naConcentration, probeConcentration, targetTemp, out float delta);
 
             if (status != R_STATUS.R_STATUS_OK)
             {

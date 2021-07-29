@@ -33,10 +33,11 @@ std::mutex melting_mutex; //!< Mutex to lock access to MELTING library
  * \param structure Substrate structure to determine binding regions
  * \param na_concentration Sodium (Na+) concentration (in moles)
  * \param probe_concentration Nucleic acid concentration in excess (in moles)
+ * \param target_temp Target temperature of binding arms
  * \param temp Out variable for annealing temperature score
  * \return Status Code
  */
-R_STATUS anneal(const char* sequence, const char* structure, const float na_concentration, const float probe_concentration, float& temp)
+R_STATUS anneal(const char* sequence, const char* structure, const float na_concentration, const float probe_concentration, const float target_temp, float& temp)
 {
     R_STATUS status;
 
@@ -78,10 +79,15 @@ R_STATUS anneal(const char* sequence, const char* structure, const float na_conc
     double temp_sum = 0.0;
 
     for (int i = 0; i < substrings.size(); i++) {
+        
+        // A arm length of 1 will cause melting to crash
+        if (substrings[i].length() != 1)
+        {
         // Calculate melting temperature
         // a lock is needed as melting's melting is not threadsafe
         std::lock_guard<std::mutex> lock(melting_mutex);
-        temp_sum += melting(substrings[i].c_str(), na_concentration, probe_concentration);
+        temp_sum += pow((abs(melting(substrings[i].c_str(), na_concentration, probe_concentration) - target_temp))/10, 3);
+        }
     }
 
     temp = static_cast<float>(temp_sum);
