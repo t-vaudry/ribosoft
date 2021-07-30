@@ -67,8 +67,8 @@ namespace Ribosoft.Models.RequestViewModels
         [Display(Name = "Target regions")]
         public TargetRegionViewModel[] TargetRegions { get; set; }
 
-        /*! \property Temperature
-         * \brief Temperature of request
+        /*! \property TargetTemperature
+         * \brief Target temperature of request
          */
         [Required]
         [Range(-270.0f, 900.0f)]
