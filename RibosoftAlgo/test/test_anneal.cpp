@@ -102,5 +102,6 @@ TEST_CASE("invalid arm length of one", "[anneal]") {
     float temp;
     R_STATUS status = anneal(sequence, structure, na_concentration, probe_concentration, target_temp, temp);
 
-    REQUIRE(status == R_APPLICATION_ERROR::R_INVALID_ARM_LENGTH);
+    REQUIRE(status == R_SUCCESS::R_STATUS_OK);
+    REQUIRE(temp == 0.0f);
 }

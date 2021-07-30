@@ -98,14 +98,10 @@ R_STATUS anneal(const char* sequence, const char* structure, const float na_conc
             else
                 temp_sum += pow(difference, 2);
         }
-        else
-        {
-            status = R_APPLICATION_ERROR::R_INVALID_ARM_LENGTH;
-        }
     }
 
     temp = static_cast<float>(temp_sum);
-    return status;
+    return R_SUCCESS::R_STATUS_OK;
 }
 
 }
