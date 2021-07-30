@@ -160,18 +160,7 @@ namespace Ribosoft
          */
         public float Anneal(Candidate candidate, string targetSequence, string structure, float naConcentration, float probeConcentration, float targetTemp)
         {
-            string myTargetSequence = "AAUUUCCCCGGGGG";
-            string myStructure = "0123abxyzABXYZ";
-            float myNaConcentration = 1.0f;
-            float myProbeConcentration = 0.05f;
-            float myTargetTemp = 22.0f;
-            float myTemperatureScore = 0.0f;
-
             float temperatureScore = 0.0f;
-
-            R_STATUS myStatus = anneal(myTargetSequence, myStructure, myNaConcentration, myProbeConcentration, myTargetTemp, out float myDelta);
-
-            myTemperatureScore = myDelta;
 
             R_STATUS status = anneal(targetSequence, structure, naConcentration, probeConcentration, targetTemp, out float delta);
 
