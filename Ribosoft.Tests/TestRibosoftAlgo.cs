@@ -89,7 +89,7 @@ namespace Ribosoft.Tests
             Candidate candidate = new Candidate();
 
             float val = sdc.Anneal(candidate, "AAUUUCCCCGGGGG", "0123abxyzABXYZ", 1.0f, 0.05f, 22.0f);
-            Assert.Equal(89.6045f, val);
+            Assert.Equal(4570.36865f, val);
         }
 
         [Fact]
