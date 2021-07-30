@@ -78,9 +78,9 @@ R_STATUS anneal(const char* sequence, const char* structure, const float na_conc
     }
 
     double temp_sum = 0.0;
+    double difference = 0.0;
 
     for (int i = 0; i < substrings.size(); i++) {
-        
         // A arm length of 1 will cause melting to crash
         // Ignore that arm
         if (substrings[i].length() != 1)
@@ -88,15 +88,15 @@ R_STATUS anneal(const char* sequence, const char* structure, const float na_conc
             // Calculate melting temperature
             // a lock is needed as melting's melting is not threadsafe
             std::lock_guard<std::mutex> lock(melting_mutex);
-
+           
             // Linear score until 4 degrees centigrade of difference
             // Exponential score after that 
-            float difference = abs(melting(substrings[i].c_str(), na_concentration, probe_concentration) - target_temp);
+            difference = abs(melting(substrings[i].c_str(), na_concentration, probe_concentration) - target_temp);
 
             if (difference <= 4)
                 temp_sum += difference;
             else
-                temp_sum += pow((difference), 2);
+                temp_sum += pow(difference, 2);
         }
         else
         {

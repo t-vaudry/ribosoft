@@ -17,7 +17,7 @@ TEST_CASE("Simple check", "[anneal]") {
     R_STATUS status = anneal(sequence, structure, na_concentration, probe_concentration, target_temp, temp);
 
     REQUIRE(status == R_SUCCESS::R_STATUS_OK);
-    REQUIRE(fabs(temp - 90.47f) < DELTA);
+    REQUIRE(fabs(temp - 4687.91f) < DELTA);
 }
 
 TEST_CASE("simple sequence and structure", "[anneal]") {
@@ -30,7 +30,7 @@ TEST_CASE("simple sequence and structure", "[anneal]") {
     R_STATUS status = anneal(sequence, structure, na_concentration, probe_concentration, target_temp, temp);
 
     REQUIRE(status == R_SUCCESS::R_STATUS_OK);
-    REQUIRE(fabs(temp - 89.60f) < DELTA);
+    REQUIRE(fabs(temp - 4570.37f) < DELTA);
 }
 
 TEST_CASE("invalid (0) na concentration", "[anneal]") {
@@ -97,7 +97,7 @@ TEST_CASE("invalida arm length of one", "[anneal]") {
     const char* sequence = "A";
     const char* structure = "0";
     const float na_concentration = 1.0f;
-    const float proble_concentration = 0.05f;
+    const float probe_concentration = 0.05f;
     const float target_temp = 22.0f;
     float temp;
     R_STATUS status = anneal(sequence, structure, na_concentration, probe_concentration, target_temp, temp);
