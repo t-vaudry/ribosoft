@@ -93,7 +93,7 @@ TEST_CASE("mismatch between sequence and structure lengths", "[anneal]") {
     REQUIRE(status == R_APPLICATION_ERROR::R_STRUCT_LENGTH_DIFFER);
 }
 
-TEST_CASE("invalida arm length of one", "[anneal]") {
+TEST_CASE("invalid arm length of one", "[anneal]") {
     const char* sequence = "A";
     const char* structure = "0";
     const float na_concentration = 1.0f;
