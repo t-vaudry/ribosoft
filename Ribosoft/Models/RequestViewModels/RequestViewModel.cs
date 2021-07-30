@@ -176,7 +176,7 @@ namespace Ribosoft.Models.RequestViewModels
          */
         public RequestViewModel()
         {
-            TargetTemperature = 37.0f;
+            TargetTemperature = 22.0f;
             Temperature = 37.0f;
             Na = 100.0f;
             Probe = 0.05f;
