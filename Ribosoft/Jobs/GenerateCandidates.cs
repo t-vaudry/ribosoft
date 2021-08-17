@@ -258,7 +258,8 @@ namespace Ribosoft.Jobs
                         }
                         else
                         {
-                            string startSearchString = "CUGAUGA";
+                            // used to be CUGAUGA
+                            string startSearchString = "CUGANGA";
                             int startSearchStringPosition = ribozymeStructure.Sequence.IndexOf(startSearchString);
                             int startSearchStringLength = startSearchString.Length;
 
