@@ -101,7 +101,6 @@ namespace Ribosoft.Jobs
 
             await DoStage(job, JobState.Structure, j => j.JobState == JobState.CandidateGenerator, CalculateStructure, cancellationToken);
 
-
             // queue phase 2 job for in-vivo runs (blast)
             await DoStage(job, JobState.QueuedPhase2, j => j.JobState == JobState.Structure && j.TargetEnvironment == TargetEnvironment.InVivo, async (j, c) =>
                 {
