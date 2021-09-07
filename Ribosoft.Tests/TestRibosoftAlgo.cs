@@ -104,7 +104,7 @@ namespace Ribosoft.Tests
             designList.Add(design);
 
             sdc.Structure(designList);
-            Assert.Equal(1.0f, designList[1].StructureScore);
+            Assert.Equal(1.0f, designList[0].StructureScore);
         }
 
         [Fact]
