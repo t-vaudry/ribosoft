@@ -98,16 +98,19 @@ namespace Ribosoft.Jobs
 
             // run candidate generator
             await DoStage(job, JobState.CandidateGenerator, j => j.JobState == JobState.New, RunCandidateGenerator, cancellationToken);
-            
+
+            await DoStage(job, JobState.Structure, j => j.JobState == JobState.CandidateGenerator, CalculateStructure, cancellationToken);
+
+
             // queue phase 2 job for in-vivo runs (blast)
-            await DoStage(job, JobState.QueuedPhase2, j => j.JobState == JobState.CandidateGenerator && j.TargetEnvironment == TargetEnvironment.InVivo, async (j, c) =>
+            await DoStage(job, JobState.QueuedPhase2, j => j.JobState == JobState.Structure && j.TargetEnvironment == TargetEnvironment.InVivo, async (j, c) =>
                 {
                     BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase2(j.Id, c));
                     await Task.FromResult<object>(null);
                 }, cancellationToken);
             
             // queue phase 3 job for in-vitro runs, skipping phase 2 (MOO)
-            await DoStage(job, JobState.QueuedPhase3, j => j.JobState == JobState.CandidateGenerator && j.TargetEnvironment == TargetEnvironment.InVitro, async (j, c) =>
+            await DoStage(job, JobState.QueuedPhase3, j => j.JobState == JobState.Structure && j.TargetEnvironment == TargetEnvironment.InVitro, async (j, c) =>
             {
                 BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase3(j.Id, c));
                 await Task.FromResult<object>(null);
@@ -320,8 +323,7 @@ namespace Ribosoft.Jobs
 
             job.DesiredTempTolerance *= designs.Max(d => d.DesiredTemperatureScore.GetValueOrDefault()) - designs.Min(d => d.DesiredTemperatureScore.GetValueOrDefault());
             job.AccessibilityTolerance *= designs.Max(d => d.AccessibilityScore.GetValueOrDefault()) - designs.Min(d => d.AccessibilityScore.GetValueOrDefault());
-            job.StructureTolerance *= designs.Max(d => d.StructureScore.GetValueOrDefault()) - designs.Min(d => d.StructureScore.GetValueOrDefault());
-
+            
             _db.ChangeTracker.AutoDetectChangesEnabled = true;
             _db.Jobs.Attach(job);
             await _db.SaveChangesAsync();
@@ -381,20 +383,39 @@ namespace Ribosoft.Jobs
 
             var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
                 ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset);
-            var structureScore = _ribosoftAlgo.Structure(candidate, ideal);
 
             _db.Designs.Add(new Design
             {
                 JobId = job.Id,
 
                 Sequence = candidate.Sequence.GetString(),
+                IdealStructure = ideal,
                 CutsiteIndex = candidate.CutsiteIndices.First(),
                 SubstrateSequenceLength = candidate.SubstrateSequence.Length,
 
                 AccessibilityScore = accessibilityScore,
-                StructureScore = structureScore,
                 DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())
             });
+        }
+
+        /*! \fn CalculateStructure
+         * \brief Function used to calculate structure score
+         * Distance is normalized using scaling to a range based on the highest 
+         * distance between structure and ideal strucutre of all candidates
+         * \param job Job object
+         * \param cancellationToken Cancellation token
+         */
+        private async Task CalculateStructure(Job job, IJobCancellationToken cancellationToken)
+        {
+            IList<Design> designs = _db.Designs
+                             .Where(d => d.JobId == job.Id)
+                             .ToList();
+
+            _ribosoftAlgo.Structure(designs);
+
+
+            _db.Jobs.Attach(job);
+            await _db.SaveChangesAsync();
         }
 
         /*! \fn MultiObjectiveOptimize

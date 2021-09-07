@@ -29,6 +29,12 @@ namespace Ribosoft.Models
         [Display(Name = "Ribozyme Sequence")]
         public string Sequence { get; set; }
 
+        /*! \property IdealStructure
+         * \brief Ribozyme ideal structure
+         */
+        [Display(Name = "Ribozyme Ideal Structure")]
+        public string IdealStructure { get; set; }
+
         /*! \property Rank
          * \brief Ribozyme rank
          */

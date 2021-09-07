@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Ribosoft.Models;
 
 namespace Ribosoft
 {
@@ -202,29 +203,70 @@ namespace Ribosoft
 
         /*! \fn Structure
          * \brief Algorithm function to determine the accuracy of the predicted structure to the ideal structure
-         * \param candidate Candidate being evaluated
-         * \param ideal Ideal ribozyme structure
-         * \return structureScore Float evaluation score value
+         * \param designs Designs being evaluated
+         * \return void
          */
-        public float Structure(Candidate candidate, string ideal)
+        public void Structure(IList<Design> designs)
         {
-            float structureScore = 0.0f;
+            IList<IList<Tuple<float, float>>> structureResults = new List<IList<Tuple<float, float>>>();
 
-            var foldOutputs = Fold(candidate.Sequence.GetString());
+            IList<Tuple<float, float>> currentResults;
+            string idealStructure;
 
-            foreach (var output in foldOutputs)
+            // Store distance and probability for further use, once we have the max distance
+            foreach (var d in designs)
             {
-                R_STATUS status = structure(output.Structure, ideal, out float distance);
+                currentResults = new List<Tuple<float, float>>();
 
-                if (status != R_STATUS.R_STATUS_OK)
+                var foldOutputs = Fold(d.Sequence);
+
+                idealStructure = d.IdealStructure;
+
+                foreach (var output in foldOutputs)
                 {
-                    throw new RibosoftAlgoException(status);
+                    R_STATUS status = structure(output.Structure, idealStructure, out float distance);
+
+                    if (status != R_STATUS.R_STATUS_OK)
+                    {
+                        throw new RibosoftAlgoException(status);
+                    }
+
+                    currentResults.Add(new Tuple<float, float>(distance, output.Probability));
                 }
 
-                structureScore += distance * output.Probability;
+                structureResults.Add(currentResults);
             }
 
-            return structureScore;
+            float maxDistance = 0.0f;
+
+            // Get the max distance between fold and ideal structure
+            foreach (IList<Tuple<float, float>> results in structureResults)
+            {
+                foreach (Tuple<float, float> r in results)
+                {
+                    if (r.Item1 > maxDistance)
+                    {
+                        maxDistance = r.Item1;
+                    }
+                }
+            }
+
+            int currentPosition = 0;
+            float currentStructureScore;
+
+            // Calculate and save the structure score based on the following formula :  
+            // StructureScore = 1 - Σ((1 - distance/maxDistance) * propbability)
+            foreach (var d in designs)
+            {
+                currentStructureScore = 0.0f;
+
+                foreach (Tuple<float, float> foldResults in structureResults[currentPosition++])
+                {
+                    currentStructureScore += (1 - (foldResults.Item1 / maxDistance)) * foldResults.Item2;
+                }
+
+                d.StructureScore = 1 - currentStructureScore;
+            }
         }
     }
 }
