@@ -99,6 +99,7 @@ namespace Ribosoft.Jobs
             // run candidate generator
             await DoStage(job, JobState.CandidateGenerator, j => j.JobState == JobState.New, RunCandidateGenerator, cancellationToken);
 
+            // calculate structure score
             await DoStage(job, JobState.Structure, j => j.JobState == JobState.CandidateGenerator, CalculateStructure, cancellationToken);
 
             // queue phase 2 job for in-vivo runs (blast)
@@ -411,7 +412,6 @@ namespace Ribosoft.Jobs
                              .ToList();
 
             _ribosoftAlgo.Structure(designs);
-
 
             _db.Jobs.Attach(job);
             await _db.SaveChangesAsync();
