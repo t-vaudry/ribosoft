@@ -194,8 +194,8 @@ namespace Ribosoft.Models.RequestViewModels
 
             SpecificityMethods = new List<SpecificityMethodViewModel>
             {
-                new SpecificityMethodViewModel { Name = "Cleavage", Value = SpecificityMethod.CleavageOnly },
-                new SpecificityMethodViewModel { Name = "Cleavage and hybridization", Value = SpecificityMethod.CleavageAndHybridization }
+                new SpecificityMethodViewModel { Name = "Synthetic", Value = SpecificityMethod.Synthetic },
+                new SpecificityMethodViewModel { Name = "Wildtype", Value = SpecificityMethod.Wildtype }
             };
         }
     }
