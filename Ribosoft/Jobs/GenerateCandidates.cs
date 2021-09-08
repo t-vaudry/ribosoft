@@ -388,6 +388,7 @@ namespace Ribosoft.Jobs
                 JobId = job.Id,
 
                 Sequence = candidate.Sequence.GetString(),
+                SubstrateSequence = candidate.SubstrateSequence,
                 CutsiteIndex = candidate.CutsiteIndices.First(),
                 SubstrateSequenceLength = candidate.SubstrateSequence.Length,
 
@@ -438,18 +439,18 @@ namespace Ribosoft.Jobs
             	_logger.LogWarning("RibosoftWarning | BLAST Service is not available!!");
                 return;
             }
-            
+
             var designs = _db.Designs
                              .Where(d => d.JobId == job.Id)
                              .AsEnumerable()
-                             .GroupBy(d => new { d.CutsiteIndex, d.SubstrateSequenceLength });
+                             .GroupBy(d => new { d.CutsiteIndex, d.SubstrateSequence });
 
             foreach (var designGroup in designs)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var design = designGroup.First();
-                var substrateSequence = job.RNAInput.Substring(design.CutsiteIndex, design.SubstrateSequenceLength);
+                var substrateSequence = design.SubstrateSequence;
 
                 if (string.IsNullOrEmpty(substrateSequence))
                 {
@@ -458,29 +459,20 @@ namespace Ribosoft.Jobs
 
                 // calculate the substrate specificity score, which is common to all designs in this group
                 var substrateSpecificityScore = CalculateSpecificity(substrateSequence, job.Assembly.Path);
-                
-                if (job.SpecificityMethod == SpecificityMethod.CleavageAndHybridization)
+
+                foreach (var d in designGroup)
                 {
-                    // if we're doing hybridization specificity, also compute the score for the design sequence complement
-                    foreach (var d in designGroup)
-                    {
-                        d.SpecificityScore = substrateSpecificityScore + CalculateSpecificity(new Sequence(d.Sequence).GetComplement(), job.Assembly.Path);
-                    }
-                }
-                else
-                {
-                    // for cleavage-only specificity, only use the substrate specificity score
-                    foreach (var d in designGroup)
-                    {
-                        d.SpecificityScore = substrateSpecificityScore;
-                    }
+                    d.SpecificityScore = substrateSpecificityScore;
                 }
             }
 
-            // Specificity is minimized to 1
+            // Specificity is minimized to 1 in the case of a wildtype gene (a score of 0 is ideal for synthetic genes)
             // Anything below 1 means there is absolutely no matching in the organism and will not bond
             // Therefore, remove the design
-            _db.Designs.RemoveRange(_db.Designs.Where(d => d.SpecificityScore < 1.0f));
+            if (job.SpecificityMethod == SpecificityMethod.Wildtype)
+            {
+                _db.Designs.RemoveRange(_db.Designs.Where(d => d.SpecificityScore < 1.0f));
+            }
 
             var completedDesigns = _db.Designs.Where(d => d.JobId == job.Id);
 
