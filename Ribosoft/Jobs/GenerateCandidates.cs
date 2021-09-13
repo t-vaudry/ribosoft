@@ -365,7 +365,12 @@ namespace Ribosoft.Jobs
             }
         }
 
-        /*
+        /*! \fn RunScoreAlgorithms
+         * \brief Helper function to run score algorithms on candidates
+         * \param candidate Current candidate
+         * \param job Current job
+         * \param ribozymeStructure Current ribozyme structure
+         */
         private void RunScoreAlgorithms(Candidate candidate, Job job, RibozymeStructure ribozymeStructure)
         {
             var idealStructurePattern = new Regex(@"[^.^(^)]");
@@ -378,9 +383,6 @@ namespace Ribosoft.Jobs
 
             foreach (var cutsiteIndex in candidate.CutsiteIndices)
             {
-                if (cutsiteIndex + ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset < job.OpenReadingFrameStart ||
-                    cutsiteIndex + ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset > job.OpenReadingFrameEnd)
-                    continue;
                 // Next step : Check what the ribozyme cutsite does and if we need to pass the actual cutsite on the rna
                 // Before : Accessibility iterates through all cutsites and adds the scores
                 // After : pass cutsite and store each result individually
@@ -406,7 +408,6 @@ namespace Ribosoft.Jobs
                 });
             }
         }
-        */
 
         /*! \fn RunScoreAlgorithms
          * \brief Helper function to run score algorithms on candidates
@@ -414,9 +415,9 @@ namespace Ribosoft.Jobs
          * \param job Current job
          * \param ribozymeStructure Current ribozyme structure
          */
+        /*
         private void RunScoreAlgorithms(Candidate candidate, Job job, RibozymeStructure ribozymeStructure)
         {
-            if (cut)
             var idealStructurePattern = new Regex(@"[^.^(^)]");
             string ideal = idealStructurePattern.Replace(candidate.Structure, ".");
 
@@ -440,6 +441,7 @@ namespace Ribosoft.Jobs
                 DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())
             });
         }
+        */
 
         /*! \fn MultiObjectiveOptimize
          * \brief Function used to run multi-objective optimization
