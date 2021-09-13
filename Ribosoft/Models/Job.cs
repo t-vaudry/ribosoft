@@ -43,14 +43,14 @@ namespace Ribosoft.Models
 
     /*! \enum SpecificityMethod
      * \brief Methods
-     * Cleavage OR Cleavage and hybridization
+     * Synthetic OR Wildtype
      */
     public enum SpecificityMethod
     {
-        [Display(Name = "Cleavage")]
-        CleavageOnly,
-        [Display(Name = "Cleavage and hybridization")]
-        CleavageAndHybridization
+        [Display(Name = "Synthetic")]
+        Synthetic,
+        [Display(Name = "Wildtype")]
+        Wildtype
     }
 
     /*! \class Job
