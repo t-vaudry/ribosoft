@@ -70,7 +70,12 @@ namespace Ribosoft.Models
         [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? StructureScore { get; set; }
 
-        // substrate sequence
+        /*! \property SubstrateSequence
+         * \brief Substrate sequence
+         */
+        [Display(Name = "Substrate Sequence")]
+        public string SubstrateSequence { get; set; }
+
         /*! \property CutsiteIndex
          * \brief Index of the ribozyme cut-site
          */
