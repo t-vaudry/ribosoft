@@ -365,6 +365,49 @@ namespace Ribosoft.Jobs
             }
         }
 
+        /*
+        private void RunScoreAlgorithms(Candidate candidate, Job job, RibozymeStructure ribozymeStructure)
+        {
+            var idealStructurePattern = new Regex(@"[^.^(^)]");
+            string ideal = idealStructurePattern.Replace(candidate.Structure, ".");
+
+            var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
+                candidate.SubstrateStructure, job.Na.GetValueOrDefault(), job.Probe.GetValueOrDefault());
+
+            var structureScore = _ribosoftAlgo.Structure(candidate, ideal);
+
+            foreach (var cutsiteIndex in candidate.CutsiteIndices)
+            {
+                if (cutsiteIndex + ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset < job.OpenReadingFrameStart ||
+                    cutsiteIndex + ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset > job.OpenReadingFrameEnd)
+                    continue;
+                // Next step : Check what the ribozyme cutsite does and if we need to pass the actual cutsite on the rna
+                // Before : Accessibility iterates through all cutsites and adds the scores
+                // After : pass cutsite and store each result individually
+                // Thought : cutsite index of rna should be passed to help find the location on rna where binding occurs 
+                // and see if it is single or double stranded
+                // Thought : need a way to find binding arms
+                // Thought : better to save rna input fold since it is the same for all. Cannot use same score though because
+                // because the length of substrate can differ based on number of small n
+                var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
+                ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset);
+
+                _db.Designs.Add(new Design
+                {
+                    JobId = job.Id,
+
+                    Sequence = candidate.Sequence.GetString(),
+                    CutsiteIndex = cutsiteIndex,
+                    SubstrateSequenceLength = candidate.SubstrateSequence.Length,
+
+                    AccessibilityScore = accessibilityScore,
+                    StructureScore = structureScore,
+                    DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())
+                });
+            }
+        }
+        */
+
         /*! \fn RunScoreAlgorithms
          * \brief Helper function to run score algorithms on candidates
          * \param candidate Current candidate
@@ -373,6 +416,7 @@ namespace Ribosoft.Jobs
          */
         private void RunScoreAlgorithms(Candidate candidate, Job job, RibozymeStructure ribozymeStructure)
         {
+            if (cut)
             var idealStructurePattern = new Regex(@"[^.^(^)]");
             string ideal = idealStructurePattern.Replace(candidate.Structure, ".");
 

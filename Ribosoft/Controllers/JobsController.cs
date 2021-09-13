@@ -464,6 +464,7 @@ namespace Ribosoft.Controllers
          */
         private void SetSortParams(string sortOrder)
         {
+            ViewBag.CutsiteSortParm = sortOrder == "cutsite_asc" ? "cutsite_desc" : "cutsite_asc";
             ViewBag.DesTempSortParm = sortOrder == "destemp_asc" ? "destemp_desc" : "destemp_asc";
             ViewBag.SpecSortParm = sortOrder == "spec_asc" ? "spec_desc" : "spec_asc";
             ViewBag.AccessSortParm = sortOrder == "access_asc" ? "access_desc" : "access_asc";
@@ -480,6 +481,12 @@ namespace Ribosoft.Controllers
         {
             switch (sortOrder)
             {
+                case "cutsite_desc":
+                    designs = designs.OrderByDescending(d => d.CutsiteIndex);
+                    break;
+                case "cutsite_asc":
+                    designs = designs.OrderBy(d => d.CutsiteIndex);
+                    break;
                 case "destemp_desc":
                     designs = designs.OrderByDescending(d => d.DesiredTemperatureScore);
                     break;
