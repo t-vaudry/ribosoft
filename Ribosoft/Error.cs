@@ -30,7 +30,8 @@ namespace Ribosoft
         R_OUT_OF_RANGE                 =    -9,
         R_INVALID_TEMPLATE_LENGTH      =    -10,
         R_INVALID_CONCENTRATION        =    -11,
-        R_APPLICATION_ERROR_LAST       =  -999,
+        R_INVALID_ARM_LENGTH           =    -12,
+        R_APPLICATION_ERROR_LAST       =    -999,
 
         /* USER ERROR */
         R_USER_ERROR_FIRST             = -1000,

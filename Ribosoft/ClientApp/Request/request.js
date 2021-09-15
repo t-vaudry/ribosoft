@@ -69,15 +69,20 @@ var app = new Vue({
                 hiddenInput.value = -1;
             }
         },
-        targetEnvironment: function() {
+        targetEnvironment: function () {
+            let targetTempField = document.getElementById("TargetTemperature");
             var environment = document.getElementById("targetEnvironmentMethod");
             var radios = document.getElementsByName("SelectedTargetEnvironment");
 
             for (var i = 0; i < radios.length; i++) {
                 if (radios[i].checked && radios[i].value == "InVivo") {
                     this.inVivoSelected = true;
+                    targetTempField.value = 37;
                 }
-                else this.inVivoSelected = false;
+                else {
+                    this.inVivoSelected = false;
+                    targetTempField.value = 22;
+                }
             }
             
         },
