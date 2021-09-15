@@ -161,6 +161,12 @@ namespace Ribosoft.Models
         [Display(Name = "Target environment")]
         public TargetEnvironment TargetEnvironment { get; set; }
 
+        /*! \property TargetTemperature
+         * \brief Target Temperature (℃)
+         */
+        [Display(Name = "Target Temperature (℃)")]
+        public float? TargetTemperature { get; set; }
+
         /*! \property AssemblyId
          * \brief Assembly ID
          */

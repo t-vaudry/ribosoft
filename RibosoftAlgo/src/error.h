@@ -33,7 +33,8 @@ enum R_APPLICATION_ERROR : R_STATUS {
     R_OUT_OF_RANGE                 =    -9, //!< Value is out of range
     R_INVALID_TEMPLATE_LENGTH      =    -10, //!< Template length is invalid
     R_INVALID_CONCENTRATION        =    -11, //!< Concentration is out of range
-    R_APPLICATION_ERROR_LAST       =   -999, //!< NON-ASSOCIATED CODE
+    R_INVALID_ARM_LENGTH           =    -12, //!< Arm length is 1
+    R_APPLICATION_ERROR_LAST       =    -999, //!< NON-ASSOCIATED CODE
 };
 
 /*! \enum R_USER_ERROR
