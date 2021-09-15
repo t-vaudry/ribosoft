@@ -100,9 +100,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a04b419e6e0fd854934aedb45d7eeecff"><td class="memItemLeft" align="right" valign="top">R_STATUS&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d96/anneal_8cpp.html#a04b419e6e0fd854934aedb45d7eeecff">ribosoft::anneal</a> (const char *sequence, const char *structure, const float na_concentration, const float probe_concentration, float &amp;temp)</td></tr>
-<tr class="memdesc:a04b419e6e0fd854934aedb45d7eeecff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Annealing Temperature Score Used to calculate the annealing temperature of the ribozyme to the substrate. Using the MELTING library by Le Novère. MELTING, a free tool to compute the melting temperature of nucleic acid duplex. Bioinformatics, 17: 1226-1227.  <a href="../../d8/d96/anneal_8cpp.html#a04b419e6e0fd854934aedb45d7eeecff">More...</a><br /></td></tr>
-<tr class="separator:a04b419e6e0fd854934aedb45d7eeecff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24ffa8866a825e47c9ff7c1a6b0a4cc1"><td class="memItemLeft" align="right" valign="top">R_STATUS&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d96/anneal_8cpp.html#a24ffa8866a825e47c9ff7c1a6b0a4cc1">ribosoft::anneal</a> (const char *sequence, const char *structure, const float na_concentration, const float probe_concentration, const float target_temp, float &amp;temp)</td></tr>
+<tr class="memdesc:a24ffa8866a825e47c9ff7c1a6b0a4cc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Annealing Temperature Score Used to calculate the annealing temperature of the ribozyme to the substrate. Using the MELTING library by Le Novère. MELTING, a free tool to compute the melting temperature of nucleic acid duplex. Bioinformatics, 17: 1226-1227.  <a href="../../d8/d96/anneal_8cpp.html#a24ffa8866a825e47c9ff7c1a6b0a4cc1">More...</a><br /></td></tr>
+<tr class="separator:a24ffa8866a825e47c9ff7c1a6b0a4cc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -112,8 +112,8 @@ std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href
 <tr class="separator:ad6a78dc338ce95a9a03cfb5559a6128b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a04b419e6e0fd854934aedb45d7eeecff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a04b419e6e0fd854934aedb45d7eeecff">&#9670;&nbsp;</a></span>anneal()</h2>
+<a id="a24ffa8866a825e47c9ff7c1a6b0a4cc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24ffa8866a825e47c9ff7c1a6b0a4cc1">&#9670;&nbsp;</a></span>anneal()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -145,6 +145,12 @@ std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const float&#160;</td>
+          <td class="paramname"><em>target_temp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">float &amp;&#160;</td>
           <td class="paramname"><em>temp</em>&#160;</td>
         </tr>
@@ -161,6 +167,7 @@ std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href
 <li>R_INVALID_NUCLEOTIDE | sequence has an invalid nucleotide</li>
 <li>R_STRUCT_LENGTH_DIFFER | sequence and structure lengths do not match</li>
 <li>R_INVALID_CONCENTRATION | na_concentration or probe_concentration are out of range</li>
+<li>R_INVALID_ARM_LENGTH | substring length of one of the arms is 1</li>
 </ul>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -168,13 +175,14 @@ std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href
     <tr><td class="paramname">structure</td><td>Substrate structure to determine binding regions </td></tr>
     <tr><td class="paramname">na_concentration</td><td>Sodium (Na+) concentration (in moles) </td></tr>
     <tr><td class="paramname">probe_concentration</td><td>Nucleic acid concentration in excess (in moles) </td></tr>
+    <tr><td class="paramname">target_temp</td><td>Target temperature of binding arms </td></tr>
     <tr><td class="paramname">temp</td><td>Out variable for annealing temperature score </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Status Code </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d8/d96/anneal_8cpp_source.html#l00039">39</a> of file <a class="el" href="../../d8/d96/anneal_8cpp_source.html">anneal.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d8/d96/anneal_8cpp_source.html#l00041">41</a> of file <a class="el" href="../../d8/d96/anneal_8cpp_source.html">anneal.cpp</a>.</p>
 
 </div>
 </div>

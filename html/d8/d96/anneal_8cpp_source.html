@@ -100,60 +100,74 @@ $(function() {
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
 <div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="../../d8/d96/anneal_8cpp.html#ad6a78dc338ce95a9a03cfb5559a6128b">   17</a></span>&#160;std::mutex <a class="code" href="../../d8/d96/anneal_8cpp.html#ad6a78dc338ce95a9a03cfb5559a6128b">melting_mutex</a>; </div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="../../d8/d96/anneal_8cpp.html#a04b419e6e0fd854934aedb45d7eeecff">   39</a></span>&#160;R_STATUS <a class="code" href="../../d8/d96/anneal_8cpp.html#a04b419e6e0fd854934aedb45d7eeecff">anneal</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* sequence, <span class="keyword">const</span> <span class="keywordtype">char</span>* structure, <span class="keyword">const</span> <span class="keywordtype">float</span> na_concentration, <span class="keyword">const</span> <span class="keywordtype">float</span> probe_concentration, <span class="keywordtype">float</span>&amp; temp)</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;{</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    R_STATUS status;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="comment">// validate input sequence</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    status = validate_sequence(sequence);</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordflow">if</span> (status != R_SUCCESS::R_STATUS_OK) {</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordflow">return</span> status;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    }</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    std::string local_sequence = sequence;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    std::string local_structure = structure;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordflow">if</span> (local_sequence.length() != local_structure.length()) {</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordflow">return</span> R_APPLICATION_ERROR::R_STRUCT_LENGTH_DIFFER;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    }</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="comment">// TODO: minimum chosen arbitrarily; will change once we have more science info</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordflow">if</span> (na_concentration &lt; 0.0000000001f) {</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keywordflow">return</span> R_APPLICATION_ERROR::R_INVALID_CONCENTRATION;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    }</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordflow">if</span> (probe_concentration &lt; 0.0000000001f) {</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="keywordflow">return</span> R_APPLICATION_ERROR::R_INVALID_CONCENTRATION;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    }</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    std::regex base_regex(<span class="stringliteral">&quot;[0-9a-zA-Z]+&quot;</span>);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keyword">auto</span> substruct_begin = std::sregex_iterator(local_structure.begin(), local_structure.end(), base_regex);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keyword">auto</span> substruct_end = std::sregex_iterator();</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordtype">size_t</span> num_substrings = distance(substruct_begin, substruct_end);</div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="../../d8/d96/anneal_8cpp.html#a24ffa8866a825e47c9ff7c1a6b0a4cc1">   41</a></span>&#160;R_STATUS <a class="code" href="../../d8/d96/anneal_8cpp.html#a24ffa8866a825e47c9ff7c1a6b0a4cc1">anneal</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* sequence, <span class="keyword">const</span> <span class="keywordtype">char</span>* structure, <span class="keyword">const</span> <span class="keywordtype">float</span> na_concentration, <span class="keyword">const</span> <span class="keywordtype">float</span> probe_concentration, <span class="keyword">const</span> <span class="keywordtype">float</span> target_temp, <span class="keywordtype">float</span>&amp; temp)</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;{</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    R_STATUS status;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="comment">// validate input sequence</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    status = validate_sequence(sequence);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordflow">if</span> (status != R_SUCCESS::R_STATUS_OK) {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordflow">return</span> status;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    }</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    std::string local_sequence = sequence;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    std::string local_structure = structure;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordflow">if</span> (local_sequence.length() != local_structure.length()) {</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordflow">return</span> R_APPLICATION_ERROR::R_STRUCT_LENGTH_DIFFER;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    }</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="comment">// TODO: minimum chosen arbitrarily; will change once we have more science info</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keywordflow">if</span> (na_concentration &lt; 0.0000000001f) {</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keywordflow">return</span> R_APPLICATION_ERROR::R_INVALID_CONCENTRATION;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    }</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordflow">if</span> (probe_concentration &lt; 0.0000000001f) {</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keywordflow">return</span> R_APPLICATION_ERROR::R_INVALID_CONCENTRATION;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    }</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    std::regex base_regex(<span class="stringliteral">&quot;[0-9a-zA-Z]+&quot;</span>);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keyword">auto</span> substruct_begin = std::sregex_iterator(local_structure.begin(), local_structure.end(), base_regex);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keyword">auto</span> substruct_end = std::sregex_iterator();</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    std::vector&lt;std::string&gt; substrings;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keywordtype">size_t</span> num_substrings = distance(substruct_begin, substruct_end);</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordflow">for</span> (std::sregex_iterator i = substruct_begin; i != substruct_end; ++i) {</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        std::smatch match = *i;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        substrings.push_back(local_sequence.substr(match.position(), match.length()));</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    }</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keywordtype">double</span> temp_sum = 0.0;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    std::vector&lt;std::string&gt; substrings;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordflow">for</span> (std::sregex_iterator i = substruct_begin; i != substruct_end; ++i) {</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        std::smatch match = *i;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        substrings.push_back(local_sequence.substr(match.position(), match.length()));</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    }</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; substrings.size(); i++) {</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="comment">// Calculate melting temperature</span></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="comment">// a lock is needed as melting&#39;s melting is not threadsafe</span></div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        std::lock_guard&lt;std::mutex&gt; lock(<a class="code" href="../../d8/d96/anneal_8cpp.html#ad6a78dc338ce95a9a03cfb5559a6128b">melting_mutex</a>);</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        temp_sum += melting(substrings[i].c_str(), na_concentration, probe_concentration);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    }</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    temp = <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(temp_sum);</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordflow">return</span> R_SUCCESS::R_STATUS_OK;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;}</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;}</div>
-<div class="ttc" id="aanneal_8cpp_html_a04b419e6e0fd854934aedb45d7eeecff"><div class="ttname"><a href="../../d8/d96/anneal_8cpp.html#a04b419e6e0fd854934aedb45d7eeecff">ribosoft::anneal</a></div><div class="ttdeci">R_STATUS anneal(const char *sequence, const char *structure, const float na_concentration, const float probe_concentration, float &amp;temp)</div><div class="ttdoc">Annealing Temperature Score Used to calculate the annealing temperature of the ribozyme to the substr...</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d96/anneal_8cpp_source.html#l00039">anneal.cpp:39</a></div></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordtype">double</span> temp_sum = 0.0;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keywordtype">double</span> difference = 0.0;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; substrings.size(); i++) {</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="comment">// A arm length of 1 will cause melting to crash</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="comment">// Ignore that arm</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordflow">if</span> (substrings[i].length() != 1)</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        {</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            <span class="comment">// Calculate melting temperature</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            <span class="comment">// a lock is needed as melting&#39;s melting is not threadsafe</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            std::lock_guard&lt;std::mutex&gt; lock(<a class="code" href="../../d8/d96/anneal_8cpp.html#ad6a78dc338ce95a9a03cfb5559a6128b">melting_mutex</a>);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;           </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;            <span class="comment">// Linear score until 4 degrees centigrade of difference</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            <span class="comment">// Exponential score after that </span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            difference = fabs(melting(substrings[i].c_str(), na_concentration, probe_concentration) - target_temp);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;            <span class="keywordflow">if</span> (difference &lt;= 4)</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                temp_sum += difference;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;            <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                temp_sum += pow(difference, 2);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        }</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    }</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    temp = <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(temp_sum);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keywordflow">return</span> R_SUCCESS::R_STATUS_OK;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;}</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;}</div>
+<div class="ttc" id="aanneal_8cpp_html_a24ffa8866a825e47c9ff7c1a6b0a4cc1"><div class="ttname"><a href="../../d8/d96/anneal_8cpp.html#a24ffa8866a825e47c9ff7c1a6b0a4cc1">ribosoft::anneal</a></div><div class="ttdeci">R_STATUS anneal(const char *sequence, const char *structure, const float na_concentration, const float probe_concentration, const float target_temp, float &amp;temp)</div><div class="ttdoc">Annealing Temperature Score Used to calculate the annealing temperature of the ribozyme to the substr...</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d96/anneal_8cpp_source.html#l00041">anneal.cpp:41</a></div></div>
 <div class="ttc" id="aanneal_8cpp_html_ad6a78dc338ce95a9a03cfb5559a6128b"><div class="ttname"><a href="../../d8/d96/anneal_8cpp.html#ad6a78dc338ce95a9a03cfb5559a6128b">ribosoft::melting_mutex</a></div><div class="ttdeci">std::mutex melting_mutex</div><div class="ttdoc">Mutex to lock access to MELTING library.</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d96/anneal_8cpp_source.html#l00017">anneal.cpp:17</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.8-->
