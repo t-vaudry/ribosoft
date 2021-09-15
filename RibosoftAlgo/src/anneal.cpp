@@ -91,7 +91,7 @@ R_STATUS anneal(const char* sequence, const char* structure, const float na_conc
            
             // Linear score until 4 degrees centigrade of difference
             // Exponential score after that 
-            difference = abs(melting(substrings[i].c_str(), na_concentration, probe_concentration) - target_temp);
+            difference = fabs(melting(substrings[i].c_str(), na_concentration, probe_concentration) - target_temp);
 
             if (difference <= 4)
                 temp_sum += difference;
