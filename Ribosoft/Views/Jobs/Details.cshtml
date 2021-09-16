@@ -246,12 +246,13 @@
                     <table class="table table-hover mb-0">
                         <thead>
                             <tr>
-                                <th>
+                                <!-- Removing Rank -->
+                                @*<th>
                                     <div class="d-flex align-items-center sortable">
                                         @Html.DisplayNameFor(model => model.Designs.Data.First().Rank)
                                         <i id="ranksort" class="fas fa-sort"></i>
                                     </div>
-                                </th>
+                                </th>*@
                                 <th>
                                     <div class="d-flex align-items-center">
                                         @Html.DisplayNameFor(model => model.Designs.Data.First().Sequence)
@@ -287,9 +288,10 @@
                             @foreach (var item in Model.Designs.Data)
                             {
                                 <tr id="@item.JobId-@item.Id" class="clickable-row">
-                                    <td>
+                                    <!-- Removing Rank -->
+                                    @*<td>
                                         @Html.DisplayFor(modelItem => item.Rank)
-                                    </td>
+                                    </td>*@
                                     <td>
                                         <code style="word-break: break-all;">@Html.DisplayFor(modelItem => item.Sequence)</code>
                                     </td>
@@ -419,7 +421,7 @@
 
             $("#filterOptions").structFilter({
                 fields: [
-                    { id: "Rank", type: "number", label: "Rank" },
+                    //{ id: "Rank", type: "number", label: "Rank" },
                     { id: "DesiredTemperatureScore", type: "number", label: "Desired Temperature Score" },
                     { id: "SpecificityScore", type: "number", label: "Specificity Score" },
                     { id: "AccessibilityScore", type: "number", label: "Accessibility Score" },
@@ -490,9 +492,9 @@
                 var type = el[0].id.slice(0, -4);
                 var sortOrder = '';
                 switch (type) {
-                    case 'rank':
-                        sortOrder = '@ViewBag.RankSortParm';
-                        break;
+                    //case 'rank':
+                        //sortOrder = '@ViewBag.RankSortParm';
+                        //break;
                     case 'hitemp':
                         sortOrder = '@ViewBag.HiTempSortParm';
                         break;
@@ -589,14 +591,14 @@
             $('#fastaAll').click(function () { return clickFuncAll("fasta"); });
             $('#csvAll').click(function () { return clickFuncAll("csv"); });
 
-            $('#ranksort').ready(function () { return sortFunc($('#ranksort')); })
+            //$('#ranksort').ready(function () { return sortFunc($('#ranksort')); })
             $('#destempsort').ready(function () { return sortFunc($('#destempsort')); })
             $('#hitempsort').ready(function () { return sortFunc($('#hitempsort')); })
             $('#accesssort').ready(function () { return sortFunc($('#accesssort')); })
             $('#specsort').ready(function () { return sortFunc($('#specsort')); })
             $('#structsort').ready(function () { return sortFunc($('#structsort')); })
 
-            $('#ranksort').parent().click(function () { return sortClick($('#ranksort')); })
+            //$('#ranksort').parent().click(function () { return sortClick($('#ranksort')); })
             $('#destempsort').parent().click(function () { return sortClick($('#destempsort')); })
             $('#hitempsort').parent().click(function () { return sortClick($('#hitempsort')); })
             $('#accesssort').parent().click(function () { return sortClick($('#accesssort')); })
