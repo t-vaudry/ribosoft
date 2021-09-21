@@ -27,6 +27,7 @@ var app = new Vue({
         return { options: optionsArr,
                  inVivoOptions: vivoArr,
                  inVivoSelected: false,
+                 ORFExists: false,
                  cutSites: [],
                  genbankLoading: false,
                  genbankStatus: "" };
@@ -85,6 +86,11 @@ var app = new Vue({
                 }
             }
             
+        },
+        openReadingFrame: function () {
+            let orfStart = document.getElementById("orfStart").value;
+            let orfEnd = document.getElementById("orfEnd").value;
+            this.ORFExists = (orfEnd - orfStart) > 0;
         },
         processFASTAfile: function() {
             var inputField = document.getElementById("inputSequence");
