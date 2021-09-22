@@ -690,13 +690,13 @@ namespace Ribosoft.Controllers
             switch (format)
             {
                 case "csv":
-                    payload += String.Format("Rank,DesiredTemperatureScore,SpecificityScore,AccessibilityScore,StructureScore,CreatedAt,UpdatedAt,Sequence\n");
+                    payload += String.Format("Rank,CutsiteIndex,DesiredTemperatureScore,SpecificityScore,AccessibilityScore,StructureScore,CreatedAt,UpdatedAt,Sequence\n");
                     extension = "csv";
                     foreach (Design d in designs)
                     {
                         if (obj == null || obj.ContainsKey(d.JobId.ToString() + '-' + d.Id.ToString()))
                         {
-                            payload += String.Format("{0},{1},{2},{3},{4},{5},{6},{7}\n", d.Rank, d.DesiredTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
+                            payload += String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}\n", d.Rank, d.CutsiteIndex, d.DesiredTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
                         }
                     }
                     type = "application/csv";
@@ -725,7 +725,7 @@ namespace Ribosoft.Controllers
                     {
                         if (obj == null || obj.ContainsKey(d.JobId.ToString() + '-' + d.Id.ToString()))
                         {
-                            payload += String.Format(">Rank {0} | DesiredTemperatureScore {1} | SpecificityScore {2} | AccessibilityScore {3} | StructureScore {4} | CreatedAt {5} | UpdatedAt {6}\n{7}\n\n", d.Rank, d.DesiredTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
+                            payload += String.Format(">Rank {0} | CutsiteIndex {1} | DesiredTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.CutsiteIndex, d.DesiredTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
                         }
                     }
                     type = "text/plain";
@@ -751,7 +751,7 @@ namespace Ribosoft.Controllers
             newEntry.DateTime = DateTime.Now;
 
             zipStream.PutNextEntry(newEntry);
-            byteArray = Encoding.ASCII.GetBytes(String.Format(">Rank {0} | DesiredTemperatureScore {1} | SpecificityScore {2} | AccessibilityScore {3} | StructureScore {4} | CreatedAt {5} | UpdatedAt {6}\n{7}\n\n", d.Rank, d.DesiredTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence));
+            byteArray = Encoding.ASCII.GetBytes(String.Format(">Rank {0} | CutsiteIndex {1} | DesiredTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.CutsiteIndex, d.DesiredTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence));
 
             MemoryStream inStream = new MemoryStream(byteArray);
             StreamUtils.Copy(inStream, zipStream, new byte[4096]);
