@@ -61,6 +61,11 @@ namespace Ribosoft.Jobs
          */
         private ApplicationDbContext _db;
 
+        /*! \property RNAStructure
+         * \brief RNA structure string
+         */
+        private String RNAStructure { get; set; }
+
         /*! \fn GenerateCandidates
          * \brief Default constructor
          * \param options Application database options
@@ -240,6 +245,8 @@ namespace Ribosoft.Jobs
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
             foreach (var rnaInput in rnaInputs)
             {
+                RNAStructure = _ribosoftAlgo.RNAFolding(rnaInput);
+
                 foreach (var ribozymeStructure in job.Ribozyme.RibozymeStructures)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -272,7 +279,7 @@ namespace Ribosoft.Jobs
                         foreach (var candidate in candidates)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
-                            RunScoreAlgorithms(candidate, job, ribozymeStructure);
+                            RunScoreAlgorithms(candidate, job, ribozymeStructure, RNAStructure);
 
                             if (++batchCount % 100 == 0)
                             {
@@ -371,28 +378,24 @@ namespace Ribosoft.Jobs
          * \param job Current job
          * \param ribozymeStructure Current ribozyme structure
          */
-        private void RunScoreAlgorithms(Candidate candidate, Job job, RibozymeStructure ribozymeStructure)
+        private void RunScoreAlgorithms(Candidate candidate, Job job, RibozymeStructure ribozymeStructure, string RNAStructure)
         {
             var idealStructurePattern = new Regex(@"[^.^(^)]");
             string ideal = idealStructurePattern.Replace(candidate.Structure, ".");
 
+            float naConcentration = job.Na.GetValueOrDefault();
+            float probeConcentration = job.Probe.GetValueOrDefault();
+
             var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
-                candidate.SubstrateStructure, job.Na.GetValueOrDefault(), job.Probe.GetValueOrDefault());
+                candidate.SubstrateStructure, naConcentration, probeConcentration);
 
             var structureScore = _ribosoftAlgo.Structure(candidate, ideal);
 
             foreach (var cutsiteIndex in candidate.CutsiteIndices)
             {
-                // Next step : Check what the ribozyme cutsite does and if we need to pass the actual cutsite on the rna
-                // Before : Accessibility iterates through all cutsites and adds the scores
-                // After : pass cutsite and store each result individually
-                // Thought : cutsite index of rna should be passed to help find the location on rna where binding occurs 
-                // and see if it is single or double stranded
-                // Thought : need a way to find binding arms
-                // Thought : better to save rna input fold since it is the same for all. Cannot use same score though because
-                // because the length of substrate can differ based on number of small n
                 var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
-                ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset);
+                ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset, cutsiteIndex, naConcentration, 
+                probeConcentration, RNAStructure);
 
                 _db.Designs.Add(new Design
                 {

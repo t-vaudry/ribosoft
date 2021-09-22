@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include <cstring>
+#include <string>
 
 //! \namespace ribosoft
 namespace ribosoft {
@@ -40,7 +41,7 @@ extern "C" DLL_PUBLIC R_STATUS validate_structure(const char* structure);
  * Accessibility of cutsite on the substrate
  * @file accessibility.cpp
  */
-extern "C" DLL_PUBLIC R_STATUS accessibility(const char* substrateSequence, const char* substrateTemplate, const int cutsiteIndex, const int cutsiteNumber, /*out*/ float& delta);
+extern "C" DLL_PUBLIC R_STATUS accessibility(const char* substrateSequence, /*out*/ std::string rnaStructure);
 
 /*! \fn anneal
  * \brief anneal

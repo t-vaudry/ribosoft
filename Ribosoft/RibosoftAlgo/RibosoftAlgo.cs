@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace Ribosoft
 {
@@ -52,7 +53,7 @@ namespace Ribosoft
          * \return status Status code
          */
         [DllImport("RibosoftAlgo")]
-        private static extern R_STATUS accessibility(string substrateSequence, string substrateTemplate, int cutsiteIndex, int cutsiteNumber, out float delta);
+        private static extern R_STATUS accessibility(string substrateSequence, out string rnaStructure);
 
         /*! \fn anneal
          * \brief DllImport from RibosoftAlgo of anneal
@@ -121,30 +122,62 @@ namespace Ribosoft
             return validate_structure(structure);
         }
 
-        /*! \fn Accessibility
-         * \brief Algorithm function to determine the accessibility of the cutsite on the input RNA with this particular candidate sequence
+        /*! \fn RNAFolding
+         * \brief Algorithm function to fold the full input RNA 
          * \param candidate Candidate being evaluated
          * \param rnaInput Input RNA of the request
          * \param cutsiteNumber Initial cutsite location for ribozyme template
+         * \param cutsiteIndex Cutsite on RNA input
          * \return accessibilityScore Float evaluation score value
          */
-        public float Accessibility(Candidate candidate, string rnaInput, int cutsiteNumber)
+        public string RNAFolding(string rnaInput)
         {
-            float accessibilityScore = 0.0f;
+            R_STATUS status = accessibility(rnaInput, out string rnaStructure);
 
-            foreach (var cutsiteIndex in candidate.CutsiteIndices)
+            if (status != R_STATUS.R_STATUS_OK)
             {
-                R_STATUS status = accessibility(rnaInput, candidate.SubstrateSequence, cutsiteIndex, cutsiteNumber, out float delta);
-
-                if (status != R_STATUS.R_STATUS_OK)
-                {
-                    throw new RibosoftAlgoException(status);
-                }
-
-                accessibilityScore += delta;
+                throw new RibosoftAlgoException(status);
             }
 
-            return accessibilityScore;
+            return rnaStructure;
+
+        }
+
+        /*! \fn Accessibility
+         * \brief Algorithm function to determine the accessibility of the cutsite on the input RNA 
+         * with this particular candidate sequence and cutsite
+         * \param candidate Candidate being evaluated
+         * \param rnaInput Input RNA of the request
+         * \param cutsiteNumber Initial cutsite location for ribozyme template
+         * \param cutsiteIndex Cutsite on RNA input
+         * \return accessibilityScore Float evaluation score value
+         */
+        public float Accessibility(Candidate candidate, string rnaInput, int cutsiteNumber, int cutsiteIndex, float naConcentration, float probeConcentration, string rnaStructure)
+        {
+            string substrateSequence = candidate.SubstrateStructure;
+            string foldStructure = rnaStructure.Substring(cutsiteIndex, candidate.SubstrateSequence.Length);
+
+            Regex r = new Regex("[0-9a-zA-Z]+");
+
+            bool isSingleStranded = true;
+
+            foreach (Match match in r.Matches(substrateSequence))
+            {
+                if (foldStructure[match.Index] != '.')
+                {
+                    isSingleStranded = false;
+                    break;
+                }
+            }
+
+            if (isSingleStranded)
+            {
+                return 0.0f;
+            }
+            else
+            {
+                return Anneal(candidate, substrateSequence, foldStructure, naConcentration, probeConcentration);
+            }
         }
 
         /*! \fn Anneal
