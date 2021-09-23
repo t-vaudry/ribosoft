@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Ribosoft.Models;
+using System.Linq;
 
 namespace Ribosoft
 {
@@ -237,35 +238,25 @@ namespace Ribosoft
                 structureResults.Add(currentResults);
             }
 
-            float maxDistance = 0.0f;
-
-            // Get the max distance between fold and ideal structure
-            foreach (IList<Tuple<float, float>> results in structureResults)
+            if (designs.Count != structureResults.Count)
             {
-                foreach (Tuple<float, float> r in results)
-                {
-                    if (r.Item1 > maxDistance)
-                    {
-                        maxDistance = r.Item1;
-                    }
-                }
+                throw new RibosoftAlgoException(R_STATUS.R_STRUCT_LENGTH_DIFFER);
             }
 
-            int currentPosition = 0;
+            float maxDistance = structureResults.Max(results => results.Max(r => r.Item1));
+
             float currentStructureScore;
 
-            // Calculate and save the structure score based on the following formula :  
-            // StructureScore = 1 - Σ((1 - distance/maxDistance) * propbability)
-            foreach (var d in designs)
+            for (int i = 0; i < designs.Count; i++)
             {
                 currentStructureScore = 0.0f;
 
-                foreach (Tuple<float, float> foldResults in structureResults[currentPosition++])
+                foreach (Tuple<float, float> foldResults in structureResults[i])
                 {
                     currentStructureScore += (1 - (foldResults.Item1 / maxDistance)) * foldResults.Item2;
                 }
 
-                d.StructureScore = 1 - currentStructureScore;
+                designs[i].StructureScore = 1 - currentStructureScore;
             }
         }
     }
