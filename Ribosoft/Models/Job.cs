@@ -21,6 +21,7 @@ namespace Ribosoft.Models
         Errored,
 
         CandidateGenerator,
+        Structure,
         MultiObjectiveOptimization,
         Specificity,
 
