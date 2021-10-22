@@ -41,7 +41,8 @@ extern "C" DLL_PUBLIC R_STATUS validate_structure(const char* structure);
  * Accessibility of cutsite on the substrate
  * @file accessibility.cpp
  */
-extern "C" DLL_PUBLIC R_STATUS accessibility(const char* substrateSequence, /*out*/ std::string rnaStructure);
+extern "C" DLL_PUBLIC R_STATUS accessibility(const char* substrateSequence, const char* substrateStructure, const char* foldedStructure, const float na_concentration, const float probe_concentration, /*out*/ float& delta);
+
 
 /*! \fn anneal
  * \brief anneal
@@ -63,6 +64,20 @@ extern "C" DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& 
  * @file fold.cpp
  */
 extern "C" DLL_PUBLIC void fold_output_free(fold_output* output, size_t size);
+
+/*! \fn mfe_default_fold
+ * \brief mfe_deafult_fold
+ * Fold function used to fold sequence w/o constraints with ViennaRNA
+ * @file mfe_default_fold.cpp
+ */
+extern "C" DLL_PUBLIC R_STATUS mfe_default_fold(const char* sequence, /*out*/ char*& structure);
+
+/*! \fn fold_output_free
+ * \brief fold_output_free
+ * Function to free fold structure memory
+ * @file fold.cpp
+ */
+extern "C" DLL_PUBLIC void mfe_default_fold_free(char* output);
 
 /*! \fn structure
  * \brief structure
