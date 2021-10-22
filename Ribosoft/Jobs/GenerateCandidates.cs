@@ -245,7 +245,7 @@ namespace Ribosoft.Jobs
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
             foreach (var rnaInput in rnaInputs)
             {
-                RNAStructure = _ribosoftAlgo.RNAFolding(rnaInput);
+                RNAStructure = _ribosoftAlgo.MFEFolding(rnaInput);
 
                 foreach (var ribozymeStructure in job.Ribozyme.RibozymeStructures)
                 {
@@ -393,18 +393,19 @@ namespace Ribosoft.Jobs
 
             foreach (var cutsiteIndex in candidate.CutsiteIndices)
             {
-                var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
-                ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset, cutsiteIndex, naConcentration, 
-                probeConcentration, RNAStructure);
+                var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, RNAStructure,
+                    cutsiteIndex, naConcentration, probeConcentration);
 
                 _db.Designs.Add(new Design
                 {
                     JobId = job.Id,
 
                     Sequence = candidate.Sequence.GetString(),
-                    CutsiteIndex = cutsiteIndex,
-                    SubstrateSequenceLength = candidate.SubstrateSequence.Length,
 
+                    // TODO: save actual cutsite (cutsiteIndex + ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset)
+                    CutsiteIndex = cutsiteIndex,
+
+                    SubstrateSequenceLength = candidate.SubstrateSequence.Length,
                     AccessibilityScore = accessibilityScore,
                     StructureScore = structureScore,
                     DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())

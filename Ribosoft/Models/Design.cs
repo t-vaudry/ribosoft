@@ -66,7 +66,7 @@ namespace Ribosoft.Models
 
         // substrate sequence
         /*! \property CutsiteIndex
-         * \brief Index of the ribozyme cut-site
+         * \brief Index of the ribozyme cut-site (beginning of substrate sequence)
          */
         public int CutsiteIndex { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Ribosoft
@@ -46,14 +47,15 @@ namespace Ribosoft
         /*! \fn accessibility
          * \brief DllImport from RibosoftAlgo of accessibility
          * \param substrateSequence Sequence of the substrate
-         * \param substrateTemplate Template of the substrate
-         * \param cutsiteIndex Index of the cutsite
-         * \param cutsiteNumber Number of the cutsite
+         * \param substrateStructure Structure of the substrate
+         * \param foldedStructure Structure of the folded RNA
+         * \param na_concentration Concentration of sodium
+         * \param probe_concentration Concentration of probe
          * \param delta Out parameter for the evaluation score
          * \return status Status code
          */
         [DllImport("RibosoftAlgo")]
-        private static extern R_STATUS accessibility(string substrateSequence, out string rnaStructure);
+        private static extern R_STATUS accessibility(string substrateSequence, string substrateStructure, string foldedStructure, float na_concentration, float probe_concentration, out float delta);
 
         /*! \fn anneal
          * \brief DllImport from RibosoftAlgo of anneal
@@ -84,6 +86,22 @@ namespace Ribosoft
          */
         [DllImport("RibosoftAlgo")]
         private static extern void fold_output_free(IntPtr output, int size);
+
+        /*! \fn default_fold
+         * \brief DllImport from RibosoftAlgo of mfe_default_fold
+         * \param sequence Sequence to be folded
+         * \param structure Output pointer to the folded structure
+         * \return status Status code
+         */
+        [DllImport("RibosoftAlgo")]
+        private static extern R_STATUS mfe_default_fold(string sequence, out IntPtr structure);
+
+        /*! \fn fold_output_free
+         * \brief DllImport from RibosoftAlgo of mfe_default_fold_free
+         * \param output Pointer to fold output list
+         */
+        [DllImport("RibosoftAlgo")]
+        private static extern void mfe_default_fold_free(IntPtr output);
 
         /*! \fn structure
          * \brief DllImport from RibosoftAlgo of structure
@@ -122,62 +140,29 @@ namespace Ribosoft
             return validate_structure(structure);
         }
 
-        /*! \fn RNAFolding
-         * \brief Algorithm function to fold the full input RNA 
+        /*! \fn Accessibility
+         * \brief Algorithm function to determine the accessibility of the cutsite on the input RNA 
+         * with this particular candidate sequence and cutsite
          * \param candidate Candidate being evaluated
-         * \param rnaInput Input RNA of the request
-         * \param cutsiteNumber Initial cutsite location for ribozyme template
-         * \param cutsiteIndex Cutsite on RNA input
+         * \param rnaStructure structure of input RNA
+         * \param cutsiteIndex Cutsite on RNA input (beginning of substrate sequence)
          * \return accessibilityScore Float evaluation score value
-         */
-        public string RNAFolding(string rnaInput)
+        */
+
+        public float Accessibility(Candidate candidate, string rnaStructure, int cutsiteIndex, float naConcentration, float probeConcentration)
         {
-            R_STATUS status = accessibility(rnaInput, out string rnaStructure);
+            string substrateSequence = candidate.SubstrateSequence;
+            string substrateStructure = candidate.SubstrateStructure;
+            string foldedStructure = rnaStructure.Substring(cutsiteIndex, substrateSequence.Length);
+
+            R_STATUS status = accessibility(substrateSequence, substrateStructure, foldedStructure, naConcentration, probeConcentration, out float delta);
 
             if (status != R_STATUS.R_STATUS_OK)
             {
                 throw new RibosoftAlgoException(status);
             }
 
-            return rnaStructure;
-
-        }
-
-        /*! \fn Accessibility
-         * \brief Algorithm function to determine the accessibility of the cutsite on the input RNA 
-         * with this particular candidate sequence and cutsite
-         * \param candidate Candidate being evaluated
-         * \param rnaInput Input RNA of the request
-         * \param cutsiteNumber Initial cutsite location for ribozyme template
-         * \param cutsiteIndex Cutsite on RNA input
-         * \return accessibilityScore Float evaluation score value
-         */
-        public float Accessibility(Candidate candidate, string rnaInput, int cutsiteNumber, int cutsiteIndex, float naConcentration, float probeConcentration, string rnaStructure)
-        {
-            string substrateSequence = candidate.SubstrateStructure;
-            string foldStructure = rnaStructure.Substring(cutsiteIndex, candidate.SubstrateSequence.Length);
-
-            Regex r = new Regex("[0-9a-zA-Z]+");
-
-            bool isSingleStranded = true;
-
-            foreach (Match match in r.Matches(substrateSequence))
-            {
-                if (foldStructure[match.Index] != '.')
-                {
-                    isSingleStranded = false;
-                    break;
-                }
-            }
-
-            if (isSingleStranded)
-            {
-                return 0.0f;
-            }
-            else
-            {
-                return Anneal(candidate, substrateSequence, foldStructure, naConcentration, probeConcentration);
-            }
+            return delta;
         }
 
         /*! \fn Anneal
@@ -231,6 +216,27 @@ namespace Ribosoft
             fold_output_free(outputPtr, size);
 
             return foldOutputs;
+        }
+
+        /*! \fn MFEFolding
+         * \brief Algorithm function to fold the full input RNA
+         * \param sequence Sequence to be folded
+         * \return rnaStructure String containing the structure of the folded RNA
+        */
+        public string MFEFolding(string sequence)
+        {
+            R_STATUS status = mfe_default_fold(sequence, out IntPtr structure);
+
+
+            if (status != R_STATUS.R_STATUS_OK)
+            {
+                throw new RibosoftAlgoException(status);
+            }
+
+            string rnaStructure = Marshal.PtrToStringAnsi(structure);
+            mfe_default_fold_free(structure);
+
+            return rnaStructure;
         }
 
         /*! \fn Structure
