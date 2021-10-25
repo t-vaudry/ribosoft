@@ -29,6 +29,12 @@ namespace Ribosoft.Models
         [Display(Name = "Ribozyme Sequence")]
         public string Sequence { get; set; }
 
+        /*! \property IdealStructure
+         * \brief Ribozyme ideal structure
+         */
+        [Display(Name = "Ribozyme Ideal Structure")]
+        public string IdealStructure { get; set; }
+
         /*! \property Rank
          * \brief Ribozyme rank
          */
@@ -64,7 +70,12 @@ namespace Ribosoft.Models
         [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? StructureScore { get; set; }
 
-        // substrate sequence
+        /*! \property SubstrateSequence
+         * \brief Substrate sequence
+         */
+        [Display(Name = "Substrate Sequence")]
+        public string SubstrateSequence { get; set; }
+
         /*! \property CutsiteIndex
          * \brief Index of the ribozyme cut-site (beginning of substrate sequence)
          */

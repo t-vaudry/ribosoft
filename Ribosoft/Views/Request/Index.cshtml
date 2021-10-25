@@ -80,21 +80,21 @@
                 <div class="form-group col-md-6 mb-0">
                     <label asp-for="OpenReadingFrameStart"></label>
                     <span data-toggle="tooltip" data-placement="right" title="@Localizer["ORFStartTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
-                    <input asp-for="OpenReadingFrameStart" class="form-control" min="0" :disabled="genbankLoading">
+                    <input asp-for="OpenReadingFrameStart" id="orfStart" class="form-control" min="0" v-on:change="openReadingFrame" :disabled="genbankLoading">
                     <span asp-validation-for="OpenReadingFrameStart" class="text-danger"></span>
                 </div>
 
                 <div class="form-group col-md-6 mb-0">
                     <label asp-for="OpenReadingFrameEnd"></label>
                     <span data-toggle="tooltip" data-placement="right" title="@Localizer["ORFEndTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
-                    <input asp-for="OpenReadingFrameEnd" class="form-control" min="0" :disabled="genbankLoading">
+                    <input asp-for="OpenReadingFrameEnd" id="orfEnd" class="form-control" min="0" v-on:change="openReadingFrame" :disabled="genbankLoading">
                     <span asp-validation-for="OpenReadingFrameEnd" class="text-danger"></span>
                 </div>
             </div>
         </div>
 
         <!-- Regions for Target Design -->
-        <div class="my-3 p-3 bg-white rounded box-shadow">
+        <div class="my-3 p-3 bg-white rounded box-shadow" v-show="ORFExists">
             <div class="clearfix border-bottom border-gray mb-2">
                 <h6 class="float-md-left">Target regions <span data-toggle="tooltip" data-placement="right" title="@Localizer["TargetRegionsTooltip"]"><i class="fas fa-question-circle text-info"></i></span></h6>
             </div>
@@ -123,7 +123,7 @@
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" asp-for="SelectedTargetEnvironment" type="radio" value="@item.Value" v-on:change="targetEnvironment" id="targetEnvironment@(item.Value)">
                         <label class="form-check-label" for="targetEnvironment@(item.Value)">@item.Name</label>
-                    </div> 
+                    </div>
                 }
                 <span asp-validation-for="SelectedTargetEnvironment" class="text-danger"></span>
             </div>
@@ -147,10 +147,16 @@
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" asp-for="SelectedSpecificityMethod" type="radio" value="@item.Value" id="specificity@(item.Value)">
                         <label class="form-check-label" for="specificity@(item.Value)">@item.Name</label>
-                    </div> 
+                    </div>
                 }
                 <span asp-validation-for="SelectedSpecificityMethod" class="text-danger"></span>
                 <span data-toggle="tooltip" data-placement="right" title="@Localizer["SpecificityTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="TargetTemperature"></label>
+                <input asp-for="TargetTemperature" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("Temperature")">
+                <span asp-validation-for="TargetTemperature" class="invalid-feedback"></span>
             </div>
         </div>
 
