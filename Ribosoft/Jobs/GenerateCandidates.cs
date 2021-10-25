@@ -411,7 +411,7 @@ namespace Ribosoft.Jobs
                     CutsiteIndex = cutsiteIndex,
 
                     SubstrateSequenceLength = candidate.SubstrateSequence.Length,
-                    AccessibilityScore = accessibilityScore,
+                    AccessibilityScore = accessibilityScore
                 });
             }
         }
