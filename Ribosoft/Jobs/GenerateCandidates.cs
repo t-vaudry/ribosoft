@@ -391,9 +391,6 @@ namespace Ribosoft.Jobs
             var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
                 candidate.SubstrateStructure, naConcentration, probeConcentration, job.TargetTemperature.GetValueOrDefault());
 
-            var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
-                ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset);
-
             foreach (var cutsiteIndex in candidate.CutsiteIndices)
             {
                 var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, RNAStructure,
