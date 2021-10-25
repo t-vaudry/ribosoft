@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Xunit;
+using Ribosoft.Models;
 
 namespace Ribosoft.Tests
 {
@@ -106,19 +107,22 @@ namespace Ribosoft.Tests
             RibosoftAlgo sdc = new RibosoftAlgo();
             Candidate candidate = new Candidate();
 
-            float val = sdc.Anneal(candidate, "AAUUUCCCCGGGGG", "0123abxyzABXYZ", 1.0f, 0.05f);
-            Assert.Equal(89.6045f, val);
+            float val = sdc.Anneal(candidate, "AAUUUCCCCGGGGG", "0123abxyzABXYZ", 1.0f, 0.05f, 22.0f);
+            Assert.Equal(4570.36865f, val);
         }
 
         [Fact]
         public void TestStructure()
         {
             RibosoftAlgo sdc = new RibosoftAlgo();
-            Candidate candidate = new Candidate();
-            candidate.Sequence = new Biology.Sequence("AUGCACGU");
+            Design design = new Design();
+            design.Sequence = "AUGCACGU";
+            design.IdealStructure = ".(.().).";
+            IList<Design> designList = new List<Design>();
+            designList.Add(design);
 
-            float val = sdc.Structure(candidate, ".(.().).");
-            Assert.Equal(5.9977207f, val);
+            sdc.Structure(designList);
+            Assert.Equal(1.0f, designList[0].StructureScore);
         }
 
         [Fact]
@@ -138,17 +142,20 @@ namespace Ribosoft.Tests
             RibosoftAlgo sdc = new RibosoftAlgo();
             Candidate candidate = new Candidate();
 
-            Assert.Throws<RibosoftAlgoException>(() => sdc.Anneal(candidate, "AAUUUCCHJSGGGG", "0123abxyzABXYZ", 1.0f, 0.05f));
+            Assert.Throws<RibosoftAlgoException>(() => sdc.Anneal(candidate, "AAUUUCCHJSGGGG", "0123abxyzABXYZ", 1.0f, 0.05f, 22.0f));
         }
 
         [Fact]
         public void TestStructureInvalid()
         {
             RibosoftAlgo sdc = new RibosoftAlgo();
-            Candidate candidate = new Candidate();
-            candidate.Sequence = new Biology.Sequence("AUGCACGU");
+            Design design = new Design();
+            design.Sequence = "AUGCACGU";
+            design.IdealStructure = ".)(.)...";
+            IList<Design> designList = new List<Design>();
+            designList.Add(design);
 
-            Assert.Throws<RibosoftAlgoException>(() => sdc.Structure(candidate, ".)(.)..."));
+            Assert.Throws<RibosoftAlgoException>(() => sdc.Structure(designList));
         }
 
         [Fact]

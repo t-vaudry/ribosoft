@@ -67,6 +67,14 @@ namespace Ribosoft.Models.RequestViewModels
         [Display(Name = "Target regions")]
         public TargetRegionViewModel[] TargetRegions { get; set; }
 
+        /*! \property TargetTemperature
+         * \brief Target temperature of request
+         */
+        [Required]
+        [Range(-270.0f, 900.0f)]
+        [Display(Name = "Target Temperature (℃)")]
+        public float TargetTemperature { get; set; }
+
         /*! \property SelectedTargetEnvironment
          * \brief Selected target environment
          */
@@ -168,6 +176,7 @@ namespace Ribosoft.Models.RequestViewModels
          */
         public RequestViewModel()
         {
+            TargetTemperature = 22.0f;
             Temperature = 37.0f;
             Na = 100.0f;
             Probe = 0.05f;
@@ -194,8 +203,8 @@ namespace Ribosoft.Models.RequestViewModels
 
             SpecificityMethods = new List<SpecificityMethodViewModel>
             {
-                new SpecificityMethodViewModel { Name = "Cleavage", Value = SpecificityMethod.CleavageOnly },
-                new SpecificityMethodViewModel { Name = "Cleavage and hybridization", Value = SpecificityMethod.CleavageAndHybridization }
+                new SpecificityMethodViewModel { Name = "Synthetic", Value = SpecificityMethod.Synthetic },
+                new SpecificityMethodViewModel { Name = "Wildtype", Value = SpecificityMethod.Wildtype }
             };
         }
     }
