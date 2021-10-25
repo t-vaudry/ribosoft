@@ -245,7 +245,7 @@ namespace Ribosoft.Jobs
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
             foreach (var rnaInput in rnaInputs)
             {
-                RNAStructure = _ribosoftAlgo.MFEFolding(rnaInput);
+                RNAStructure = _ribosoftAlgo.MFEFold(rnaInput);
 
                 foreach (var ribozymeStructure in job.Ribozyme.RibozymeStructures)
                 {

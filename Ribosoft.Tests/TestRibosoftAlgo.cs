@@ -8,6 +8,17 @@ namespace Ribosoft.Tests
     public class TestRibosoftAlgo
     {
         [Fact]
+        public void TestDeafultFolding_Valid()
+        {
+            RibosoftAlgo sdc = new RibosoftAlgo();
+
+            var data = sdc.MFEFold("AUGUCUUAGGUGAUACGUGC");
+
+            Assert.False(data == null);
+            Assert.Equal(".((((......)))).....", data);
+        }
+
+        [Fact]
         public void TestFolding_Valid()
         {
             RibosoftAlgo sdc = new RibosoftAlgo();
@@ -44,6 +55,14 @@ namespace Ribosoft.Tests
         }
 
         [Fact]
+        public void TestDefaultFolding_Invalid()
+        {
+            RibosoftAlgo sdc = new RibosoftAlgo();
+
+            Exception ex = Assert.Throws<RibosoftAlgoException>(() => sdc.Fold("AUGUXWQD"));
+        }
+
+        [Fact]
         public void TestFolding_Invalid()
         {
             RibosoftAlgo sdc = new RibosoftAlgo();
@@ -75,10 +94,9 @@ namespace Ribosoft.Tests
             RibosoftAlgo sdc = new RibosoftAlgo();
             Candidate candidate = new Candidate();
             candidate.SubstrateSequence = "UUGUUGU";
-            candidate.CutsiteIndices = new List<int>();
-            candidate.CutsiteIndices.Add(11);
+            candidate.SubstrateStructure = "43..210";
 
-            float val = sdc.Accessibility(candidate, "CUUGAAGUGGUUUGUUGUGCUUGAAGAGACCCC", 4);
+            float val = sdc.Accessibility(candidate, "......((((..(((...)))..))))......", 11, 1.0f, 0.05f);
             Assert.Equal(3.3999999f, val);
         }
 
@@ -109,10 +127,9 @@ namespace Ribosoft.Tests
             RibosoftAlgo sdc = new RibosoftAlgo();
             Candidate candidate = new Candidate();
             candidate.SubstrateSequence = "UUGUXGU";
-            candidate.CutsiteIndices = new List<int>();
-            candidate.CutsiteIndices.Add(77);
+            candidate.SubstrateStructure = "43..210";
 
-            Assert.Throws<RibosoftAlgoException>(() => sdc.Accessibility(candidate, "CUUGAAGUGGUUUGUUGUGCUUGAAGAGACCCC", 4));
+            Assert.Throws<RibosoftAlgoException>(() => sdc.Accessibility(candidate, "......((((..(((...)))..))))......", 81, 1.0f, 0.5f));
         }
 
         [Fact]

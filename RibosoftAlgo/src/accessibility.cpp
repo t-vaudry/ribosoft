@@ -28,10 +28,10 @@ namespace ribosoft {
  * \param foldedStructure structure of target sequence on rna (folded using ViennaRNA)
  * \param na_concentration Sodium (Na+) concentration (in moles)
  * \param probe_concentration Nucleic acid concentration in excess (in moles)
- * \param delta Out variable for accessibility score
+ * \param score Out variable for accessibility score
  * \return Status Code
  */
-DLL_PUBLIC R_STATUS accessibility(const char* substrateSequence, const char* substrateStructure, const char* foldedStructure, const float na_concentration, const float probe_concentration, /*out*/ float& delta)
+DLL_PUBLIC R_STATUS accessibility(const char* substrateSequence, const char* substrateStructure, const char* foldedStructure, const float na_concentration, const float probe_concentration, /*out*/ float& score)
 {
     R_STATUS status;
 
@@ -80,12 +80,12 @@ DLL_PUBLIC R_STATUS accessibility(const char* substrateSequence, const char* sub
 
     if (isSingleStranded)
     {
-        delta = 0.0f;
+        score = 0.0f;
         return R_SUCCESS::R_STATUS_OK;
     }
     else
     {
-        return anneal(substrateSequence, substrateStructure, na_concentration, probe_concentration, delta);
+        return anneal(substrateSequence, substrateStructure, na_concentration, probe_concentration, score);
     }
 }
 

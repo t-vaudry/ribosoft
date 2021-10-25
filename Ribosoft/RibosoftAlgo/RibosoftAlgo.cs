@@ -55,7 +55,7 @@ namespace Ribosoft
          * \return status Status code
          */
         [DllImport("RibosoftAlgo")]
-        private static extern R_STATUS accessibility(string substrateSequence, string substrateStructure, string foldedStructure, float na_concentration, float probe_concentration, out float delta);
+        private static extern R_STATUS accessibility(string substrateSequence, string substrateStructure, string foldedStructure, float na_concentration, float probe_concentration, out float score);
 
         /*! \fn anneal
          * \brief DllImport from RibosoftAlgo of anneal
@@ -155,14 +155,14 @@ namespace Ribosoft
             string substrateStructure = candidate.SubstrateStructure;
             string foldedStructure = rnaStructure.Substring(cutsiteIndex, substrateSequence.Length);
 
-            R_STATUS status = accessibility(substrateSequence, substrateStructure, foldedStructure, naConcentration, probeConcentration, out float delta);
+            R_STATUS status = accessibility(substrateSequence, substrateStructure, foldedStructure, naConcentration, probeConcentration, out float score);
 
             if (status != R_STATUS.R_STATUS_OK)
             {
                 throw new RibosoftAlgoException(status);
             }
 
-            return delta;
+            return score;
         }
 
         /*! \fn Anneal
@@ -218,12 +218,12 @@ namespace Ribosoft
             return foldOutputs;
         }
 
-        /*! \fn MFEFolding
-         * \brief Algorithm function to fold the full input RNA
+        /*! \fn MFEFold
+         * \brief Algorithm function to fold the input using ViennaRNA's default fold
          * \param sequence Sequence to be folded
          * \return rnaStructure String containing the structure of the folded RNA
         */
-        public string MFEFolding(string sequence)
+        public string MFEFold(string sequence)
         {
             R_STATUS status = mfe_default_fold(sequence, out IntPtr structure);
 
