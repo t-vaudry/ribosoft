@@ -227,7 +227,6 @@ namespace Ribosoft
         {
             R_STATUS status = mfe_default_fold(sequence, out IntPtr structure);
 
-
             if (status != R_STATUS.R_STATUS_OK)
             {
                 throw new RibosoftAlgoException(status);
