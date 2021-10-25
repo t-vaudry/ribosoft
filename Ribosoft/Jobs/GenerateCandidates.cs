@@ -413,40 +413,6 @@ namespace Ribosoft.Jobs
             }
         }
 
-        /*! \fn RunScoreAlgorithms
-         * \brief Helper function to run score algorithms on candidates
-         * \param candidate Current candidate
-         * \param job Current job
-         * \param ribozymeStructure Current ribozyme structure
-         */
-        /*
-        private void RunScoreAlgorithms(Candidate candidate, Job job, RibozymeStructure ribozymeStructure)
-        {
-            var idealStructurePattern = new Regex(@"[^.^(^)]");
-            string ideal = idealStructurePattern.Replace(candidate.Structure, ".");
-
-            var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
-                candidate.SubstrateStructure, job.Na.GetValueOrDefault(), job.Probe.GetValueOrDefault());
-
-            var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
-                ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset);
-            var structureScore = _ribosoftAlgo.Structure(candidate, ideal);
-
-            _db.Designs.Add(new Design
-            {
-                JobId = job.Id,
-
-                Sequence = candidate.Sequence.GetString(),
-                CutsiteIndex = candidate.CutsiteIndices.First(),
-                SubstrateSequenceLength = candidate.SubstrateSequence.Length,
-
-                AccessibilityScore = accessibilityScore,
-                StructureScore = structureScore,
-                DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())
-            });
-        }
-        */
-
         /*! \fn MultiObjectiveOptimize
          * \brief Function used to run multi-objective optimization
          * Candidates are ranked and stored in the database
