@@ -260,6 +260,12 @@
                                 </th>
                                 <th>
                                     <div class="d-flex align-items-center sortable">
+                                        @Html.DisplayNameFor(model => model.Designs.Data.First().CutsiteIndex)
+                                        <i id="cutsitesort" class="fas fa-sort"></i>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex align-items-center sortable">
                                         @Html.DisplayNameFor(model => model.Designs.Data.First().DesiredTemperatureScore)
                                         <i id="destempsort" class="fas fa-sort"></i>
                                     </div>
@@ -294,6 +300,9 @@
                                     </td>*@
                                     <td>
                                         <code style="word-break: break-all;">@Html.DisplayFor(modelItem => item.Sequence)</code>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CutsiteIndex)
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.DesiredTemperatureScore)
@@ -422,6 +431,7 @@
             $("#filterOptions").structFilter({
                 fields: [
                     //{ id: "Rank", type: "number", label: "Rank" },
+                    { id: "CutsiteIndex", type: "number", label: "Cutsite Index" },
                     { id: "DesiredTemperatureScore", type: "number", label: "Desired Temperature Score" },
                     { id: "SpecificityScore", type: "number", label: "Specificity Score" },
                     { id: "AccessibilityScore", type: "number", label: "Accessibility Score" },
@@ -495,8 +505,8 @@
                     //case 'rank':
                         //sortOrder = '@ViewBag.RankSortParm';
                         //break;
-                    case 'hitemp':
-                        sortOrder = '@ViewBag.HiTempSortParm';
+                    case 'cutsite':
+                        sortOrder = '@ViewBag.CutsiteSortParm';
                         break;
                     case 'destemp':
                         sortOrder = '@ViewBag.DesTempSortParm';
@@ -592,6 +602,7 @@
             $('#csvAll').click(function () { return clickFuncAll("csv"); });
 
             //$('#ranksort').ready(function () { return sortFunc($('#ranksort')); })
+            $('#cutsitesort').ready(function () { return sortFunc($('#cutsitesort')); })
             $('#destempsort').ready(function () { return sortFunc($('#destempsort')); })
             $('#hitempsort').ready(function () { return sortFunc($('#hitempsort')); })
             $('#accesssort').ready(function () { return sortFunc($('#accesssort')); })
@@ -599,6 +610,7 @@
             $('#structsort').ready(function () { return sortFunc($('#structsort')); })
 
             //$('#ranksort').parent().click(function () { return sortClick($('#ranksort')); })
+            $('#cutsitesort').parent().click(function () { return sortClick($('#cutsitesort')); })
             $('#destempsort').parent().click(function () { return sortClick($('#destempsort')); })
             $('#hitempsort').parent().click(function () { return sortClick($('#hitempsort')); })
             $('#accesssort').parent().click(function () { return sortClick($('#accesssort')); })
