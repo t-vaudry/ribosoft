@@ -57,7 +57,7 @@ namespace Ribosoft
          * \return status Status code
          */
         [DllImport("RibosoftAlgo")]
-        private static extern R_STATUS accessibility(string substrateSequence, string substrateStructure, string foldedStructure, float na_concentration, float probe_concentration, out float score);
+        private static extern R_STATUS accessibility(string substrateSequence, string substrateStructure, string foldedStructure, float na_concentration, float probe_concentration, float targetTemperature, out float score);
 
         /*! \fn anneal
          * \brief DllImport from RibosoftAlgo of anneal
@@ -152,13 +152,34 @@ namespace Ribosoft
          * \return accessibilityScore Float evaluation score value
         */
 
-        public float Accessibility(Candidate candidate, string rnaStructure, int cutsiteIndex, float naConcentration, float probeConcentration)
+        public float Accessibility(Candidate candidate, string rnaStructure, int cutsiteIndex, float naConcentration, float probeConcentration, float targetTemperature)
         {
+            string testSubstrateSequence = "UUGUUGU";
+            string testSubstrateStructure = "43..210";
+            string testFoldedStructure = ".(((...";
+            float testNaConcentration = 1.0f;
+            float testProbeConcentration = 0.5f;
+            float testTargetTemoerature = 22.0f;
+
+            R_STATUS testStatus = accessibility(testSubstrateSequence, testSubstrateStructure, testFoldedStructure, testNaConcentration, testProbeConcentration, testTargetTemoerature, out float testScore);
+
+            string testSubstrateSequence2 = "UUGUXGU";
+            string testSubstrateStructure2 = "43..210";
+            string testFoldedStructure2 = ".(((...";
+            float testNaConcentration2 = 1.0f;
+            float testProbeConcentration2 = 0.5f;
+            float testTargetTemoerature2 = 22.0f;
+
+            R_STATUS testStatus2 = accessibility(testSubstrateSequence2, testSubstrateStructure2, testFoldedStructure2, testNaConcentration2, testProbeConcentration2, testTargetTemoerature2, out float testScore2);
+
+
+
+
             string substrateSequence = candidate.SubstrateSequence;
             string substrateStructure = candidate.SubstrateStructure;
             string foldedStructure = rnaStructure.Substring(cutsiteIndex, substrateSequence.Length);
 
-            R_STATUS status = accessibility(substrateSequence, substrateStructure, foldedStructure, naConcentration, probeConcentration, out float score);
+            R_STATUS status = accessibility(substrateSequence, substrateStructure, foldedStructure, naConcentration, probeConcentration, targetTemperature, out float score);
 
             if (status != R_STATUS.R_STATUS_OK)
             {

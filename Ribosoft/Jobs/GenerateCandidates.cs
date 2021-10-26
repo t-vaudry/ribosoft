@@ -387,14 +387,15 @@ namespace Ribosoft.Jobs
 
             float naConcentration = job.Na.GetValueOrDefault();
             float probeConcentration = job.Probe.GetValueOrDefault();
+            float targetTemperature = job.TargetTemperature.GetValueOrDefault();
 
             var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
-                candidate.SubstrateStructure, naConcentration, probeConcentration, job.TargetTemperature.GetValueOrDefault());
+                candidate.SubstrateStructure, naConcentration, probeConcentration, targetTemperature);
 
             foreach (var cutsiteIndex in candidate.CutsiteIndices)
             {
                 var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, RNAStructure,
-                    cutsiteIndex, naConcentration, probeConcentration);
+                    cutsiteIndex, naConcentration, probeConcentration, targetTemperature);
 
                 _db.Designs.Add(new Design
                 {
@@ -408,7 +409,8 @@ namespace Ribosoft.Jobs
                     CutsiteIndex = cutsiteIndex,
 
                     SubstrateSequenceLength = candidate.SubstrateSequence.Length,
-                    AccessibilityScore = accessibilityScore
+                    AccessibilityScore = accessibilityScore,
+                    DesiredTemperatureScore = temperatureScore
                 });
             }
         }
