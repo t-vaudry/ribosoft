@@ -29,6 +29,12 @@ namespace Ribosoft.Models
         [Display(Name = "Ribozyme Sequence")]
         public string Sequence { get; set; }
 
+        /*! \property IdealStructure
+         * \brief Ribozyme ideal structure
+         */
+        [Display(Name = "Ribozyme Ideal Structure")]
+        public string IdealStructure { get; set; }
+
         /*! \property Rank
          * \brief Ribozyme rank
          */
@@ -42,13 +48,6 @@ namespace Ribosoft.Models
         [Display(Name = "Desired Temperature Score")]
         [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? DesiredTemperatureScore { get; set; }
-
-        /*! \property HighestTemperatureScore
-         * \brief Highest Temperature Score
-         */
-        [Display(Name = "Highest Temperature Score")]
-        [DisplayFormat(DataFormatString="{0:0.###}")]
-        public float? HighestTemperatureScore { get; set; }
 
         /*! \property SpecificityScore
          * \brief Specificity Score
@@ -71,9 +70,14 @@ namespace Ribosoft.Models
         [DisplayFormat(DataFormatString="{0:0.###}")]
         public float? StructureScore { get; set; }
 
-        // substrate sequence
+        /*! \property SubstrateSequence
+         * \brief Substrate sequence
+         */
+        [Display(Name = "Substrate Sequence")]
+        public string SubstrateSequence { get; set; }
+
         /*! \property CutsiteIndex
-         * \brief Index of the ribozyme cut-site
+         * \brief Index of the ribozyme cut-site (beginning of substrate sequence)
          */
         public int CutsiteIndex { get; set; }
 
@@ -94,7 +98,6 @@ namespace Ribosoft.Models
         public virtual IEnumerable<OptimizeItem<float>> Comparables => new []
         {
             new OptimizeItem<float>(DesiredTemperatureScore.GetValueOrDefault(), OptimizeType.MIN, Job.DesiredTempTolerance.GetValueOrDefault()),
-            new OptimizeItem<float>(HighestTemperatureScore.GetValueOrDefault(), OptimizeType.MAX, Job.HighestTempTolerance.GetValueOrDefault()),
             new OptimizeItem<float>(SpecificityScore.GetValueOrDefault(), OptimizeType.MIN, Job.SpecificityTolerance.GetValueOrDefault()),
             new OptimizeItem<float>(AccessibilityScore.GetValueOrDefault(), OptimizeType.MIN, Job.AccessibilityTolerance.GetValueOrDefault()),
             new OptimizeItem<float>(StructureScore.GetValueOrDefault(), OptimizeType.MIN, Job.StructureTolerance.GetValueOrDefault())

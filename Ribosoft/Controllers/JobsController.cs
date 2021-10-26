@@ -464,8 +464,8 @@ namespace Ribosoft.Controllers
          */
         private void SetSortParams(string sortOrder)
         {
+            ViewBag.CutsiteSortParm = sortOrder == "cutsite_asc" ? "cutsite_desc" : "cutsite_asc";
             ViewBag.DesTempSortParm = sortOrder == "destemp_asc" ? "destemp_desc" : "destemp_asc";
-            ViewBag.HiTempSortParm = sortOrder == "hitemp_asc" ? "hitemp_desc" : "hitemp_asc";
             ViewBag.SpecSortParm = sortOrder == "spec_asc" ? "spec_desc" : "spec_asc";
             ViewBag.AccessSortParm = sortOrder == "access_asc" ? "access_desc" : "access_asc";
             ViewBag.StructSortParm = sortOrder == "struct_asc" ? "struct_desc" : "struct_asc";
@@ -481,17 +481,17 @@ namespace Ribosoft.Controllers
         {
             switch (sortOrder)
             {
+                case "cutsite_desc":
+                    designs = designs.OrderByDescending(d => d.CutsiteIndex);
+                    break;
+                case "cutsite_asc":
+                    designs = designs.OrderBy(d => d.CutsiteIndex);
+                    break;
                 case "destemp_desc":
                     designs = designs.OrderByDescending(d => d.DesiredTemperatureScore);
                     break;
                 case "destemp_asc":
                     designs = designs.OrderBy(d => d.DesiredTemperatureScore);
-                    break;
-                case "hitemp_desc":
-                    designs = designs.OrderByDescending(d => d.HighestTemperatureScore);
-                    break;
-                case "hitemp_asc":
-                    designs = designs.OrderBy(d => d.HighestTemperatureScore);
                     break;
                 case "spec_desc":
                     designs = designs.OrderByDescending(d => d.SpecificityScore);
@@ -564,9 +564,6 @@ namespace Ribosoft.Controllers
                 case "Rank":
                     designs = designs.Where(d => d.Rank > filterValue);
                     break;
-                case "HighestTemperatureScore":
-                    designs = designs.Where(d => d.HighestTemperatureScore > filterValue);
-                    break;
                 case "DesiredTemperatureScore":
                     designs = designs.Where(d => d.DesiredTemperatureScore > filterValue);
                     break;
@@ -596,9 +593,6 @@ namespace Ribosoft.Controllers
             {
                 case "Rank":
                     designs = designs.Where(d => d.Rank < filterValue);
-                    break;
-                case "HighestTemperatureScore":
-                    designs = designs.Where(d => d.HighestTemperatureScore < filterValue);
                     break;
                 case "DesiredTemperatureScore":
                     designs = designs.Where(d => d.DesiredTemperatureScore < filterValue);
@@ -631,9 +625,6 @@ namespace Ribosoft.Controllers
                 case "Rank":
                     designs = designs.Where(d => d.Rank == (int)filterValue);
                     break;
-                case "HighestTemperatureScore":
-                    designs = designs.Where(d => d.HighestTemperatureScore >= filterValue && d.HighestTemperatureScore < upperBound);
-                    break;
                 case "DesiredTemperatureScore":
                     designs = designs.Where(d => d.DesiredTemperatureScore >= filterValue && d.DesiredTemperatureScore < upperBound);
                     break;
@@ -664,9 +655,6 @@ namespace Ribosoft.Controllers
             {
                 case "Rank":
                     designs = designs.Where(d => d.Rank != (int)filterValue);
-                    break;
-                case "HighestTemperatureScore":
-                    designs = designs.Where(d => d.HighestTemperatureScore < filterValue || d.HighestTemperatureScore > upperBound);
                     break;
                 case "DesiredTemperatureScore":
                     designs = designs.Where(d => d.DesiredTemperatureScore < filterValue || d.DesiredTemperatureScore > upperBound);
@@ -702,13 +690,13 @@ namespace Ribosoft.Controllers
             switch (format)
             {
                 case "csv":
-                    payload += String.Format("Rank,DesiredTemperatureScore,HighestTemperatureScore,SpecificityScore,AccessibilityScore,StructureScore,CreatedAt,UpdatedAt,Sequence\n");
+                    payload += String.Format("Rank,CutsiteIndex,DesiredTemperatureScore,SpecificityScore,AccessibilityScore,StructureScore,CreatedAt,UpdatedAt,Sequence\n");
                     extension = "csv";
                     foreach (Design d in designs)
                     {
                         if (obj == null || obj.ContainsKey(d.JobId.ToString() + '-' + d.Id.ToString()))
                         {
-                            payload += String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
+                            payload += String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}\n", d.Rank, d.CutsiteIndex, d.DesiredTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
                         }
                     }
                     type = "application/csv";
@@ -737,7 +725,7 @@ namespace Ribosoft.Controllers
                     {
                         if (obj == null || obj.ContainsKey(d.JobId.ToString() + '-' + d.Id.ToString()))
                         {
-                            payload += String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
+                            payload += String.Format(">Rank {0} | CutsiteIndex {1} | DesiredTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.CutsiteIndex, d.DesiredTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
                         }
                     }
                     type = "text/plain";
@@ -763,7 +751,7 @@ namespace Ribosoft.Controllers
             newEntry.DateTime = DateTime.Now;
 
             zipStream.PutNextEntry(newEntry);
-            byteArray = Encoding.ASCII.GetBytes(String.Format(">Rank {0} | DesiredTemperatureScore {1} | HighestTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.DesiredTemperatureScore, d.HighestTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence));
+            byteArray = Encoding.ASCII.GetBytes(String.Format(">Rank {0} | CutsiteIndex {1} | DesiredTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.CutsiteIndex, d.DesiredTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence));
 
             MemoryStream inStream = new MemoryStream(byteArray);
             StreamUtils.Copy(inStream, zipStream, new byte[4096]);

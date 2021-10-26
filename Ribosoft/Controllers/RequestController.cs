@@ -99,7 +99,6 @@ namespace Ribosoft.Controllers
                 job.Na = model.Na;
                 job.Probe = model.Probe;
                 job.DesiredTempTolerance = model.DesiredTemperatureTolerance;
-                job.HighestTempTolerance = model.HighestTemperatureTolerance;
                 job.SpecificityTolerance = model.SpecificityTolerance;
                 job.AccessibilityTolerance = model.AccessibilityTolerance;
                 job.StructureTolerance = model.StructureTolerance;
@@ -110,6 +109,7 @@ namespace Ribosoft.Controllers
                 job.OpenReadingFrameEnd = model.OpenReadingFrameEnd;
                 job.OwnerId = user.Id;
                 job.JobState = JobState.New;
+                job.TargetTemperature = model.TargetTemperature;
 
                 if (model.SelectedTargetEnvironment == TargetEnvironment.InVivo && model.InVivoEnvironment.HasValue)
                 {
@@ -189,7 +189,14 @@ namespace Ribosoft.Controllers
          */
         private async Task<bool> ExceededMaxRequests(ApplicationUser user)
         {
-            return await _context.Jobs.CountAsync(j => j.OwnerId == user.Id) >= 20;
+            if ((await _userManager.GetRolesAsync(user)).ToList().Contains("Administrator"))
+            {
+                return await _context.Jobs.CountAsync(j => j.OwnerId == user.Id) >= 100;
+            }
+            else
+            {
+                return await _context.Jobs.CountAsync(j => j.OwnerId == user.Id) >= 20;
+            }
         }
     }
 }

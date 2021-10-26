@@ -92,6 +92,12 @@
                     </dd>
                 }
                 <dt class="col-md-2">
+                    @Html.DisplayNameFor(model => model.Job.TargetTemperature)
+                </dt>
+                <dd class="col-md-10">
+                    @Html.DisplayFor(model => model.Job.TargetTemperature)
+                </dd>
+                <dt class="col-md-2">
                     @Html.DisplayNameFor(model => model.Job.Temperature)
                 </dt>
                 <dd class="col-md-10">
@@ -130,12 +136,6 @@
                     </dt>
                     <dd class="col-md-8">
                         @Html.DisplayFor(model => model.Job.DesiredTempTolerance)
-                    </dd>
-                    <dt class="col-md-4">
-                        @Html.DisplayNameFor(model => model.Job.HighestTempTolerance)
-                    </dt>
-                    <dd class="col-md-8">
-                        @Html.DisplayFor(model => model.Job.HighestTempTolerance)
                     </dd>
                     <dt class="col-md-4">
                         @Html.DisplayNameFor(model => model.Job.SpecificityTolerance)
@@ -246,12 +246,13 @@
                     <table class="table table-hover mb-0">
                         <thead>
                             <tr>
-                                <th>
+                                <!-- Removing Rank -->
+                                @*<th>
                                     <div class="d-flex align-items-center sortable">
                                         @Html.DisplayNameFor(model => model.Designs.Data.First().Rank)
                                         <i id="ranksort" class="fas fa-sort"></i>
                                     </div>
-                                </th>
+                                </th>*@
                                 <th>
                                     <div class="d-flex align-items-center">
                                         @Html.DisplayNameFor(model => model.Designs.Data.First().Sequence)
@@ -259,14 +260,14 @@
                                 </th>
                                 <th>
                                     <div class="d-flex align-items-center sortable">
-                                        @Html.DisplayNameFor(model => model.Designs.Data.First().DesiredTemperatureScore)
-                                        <i id="destempsort" class="fas fa-sort"></i>
+                                        @Html.DisplayNameFor(model => model.Designs.Data.First().CutsiteIndex)
+                                        <i id="cutsitesort" class="fas fa-sort"></i>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="d-flex align-items-center sortable">
-                                        @Html.DisplayNameFor(model => model.Designs.Data.First().HighestTemperatureScore)
-                                        <i id="hitempsort" class="fas fa-sort"></i>
+                                        @Html.DisplayNameFor(model => model.Designs.Data.First().DesiredTemperatureScore)
+                                        <i id="destempsort" class="fas fa-sort"></i>
                                     </div>
                                 </th>
                                 <th>
@@ -293,17 +294,18 @@
                             @foreach (var item in Model.Designs.Data)
                             {
                                 <tr id="@item.JobId-@item.Id" class="clickable-row">
-                                    <td>
+                                    <!-- Removing Rank -->
+                                    @*<td>
                                         @Html.DisplayFor(modelItem => item.Rank)
-                                    </td>
+                                    </td>*@
                                     <td>
                                         <code style="word-break: break-all;">@Html.DisplayFor(modelItem => item.Sequence)</code>
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.DesiredTemperatureScore)
+                                        @Html.DisplayFor(modelItem => item.CutsiteIndex)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.HighestTemperatureScore)
+                                        @Html.DisplayFor(modelItem => item.DesiredTemperatureScore)
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.SpecificityScore)
@@ -375,10 +377,6 @@
                             <td>Desired temperature corresponds to the annealing temperature of the binding arms of the designed ribozyme to the input substrate, and how close it is to the desired temperature of the experiment.</td>
                         </tr>
                         <tr>
-                            <th scope="row">@Html.DisplayNameFor(model => model.Designs.Data.First().HighestTemperatureScore)</th>
-                            <td>Highest temperature corresponds to the annealing temperature of the binding arms of the designed ribozyme to the input substrate, and how high the temperature of the experiment can range.</td>
-                        </tr>
-                        <tr>
                             <th scope="row">@Html.DisplayNameFor(model => model.Designs.Data.First().SpecificityScore)</th>
                             <td>Ribozyme specificity evaluates the number of cut-site matches that occur in an in-vivo experiment. In other words, will the ribozyme be cleaving many other sequences in an in-vivo experiment, or has it been designed specifically enough to only focus on the targeted sequence.</td>
                         </tr>
@@ -432,8 +430,8 @@
 
             $("#filterOptions").structFilter({
                 fields: [
-                    { id: "Rank", type: "number", label: "Rank" },
-                    { id: "HighestTemperatureScore", type: "number", label: "Highest Temperature Score" },
+                    //{ id: "Rank", type: "number", label: "Rank" },
+                    { id: "CutsiteIndex", type: "number", label: "Cutsite Index" },
                     { id: "DesiredTemperatureScore", type: "number", label: "Desired Temperature Score" },
                     { id: "SpecificityScore", type: "number", label: "Specificity Score" },
                     { id: "AccessibilityScore", type: "number", label: "Accessibility Score" },
@@ -504,11 +502,11 @@
                 var type = el[0].id.slice(0, -4);
                 var sortOrder = '';
                 switch (type) {
-                    case 'rank':
-                        sortOrder = '@ViewBag.RankSortParm';
-                        break;
-                    case 'hitemp':
-                        sortOrder = '@ViewBag.HiTempSortParm';
+                    //case 'rank':
+                        //sortOrder = '@ViewBag.RankSortParm';
+                        //break;
+                    case 'cutsite':
+                        sortOrder = '@ViewBag.CutsiteSortParm';
                         break;
                     case 'destemp':
                         sortOrder = '@ViewBag.DesTempSortParm';
@@ -603,14 +601,16 @@
             $('#fastaAll').click(function () { return clickFuncAll("fasta"); });
             $('#csvAll').click(function () { return clickFuncAll("csv"); });
 
-            $('#ranksort').ready(function () { return sortFunc($('#ranksort')); })
+            //$('#ranksort').ready(function () { return sortFunc($('#ranksort')); })
+            $('#cutsitesort').ready(function () { return sortFunc($('#cutsitesort')); })
             $('#destempsort').ready(function () { return sortFunc($('#destempsort')); })
             $('#hitempsort').ready(function () { return sortFunc($('#hitempsort')); })
             $('#accesssort').ready(function () { return sortFunc($('#accesssort')); })
             $('#specsort').ready(function () { return sortFunc($('#specsort')); })
             $('#structsort').ready(function () { return sortFunc($('#structsort')); })
 
-            $('#ranksort').parent().click(function () { return sortClick($('#ranksort')); })
+            //$('#ranksort').parent().click(function () { return sortClick($('#ranksort')); })
+            $('#cutsitesort').parent().click(function () { return sortClick($('#cutsitesort')); })
             $('#destempsort').parent().click(function () { return sortClick($('#destempsort')); })
             $('#hitempsort').parent().click(function () { return sortClick($('#hitempsort')); })
             $('#accesssort').parent().click(function () { return sortClick($('#accesssort')); })

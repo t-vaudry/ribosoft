@@ -22,23 +22,23 @@
             <dd class="col-md-9">
                 <code>@Html.DisplayFor(model => model.SubstrateTargetSequence)</code>
             </dd>
-            <dt class="col-md-3">
+            @*<dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.Rank)
             </dt>
             <dd class="col-md-9">
                 @Html.DisplayFor(model => model.Rank)
+            </dd>*@
+            <dt class="col-md-3">
+                @Html.DisplayNameFor(model => model.CutsiteIndex)
+            </dt>
+            <dd class="col-md-9">
+                @Html.DisplayFor(model => model.CutsiteIndex)
             </dd>
             <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.DesiredTemperatureScore)
             </dt>
             <dd class="col-md-9">
                 @Html.DisplayFor(model => model.DesiredTemperatureScore)
-            </dd>
-            <dt class="col-md-3">
-                @Html.DisplayNameFor(model => model.HighestTemperatureScore)
-            </dt>
-            <dd class="col-md-9">
-                @Html.DisplayFor(model => model.HighestTemperatureScore)
             </dd>
             <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.SpecificityScore)
@@ -62,7 +62,7 @@
                 Download
             </dt>
             <dd class="col-md-9">
-                @Html.ActionLink("FASTA File", "DownloadDesign", new {jobID = Model.JobId, rank = Model.Rank, desiredTemperatureScore = Model.DesiredTemperatureScore, highestTemperatureScore = Model.HighestTemperatureScore, specificityScore = Model.SpecificityScore, accessibilityScore = Model.AccessibilityScore, structureScore = Model.StructureScore, createdAt = Model.CreatedAt, updatedAt = Model.UpdatedAt, sequence = Model.Sequence}, new { @class = "btn btn-sm btn-primary"})
+                @Html.ActionLink("FASTA File", "DownloadDesign", new {jobID = Model.JobId, rank = Model.Rank, cutsiteIndex = Model.CutsiteIndex, desiredTemperatureScore = Model.DesiredTemperatureScore, specificityScore = Model.SpecificityScore, accessibilityScore = Model.AccessibilityScore, structureScore = Model.StructureScore, createdAt = Model.CreatedAt, updatedAt = Model.UpdatedAt, sequence = Model.Sequence }, new { @class = "btn btn-sm btn-primary" })
             </dd>
         </dl>
     </div>
