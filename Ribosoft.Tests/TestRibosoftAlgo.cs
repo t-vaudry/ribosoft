@@ -133,7 +133,7 @@ namespace Ribosoft.Tests
             candidate.SubstrateSequence = "UUGUXGU";
             candidate.SubstrateStructure = "43..210";
 
-            Assert.Throws<RibosoftAlgoException>(() => sdc.Accessibility(candidate, "......((((..(((...)))..))))......", 81, 1.0f, 22.0f, 0.5f));
+            Assert.Throws<RibosoftAlgoException>(() => sdc.Accessibility(candidate, "......((((..(((...)))..))))......", 11, 1.0f, 22.0f, 0.5f));
         }
 
         [Fact]
