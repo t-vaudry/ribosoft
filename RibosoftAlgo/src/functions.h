@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include <cstring>
+#include <string>
 
 //! \namespace ribosoft
 namespace ribosoft {
@@ -40,7 +41,8 @@ extern "C" DLL_PUBLIC R_STATUS validate_structure(const char* structure);
  * Accessibility of cutsite on the substrate
  * @file accessibility.cpp
  */
-extern "C" DLL_PUBLIC R_STATUS accessibility(const char* substrateSequence, const char* substrateTemplate, const int cutsiteIndex, const int cutsiteNumber, /*out*/ float& delta);
+extern "C" DLL_PUBLIC R_STATUS accessibility(const char* substrate_sequence, const char* substrate_structure, const char* folded_structure, const float na_concentration, const float probe_concentration, const float target_temp, /*out*/ float& score);
+
 
 /*! \fn anneal
  * \brief anneal
@@ -62,6 +64,20 @@ extern "C" DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& 
  * @file fold.cpp
  */
 extern "C" DLL_PUBLIC void fold_output_free(fold_output* output, size_t size);
+
+/*! \fn mfe_default_fold
+ * \brief mfe_deafult_fold
+ * Fold function used to fold sequence w/o constraints with ViennaRNA
+ * @file mfe_default_fold.cpp
+ */
+extern "C" DLL_PUBLIC R_STATUS mfe_default_fold(const char* sequence, /*out*/ char*& structure);
+
+/*! \fn fold_output_free
+ * \brief fold_output_free
+ * Function to free fold structure memory
+ * @file fold.cpp
+ */
+extern "C" DLL_PUBLIC void mfe_default_fold_free(char* output);
 
 /*! \fn structure
  * \brief structure
