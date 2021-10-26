@@ -31,22 +31,22 @@ namespace ribosoft {
  * \param score Out variable for accessibility score
  * \return Status Code
  */
-DLL_PUBLIC R_STATUS accessibility(const char* substrateSequence, const char* substrateStructure, const char* foldedStructure, const float na_concentration, const float probe_concentration, /*out*/ float& score)
+DLL_PUBLIC R_STATUS accessibility(const char* substrate_sequence, const char* substrate_structure, const char* folded_structure, const float na_concentration, const float probe_concentration, const float target_temp, /*out*/ float& score)
 {
     R_STATUS status;
 
     // validate input sequence
-    status = validate_sequence(substrateSequence);
+    status = validate_sequence(substrate_sequence);
     if (status != R_SUCCESS::R_STATUS_OK) {
         return status;
     }
 
-    std::string substrate_sequence = substrateSequence;
-    std::string substrate_structure = substrateStructure;
-    std::string folded_structure = foldedStructure;
+    std::string local_sequence = substrate_sequence;
+    std::string local_structure = substrate_structure;
+    std::string local_folded = folded_structure;
 
-    if (substrate_sequence.length() != substrate_structure.length() ||
-        substrate_structure.length() != folded_structure.length()) {
+    if (local_sequence.length() != local_structure.length() ||
+        local_structure.length() != local_folded.length()) {
         return R_APPLICATION_ERROR::R_STRUCT_LENGTH_DIFFER;
     }
 
@@ -63,19 +63,22 @@ DLL_PUBLIC R_STATUS accessibility(const char* substrateSequence, const char* sub
 
     bool isSingleStranded = true;
 
-    for (std::sregex_iterator i = std::sregex_iterator(substrate_structure.begin(), substrate_structure.end(), base_regex);
+    for (std::sregex_iterator i = std::sregex_iterator(local_structure.begin(), local_structure.end(), base_regex);
         i != std::sregex_iterator();
         ++i)
     {
         std::smatch match = *i;
         for (int j = 0; j < match.length(); j++)
         {
-            if (folded_structure[match.position() + j] != '.')
+            if (local_folded[match.position() + j] != '.')
             {
                 isSingleStranded = false;
                 break;
             }
         }
+
+        if (!isSingleStranded)
+            break;
     }
 
     if (isSingleStranded)
@@ -85,7 +88,7 @@ DLL_PUBLIC R_STATUS accessibility(const char* substrateSequence, const char* sub
     }
     else
     {
-        return anneal(substrateSequence, substrateStructure, na_concentration, probe_concentration, score);
+        return anneal(substrate_sequence, substrate_structure, na_concentration, probe_concentration, target_temp, score);
     }
 }
 

@@ -41,7 +41,7 @@ extern "C" DLL_PUBLIC R_STATUS validate_structure(const char* structure);
  * Accessibility of cutsite on the substrate
  * @file accessibility.cpp
  */
-extern "C" DLL_PUBLIC R_STATUS accessibility(const char* substrateSequence, const char* substrateStructure, const char* foldedStructure, const float na_concentration, const float probe_concentration, /*out*/ float& score);
+extern "C" DLL_PUBLIC R_STATUS accessibility(const char* substrate_sequence, const char* substrate_structure, const char* folded_structure, const float na_concentration, const float probe_concentration, const float target_temp, /*out*/ float& score);
 
 
 /*! \fn anneal

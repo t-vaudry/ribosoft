@@ -9,7 +9,7 @@ namespace Ribosoft.Tests
     public class TestRibosoftAlgo
     {
         [Fact]
-        public void TestDeafultFolding_Valid()
+        public void TestDefaultFolding_Valid()
         {
             RibosoftAlgo sdc = new RibosoftAlgo();
 
@@ -60,7 +60,7 @@ namespace Ribosoft.Tests
         {
             RibosoftAlgo sdc = new RibosoftAlgo();
 
-            Exception ex = Assert.Throws<RibosoftAlgoException>(() => sdc.Fold("AUGUXWQD"));
+            Exception ex = Assert.Throws<RibosoftAlgoException>(() => sdc.MFEFold("AUGUXWQD"));
         }
 
         [Fact]
@@ -97,8 +97,8 @@ namespace Ribosoft.Tests
             candidate.SubstrateSequence = "UUGUUGU";
             candidate.SubstrateStructure = "43..210";
 
-            float val = sdc.Accessibility(candidate, "......((((..(((...)))..))))......", 11, 1.0f, 0.05f);
-            Assert.Equal(3.3999999f, val);
+            float val = sdc.Accessibility(candidate, "......((((..(((...)))..))))......", 11, 1.0f, 22.0f, 0.05f);
+            Assert.Equal(3936531.5f, val);
         }
 
         [Fact]
@@ -133,7 +133,7 @@ namespace Ribosoft.Tests
             candidate.SubstrateSequence = "UUGUXGU";
             candidate.SubstrateStructure = "43..210";
 
-            Assert.Throws<RibosoftAlgoException>(() => sdc.Accessibility(candidate, "......((((..(((...)))..))))......", 81, 1.0f, 0.5f));
+            Assert.Throws<RibosoftAlgoException>(() => sdc.Accessibility(candidate, "......((((..(((...)))..))))......", 81, 1.0f, 22.0f, 0.5f));
         }
 
         [Fact]
