@@ -1,11 +1,12 @@
 var searchData=
 [
-  ['filter_129',['Filter',['../da/d16/structRibosoft_1_1Models_1_1JobsViewModels_1_1JobDetailsViewModel_1_1Filter.html',1,'Ribosoft::Models::JobsViewModels::JobDetailsViewModel']]],
-  ['filterdesigns_130',['FilterDesigns',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ad987ef2b21fa369c014d216dd1ca38c6',1,'Ribosoft::Controllers::JobsController']]],
-  ['filterlist_131',['FilterList',['../d6/d8a/classRibosoft_1_1Models_1_1JobsViewModels_1_1JobDetailsViewModel.html#a7a1a73e21b19bc043e0443a3769e9597',1,'Ribosoft::Models::JobsViewModels::JobDetailsViewModel']]],
-  ['fiveprime_132',['FivePrime',['../d8/dc9/classRibosoft_1_1Models_1_1Job.html#af76abdb199d6000225b58911ccfa6114',1,'Ribosoft::Models::Job']]],
-  ['fold_133',['fold',['../d8/dd8/fold_8cpp.html#a5e2a3cd4d15b7f5cbe27e0f68d4ae276',1,'ribosoft::fold()'],['../d8/d91/classRibosoft_1_1RibosoftAlgo.html#aa9be0a214acc7e7bb21294b564007193',1,'Ribosoft.RibosoftAlgo.fold(string sequence, out IntPtr output, out int size)']]],
-  ['fold_134',['Fold',['../d8/d91/classRibosoft_1_1RibosoftAlgo.html#a655adc424c83691b95c1aac6ecdc8a44',1,'Ribosoft::RibosoftAlgo']]],
+  ['filter_128',['Filter',['../da/d16/structRibosoft_1_1Models_1_1JobsViewModels_1_1JobDetailsViewModel_1_1Filter.html',1,'Ribosoft::Models::JobsViewModels::JobDetailsViewModel']]],
+  ['filterdesigns_129',['FilterDesigns',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ad987ef2b21fa369c014d216dd1ca38c6',1,'Ribosoft::Controllers::JobsController']]],
+  ['filterlist_130',['FilterList',['../d6/d8a/classRibosoft_1_1Models_1_1JobsViewModels_1_1JobDetailsViewModel.html#a7a1a73e21b19bc043e0443a3769e9597',1,'Ribosoft::Models::JobsViewModels::JobDetailsViewModel']]],
+  ['fiveprime_131',['FivePrime',['../d8/dc9/classRibosoft_1_1Models_1_1Job.html#af76abdb199d6000225b58911ccfa6114',1,'Ribosoft::Models::Job']]],
+  ['fold_132',['fold',['../d8/dd8/fold_8cpp.html#a5e2a3cd4d15b7f5cbe27e0f68d4ae276',1,'ribosoft']]],
+  ['fold_133',['Fold',['../d8/d91/classRibosoft_1_1RibosoftAlgo.html#a655adc424c83691b95c1aac6ecdc8a44',1,'Ribosoft::RibosoftAlgo']]],
+  ['fold_134',['fold',['../d8/d91/classRibosoft_1_1RibosoftAlgo.html#aa9be0a214acc7e7bb21294b564007193',1,'Ribosoft::RibosoftAlgo']]],
   ['fold_2ecpp_135',['fold.cpp',['../d8/dd8/fold_8cpp.html',1,'']]],
   ['fold_5foutput_136',['fold_output',['../da/db7/structribosoft_1_1fold__output.html',1,'ribosoft']]],
   ['fold_5foutput_5ffree_137',['fold_output_free',['../d8/dd8/fold_8cpp.html#a26641e827b8d55a67dc9ace940754030',1,'ribosoft::fold_output_free()'],['../d8/d91/classRibosoft_1_1RibosoftAlgo.html#a49fbef14428a2ef4c7b2fd51e08874f1',1,'Ribosoft.RibosoftAlgo.fold_output_free()']]],

@@ -88,120 +88,76 @@ $(function() {
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;cstdlib&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;cstring&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;cmath&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;ViennaRNA/data_structures.h&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;ViennaRNA/constraints.h&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;regex&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;functions.h&quot;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;functions.h&quot;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
-<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="../../df/df2/accessibility_8cpp.html#a6601d994ba32b11511b36f68b08403be">   53</a></span>&#160;    vrna_fold_compound_t* <a class="code" href="../../df/df2/accessibility_8cpp.html#a6601d994ba32b11511b36f68b08403be">vrna_fold_compound</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* sequence, vrna_md_t* md_p, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> options);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="../../df/df2/accessibility_8cpp.html#abd3b147371ccf25c577f88bbbaf159fd">   82</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="../../df/df2/accessibility_8cpp.html#abd3b147371ccf25c577f88bbbaf159fd">vrna_mfe</a>(vrna_fold_compound_t* vc, <span class="keywordtype">char</span>* structure);</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span>ribosoft {</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="../../df/df2/accessibility_8cpp.html#a78ceedb01d65fdf8a81beb56848da9d8">   34</a></span>&#160;DLL_PUBLIC R_STATUS <a class="code" href="../../df/df2/accessibility_8cpp.html#a78ceedb01d65fdf8a81beb56848da9d8">accessibility</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* substrate_sequence, <span class="keyword">const</span> <span class="keywordtype">char</span>* substrate_structure, <span class="keyword">const</span> <span class="keywordtype">char</span>* folded_structure, <span class="keyword">const</span> <span class="keywordtype">float</span> na_concentration, <span class="keyword">const</span> <span class="keywordtype">float</span> probe_concentration, <span class="keyword">const</span> <span class="keywordtype">float</span> target_temp, <span class="comment">/*out*/</span> <span class="keywordtype">float</span>&amp; score)</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;{</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    R_STATUS status;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="comment">// validate input sequence</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    status = validate_sequence(substrate_sequence);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordflow">if</span> (status != R_SUCCESS::R_STATUS_OK) {</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordflow">return</span> status;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    }</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    std::string local_sequence = substrate_sequence;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    std::string local_structure = substrate_structure;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    std::string local_folded = folded_structure;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordflow">if</span> (local_sequence.length() != local_structure.length() ||</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        local_structure.length() != local_folded.length()) {</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordflow">return</span> R_APPLICATION_ERROR::R_STRUCT_LENGTH_DIFFER;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    }</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="comment">// TODO: minimum chosen arbitrarily; will change once we have more science info</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordflow">if</span> (na_concentration &lt; 0.0000000001f) {</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordflow">return</span> R_APPLICATION_ERROR::R_INVALID_CONCENTRATION;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    }</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordflow">if</span> (probe_concentration &lt; 0.0000000001f) {</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordflow">return</span> R_APPLICATION_ERROR::R_INVALID_CONCENTRATION;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    }</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    std::regex base_regex(<span class="stringliteral">&quot;[0-9a-zA-Z]+&quot;</span>);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordtype">bool</span> isSingleStranded = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordflow">for</span> (std::sregex_iterator i = std::sregex_iterator(local_structure.begin(), local_structure.end(), base_regex);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        i != std::sregex_iterator();</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        ++i)</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    {</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        std::smatch match = *i;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> j = 0; j &lt; match.length(); j++)</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        {</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            <span class="keywordflow">if</span> (local_folded[match.position() + j] != <span class="charliteral">&#39;.&#39;</span>)</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            {</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                isSingleStranded = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            }</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        }</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="keywordflow">if</span> (!isSingleStranded)</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    }</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00123"></a><span class="lineno"><a class="line" href="../../df/df2/accessibility_8cpp.html#a35a401f680969a556858a8dd5f1d07cc">  123</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="../../df/df2/accessibility_8cpp.html#a35a401f680969a556858a8dd5f1d07cc">vrna_constraints_add</a>(vrna_fold_compound_t* vc, <span class="keyword">const</span> <span class="keywordtype">char</span>* constraint, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> options);</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;}</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="keyword">namespace </span>ribosoft {</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
-<div class="line"><a name="l00129"></a><span class="lineno"><a class="line" href="../../df/df2/accessibility_8cpp.html#af9157998ad9960cf5420a0fca64f5f40">  129</a></span>&#160;<span class="preprocessor">#define MAX_TEMPLATE_LENGTH         200 </span></div>
-<div class="line"><a name="l00130"></a><span class="lineno"><a class="line" href="../../df/df2/accessibility_8cpp.html#a9e9a730c7f6cac5e9029d2ebc420b139">  130</a></span>&#160;<span class="preprocessor">#define EXTENDED_CUTSITE_LENGTH     100 </span></div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
-<div class="line"><a name="l00153"></a><span class="lineno"><a class="line" href="../../df/df2/accessibility_8cpp.html#a467514a9b2d166b38f675bcfc4405b86">  153</a></span>&#160;DLL_PUBLIC R_STATUS <a class="code" href="../../df/df2/accessibility_8cpp.html#a467514a9b2d166b38f675bcfc4405b86">accessibility</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* rna, <span class="keyword">const</span> <span class="keywordtype">char</span>* substrateSequence, <span class="keyword">const</span> <span class="keywordtype">int</span> cutsiteIndex, <span class="keyword">const</span> <span class="keywordtype">int</span> cutsiteNumber, <span class="comment">/*out*/</span> <span class="keywordtype">float</span>&amp; delta)</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;{</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    R_STATUS status = validate_sequence(rna);</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    <span class="keywordflow">if</span> (status != R_SUCCESS::R_STATUS_OK) {</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        <span class="keywordflow">return</span> status;</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    }</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    <span class="keywordflow">if</span> (cutsiteIndex &gt; strlen(rna) || cutsiteIndex &lt; 0) {</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        <span class="keywordflow">return</span> R_APPLICATION_ERROR::R_OUT_OF_RANGE;</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    }</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keywordflow">if</span> (cutsiteNumber &gt; strlen(substrateSequence) || cutsiteNumber &lt; 0) {</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        <span class="keywordflow">return</span> R_APPLICATION_ERROR::R_OUT_OF_RANGE;</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    }</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <span class="keywordflow">if</span> (strlen(substrateSequence) &gt; <a class="code" href="../../df/df2/accessibility_8cpp.html#af9157998ad9960cf5420a0fca64f5f40">MAX_TEMPLATE_LENGTH</a>) {</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        <span class="keywordflow">return</span> R_APPLICATION_ERROR::R_INVALID_TEMPLATE_LENGTH;</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    }</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keywordtype">int</span> subSequenceStart = cutsiteIndex - <a class="code" href="../../df/df2/accessibility_8cpp.html#a9e9a730c7f6cac5e9029d2ebc420b139">EXTENDED_CUTSITE_LENGTH</a>;</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keywordtype">int</span> subSequenceEnd = cutsiteIndex + <a class="code" href="../../df/df2/accessibility_8cpp.html#a9e9a730c7f6cac5e9029d2ebc420b139">EXTENDED_CUTSITE_LENGTH</a>;</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="comment">// If cutsiteIndex is close to the beginning</span></div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    <span class="keywordflow">if</span> (subSequenceStart &lt; 0) {</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        subSequenceStart = 0;</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    }</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    <span class="comment">// If cutsiteIndex is close to the end</span></div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    <span class="keywordflow">if</span> (subSequenceEnd &gt; strlen(rna)) {</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        subSequenceEnd = (int) strlen(rna) - 1;</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    }</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160; </div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="keywordtype">int</span> length = subSequenceEnd - subSequenceStart;</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160; </div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    <span class="comment">// Copy substring of sequence that will be folded</span></div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    <span class="keywordtype">char</span>* subSequence = <span class="keyword">new</span> <span class="keywordtype">char</span>[length + 1];</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    strncpy(subSequence, &amp;rna[subSequenceStart], length);</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    subSequence[length] = <span class="charliteral">&#39;\0&#39;</span>;</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160; </div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    <span class="keywordtype">char</span>* constraints = <span class="keyword">new</span> <span class="keywordtype">char</span>[length + 1];</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    memset(constraints, <span class="charliteral">&#39;.&#39;</span>, length);</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160; </div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    <span class="comment">// Set constraints for not folding here</span></div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    <span class="keywordtype">int</span> constraintStart = cutsiteIndex - subSequenceStart - cutsiteNumber;</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    <span class="keywordtype">int</span> constraintEnd = constraintStart + (int) strlen(substrateSequence);</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160; </div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    <span class="keywordflow">if</span> (constraintStart &lt; 0) {</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;        constraintStart = 0;</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    }</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    <span class="keywordflow">if</span> (constraintEnd &gt; length) {</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;        constraintEnd = length - 1;</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    }</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    <span class="keywordflow">for</span> (idx_t i = constraintStart; i &lt; constraintEnd; ++i) {</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;        constraints[i] = <span class="charliteral">&#39;x&#39;</span>;</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    }</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160; </div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    constraints[length] = <span class="charliteral">&#39;\0&#39;</span>;</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160; </div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    <span class="comment">// Default fold</span></div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    <span class="keywordtype">char</span>* defaultMFEStructure = <span class="keyword">new</span> <span class="keywordtype">char</span>[length + 1];</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    vrna_fold_compound_t* defaultFoldCompound = <a class="code" href="../../df/df2/accessibility_8cpp.html#a6601d994ba32b11511b36f68b08403be">vrna_fold_compound</a>(subSequence, NULL, VRNA_OPTION_DEFAULT);</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;    <span class="keywordtype">float</span> defaultMFE = (float) <a class="code" href="../../df/df2/accessibility_8cpp.html#abd3b147371ccf25c577f88bbbaf159fd">vrna_mfe</a>(defaultFoldCompound, defaultMFEStructure);</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160; </div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    <span class="comment">// Fold with constraints</span></div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    <span class="keywordtype">char</span>* constraintMFEStructure = <span class="keyword">new</span> <span class="keywordtype">char</span>[length + 1];</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> constraint_options = VRNA_CONSTRAINT_DB_DEFAULT;</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    vrna_fold_compound_t* constraintFoldCompound = <a class="code" href="../../df/df2/accessibility_8cpp.html#a6601d994ba32b11511b36f68b08403be">vrna_fold_compound</a>(subSequence, NULL, VRNA_OPTION_DEFAULT);</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    <a class="code" href="../../df/df2/accessibility_8cpp.html#a35a401f680969a556858a8dd5f1d07cc">vrna_constraints_add</a>(constraintFoldCompound, (<span class="keyword">const</span> <span class="keywordtype">char</span> *) constraints, constraint_options);</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    <span class="keywordtype">float</span> constraintMFE = (float) <a class="code" href="../../df/df2/accessibility_8cpp.html#abd3b147371ccf25c577f88bbbaf159fd">vrna_mfe</a>(constraintFoldCompound, constraintMFEStructure);</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    <span class="comment">// Get absolute value of delta(MFE)</span></div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;    delta = std::fabs(constraintMFE - defaultMFE);</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160; </div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    <span class="comment">// Free memory</span></div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    <span class="keyword">delete</span>[] subSequence;</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;    <span class="keyword">delete</span>[] constraints;</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    <span class="keyword">delete</span>[] defaultMFEStructure;</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    <span class="keyword">delete</span>[] constraintMFEStructure;</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160; </div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;    vrna_fold_compound_free(defaultFoldCompound);</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;    vrna_fold_compound_free(constraintFoldCompound);</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160; </div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    <span class="keywordflow">return</span> R_SUCCESS::R_STATUS_OK;</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;}</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160; </div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;}</div>
-<div class="ttc" id="aaccessibility_8cpp_html_a35a401f680969a556858a8dd5f1d07cc"><div class="ttname"><a href="../../df/df2/accessibility_8cpp.html#a35a401f680969a556858a8dd5f1d07cc">vrna_constraints_add</a></div><div class="ttdeci">void vrna_constraints_add(vrna_fold_compound_t *vc, const char *constraint, unsigned int options)</div><div class="ttdoc">Add constraints to a vrna_fold_compound_t data structure.</div></div>
-<div class="ttc" id="aaccessibility_8cpp_html_a467514a9b2d166b38f675bcfc4405b86"><div class="ttname"><a href="../../df/df2/accessibility_8cpp.html#a467514a9b2d166b38f675bcfc4405b86">ribosoft::accessibility</a></div><div class="ttdeci">R_STATUS accessibility(const char *rna, const char *substrateSequence, const int cutsiteIndex, const int cutsiteNumber, float &amp;delta)</div><div class="ttdoc">Accessibility score. Used to calculate the accessibility of the cutsite in the RNA sequence....</div><div class="ttdef"><b>Definition:</b> <a href="../../df/df2/accessibility_8cpp_source.html#l00153">accessibility.cpp:153</a></div></div>
-<div class="ttc" id="aaccessibility_8cpp_html_a6601d994ba32b11511b36f68b08403be"><div class="ttname"><a href="../../df/df2/accessibility_8cpp.html#a6601d994ba32b11511b36f68b08403be">vrna_fold_compound</a></div><div class="ttdeci">vrna_fold_compound_t * vrna_fold_compound(const char *sequence, vrna_md_t *md_p, unsigned int options)</div><div class="ttdoc">Retrieve a vrna_fold_compound_t data structure for single sequences and hybridizing sequences.</div></div>
-<div class="ttc" id="aaccessibility_8cpp_html_a9e9a730c7f6cac5e9029d2ebc420b139"><div class="ttname"><a href="../../df/df2/accessibility_8cpp.html#a9e9a730c7f6cac5e9029d2ebc420b139">EXTENDED_CUTSITE_LENGTH</a></div><div class="ttdeci">#define EXTENDED_CUTSITE_LENGTH</div><div class="ttdoc">Extension of cutsite to include in accessibility score.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/df2/accessibility_8cpp_source.html#l00130">accessibility.cpp:130</a></div></div>
-<div class="ttc" id="aaccessibility_8cpp_html_abd3b147371ccf25c577f88bbbaf159fd"><div class="ttname"><a href="../../df/df2/accessibility_8cpp.html#abd3b147371ccf25c577f88bbbaf159fd">vrna_mfe</a></div><div class="ttdeci">float vrna_mfe(vrna_fold_compound_t *vc, char *structure)</div><div class="ttdoc">Compute minimum free energy and an appropriate secondary structure of an RNA sequence,...</div></div>
-<div class="ttc" id="aaccessibility_8cpp_html_af9157998ad9960cf5420a0fca64f5f40"><div class="ttname"><a href="../../df/df2/accessibility_8cpp.html#af9157998ad9960cf5420a0fca64f5f40">MAX_TEMPLATE_LENGTH</a></div><div class="ttdeci">#define MAX_TEMPLATE_LENGTH</div><div class="ttdoc">Max length for substrateSequence.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/df2/accessibility_8cpp_source.html#l00129">accessibility.cpp:129</a></div></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordflow">if</span> (isSingleStranded)</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    {</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        score = 0.0f;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keywordflow">return</span> R_SUCCESS::R_STATUS_OK;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    }</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    {</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="../../d8/d96/anneal_8cpp.html#a24ffa8866a825e47c9ff7c1a6b0a4cc1">anneal</a>(substrate_sequence, substrate_structure, na_concentration, probe_concentration, target_temp, score);</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    }</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;}</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;}</div>
+<div class="ttc" id="aaccessibility_8cpp_html_a78ceedb01d65fdf8a81beb56848da9d8"><div class="ttname"><a href="../../df/df2/accessibility_8cpp.html#a78ceedb01d65fdf8a81beb56848da9d8">ribosoft::accessibility</a></div><div class="ttdeci">R_STATUS accessibility(const char *substrate_sequence, const char *substrate_structure, const char *folded_structure, const float na_concentration, const float probe_concentration, const float target_temp, float &amp;score)</div><div class="ttdoc">Accessibility score. Used to calculate the accessibility of the cutsite in the RNA sequence....</div><div class="ttdef"><b>Definition:</b> <a href="../../df/df2/accessibility_8cpp_source.html#l00034">accessibility.cpp:34</a></div></div>
+<div class="ttc" id="aanneal_8cpp_html_a24ffa8866a825e47c9ff7c1a6b0a4cc1"><div class="ttname"><a href="../../d8/d96/anneal_8cpp.html#a24ffa8866a825e47c9ff7c1a6b0a4cc1">ribosoft::anneal</a></div><div class="ttdeci">R_STATUS anneal(const char *sequence, const char *structure, const float na_concentration, const float probe_concentration, const float target_temp, float &amp;temp)</div><div class="ttdoc">Annealing Temperature Score Used to calculate the annealing temperature of the ribozyme to the substr...</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d96/anneal_8cpp_source.html#l00041">anneal.cpp:41</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->

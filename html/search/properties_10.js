@@ -15,5 +15,6 @@ var searchData=
   ['ribozymestructure_878',['RibozymeStructure',['../d4/d20/classRibosoft_1_1Models_1_1RequestViewModels_1_1RequestViewModel.html#ab9b26c59634e58676c70625d0cf1859c',1,'Ribosoft::Models::RequestViewModels::RequestViewModel']]],
   ['ribozymestructures_879',['RibozymeStructures',['../d5/de9/classRibosoft_1_1Models_1_1Ribozyme.html#a995eba4856db98199632972a23bc4f28',1,'Ribosoft.Models.Ribozyme.RibozymeStructures()'],['../d8/dd7/classRibosoft_1_1Models_1_1RibozymeViewModel_1_1RibozymeCreateViewModel.html#a2da1462a8799b5288bf9202225c294c3',1,'Ribosoft.Models.RibozymeViewModel.RibozymeCreateViewModel.RibozymeStructures()']]],
   ['ribozymesubstrateindexpairs_880',['RibozymeSubstrateIndexPairs',['../d7/d95/classRibosoft_1_1CandidateGeneration_1_1CandidateGenerator.html#a9cb562844d77914df279af54c76f6fef',1,'Ribosoft::CandidateGeneration::CandidateGenerator']]],
-  ['rnainput_881',['RNAInput',['../d8/dc9/classRibosoft_1_1Models_1_1Job.html#a3b1b53336c3100ff19a7fd57be9d922a',1,'Ribosoft::Models::Job']]]
+  ['rnainput_881',['RNAInput',['../d8/dc9/classRibosoft_1_1Models_1_1Job.html#a3b1b53336c3100ff19a7fd57be9d922a',1,'Ribosoft::Models::Job']]],
+  ['rnastructure_882',['RNAStructure',['../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#ac99f8f3c0251ffc3a382f88a8ebd0516',1,'Ribosoft::Jobs::GenerateCandidates']]]
 ];

@@ -80,7 +80,6 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">accessibility.cpp File Reference</div>  </div>
@@ -90,41 +89,20 @@ $(function() {
 <code>#include &lt;cstdlib&gt;</code><br />
 <code>#include &lt;cstring&gt;</code><br />
 <code>#include &lt;cmath&gt;</code><br />
-<code>#include &lt;ViennaRNA/data_structures.h&gt;</code><br />
-<code>#include &lt;ViennaRNA/constraints.h&gt;</code><br />
+<code>#include &lt;regex&gt;</code><br />
 <code>#include &quot;functions.h&quot;</code><br />
 </div>
 <p><a href="../../df/df2/accessibility_8cpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a9e9a730c7f6cac5e9029d2ebc420b139"><td class="memItemLeft" align="right" valign="top"><a id="a9e9a730c7f6cac5e9029d2ebc420b139"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/df2/accessibility_8cpp.html#a9e9a730c7f6cac5e9029d2ebc420b139">EXTENDED_CUTSITE_LENGTH</a>&#160;&#160;&#160;100</td></tr>
-<tr class="memdesc:a9e9a730c7f6cac5e9029d2ebc420b139"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extension of cutsite to include in accessibility score. <br /></td></tr>
-<tr class="separator:a9e9a730c7f6cac5e9029d2ebc420b139"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9157998ad9960cf5420a0fca64f5f40"><td class="memItemLeft" align="right" valign="top"><a id="af9157998ad9960cf5420a0fca64f5f40"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/df2/accessibility_8cpp.html#af9157998ad9960cf5420a0fca64f5f40">MAX_TEMPLATE_LENGTH</a>&#160;&#160;&#160;200</td></tr>
-<tr class="memdesc:af9157998ad9960cf5420a0fca64f5f40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Max length for substrateSequence. <br /></td></tr>
-<tr class="separator:af9157998ad9960cf5420a0fca64f5f40"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a467514a9b2d166b38f675bcfc4405b86"><td class="memItemLeft" align="right" valign="top">R_STATUS&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/df2/accessibility_8cpp.html#a467514a9b2d166b38f675bcfc4405b86">ribosoft::accessibility</a> (const char *rna, const char *substrateSequence, const int cutsiteIndex, const int cutsiteNumber, float &amp;delta)</td></tr>
-<tr class="memdesc:a467514a9b2d166b38f675bcfc4405b86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accessibility score. Used to calculate the accessibility of the cutsite in the RNA sequence. ViennaRNA library used to fold the RNA sequence w/ and w/o constraints, and calculates their minimum free energies. Score is evaluated as the delta between the energies.  <a href="../../df/df2/accessibility_8cpp.html#a467514a9b2d166b38f675bcfc4405b86">More...</a><br /></td></tr>
-<tr class="separator:a467514a9b2d166b38f675bcfc4405b86"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35a401f680969a556858a8dd5f1d07cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/df2/accessibility_8cpp.html#a35a401f680969a556858a8dd5f1d07cc">vrna_constraints_add</a> (vrna_fold_compound_t *vc, const char *constraint, unsigned int options)</td></tr>
-<tr class="memdesc:a35a401f680969a556858a8dd5f1d07cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add constraints to a vrna_fold_compound_t data structure.  <a href="../../df/df2/accessibility_8cpp.html#a35a401f680969a556858a8dd5f1d07cc">More...</a><br /></td></tr>
-<tr class="separator:a35a401f680969a556858a8dd5f1d07cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6601d994ba32b11511b36f68b08403be"><td class="memItemLeft" align="right" valign="top">vrna_fold_compound_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/df2/accessibility_8cpp.html#a6601d994ba32b11511b36f68b08403be">vrna_fold_compound</a> (const char *sequence, vrna_md_t *md_p, unsigned int options)</td></tr>
-<tr class="memdesc:a6601d994ba32b11511b36f68b08403be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve a vrna_fold_compound_t data structure for single sequences and hybridizing sequences.  <a href="../../df/df2/accessibility_8cpp.html#a6601d994ba32b11511b36f68b08403be">More...</a><br /></td></tr>
-<tr class="separator:a6601d994ba32b11511b36f68b08403be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd3b147371ccf25c577f88bbbaf159fd"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/df2/accessibility_8cpp.html#abd3b147371ccf25c577f88bbbaf159fd">vrna_mfe</a> (vrna_fold_compound_t *vc, char *structure)</td></tr>
-<tr class="memdesc:abd3b147371ccf25c577f88bbbaf159fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute minimum free energy and an appropriate secondary structure of an RNA sequence, or RNA sequence alignment.  <a href="../../df/df2/accessibility_8cpp.html#abd3b147371ccf25c577f88bbbaf159fd">More...</a><br /></td></tr>
-<tr class="separator:abd3b147371ccf25c577f88bbbaf159fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78ceedb01d65fdf8a81beb56848da9d8"><td class="memItemLeft" align="right" valign="top">R_STATUS&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/df2/accessibility_8cpp.html#a78ceedb01d65fdf8a81beb56848da9d8">ribosoft::accessibility</a> (const char *substrate_sequence, const char *substrate_structure, const char *folded_structure, const float na_concentration, const float probe_concentration, const float target_temp, float &amp;score)</td></tr>
+<tr class="memdesc:a78ceedb01d65fdf8a81beb56848da9d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accessibility score. Used to calculate the accessibility of the cutsite in the RNA sequence. ViennaRNA library used to fold the RNA sequence w/o constraints. Score is evaluated as perfect (0) if the binding arms are not paired on the RNA, or the annealing temperature of the binding arms.  <a href="../../df/df2/accessibility_8cpp.html#a78ceedb01d65fdf8a81beb56848da9d8">More...</a><br /></td></tr>
+<tr class="separator:a78ceedb01d65fdf8a81beb56848da9d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a467514a9b2d166b38f675bcfc4405b86"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a467514a9b2d166b38f675bcfc4405b86">&#9670;&nbsp;</a></span>accessibility()</h2>
+<a id="a78ceedb01d65fdf8a81beb56848da9d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78ceedb01d65fdf8a81beb56848da9d8">&#9670;&nbsp;</a></span>accessibility()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -133,31 +111,43 @@ Functions</h2></td></tr>
           <td class="memname">R_STATUS ribosoft::accessibility </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>rna</em>, </td>
+          <td class="paramname"><em>substrate_sequence</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>substrateSequence</em>, </td>
+          <td class="paramname"><em>substrate_structure</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>cutsiteIndex</em>, </td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>folded_structure</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>cutsiteNumber</em>, </td>
+          <td class="paramtype">const float&#160;</td>
+          <td class="paramname"><em>na_concentration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float&#160;</td>
+          <td class="paramname"><em>probe_concentration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float&#160;</td>
+          <td class="paramname"><em>target_temp</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">float &amp;&#160;</td>
-          <td class="paramname"><em>delta</em>&#160;</td>
+          <td class="paramname"><em>score</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -167,173 +157,26 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Accessibility score. Used to calculate the accessibility of the cutsite in the RNA sequence. ViennaRNA library used to fold the RNA sequence w/ and w/o constraints, and calculates their minimum free energies. Score is evaluated as the delta between the energies. </p>
+<p>Accessibility score. Used to calculate the accessibility of the cutsite in the RNA sequence. ViennaRNA library used to fold the RNA sequence w/o constraints. Score is evaluated as perfect (0) if the binding arms are not paired on the RNA, or the annealing temperature of the binding arms. </p>
 <p>Understanding return values:</p><ul>
 <li>R_INVALID_NUCLEOTIDE | rna has an invalid nucleotide</li>
-<li>R_OUT_OF_RANGE | cutsiteIndex or cutsiteNumber is out of range</li>
-<li>R_INVALID_TEMPLATE_LENGTH | substrateSequence is greater than MAX_TEMPLATE_LENGTH</li>
+<li>R_STRUCT_LENGTH_DIFFER | sequence and structure lengths do not match</li>
 <li>R_VIENNA_RNA_ERROR | An error has occured with ViennaRNA. Contact us with details.</li>
 </ul>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">rna</td><td>Input RNA sequence from Job </td></tr>
-    <tr><td class="paramname">substrateSequence</td><td>Cutsite sequence from Ribozyme </td></tr>
-    <tr><td class="paramname">cutsiteIndex</td><td>Index of cutsite on rna </td></tr>
-    <tr><td class="paramname">cutsiteNumber</td><td>Index of cutsite on substrateSequence </td></tr>
-    <tr><td class="paramname">delta</td><td>Out variable for accessibility score </td></tr>
+    <tr><td class="paramname">substrateSequence</td><td>substrate sequence from candidate </td></tr>
+    <tr><td class="paramname">substrareStructure</td><td>substrate structure from the candidate </td></tr>
+    <tr><td class="paramname">foldedStructure</td><td>structure of target sequence on rna (folded using ViennaRNA) </td></tr>
+    <tr><td class="paramname">na_concentration</td><td>Sodium (Na+) concentration (in moles) </td></tr>
+    <tr><td class="paramname">probe_concentration</td><td>Nucleic acid concentration in excess (in moles) </td></tr>
+    <tr><td class="paramname">score</td><td>Out variable for accessibility score </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Status Code </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../df/df2/accessibility_8cpp_source.html#l00153">153</a> of file <a class="el" href="../../df/df2/accessibility_8cpp_source.html">accessibility.cpp</a>.</p>
-
-</div>
-</div>
-<a id="a35a401f680969a556858a8dd5f1d07cc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a35a401f680969a556858a8dd5f1d07cc">&#9670;&nbsp;</a></span>vrna_constraints_add()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void vrna_constraints_add </td>
-          <td>(</td>
-          <td class="paramtype">vrna_fold_compound_t *&#160;</td>
-          <td class="paramname"><em>vc</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>constraint</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>options</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Add constraints to a vrna_fold_compound_t data structure. </p>
-<p>Use this function to add/update the hard/soft constraints The function allows for passing a string 'constraint' that can either be a filename that points to a constraints definition file or it may be a pseudo dot-bracket notation indicating hard constraints. For the latter, the user has to pass the VRNA_CONSTRAINT_DB option. Also, the user has to specify, which characters are allowed to be interpreted as constraints by passing the corresponding options via the third parameter.</p>
-<dl class="section see"><dt>See also</dt><dd>vrna_hc_init(), vrna_hc_add_up(), vrna_hc_add_up_batch(), vrna_hc_add_bp(), vrna_sc_init(), vrna_sc_set_up(), vrna_sc_set_bp(), vrna_sc_add_SHAPE_deigan(), vrna_sc_add_SHAPE_zarringhalam(), vrna_hc_free(), vrna_sc_free(), VRNA_CONSTRAINT_DB, VRNA_CONSTRAINT_DB_DEFAULT, VRNA_CONSTRAINT_DB_PIPE, VRNA_CONSTRAINT_DB_DOT, VRNA_CONSTRAINT_DB_X, VRNA_CONSTRAINT_DB_ANG_BRACK, VRNA_CONSTRAINT_DB_RND_BRACK, VRNA_CONSTRAINT_DB_INTRAMOL, VRNA_CONSTRAINT_DB_INTERMOL, VRNA_CONSTRAINT_DB_GQUAD</dd></dl>
-<p>The following is an example for adding hard constraints given in pseudo dot-bracket notation. Here, <code>vc</code> is the vrna_fold_compound_t object, <code>structure</code> is a char array with the hard constraint in dot-bracket notation, and <code>enforceConstraints</code> is a flag indicating whether or not constraints for base pairs should be enforced instead of just doing a removal of base pair that conflict with the constraint.</p>
-<p>In constrat to the above, constraints may also be read from file:</p>
-<dl class="section see"><dt>See also</dt><dd>vrna_hc_add_from_db(), vrna_hc_add_up(), vrna_hc_add_up_batch() vrna_hc_add_bp_unspecific(), vrna_hc_add_bp()</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">vc</td><td>The fold compound </td></tr>
-    <tr><td class="paramname">constraint</td><td>A string with either the filename of the constraint definitions or a pseudo dot-bracket notation of the hard constraint. May be NULL. </td></tr>
-    <tr><td class="paramname">options</td><td>The option flags </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a6601d994ba32b11511b36f68b08403be"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6601d994ba32b11511b36f68b08403be">&#9670;&nbsp;</a></span>vrna_fold_compound()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">vrna_fold_compound_t* vrna_fold_compound </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>sequence</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">vrna_md_t *&#160;</td>
-          <td class="paramname"><em>md_p</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>options</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Retrieve a vrna_fold_compound_t data structure for single sequences and hybridizing sequences. </p>
-<p>This function provides an easy interface to obtain a prefilled vrna_fold_compound_t by passing a single sequence, or two contatenated sequences as input. For the latter, sequences need to be seperated by an '&amp;' character like this:</p><pre class="fragment">char *sequence = "GGGG&amp;CCCC"; </pre><p>The optional parameter <code>md_p</code> can be used to specify the model details for successive computations based on the content of the generated vrna_fold_compound_t. Passing NULL will instruct the function to use default model details. The third parameter <code>options</code> may be used to specify dynamic programming (DP) matrix requirements. Use the macros:</p>
-<ul>
-<li>VRNA_OPTION_MFE</li>
-<li>VRNA_OPTION_PF</li>
-<li>VRNA_OPTION_WINDOW</li>
-<li>VRNA_OPTION_EVAL_ONLY</li>
-<li>VRNA_OPTION_DEFAULT</li>
-</ul>
-<p>to specify the required type of computations that will be performed with the vrna_fold_compound_t.</p>
-<p>If you just need the folding compound serving as a container for your data, you can simply pass VRNA_OPTION_DEFAULT to the <code>option</code> parameter. This creates a vrna_fold_compound_t without DP matrices, thus saving memory. Subsequent calls of any structure prediction function will then take care of allocating the memory required for the DP matrices. If you only intend to evaluate structures instead of actually predicting them, you may use the VRNA_OPTION_EVAL_ONLY macro. This will seriously speedup the creation of the vrna_fold_compound_t.</p>
-<dl class="section note"><dt>Note</dt><dd>The sequence string must be uppercase, and should contain only RNA (resp. DNA) alphabet depending on what energy parameter set is used</dd></dl>
-<dl class="section see"><dt>See also</dt><dd>vrna_fold_compound_free(), vrna_fold_compound_comparative(), VRNA_md_t, VRNA_OPTION_MFE, VRNA_OPTION_PF, VRNA_OPTION_EVAL_ONLY, VRNA_OPTION_WINDOW</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">sequence</td><td>A single sequence, or two concatenated sequences seperated by an '&amp;' character </td></tr>
-    <tr><td class="paramname">md_p</td><td>An optional set of model details </td></tr>
-    <tr><td class="paramname">options</td><td>The options for DP matrices memory allocation </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>A prefilled vrna_fold_compound_t that can be readily used for computations </dd></dl>
-
-</div>
-</div>
-<a id="abd3b147371ccf25c577f88bbbaf159fd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abd3b147371ccf25c577f88bbbaf159fd">&#9670;&nbsp;</a></span>vrna_mfe()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">float vrna_mfe </td>
-          <td>(</td>
-          <td class="paramtype">vrna_fold_compound_t *&#160;</td>
-          <td class="paramname"><em>vc</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>structure</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Compute minimum free energy and an appropriate secondary structure of an RNA sequence, or RNA sequence alignment. </p>
-<p>Depending on the type of the provided vrna_fold_compound_t, this function predicts the MFE for a single sequence, or a corresponding averaged MFE for a sequence alignment. If backtracking is activated, it also constructs the corresponding secondary structure, or consensus structure. Therefore, the second parameter, <em>structure</em>, has to point to an allocated block of memory with a size of at least <img class="formulaInl" alt="$\mathrm{strlen}(\mathrm{sequence})+1$" src="../../form_0.png"/> to store the backtracked MFE structure. (For consensus structures, this is the length of the alignment + 1. If <code>NULL</code> is passed, no backtracking will be performed.</p>
-<dl class="section note"><dt>Note</dt><dd>This function is polymorphic. It accepts vrna_fold_compound_t of type VRNA_FC_TYPE_SINGLE, and VRNA_FC_TYPE_COMPARATIVE.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd>vrna_fold_compound_t, <a class="el" href="../../df/df2/accessibility_8cpp.html#a6601d994ba32b11511b36f68b08403be" title="Retrieve a vrna_fold_compound_t data structure for single sequences and hybridizing sequences.">vrna_fold_compound()</a>, vrna_fold(), vrna_circfold(), vrna_fold_compound_comparative(), vrna_alifold(), vrna_circalifold()</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">vc</td><td>fold compound </td></tr>
-    <tr><td class="paramname">structure</td><td>A pointer to the character array where the secondary structure in dot-bracket notation will be written to (Maybe NULL)</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>the minimum free energy (MFE) in kcal/mol </dd></dl>
+<p class="definition">Definition at line <a class="el" href="../../df/df2/accessibility_8cpp_source.html#l00034">34</a> of file <a class="el" href="../../df/df2/accessibility_8cpp_source.html">accessibility.cpp</a>.</p>
 
 </div>
 </div>

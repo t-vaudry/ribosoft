@@ -106,41 +106,40 @@ $(function() {
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        R_EMPTY_CANDIDATE_LIST         =    -7,</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        R_STRUCT_LENGTH_DIFFER         =    -8,</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        R_OUT_OF_RANGE                 =    -9,</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        R_INVALID_TEMPLATE_LENGTH      =    -10,</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        R_INVALID_CONCENTRATION        =    -11,</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        R_INVALID_ARM_LENGTH           =    -12,</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        R_APPLICATION_ERROR_LAST       =    -999,</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="comment">/* USER ERROR */</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        R_USER_ERROR_FIRST             = -1000,</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        R_USER_ERROR_LAST              = -1999,</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="comment">/* SYSTEM ERROR */</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        R_SYSTEM_ERROR_FIRST           = -2000,</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        R_VIENNA_RNA_ERROR             = -2001,</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        R_SYSTEM_ERROR_LAST            = -2999,</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    }</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="../../d7/db5/classRibosoft_1_1RibosoftException.html">   49</a></span>&#160;    <span class="keyword">public</span> <span class="keyword">class </span><a class="code" href="../../d7/db5/classRibosoft_1_1RibosoftException.html">RibosoftException</a> : Exception</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    {</div>
-<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="../../d7/db5/classRibosoft_1_1RibosoftException.html#a98d44f65dda1ff09677dd666a2adab56">   54</a></span>&#160;        <span class="keyword">public</span> <a class="code" href="../../dc/d09/namespaceRibosoft.html#a11a8b2776269231d22837082e4449183">R_STATUS</a> <a class="code" href="../../d7/db5/classRibosoft_1_1RibosoftException.html#a98d44f65dda1ff09677dd666a2adab56">Code</a> { <span class="keyword">get</span>; <span class="keyword">set</span>; }</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="../../d7/db5/classRibosoft_1_1RibosoftException.html#af945a1298f0da552dd63868d8004fefe">   61</a></span>&#160;        <span class="keyword">public</span> <a class="code" href="../../d7/db5/classRibosoft_1_1RibosoftException.html#af945a1298f0da552dd63868d8004fefe">RibosoftException</a>(<a class="code" href="../../dc/d09/namespaceRibosoft.html#a11a8b2776269231d22837082e4449183">R_STATUS</a> code, <span class="keywordtype">string</span> message)</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            : base(message)</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        {</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            this.<a class="code" href="../../d7/db5/classRibosoft_1_1RibosoftException.html#a98d44f65dda1ff09677dd666a2adab56">Code</a> = code;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        }</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="../../d7/db5/classRibosoft_1_1RibosoftException.html#ac0bc1d87a1ef08a5aaf4ea28e9e93dda">   70</a></span>&#160;        <span class="keyword">public</span> <a class="code" href="../../d7/db5/classRibosoft_1_1RibosoftException.html#ac0bc1d87a1ef08a5aaf4ea28e9e93dda">RibosoftException</a>()</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            : this(<a class="code" href="../../dc/d09/namespaceRibosoft.html#a11a8b2776269231d22837082e4449183">R_STATUS</a>.R_APPLICATION_ERROR_LAST, <span class="stringliteral">&quot;&quot;</span>)</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        {</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        }</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    }</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;}</div>
-<div class="ttc" id="aclassRibosoft_1_1RibosoftException_html"><div class="ttname"><a href="../../d7/db5/classRibosoft_1_1RibosoftException.html">Ribosoft.RibosoftException</a></div><div class="ttdoc">Exception class to retrieve details from the Ribosoft application.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd1/Error_8cs_source.html#l00049">Error.cs:50</a></div></div>
-<div class="ttc" id="aclassRibosoft_1_1RibosoftException_html_a98d44f65dda1ff09677dd666a2adab56"><div class="ttname"><a href="../../d7/db5/classRibosoft_1_1RibosoftException.html#a98d44f65dda1ff09677dd666a2adab56">Ribosoft.RibosoftException.Code</a></div><div class="ttdeci">R_STATUS Code</div><div class="ttdoc">Status code of the exception.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd1/Error_8cs_source.html#l00054">Error.cs:54</a></div></div>
-<div class="ttc" id="aclassRibosoft_1_1RibosoftException_html_ac0bc1d87a1ef08a5aaf4ea28e9e93dda"><div class="ttname"><a href="../../d7/db5/classRibosoft_1_1RibosoftException.html#ac0bc1d87a1ef08a5aaf4ea28e9e93dda">Ribosoft.RibosoftException.RibosoftException</a></div><div class="ttdeci">RibosoftException()</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd1/Error_8cs_source.html#l00070">Error.cs:70</a></div></div>
-<div class="ttc" id="aclassRibosoft_1_1RibosoftException_html_af945a1298f0da552dd63868d8004fefe"><div class="ttname"><a href="../../d7/db5/classRibosoft_1_1RibosoftException.html#af945a1298f0da552dd63868d8004fefe">Ribosoft.RibosoftException.RibosoftException</a></div><div class="ttdeci">RibosoftException(R_STATUS code, string message)</div><div class="ttdoc">Exception constructor, sets code.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd1/Error_8cs_source.html#l00061">Error.cs:61</a></div></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        R_INVALID_CONCENTRATION        =    -10,</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        R_INVALID_ARM_LENGTH           =    -11,</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        R_APPLICATION_ERROR_LAST       =    -999,</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="comment">/* USER ERROR */</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        R_USER_ERROR_FIRST             = -1000,</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        R_USER_ERROR_LAST              = -1999,</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="comment">/* SYSTEM ERROR */</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        R_SYSTEM_ERROR_FIRST           = -2000,</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        R_VIENNA_RNA_ERROR             = -2001,</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        R_SYSTEM_ERROR_LAST            = -2999,</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    }</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="../../d7/db5/classRibosoft_1_1RibosoftException.html">   48</a></span>&#160;    <span class="keyword">public</span> <span class="keyword">class </span><a class="code" href="../../d7/db5/classRibosoft_1_1RibosoftException.html">RibosoftException</a> : Exception</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    {</div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="../../d7/db5/classRibosoft_1_1RibosoftException.html#a98d44f65dda1ff09677dd666a2adab56">   53</a></span>&#160;        <span class="keyword">public</span> <a class="code" href="../../dc/d09/namespaceRibosoft.html#a11a8b2776269231d22837082e4449183">R_STATUS</a> <a class="code" href="../../d7/db5/classRibosoft_1_1RibosoftException.html#a98d44f65dda1ff09677dd666a2adab56">Code</a> { <span class="keyword">get</span>; <span class="keyword">set</span>; }</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="../../d7/db5/classRibosoft_1_1RibosoftException.html#af945a1298f0da552dd63868d8004fefe">   60</a></span>&#160;        <span class="keyword">public</span> <a class="code" href="../../d7/db5/classRibosoft_1_1RibosoftException.html#af945a1298f0da552dd63868d8004fefe">RibosoftException</a>(<a class="code" href="../../dc/d09/namespaceRibosoft.html#a11a8b2776269231d22837082e4449183">R_STATUS</a> code, <span class="keywordtype">string</span> message)</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            : base(message)</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        {</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            this.<a class="code" href="../../d7/db5/classRibosoft_1_1RibosoftException.html#a98d44f65dda1ff09677dd666a2adab56">Code</a> = code;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        }</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="../../d7/db5/classRibosoft_1_1RibosoftException.html#ac0bc1d87a1ef08a5aaf4ea28e9e93dda">   69</a></span>&#160;        <span class="keyword">public</span> <a class="code" href="../../d7/db5/classRibosoft_1_1RibosoftException.html#ac0bc1d87a1ef08a5aaf4ea28e9e93dda">RibosoftException</a>()</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            : this(<a class="code" href="../../dc/d09/namespaceRibosoft.html#a11a8b2776269231d22837082e4449183">R_STATUS</a>.R_APPLICATION_ERROR_LAST, <span class="stringliteral">&quot;&quot;</span>)</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        {</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        }</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    }</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;}</div>
+<div class="ttc" id="aclassRibosoft_1_1RibosoftException_html"><div class="ttname"><a href="../../d7/db5/classRibosoft_1_1RibosoftException.html">Ribosoft.RibosoftException</a></div><div class="ttdoc">Exception class to retrieve details from the Ribosoft application.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd1/Error_8cs_source.html#l00048">Error.cs:49</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1RibosoftException_html_a98d44f65dda1ff09677dd666a2adab56"><div class="ttname"><a href="../../d7/db5/classRibosoft_1_1RibosoftException.html#a98d44f65dda1ff09677dd666a2adab56">Ribosoft.RibosoftException.Code</a></div><div class="ttdeci">R_STATUS Code</div><div class="ttdoc">Status code of the exception.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd1/Error_8cs_source.html#l00053">Error.cs:53</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1RibosoftException_html_ac0bc1d87a1ef08a5aaf4ea28e9e93dda"><div class="ttname"><a href="../../d7/db5/classRibosoft_1_1RibosoftException.html#ac0bc1d87a1ef08a5aaf4ea28e9e93dda">Ribosoft.RibosoftException.RibosoftException</a></div><div class="ttdeci">RibosoftException()</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd1/Error_8cs_source.html#l00069">Error.cs:69</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1RibosoftException_html_af945a1298f0da552dd63868d8004fefe"><div class="ttname"><a href="../../d7/db5/classRibosoft_1_1RibosoftException.html#af945a1298f0da552dd63868d8004fefe">Ribosoft.RibosoftException.RibosoftException</a></div><div class="ttdeci">RibosoftException(R_STATUS code, string message)</div><div class="ttdoc">Exception constructor, sets code.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd1/Error_8cs_source.html#l00060">Error.cs:60</a></div></div>
 <div class="ttc" id="anamespaceRibosoft_html"><div class="ttname"><a href="../../dc/d09/namespaceRibosoft.html">Ribosoft</a></div><div class="ttdoc">&lt;</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d40/Nucleotide_8cs_source.html#l00005">Nucleotide.cs:6</a></div></div>
 <div class="ttc" id="anamespaceRibosoft_html_a11a8b2776269231d22837082e4449183"><div class="ttname"><a href="../../dc/d09/namespaceRibosoft.html#a11a8b2776269231d22837082e4449183">Ribosoft.R_STATUS</a></div><div class="ttdeci">R_STATUS</div><div class="ttdoc">Status codes SUCCESS : Range (0)-(1000) APPLICATION ERROR : Range (-1)-(-999) USER ERROR : Range (-10...</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd1/Error_8cs_source.html#l00015">Error.cs:16</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

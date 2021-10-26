@@ -1,9 +1,8 @@
 var searchData=
 [
-  ['filterdesigns_591',['FilterDesigns',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ad987ef2b21fa369c014d216dd1ca38c6',1,'Ribosoft::Controllers::JobsController']]],
-  ['fold_592',['fold',['../d8/d91/classRibosoft_1_1RibosoftAlgo.html#aa9be0a214acc7e7bb21294b564007193',1,'Ribosoft::RibosoftAlgo']]],
+  ['filterdesigns_592',['FilterDesigns',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ad987ef2b21fa369c014d216dd1ca38c6',1,'Ribosoft::Controllers::JobsController']]],
   ['fold_593',['Fold',['../d8/d91/classRibosoft_1_1RibosoftAlgo.html#a655adc424c83691b95c1aac6ecdc8a44',1,'Ribosoft::RibosoftAlgo']]],
-  ['fold_594',['fold',['../d8/dd8/fold_8cpp.html#a5e2a3cd4d15b7f5cbe27e0f68d4ae276',1,'ribosoft']]],
+  ['fold_594',['fold',['../d8/d91/classRibosoft_1_1RibosoftAlgo.html#aa9be0a214acc7e7bb21294b564007193',1,'Ribosoft.RibosoftAlgo.fold()'],['../d8/dd8/fold_8cpp.html#a5e2a3cd4d15b7f5cbe27e0f68d4ae276',1,'ribosoft::fold(const char *sequence, fold_output *&amp;output, size_t &amp;size)']]],
   ['fold_5foutput_5ffree_595',['fold_output_free',['../d8/dd8/fold_8cpp.html#a26641e827b8d55a67dc9ace940754030',1,'ribosoft::fold_output_free()'],['../d8/d91/classRibosoft_1_1RibosoftAlgo.html#a49fbef14428a2ef4c7b2fd51e08874f1',1,'Ribosoft.RibosoftAlgo.fold_output_free()']]],
   ['forgotpassword_596',['ForgotPassword',['../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html#a32dc6352268c260aa83bcebb44e342ab',1,'Ribosoft.Controllers.AccountController.ForgotPassword(ForgotPasswordViewModel model)'],['../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html#a74ace60eac2afdafa9b9f3eb549f61e1',1,'Ribosoft.Controllers.AccountController.ForgotPassword()']]],
   ['forgotpasswordconfirmation_597',['ForgotPasswordConfirmation',['../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html#a02ffb02016e8470c6758fd7d6791b91e',1,'Ribosoft::Controllers::AccountController']]],
