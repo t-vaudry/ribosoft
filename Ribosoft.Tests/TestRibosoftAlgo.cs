@@ -97,8 +97,8 @@ namespace Ribosoft.Tests
             candidate.SubstrateSequence = "UUGUUGU";
             candidate.SubstrateStructure = "43..210";
 
-            float val = sdc.Accessibility(candidate, "......((((..(((...)))..))))......", 11, 1.0f, 22.0f, 0.05f);
-            Assert.Equal(3936531.5f, val);
+            float val = sdc.Accessibility(candidate, "......((((..(((...)))..))))......", 11, 1.0f, 0.05f, 22.0f);
+            Assert.Equal(1430258.25f, val);
         }
 
         [Fact]
@@ -133,7 +133,7 @@ namespace Ribosoft.Tests
             candidate.SubstrateSequence = "UUGUXGU";
             candidate.SubstrateStructure = "43..210";
 
-            Assert.Throws<RibosoftAlgoException>(() => sdc.Accessibility(candidate, "......((((..(((...)))..))))......", 11, 1.0f, 22.0f, 0.5f));
+            Assert.Throws<RibosoftAlgoException>(() => sdc.Accessibility(candidate, "......((((..(((...)))..))))......", 11, 1.0f, 0.5f, 22.0f));
         }
 
         [Fact]
