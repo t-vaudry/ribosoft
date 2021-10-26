@@ -154,27 +154,6 @@ namespace Ribosoft
 
         public float Accessibility(Candidate candidate, string rnaStructure, int cutsiteIndex, float naConcentration, float probeConcentration, float targetTemperature)
         {
-            string testSubstrateSequence = "UUGUUGU";
-            string testSubstrateStructure = "43..210";
-            string testFoldedStructure = ".(((...";
-            float testNaConcentration = 1.0f;
-            float testProbeConcentration = 0.5f;
-            float testTargetTemoerature = 22.0f;
-
-            R_STATUS testStatus = accessibility(testSubstrateSequence, testSubstrateStructure, testFoldedStructure, testNaConcentration, testProbeConcentration, testTargetTemoerature, out float testScore);
-
-            string testSubstrateSequence2 = "UUGUXGU";
-            string testSubstrateStructure2 = "43..210";
-            string testFoldedStructure2 = ".(((...";
-            float testNaConcentration2 = 1.0f;
-            float testProbeConcentration2 = 0.5f;
-            float testTargetTemoerature2 = 22.0f;
-
-            R_STATUS testStatus2 = accessibility(testSubstrateSequence2, testSubstrateStructure2, testFoldedStructure2, testNaConcentration2, testProbeConcentration2, testTargetTemoerature2, out float testScore2);
-
-
-
-
             string substrateSequence = candidate.SubstrateSequence;
             string substrateStructure = candidate.SubstrateStructure;
             string foldedStructure = rnaStructure.Substring(cutsiteIndex, substrateSequence.Length);
