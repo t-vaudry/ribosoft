@@ -80,6 +80,8 @@ extern "C"
      *  @return the minimum free energy (MFE) in kcal/mol
      */
     float vrna_mfe(vrna_fold_compound_t* vc, char* structure);
+
+    void vrna_md_set_default(vrna_md_t* md);
 }
 
 //! \namespace ribosoft
@@ -98,7 +100,7 @@ namespace ribosoft {
      * \param delta Out string containing the structure of the input sequence
      * \return Status Code
      */
-    DLL_PUBLIC R_STATUS mfe_default_fold(const char* sequence, /*out*/ char*& structure)
+    DLL_PUBLIC R_STATUS mfe_default_fold(const char* sequence, const float env_temp, /*out*/ char*& structure)
     {
         R_STATUS status = validate_sequence(sequence);
         if (status != R_SUCCESS::R_STATUS_OK) {
@@ -112,9 +114,14 @@ namespace ribosoft {
         strncpy(local_sequence, sequence, length);
         local_sequence[length] = '\0';
 
+        vrna_md_t md;
+        vrna_md_set_default(&md);
+        md.temperature = env_temp;
+        md.uniq_ML = 1;
+
         // Default fold
         structure = new char[length + 1];
-        vrna_fold_compound_t* defaultFoldCompound = vrna_fold_compound(local_sequence, NULL, VRNA_OPTION_DEFAULT);
+        vrna_fold_compound_t* defaultFoldCompound = vrna_fold_compound(local_sequence, &md, VRNA_OPTION_DEFAULT);
         float defaultMFE = (float)vrna_mfe(defaultFoldCompound, structure);
 
         structure[length] = '\0';

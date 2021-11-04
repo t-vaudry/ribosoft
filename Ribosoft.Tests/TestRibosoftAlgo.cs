@@ -13,7 +13,7 @@ namespace Ribosoft.Tests
         {
             RibosoftAlgo sdc = new RibosoftAlgo();
 
-            var data = sdc.MFEFold("AUGUCUUAGGUGAUACGUGC");
+            var data = sdc.MFEFold("AUGUCUUAGGUGAUACGUGC", 37.0f);
 
             Assert.False(data == null);
             Assert.Equal(".((((......)))).....", data);
@@ -24,7 +24,7 @@ namespace Ribosoft.Tests
         {
             RibosoftAlgo sdc = new RibosoftAlgo();
 
-            var data = sdc.Fold("AUGUCUUAGGUGAUACGUGC");
+            var data = sdc.Fold("AUGUCUUAGGUGAUACGUGC", 37.0f);
 
             Assert.False(data == null);
 
@@ -42,7 +42,7 @@ namespace Ribosoft.Tests
         {
             RibosoftAlgo sdc = new RibosoftAlgo();
 
-            var data = sdc.Fold("AUUUUAGUGCUGAUGGCCAAUGCGCGAACCCAUCGGCGCUGUGA");
+            var data = sdc.Fold("AUUUUAGUGCUGAUGGCCAAUGCGCGAACCCAUCGGCGCUGUGA", 37.0f);
 
             Assert.False(data == null);
 
@@ -60,7 +60,7 @@ namespace Ribosoft.Tests
         {
             RibosoftAlgo sdc = new RibosoftAlgo();
 
-            Exception ex = Assert.Throws<RibosoftAlgoException>(() => sdc.MFEFold("AUGUXWQD"));
+            Exception ex = Assert.Throws<RibosoftAlgoException>(() => sdc.MFEFold("AUGUXWQD", 37.0f));
         }
 
         [Fact]
@@ -68,7 +68,7 @@ namespace Ribosoft.Tests
         {
             RibosoftAlgo sdc = new RibosoftAlgo();
 
-            Exception ex = Assert.Throws<RibosoftAlgoException>(() => sdc.Fold("AUGUXWQD"));
+            Exception ex = Assert.Throws<RibosoftAlgoException>(() => sdc.Fold("AUGUXWQD", 37.0f));
         }
 
         [Fact]
@@ -121,7 +121,7 @@ namespace Ribosoft.Tests
             IList<Design> designList = new List<Design>();
             designList.Add(design);
 
-            sdc.Structure(designList);
+            sdc.Structure(designList, 37.0f);
             Assert.Equal(1.0f, designList[0].StructureScore);
         }
 
@@ -155,7 +155,7 @@ namespace Ribosoft.Tests
             IList<Design> designList = new List<Design>();
             designList.Add(design);
 
-            Assert.Throws<RibosoftAlgoException>(() => sdc.Structure(designList));
+            Assert.Throws<RibosoftAlgoException>(() => sdc.Structure(designList, 37.0f));
         }
 
         [Fact]
