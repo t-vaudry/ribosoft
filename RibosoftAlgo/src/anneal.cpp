@@ -96,7 +96,7 @@ R_STATUS anneal(const char* sequence, const char* structure, const float na_conc
             if (difference <= 4)
                 temp_sum += difference;
             else
-                temp_sum += pow(difference, 2);
+                temp_sum += pow(difference - 4, 2) + 4;
         }
     }
 

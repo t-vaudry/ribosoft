@@ -98,7 +98,7 @@ namespace Ribosoft.Tests
             candidate.SubstrateStructure = "43..210";
 
             float val = sdc.Accessibility(candidate, "......((((..(((...)))..))))......", 11, 1.0f, 0.05f, 22.0f);
-            Assert.Equal(1430258.25f, val);
+            Assert.Equal(1419538.8f, val);
         }
 
         [Fact]
@@ -108,7 +108,7 @@ namespace Ribosoft.Tests
             Candidate candidate = new Candidate();
 
             float val = sdc.Anneal(candidate, "AAUUUCCCCGGGGG", "0123abxyzABXYZ", 1.0f, 0.05f, 22.0f);
-            Assert.Equal(4570.36865f, val);
+            Assert.Equal(4049.5327f, val);
         }
 
         [Fact]
