@@ -13,9 +13,10 @@ using System;
 namespace Ribosoft.Data.Migrations.NpgsqlMigrations
 {
     [DbContext(typeof(NpgsqlDbContext))]
-    partial class NpgsqlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210624135452_RemoveHighestTemp")]
+    partial class RemoveHighestTemp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -225,8 +226,6 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
 
                     b.Property<float?>("DesiredTemperatureScore");
 
-                    b.Property<string>("IdealStructure");
-
                     b.Property<int>("JobId");
 
                     b.Property<int>("Rank");
@@ -236,8 +235,6 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
                     b.Property<float?>("SpecificityScore");
 
                     b.Property<float?>("StructureScore");
-
-                    b.Property<string>("SubstrateSequence");
 
                     b.Property<int>("SubstrateSequenceLength");
 
@@ -294,8 +291,6 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
                     b.Property<float?>("StructureTolerance");
 
                     b.Property<int>("TargetEnvironment");
-
-                    b.Property<float?>("TargetTemperature");
 
                     b.Property<float?>("Temperature");
 
