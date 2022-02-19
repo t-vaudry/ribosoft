@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['node_479',['Node',['../d4/d01/classRibosoft_1_1CandidateGeneration_1_1Node.html',1,'Ribosoft::CandidateGeneration']]],
-  ['nucleotide_480',['Nucleotide',['../d9/dd0/classRibosoft_1_1Biology_1_1Nucleotide.html',1,'Ribosoft::Biology']]],
-  ['nucleotideattribute_481',['NucleotideAttribute',['../d9/d39/classRibosoft_1_1ValidationAttributes_1_1NucleotideAttribute.html',1,'Ribosoft::ValidationAttributes']]]
+  ['node_0',['Node',['../d4/d01/classRibosoft_1_1CandidateGeneration_1_1Node.html',1,'Ribosoft::CandidateGeneration']]],
+  ['nucleotide_1',['Nucleotide',['../d9/dd0/classRibosoft_1_1Biology_1_1Nucleotide.html',1,'Ribosoft::Biology']]],
+  ['nucleotideattribute_2',['NucleotideAttribute',['../d9/d39/classRibosoft_1_1ValidationAttributes_1_1NucleotideAttribute.html',1,'Ribosoft::ValidationAttributes']]]
 ];
