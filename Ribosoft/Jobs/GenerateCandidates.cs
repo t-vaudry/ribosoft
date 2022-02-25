@@ -248,7 +248,7 @@ namespace Ribosoft.Jobs
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
             foreach (var rnaInput in rnaInputs)
             {
-                RNAStructure = _ribosoftAlgo.MFEFold(rnaInput);
+                RNAStructure = _ribosoftAlgo.MFEFold(rnaInput, job.Temperature.GetValueOrDefault());
 
                 foreach (var ribozymeStructure in job.Ribozyme.RibozymeStructures)
                 {
@@ -428,7 +428,7 @@ namespace Ribosoft.Jobs
                              .Where(d => d.JobId == job.Id)
                              .ToList();
 
-            _ribosoftAlgo.Structure(designs);
+            _ribosoftAlgo.Structure(designs, job.Temperature.GetValueOrDefault());
 
             _db.Jobs.Attach(job);
             await _db.SaveChangesAsync();

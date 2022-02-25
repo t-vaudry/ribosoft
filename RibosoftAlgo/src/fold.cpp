@@ -50,6 +50,8 @@ extern "C" {
      *  @return               A prefilled vrna_fold_compound_t that can be readily used for computations
      */
     vrna_fold_compound_t* vrna_fold_compound(const char* sequence, vrna_md_t* md_p, unsigned int options);
+
+    void vrna_md_set_default(vrna_md_t* md);
 }
 
 //! \namespace ribosoft
@@ -72,7 +74,7 @@ namespace ribosoft {
  * \param size Out variable for the size of the fold_output
  * \return Status Code
  */
-DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*out*/ size_t& size)
+DLL_PUBLIC R_STATUS fold(const char* sequence, const float env_temp, /*out*/ fold_output*& output, /*out*/ size_t& size)
 {
     // validate input sequence
     R_STATUS status = validate_sequence(sequence);
@@ -82,8 +84,13 @@ DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*o
 
     size_t length = strlen(sequence);
 
+    vrna_md_t md;
+    vrna_md_set_default(&md);
+    md.temperature = env_temp;
+    md.uniq_ML = 1;
+
     // get a vrna_fold_compound with default settings
-    vrna_fold_compound_t *vc = vrna_fold_compound(sequence, NULL, VRNA_OPTION_DEFAULT);
+    vrna_fold_compound_t *vc = vrna_fold_compound(sequence, &md, VRNA_OPTION_DEFAULT);
 
     // fold with suboptimal structures
     // TODO: consider passing energy range from user input

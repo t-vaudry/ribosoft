@@ -70,7 +70,7 @@ namespace Ribosoft
          * \return status Status code
          */
         [DllImport("RibosoftAlgo")]
-        private static extern R_STATUS anneal(string sequence, string structure, float na_concentration, float probe_concentration, float target_temp, out float temp);
+        private static extern R_STATUS anneal(string sequence, string structure, float na_concentration, float probe_concentration, float target_temp, string folded_structure, bool rna_anneal, out float temp);
 
         /*! \fn fold
          * \brief DllImport from RibosoftAlgo of fold
@@ -80,7 +80,7 @@ namespace Ribosoft
          * \return status Status code
          */
         [DllImport("RibosoftAlgo")]
-        private static extern R_STATUS fold(string sequence, out IntPtr output, out int size);
+        private static extern R_STATUS fold(string sequence, float env_temp, out IntPtr output, out int size);
 
         /*! \fn fold_output_free
          * \brief DllImport from RibosoftAlgo of fold_output_free
@@ -97,7 +97,7 @@ namespace Ribosoft
          * \return status Status code
          */
         [DllImport("RibosoftAlgo")]
-        private static extern R_STATUS mfe_default_fold(string sequence, out IntPtr structure);
+        private static extern R_STATUS mfe_default_fold(string sequence, float env_temp, out IntPtr structure);
 
         /*! \fn fold_output_free
          * \brief DllImport from RibosoftAlgo of mfe_default_fold_free
@@ -181,8 +181,9 @@ namespace Ribosoft
         public float Anneal(Candidate candidate, string targetSequence, string structure, float naConcentration, float probeConcentration, float targetTemp)
         {
             float temperatureScore = 0.0f;
+            string dummySequence = "";
 
-            R_STATUS status = anneal(targetSequence, structure, naConcentration, probeConcentration, targetTemp, out float delta);
+            R_STATUS status = anneal(targetSequence, structure, naConcentration, probeConcentration, targetTemp, dummySequence, false, out float delta);
 
             if (status != R_STATUS.R_STATUS_OK)
             {
@@ -199,9 +200,9 @@ namespace Ribosoft
          * \param sequence Sequence to be folded
          * \return foldOutputs List of fold outputs, including the structure and its probability
          */
-        public IList<FoldOutput> Fold(string sequence)
+        public IList<FoldOutput> Fold(string sequence, float envTemp)
         {
-            R_STATUS status = fold(sequence, out IntPtr outputPtr, out int size);
+            R_STATUS status = fold(sequence, envTemp, out IntPtr outputPtr, out int size);
 
             if (status != R_STATUS.R_STATUS_OK)
             {
@@ -227,9 +228,9 @@ namespace Ribosoft
          * \param sequence Sequence to be folded
          * \return rnaStructure String containing the structure of the folded RNA
         */
-        public string MFEFold(string sequence)
+        public string MFEFold(string sequence, float envTemp)
         {
-            R_STATUS status = mfe_default_fold(sequence, out IntPtr structure);
+            R_STATUS status = mfe_default_fold(sequence, envTemp, out IntPtr structure);
 
             if (status != R_STATUS.R_STATUS_OK)
             {
@@ -247,7 +248,7 @@ namespace Ribosoft
          * \param designs Designs being evaluated
          * \return void
          */
-        public void Structure(IList<Design> designs)
+        public void Structure(IList<Design> designs, float envTemp)
         {
             IList<IList<Tuple<float, float>>> structureResults = new List<IList<Tuple<float, float>>>();
 
@@ -259,7 +260,7 @@ namespace Ribosoft
             {
                 currentResults = new List<Tuple<float, float>>();
 
-                var foldOutputs = Fold(d.Sequence);
+                var foldOutputs = Fold(d.Sequence, envTemp);
 
                 idealStructure = d.IdealStructure;
 

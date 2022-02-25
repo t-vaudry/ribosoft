@@ -49,14 +49,14 @@ extern "C" DLL_PUBLIC R_STATUS accessibility(const char* substrate_sequence, con
  * Annealing temperature of binding regions for ribozyme
  * @file anneal.cpp
  */
-extern "C" DLL_PUBLIC R_STATUS anneal(const char* sequence, const char* structure, const float na_concentration, const float probe_concentration, const float target_temp, float& temp);
+extern "C" DLL_PUBLIC R_STATUS anneal(const char* sequence, const char* structure, const float na_concentration, const float probe_concentration, const float target_temp, const char* folded_structure, bool rna_anneal, float& temp);
 
 /*! \fn fold
  * \brief fold
  * Fold function used to fold sequence with ViennaRNA
  * @file fold.cpp
  */
-extern "C" DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*out*/ size_t& size);
+extern "C" DLL_PUBLIC R_STATUS fold(const char* sequence, const float env_temp, /*out*/ fold_output*& output, /*out*/ size_t& size);
 
 /*! \fn fold_output_free
  * \brief fold_output_free
@@ -70,7 +70,7 @@ extern "C" DLL_PUBLIC void fold_output_free(fold_output* output, size_t size);
  * Fold function used to fold sequence w/o constraints with ViennaRNA
  * @file mfe_default_fold.cpp
  */
-extern "C" DLL_PUBLIC R_STATUS mfe_default_fold(const char* sequence, /*out*/ char*& structure);
+extern "C" DLL_PUBLIC R_STATUS mfe_default_fold(const char* sequence, const float env_temp, /*out*/ char*& structure);
 
 /*! \fn fold_output_free
  * \brief fold_output_free

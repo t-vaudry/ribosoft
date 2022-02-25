@@ -88,7 +88,7 @@ DLL_PUBLIC R_STATUS accessibility(const char* substrate_sequence, const char* su
     }
     else
     {
-        return anneal(substrate_sequence, substrate_structure, na_concentration, probe_concentration, target_temp, score);
+        return anneal(substrate_sequence, substrate_structure, na_concentration, probe_concentration, target_temp, folded_structure, true, score);
     }
 }
 

@@ -18,7 +18,7 @@ TEST_CASE("Imperfect accesibility", "[accessibility]") {
     float score = -1.0f;
     R_STATUS status = accessibility("CAACUGCAUGUGAUG","cba987654..3210", "...((()((.)).).", 1.0f, 0.5f, 22.0f, score);
     REQUIRE(status == R_SUCCESS::R_STATUS_OK);
-    REQUIRE(fabs(score - 2445.45483f) < DELTA);
+    REQUIRE(fabs(score - 1939.23071f) < DELTA);
 }
 
 TEST_CASE("Invalid substrate sequence", "[accessibility]") {
