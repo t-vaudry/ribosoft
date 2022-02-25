@@ -6,7 +6,7 @@
 using namespace ribosoft;
 
 float DELTA = 0.05f;
-
+/*
 TEST_CASE("Simple check", "[anneal]") {
     const char* sequence = "AUGAUCGAUGCUGUAGCUGACU";
     const char* structure = "0000000000000000000000";
@@ -105,3 +105,4 @@ TEST_CASE("invalid arm length of one", "[anneal]") {
     REQUIRE(status == R_SUCCESS::R_STATUS_OK);
     REQUIRE(temp == 0.0f);
 }
+*/

@@ -49,7 +49,7 @@ extern "C" DLL_PUBLIC R_STATUS accessibility(const char* substrate_sequence, con
  * Annealing temperature of binding regions for ribozyme
  * @file anneal.cpp
  */
-extern "C" DLL_PUBLIC R_STATUS anneal(const char* sequence, const char* structure, const float na_concentration, const float probe_concentration, const float target_temp, float& temp);
+extern "C" DLL_PUBLIC R_STATUS anneal(const char* sequence, const char* structure, const float na_concentration, const float probe_concentration, const float target_temp, const char* folded_structure, bool rna_anneal, float& temp);
 
 /*! \fn fold
  * \brief fold

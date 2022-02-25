@@ -246,13 +246,12 @@
                     <table class="table table-hover mb-0">
                         <thead>
                             <tr>
-                                <!-- Removing Rank -->
-                                @*<th>
+                                <th>
                                     <div class="d-flex align-items-center sortable">
                                         @Html.DisplayNameFor(model => model.Designs.Data.First().Rank)
                                         <i id="ranksort" class="fas fa-sort"></i>
                                     </div>
-                                </th>*@
+                                </th>
                                 <th>
                                     <div class="d-flex align-items-center">
                                         @Html.DisplayNameFor(model => model.Designs.Data.First().Sequence)
@@ -294,10 +293,9 @@
                             @foreach (var item in Model.Designs.Data)
                             {
                                 <tr id="@item.JobId-@item.Id" class="clickable-row">
-                                    <!-- Removing Rank -->
-                                    @*<td>
+                                    <td>
                                         @Html.DisplayFor(modelItem => item.Rank)
-                                    </td>*@
+                                    </td>
                                     <td>
                                         <code style="word-break: break-all;">@Html.DisplayFor(modelItem => item.Sequence)</code>
                                     </td>
@@ -430,7 +428,7 @@
 
             $("#filterOptions").structFilter({
                 fields: [
-                    //{ id: "Rank", type: "number", label: "Rank" },
+                    { id: "Rank", type: "number", label: "Rank" },
                     { id: "CutsiteIndex", type: "number", label: "Cutsite Index" },
                     { id: "DesiredTemperatureScore", type: "number", label: "Desired Temperature Score" },
                     { id: "SpecificityScore", type: "number", label: "Specificity Score" },
@@ -502,9 +500,9 @@
                 var type = el[0].id.slice(0, -4);
                 var sortOrder = '';
                 switch (type) {
-                    //case 'rank':
-                        //sortOrder = '@ViewBag.RankSortParm';
-                        //break;
+                    case 'rank':
+                        sortOrder = '@ViewBag.RankSortParm';
+                        break;
                     case 'cutsite':
                         sortOrder = '@ViewBag.CutsiteSortParm';
                         break;
@@ -601,7 +599,7 @@
             $('#fastaAll').click(function () { return clickFuncAll("fasta"); });
             $('#csvAll').click(function () { return clickFuncAll("csv"); });
 
-            //$('#ranksort').ready(function () { return sortFunc($('#ranksort')); })
+            $('#ranksort').ready(function () { return sortFunc($('#ranksort')); })
             $('#cutsitesort').ready(function () { return sortFunc($('#cutsitesort')); })
             $('#destempsort').ready(function () { return sortFunc($('#destempsort')); })
             $('#hitempsort').ready(function () { return sortFunc($('#hitempsort')); })
@@ -609,7 +607,7 @@
             $('#specsort').ready(function () { return sortFunc($('#specsort')); })
             $('#structsort').ready(function () { return sortFunc($('#structsort')); })
 
-            //$('#ranksort').parent().click(function () { return sortClick($('#ranksort')); })
+            $('#ranksort').parent().click(function () { return sortClick($('#ranksort')); })
             $('#cutsitesort').parent().click(function () { return sortClick($('#cutsitesort')); })
             $('#destempsort').parent().click(function () { return sortClick($('#destempsort')); })
             $('#hitempsort').parent().click(function () { return sortClick($('#hitempsort')); })

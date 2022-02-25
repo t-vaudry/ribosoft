@@ -70,7 +70,7 @@ namespace Ribosoft
          * \return status Status code
          */
         [DllImport("RibosoftAlgo")]
-        private static extern R_STATUS anneal(string sequence, string structure, float na_concentration, float probe_concentration, float target_temp, out float temp);
+        private static extern R_STATUS anneal(string sequence, string structure, float na_concentration, float probe_concentration, float target_temp, string folded_structure, bool rna_anneal, out float temp);
 
         /*! \fn fold
          * \brief DllImport from RibosoftAlgo of fold
@@ -181,8 +181,9 @@ namespace Ribosoft
         public float Anneal(Candidate candidate, string targetSequence, string structure, float naConcentration, float probeConcentration, float targetTemp)
         {
             float temperatureScore = 0.0f;
+            string dummySequence = "";
 
-            R_STATUS status = anneal(targetSequence, structure, naConcentration, probeConcentration, targetTemp, out float delta);
+            R_STATUS status = anneal(targetSequence, structure, naConcentration, probeConcentration, targetTemp, dummySequence, false, out float delta);
 
             if (status != R_STATUS.R_STATUS_OK)
             {
