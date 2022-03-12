@@ -80,6 +80,10 @@ namespace Ribosoft.Tests
 
             Assert.Equal("{{0}  \"field\": {{0}    \"label\": \"Rank\",{0}    \"value\": \"Rank\"{0}  },{0}  \"operator\": {{0}    \"label\": \"=\",{0}    \"value\": \"eq\"{0}  },{0}  \"value\": {{0}    \"label\": \"1\",{0}    \"value\": \"1\"{0}  }{0}}".Replace("{0}", le), filter.GetJson());
 
+            filter.param = "HighestTemperatureScore";
+            filter.condition = "ne";
+            Assert.Equal("{{0}  \"field\": {{0}    \"label\": \"Highest Temperature Score\",{0}    \"value\": \"HighestTemperatureScore\"{0}  },{0}  \"operator\": {{0}    \"label\": \"!=\",{0}    \"value\": \"ne\"{0}  },{0}  \"value\": {{0}    \"label\": \"1\",{0}    \"value\": \"1\"{0}  }{0}}".Replace("{0}", le), filter.GetJson());
+
             filter.param = "DesiredTemperatureScore";
             filter.condition = "gt";
             Assert.Equal("{{0}  \"field\": {{0}    \"label\": \"Desired Temperature Score\",{0}    \"value\": \"DesiredTemperatureScore\"{0}  },{0}  \"operator\": {{0}    \"label\": \">\",{0}    \"value\": \"gt\"{0}  },{0}  \"value\": {{0}    \"label\": \"1\",{0}    \"value\": \"1\"{0}  }{0}}".Replace("{0}", le), filter.GetJson());

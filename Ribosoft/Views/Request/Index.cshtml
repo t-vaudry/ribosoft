@@ -80,21 +80,21 @@
                 <div class="form-group col-md-6 mb-0">
                     <label asp-for="OpenReadingFrameStart"></label>
                     <span data-toggle="tooltip" data-placement="right" title="@Localizer["ORFStartTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
-                    <input asp-for="OpenReadingFrameStart" id="orfStart" class="form-control" min="0" v-on:change="openReadingFrame" :disabled="genbankLoading">
+                    <input asp-for="OpenReadingFrameStart" class="form-control" min="0" :disabled="genbankLoading">
                     <span asp-validation-for="OpenReadingFrameStart" class="text-danger"></span>
                 </div>
 
                 <div class="form-group col-md-6 mb-0">
                     <label asp-for="OpenReadingFrameEnd"></label>
                     <span data-toggle="tooltip" data-placement="right" title="@Localizer["ORFEndTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
-                    <input asp-for="OpenReadingFrameEnd" id="orfEnd" class="form-control" min="0" v-on:change="openReadingFrame" :disabled="genbankLoading">
+                    <input asp-for="OpenReadingFrameEnd" class="form-control" min="0" :disabled="genbankLoading">
                     <span asp-validation-for="OpenReadingFrameEnd" class="text-danger"></span>
                 </div>
             </div>
         </div>
 
         <!-- Regions for Target Design -->
-        <div class="my-3 p-3 bg-white rounded box-shadow" v-show="ORFExists">
+        <div class="my-3 p-3 bg-white rounded box-shadow">
             <div class="clearfix border-bottom border-gray mb-2">
                 <h6 class="float-md-left">Target regions <span data-toggle="tooltip" data-placement="right" title="@Localizer["TargetRegionsTooltip"]"><i class="fas fa-question-circle text-info"></i></span></h6>
             </div>
@@ -152,12 +152,6 @@
                 <span asp-validation-for="SelectedSpecificityMethod" class="text-danger"></span>
                 <span data-toggle="tooltip" data-placement="right" title="@Localizer["SpecificityTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
             </div>
-
-            <div class="form-group">
-                <label asp-for="TargetTemperature"></label>
-                <input asp-for="TargetTemperature" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("Temperature")">
-                <span asp-validation-for="TargetTemperature" class="invalid-feedback"></span>
-            </div>
         </div>
 
         <!-- Environment Properties -->
@@ -190,6 +184,11 @@
                     <label asp-for="DesiredTemperatureTolerance"></label>
                     <input asp-for="DesiredTemperatureTolerance" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("DesiredTemperatureTolerance")">
                     <span asp-validation-for="DesiredTemperatureTolerance" class="invalid-feedback"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="HighestTemperatureTolerance"></label>
+                    <input asp-for="HighestTemperatureTolerance" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("HighestTemperatureTolerance")">
+                    <span asp-validation-for="HighestTemperatureTolerance" class="invalid-feedback"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="SpecificityTolerance"></label>

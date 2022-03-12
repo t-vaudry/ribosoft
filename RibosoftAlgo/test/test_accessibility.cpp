@@ -7,30 +7,58 @@
 
 using namespace ribosoft;
 
-TEST_CASE("Perfect accessibility", "[accessibility]") {
-    float score = -1.0f;
-    R_STATUS status = accessibility("CAACUGCAUGUGAUG", "cba987654..3210", ".........()....", 1.0f, 0.5f, 22.0f, score);
+TEST_CASE("Successful accessibility", "[accessibility]") {
+    float delta = -1.0f;
+    R_STATUS status = accessibility("CAACUGCAUGUGAUGUGUAUGUGCUAAUCGGAUGCAUGUAGCUAGUGCGAUGCAACUGCAUGUGAUGUGUAUGUGCUAAUCGGAUGCAUGUAGCUAGUGCGUGCGGCGCGUAAUGCUAGUCGUAGUCGUAGUGCUAGUGUGCUGCUAGCUGUAGUGCUAUCGAUCGAUGCUAGCUGUAGUCGAUGCAACUGCAUGUGAUGUGUAUGUGCUAAUCGGAUGCAUGUAGCUAGUGCGUGCGGCGCGUAAUGCUAGUCGUAGUCGUAGUGCUAGUGUGCUGCUAGCUGUAGUGCUAUCGAUCGAUGCUAGCUGUAGUCGAAUGCGGCGCGUAAUGCUAGUCGUAGUCGUAGUGCUAGUGUGCUGCUAGCUGUAGUGCUAUCGAUCGAUGCUAGCUGUAGUCGA", "fed..234", 200, 4, delta);
     REQUIRE(status == R_SUCCESS::R_STATUS_OK);
-    REQUIRE(score == 0.0f);
+    REQUIRE(fabs(delta - 5.9f) < DELTA);
 }
 
-TEST_CASE("Imperfect accesibility", "[accessibility]") {
-    float score = -1.0f;
-    R_STATUS status = accessibility("CAACUGCAUGUGAUG","cba987654..3210", "...((()((.)).).", 1.0f, 0.5f, 22.0f, score);
+TEST_CASE("Test from actual data", "[accessibility]") {
+    float delta = -1.0f;
+    R_STATUS status = accessibility("CUUGAAGUGGUUUGUUGUGCUUGAAGAGACCCC","UUGUUGU",11,4,delta);
     REQUIRE(status == R_SUCCESS::R_STATUS_OK);
-    REQUIRE(fabs(score - 2445.45483f) < DELTA);
 }
 
 TEST_CASE("Invalid substrate sequence", "[accessibility]") {
-    float score = -1.0f;
-    R_STATUS status = accessibility("cjwdjvbq", "cba987654..3210", "...............", 1.0f, 0.5f, 22.0f, score);
+    float delta = -1.0f;
+    R_STATUS status = accessibility("cjwdjvbq", "fed..234", 200, 4, delta);
     REQUIRE(status == R_APPLICATION_ERROR::R_INVALID_NUCLEOTIDE);
-    REQUIRE(score == -1.0f);
+    REQUIRE(delta == -1.0f);
 }
 
-TEST_CASE("Invalid structure length", "[accessibility]") {
-    float score = -1.0f;
-    R_STATUS status = accessibility("CAACUGCAUGUGAUG", "210", "...", 1.0f, 0.5f, 22.0f, score);
-    REQUIRE(status == R_APPLICATION_ERROR::R_STRUCT_LENGTH_DIFFER);
-    REQUIRE(score == -1.0f);
+TEST_CASE("Invalid cutsiteIndex", "[accessibility]") {
+    float delta = -1.0f;
+    R_STATUS status = accessibility("AUGC", "fed..234", -5, 4, delta);
+    REQUIRE(status == R_APPLICATION_ERROR::R_OUT_OF_RANGE);
+    REQUIRE(delta == -1.0f);
+
+    status = accessibility("AUGC", "fed..234", 800, 4, delta);
+    REQUIRE(status == R_APPLICATION_ERROR::R_OUT_OF_RANGE);
+    REQUIRE(delta == -1.0f);
+}
+
+TEST_CASE("Invalid cutsite", "[accessibility]") {
+    float delta = -1.0f;
+    R_STATUS status = accessibility("AUGC", "fed..234", 2, -4, delta);
+    REQUIRE(status == R_APPLICATION_ERROR::R_OUT_OF_RANGE);
+    REQUIRE(delta == -1.0f);
+
+    status = accessibility("AUGC", "fed..234", 2, 20, delta);
+    REQUIRE(status == R_APPLICATION_ERROR::R_OUT_OF_RANGE);
+    REQUIRE(delta == -1.0f);
+}
+
+TEST_CASE("Invalid template", "[accessibility]") {
+    float delta = -1.0f;
+    R_STATUS status = accessibility("AUGC", "fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234fed..234", 2, 2, delta);
+    REQUIRE(status == R_APPLICATION_ERROR::R_INVALID_TEMPLATE_LENGTH);
+    REQUIRE(delta == -1.0f);
+}
+
+TEST_CASE("Invalid constraints", "[accessibility]") {
+    float delta = -1.0f;
+    R_STATUS status = accessibility("CUUGAAGUGGUUUGUUGUGCUUGAAGAGACCCC","UUGUUGUAUCUACUACCUAGUGAUGUCGGUAUGUGUGCUAUGUGAC",4,11,delta);
+    REQUIRE(status == R_SUCCESS::R_STATUS_OK);
+    REQUIRE(delta == 5.6f);
 }

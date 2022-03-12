@@ -27,7 +27,6 @@ var app = new Vue({
         return { options: optionsArr,
                  inVivoOptions: vivoArr,
                  inVivoSelected: false,
-                 ORFExists: false,
                  cutSites: [],
                  genbankLoading: false,
                  genbankStatus: "" };
@@ -70,27 +69,17 @@ var app = new Vue({
                 hiddenInput.value = -1;
             }
         },
-        targetEnvironment: function () {
-            let targetTempField = document.getElementById("TargetTemperature");
+        targetEnvironment: function() {
             var environment = document.getElementById("targetEnvironmentMethod");
             var radios = document.getElementsByName("SelectedTargetEnvironment");
 
             for (var i = 0; i < radios.length; i++) {
                 if (radios[i].checked && radios[i].value == "InVivo") {
                     this.inVivoSelected = true;
-                    targetTempField.value = 37;
                 }
-                else {
-                    this.inVivoSelected = false;
-                    targetTempField.value = 22;
-                }
+                else this.inVivoSelected = false;
             }
             
-        },
-        openReadingFrame: function () {
-            let orfStart = document.getElementById("orfStart").value;
-            let orfEnd = document.getElementById("orfEnd").value;
-            this.ORFExists = (orfEnd - orfStart) > 0;
         },
         processFASTAfile: function() {
             var inputField = document.getElementById("inputSequence");

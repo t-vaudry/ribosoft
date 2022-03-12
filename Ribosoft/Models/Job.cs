@@ -21,7 +21,6 @@ namespace Ribosoft.Models
         Errored,
 
         CandidateGenerator,
-        Structure,
         MultiObjectiveOptimization,
         Specificity,
 
@@ -43,14 +42,14 @@ namespace Ribosoft.Models
 
     /*! \enum SpecificityMethod
      * \brief Methods
-     * Synthetic OR Wildtype
+     * Cleavage OR Cleavage and hybridization
      */
     public enum SpecificityMethod
     {
-        [Display(Name = "Synthetic")]
-        Synthetic,
-        [Display(Name = "Wildtype")]
-        Wildtype
+        [Display(Name = "Cleavage")]
+        CleavageOnly,
+        [Display(Name = "Cleavage and hybridization")]
+        CleavageAndHybridization
     }
 
     /*! \class Job
@@ -162,12 +161,6 @@ namespace Ribosoft.Models
         [Display(Name = "Target environment")]
         public TargetEnvironment TargetEnvironment { get; set; }
 
-        /*! \property TargetTemperature
-         * \brief Target Temperature (℃)
-         */
-        [Display(Name = "Target Temperature (℃)")]
-        public float? TargetTemperature { get; set; }
-
         /*! \property AssemblyId
          * \brief Assembly ID
          */
@@ -185,6 +178,12 @@ namespace Ribosoft.Models
          */
         [Display(Name = "Desired Temperature Tolerance")]
         public float? DesiredTempTolerance { get; set; }
+
+        /*! \property HighestTempTolerance
+         * \brief Highest Temperature Tolerance
+         */
+        [Display(Name = "Highest Temperature Tolerance")]
+        public float? HighestTempTolerance { get; set; }
 
         /*! \property SpecificityTolerance
          * \brief Specificity Tolerance

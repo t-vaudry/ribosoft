@@ -61,11 +61,6 @@ namespace Ribosoft.Jobs
          */
         private ApplicationDbContext _db;
 
-        /*! \property RNAStructure
-         * \brief RNA structure string
-         */
-        private String RNAStructure { get; set; }
-
         /*! \fn GenerateCandidates
          * \brief Default constructor
          * \param options Application database options
@@ -104,18 +99,15 @@ namespace Ribosoft.Jobs
             // run candidate generator
             await DoStage(job, JobState.CandidateGenerator, j => j.JobState == JobState.New, RunCandidateGenerator, cancellationToken);
 
-            // calculate structure score
-            await DoStage(job, JobState.Structure, j => j.JobState == JobState.CandidateGenerator, CalculateStructure, cancellationToken);
-
             // queue phase 2 job for in-vivo runs (blast)
-            await DoStage(job, JobState.QueuedPhase2, j => j.JobState == JobState.Structure && j.TargetEnvironment == TargetEnvironment.InVivo, async (j, c) =>
+            await DoStage(job, JobState.QueuedPhase2, j => j.JobState == JobState.CandidateGenerator && j.TargetEnvironment == TargetEnvironment.InVivo, async (j, c) =>
                 {
                     BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase2(j.Id, c));
                     await Task.FromResult<object>(null);
                 }, cancellationToken);
             
             // queue phase 3 job for in-vitro runs, skipping phase 2 (MOO)
-            await DoStage(job, JobState.QueuedPhase3, j => j.JobState == JobState.Structure && j.TargetEnvironment == TargetEnvironment.InVitro, async (j, c) =>
+            await DoStage(job, JobState.QueuedPhase3, j => j.JobState == JobState.CandidateGenerator && j.TargetEnvironment == TargetEnvironment.InVitro, async (j, c) =>
             {
                 BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase3(j.Id, c));
                 await Task.FromResult<object>(null);
@@ -248,8 +240,6 @@ namespace Ribosoft.Jobs
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
             foreach (var rnaInput in rnaInputs)
             {
-                RNAStructure = _ribosoftAlgo.MFEFold(rnaInput);
-
                 foreach (var ribozymeStructure in job.Ribozyme.RibozymeStructures)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -282,7 +272,7 @@ namespace Ribosoft.Jobs
                         foreach (var candidate in candidates)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
-                            RunScoreAlgorithms(candidate, job, ribozymeStructure, RNAStructure);
+                            RunScoreAlgorithms(candidate, job, ribozymeStructure);
 
                             if (++batchCount % 100 == 0)
                             {
@@ -329,8 +319,10 @@ namespace Ribosoft.Jobs
             }
 
             job.DesiredTempTolerance *= designs.Max(d => d.DesiredTemperatureScore.GetValueOrDefault()) - designs.Min(d => d.DesiredTemperatureScore.GetValueOrDefault());
+            job.HighestTempTolerance *= designs.Max(d => d.HighestTemperatureScore.GetValueOrDefault()) - designs.Min(d => d.HighestTemperatureScore.GetValueOrDefault());
             job.AccessibilityTolerance *= designs.Max(d => d.AccessibilityScore.GetValueOrDefault()) - designs.Min(d => d.AccessibilityScore.GetValueOrDefault());
-            
+            job.StructureTolerance *= designs.Max(d => d.StructureScore.GetValueOrDefault()) - designs.Min(d => d.StructureScore.GetValueOrDefault());
+
             _db.ChangeTracker.AutoDetectChangesEnabled = true;
             _db.Jobs.Attach(job);
             await _db.SaveChangesAsync();
@@ -380,58 +372,35 @@ namespace Ribosoft.Jobs
          * \param job Current job
          * \param ribozymeStructure Current ribozyme structure
          */
-        private void RunScoreAlgorithms(Candidate candidate, Job job, RibozymeStructure ribozymeStructure, string RNAStructure)
+        private void RunScoreAlgorithms(Candidate candidate, Job job, RibozymeStructure ribozymeStructure)
         {
             var idealStructurePattern = new Regex(@"[^.^(^)]");
             string ideal = idealStructurePattern.Replace(candidate.Structure, ".");
 
-            float naConcentration = job.Na.GetValueOrDefault();
-            float probeConcentration = job.Probe.GetValueOrDefault();
-            float targetTemperature = job.TargetTemperature.GetValueOrDefault();
-
             var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
-                candidate.SubstrateStructure, naConcentration, probeConcentration, targetTemperature);
-
-            foreach (var cutsiteIndex in candidate.CutsiteIndices)
+                candidate.SubstrateStructure, job.Na.GetValueOrDefault(), job.Probe.GetValueOrDefault());
+            /*if (temperatureScore < 0.0f || temperatureScore > 100.0f)
             {
-                var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, RNAStructure,
-                    cutsiteIndex, naConcentration, probeConcentration, targetTemperature);
+                continue;
+            }*/
 
-                _db.Designs.Add(new Design
-                {
-                    JobId = job.Id,
+            var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, job.RNAInput,
+                ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset);
+            var structureScore = _ribosoftAlgo.Structure(candidate, ideal);
 
-                    Sequence = candidate.Sequence.GetString(),
-                    IdealStructure = ideal,
-                    SubstrateSequence = candidate.SubstrateSequence,
+            _db.Designs.Add(new Design
+            {
+                JobId = job.Id,
 
-                    // TODO: save actual cutsite (cutsiteIndex + ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset)
-                    CutsiteIndex = cutsiteIndex,
+                Sequence = candidate.Sequence.GetString(),
+                CutsiteIndex = candidate.CutsiteIndices.First(),
+                SubstrateSequenceLength = candidate.SubstrateSequence.Length,
 
-                    SubstrateSequenceLength = candidate.SubstrateSequence.Length,
-                    AccessibilityScore = accessibilityScore,
-                    DesiredTemperatureScore = temperatureScore
-                });
-            }
-        }
-
-        /*! \fn CalculateStructure
-         * \brief Function used to calculate structure score
-         * Distance is normalized using scaling to a range based on the highest 
-         * distance between structure and ideal strucutre of all candidates
-         * \param job Job object
-         * \param cancellationToken Cancellation token
-         */
-        private async Task CalculateStructure(Job job, IJobCancellationToken cancellationToken)
-        {
-            IList<Design> designs = _db.Designs
-                             .Where(d => d.JobId == job.Id)
-                             .ToList();
-
-            _ribosoftAlgo.Structure(designs);
-
-            _db.Jobs.Attach(job);
-            await _db.SaveChangesAsync();
+                AccessibilityScore = accessibilityScore,
+                StructureScore = structureScore,
+                HighestTemperatureScore = temperatureScore,
+                DesiredTemperatureScore = Math.Abs(temperatureScore - job.Temperature.GetValueOrDefault())
+            });
         }
 
         /*! \fn MultiObjectiveOptimize
@@ -479,14 +448,14 @@ namespace Ribosoft.Jobs
             var designs = _db.Designs
                              .Where(d => d.JobId == job.Id)
                              .AsEnumerable()
-                             .GroupBy(d => new { d.CutsiteIndex, d.SubstrateSequence });
+                             .GroupBy(d => new { d.CutsiteIndex, d.SubstrateSequenceLength });
 
             foreach (var designGroup in designs)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var design = designGroup.First();
-                var substrateSequence = design.SubstrateSequence;
+                var substrateSequence = job.RNAInput.Substring(design.CutsiteIndex, design.SubstrateSequenceLength);
 
                 if (string.IsNullOrEmpty(substrateSequence))
                 {
@@ -496,19 +465,28 @@ namespace Ribosoft.Jobs
                 // calculate the substrate specificity score, which is common to all designs in this group
                 var substrateSpecificityScore = CalculateSpecificity(substrateSequence, job.Assembly.Path);
 
-                foreach (var d in designGroup)
+                if (job.SpecificityMethod == SpecificityMethod.CleavageAndHybridization)
                 {
-                    d.SpecificityScore = substrateSpecificityScore;
+                    // if we're doing hybridization specificity, also compute the score for the design sequence complement
+                    foreach (var d in designGroup)
+                    {
+                        d.SpecificityScore = substrateSpecificityScore + CalculateSpecificity(new Sequence(d.Sequence).GetComplement(), job.Assembly.Path);
+                    }
+                }
+                else
+                {
+                    // for cleavage-only specificity, only use the substrate specificity score
+                    foreach (var d in designGroup)
+                    {
+                        d.SpecificityScore = substrateSpecificityScore;
+                    }
                 }
             }
 
-            // Specificity is minimized to 1 in the case of a wildtype gene (a score of 0 is ideal for synthetic genes)
+            // Specificity is minimized to 1
             // Anything below 1 means there is absolutely no matching in the organism and will not bond
             // Therefore, remove the design
-            if (job.SpecificityMethod == SpecificityMethod.Wildtype)
-            {
-                _db.Designs.RemoveRange(_db.Designs.Where(d => d.SpecificityScore < 1.0f));
-            }
+            _db.Designs.RemoveRange(_db.Designs.Where(d => d.SpecificityScore < 1.0f));
 
             var completedDesigns = _db.Designs.Where(d => d.JobId == job.Id);
 

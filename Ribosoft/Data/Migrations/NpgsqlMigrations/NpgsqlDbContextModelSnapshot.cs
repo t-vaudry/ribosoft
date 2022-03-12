@@ -225,7 +225,7 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
 
                     b.Property<float?>("DesiredTemperatureScore");
 
-                    b.Property<string>("IdealStructure");
+                    b.Property<float?>("HighestTemperatureScore");
 
                     b.Property<int>("JobId");
 
@@ -236,8 +236,6 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
                     b.Property<float?>("SpecificityScore");
 
                     b.Property<float?>("StructureScore");
-
-                    b.Property<string>("SubstrateSequence");
 
                     b.Property<int>("SubstrateSequenceLength");
 
@@ -267,6 +265,8 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
 
                     b.Property<string>("HangfireJobId");
 
+                    b.Property<float?>("HighestTempTolerance");
+
                     b.Property<int>("JobState");
 
                     b.Property<float?>("Na");
@@ -294,8 +294,6 @@ namespace Ribosoft.Data.Migrations.NpgsqlMigrations
                     b.Property<float?>("StructureTolerance");
 
                     b.Property<int>("TargetEnvironment");
-
-                    b.Property<float?>("TargetTemperature");
 
                     b.Property<float?>("Temperature");
 

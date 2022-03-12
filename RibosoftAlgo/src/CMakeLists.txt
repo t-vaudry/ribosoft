@@ -8,7 +8,6 @@ set(SOURCE_FILES
     fold.cpp
     structure.cpp
     accessibility.cpp
-    mfe_default_fold.cpp
     )
 
 add_definitions(-DBUILDING_DLL)

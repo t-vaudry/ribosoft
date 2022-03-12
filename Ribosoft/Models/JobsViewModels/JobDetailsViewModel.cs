@@ -55,8 +55,8 @@ namespace Ribosoft.Models.JobsViewModels
                 {
                     case "Rank":
                         return "Rank";
-                    case "CutsiteIndex":
-                        return "CutsiteIndex";
+                    case "HighestTemperatureScore":
+                        return "Highest Temperature Score";
                     case "DesiredTemperatureScore":
                         return "Desired Temperature Score";
                     case "AccessibilityScore":
