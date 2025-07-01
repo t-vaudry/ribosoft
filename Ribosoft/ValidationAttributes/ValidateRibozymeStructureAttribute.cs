@@ -37,7 +37,7 @@ namespace Ribosoft.ValidationAttributes
          * \param value Value to validate
          * \return Boolean result of check
          */
-        public override bool IsValid(object value)
+        public override bool IsValid(object? value)
         {
             // Reset boolean and error message for second pass of validation
             _isValid = true;

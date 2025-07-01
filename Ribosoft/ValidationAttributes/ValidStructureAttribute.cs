@@ -34,13 +34,15 @@ namespace Ribosoft.ValidationAttributes
          * \param value Value to validate
          * \return Boolean result of check
          */
-        public override bool IsValid(object value)
+        public override bool IsValid(object? value)
         {
             // Reset boolean and error message for second pass of validation
             _isValid = true;
             _errorMessage = "";
 
-            string structure = value.ToString();        
+            if (value == null) return false;
+            
+            string structure = value.ToString() ?? string.Empty;        
             uint OpenDoubleBondCount = 0;       // (
             uint OpenPseudoKnotCount = 0;       // [
             
