@@ -1,4 +1,5 @@
-#include <catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_approx.hpp>
 #include <cmath>
 
 #include "functions.h"
@@ -6,6 +7,7 @@
 #define DELTA 0.0001f
 
 using namespace ribosoft;
+using Catch::Approx;
 
 TEST_CASE("Perfect accessibility", "[accessibility]") {
     float score = -1.0f;
@@ -18,7 +20,7 @@ TEST_CASE("Imperfect accesibility", "[accessibility]") {
     float score = -1.0f;
     R_STATUS status = accessibility("CAACUGCAUGUGAUG","cba987654..3210", "...((()((.)).).", 1.0f, 0.5f, 22.0f, score);
     REQUIRE(status == R_SUCCESS::R_STATUS_OK);
-    REQUIRE(fabs(score - 2445.45483f) < DELTA);
+    REQUIRE(score == Approx(2445.45483f));
 }
 
 TEST_CASE("Invalid substrate sequence", "[accessibility]") {

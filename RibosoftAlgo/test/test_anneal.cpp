@@ -1,11 +1,12 @@
-#include <catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_approx.hpp>
 #include <cmath>
 
 #include "functions.h"
 
 using namespace ribosoft;
-
-float DELTA = 0.05f;
+using Catch::Approx;
+using Catch::Approx;
 
 TEST_CASE("Simple check", "[anneal]") {
     const char* sequence = "AUGAUCGAUGCUGUAGCUGACU";
@@ -17,7 +18,7 @@ TEST_CASE("Simple check", "[anneal]") {
     R_STATUS status = anneal(sequence, structure, na_concentration, probe_concentration, target_temp, temp);
 
     REQUIRE(status == R_SUCCESS::R_STATUS_OK);
-    REQUIRE(fabs(temp - 4687.91f) < DELTA);
+    REQUIRE(temp == Approx(4687.91f));
 }
 
 TEST_CASE("simple sequence and structure", "[anneal]") {
@@ -30,7 +31,7 @@ TEST_CASE("simple sequence and structure", "[anneal]") {
     R_STATUS status = anneal(sequence, structure, na_concentration, probe_concentration, target_temp, temp);
 
     REQUIRE(status == R_SUCCESS::R_STATUS_OK);
-    REQUIRE(fabs(temp - 4570.37f) < DELTA);
+    REQUIRE(temp == Approx(4570.37f));
 }
 
 TEST_CASE("invalid (0) na concentration", "[anneal]") {

@@ -1,9 +1,11 @@
-#include <catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_approx.hpp>
 #include <cstring>
 
 #include "functions.h"
 
 using namespace ribosoft;
+using Catch::Approx;
 
 TEST_CASE("default", "[fold]") {
     fold_output* output = nullptr;
