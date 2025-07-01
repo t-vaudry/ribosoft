@@ -1,4 +1,4 @@
-name: Generate Codecov report
+name: Generate Code Coverage Report
 
 on:
   push:
@@ -6,6 +6,10 @@ on:
       - master
       - develop
       - test-csharp-codecov
+  pull_request:
+    branches:
+      - master
+      - develop
 
 env:
   BUILD_TYPE: Debug
@@ -15,70 +19,97 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup python
-      uses: actions/setup-python@v2
+    - uses: actions/checkout@v4
+    
+    - name: Setup Python 3.13
+      uses: actions/setup-python@v5
       with:
-        python-version: 3.6
-        architecture: x64
+        python-version: '3.13'
+        cache: 'pip'
 
-    - name: Setup chocolatey
-      uses: crazy-max/ghaction-chocolatey@v1
+    - name: Setup .NET 8
+      uses: actions/setup-dotnet@v4
       with:
-        args: install opencppcoverage
+        dotnet-version: '8.0.x'
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: './Ribosoft/package-lock.json'
+
+    - name: Install OpenCppCoverage
+      run: choco install opencppcoverage
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pipenv
+        pipenv install --dev
+
+    - name: Generate Python coverage report
+      run: pipenv run pytest --cov-report=xml:coverage-python.xml --cov=. --cov-config=.coveragerc
+
+    - name: Get library dependencies
+      run: pipenv run python ribosoft.py deps install --yes
 
     - name: Create Build Environment
-      run: cmake -E make_directory ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
-
-    - name: Install pipenv
-      run: |
-        pip install pipenv
-        pipenv install
-
-    - name: Install dependencies + Generate Python report
-      run: pipenv run pytest --cov-report=xml:coverage-python.xml --cov=. --cov-config=.coveragerc
+      run: cmake -E make_directory ${{github.workspace}}/RibosoftAlgo/build
 
     - name: Configure CMake
       shell: bash
-      working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
-      run: cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+      working-directory: ${{github.workspace}}/RibosoftAlgo/build
+      run: |
+        cmake .. \
+          -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+          -DCMAKE_CXX_STANDARD=23 \
+          -DCMAKE_CXX_STANDARD_REQUIRED=ON
 
     - name: Build RibosoftAlgo
       shell: bash
-      working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo/build
-      run: cmake --build . --config $BUILD_TYPE
+      working-directory: ${{github.workspace}}/RibosoftAlgo/build
+      run: cmake --build . --config $BUILD_TYPE --parallel
 
-    - name: Add to path
+    - name: Install and build frontend assets
       shell: bash
-      run: echo "C:\Program Files\OpenCppCoverage" >> $GITHUB_PATH
-
-    - name: Install node modules
-      shell: bash
-      working-directory: ${{runner.workspace}}/ribosoft/Ribosoft
+      working-directory: ${{github.workspace}}/Ribosoft
       run: |
-        npm install
-        node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js
-        node node_modules/webpack/bin/webpack.js
+        npm ci
+        node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js --mode=development
+        node node_modules/webpack/bin/webpack.js --mode=development
 
     - name: Build Ribosoft
-      run: dotnet build Ribosoft.sln --configuration Debug
+      run: dotnet build Ribosoft.sln --configuration Debug --no-restore
 
-    - name: Generate C++ report
+    - name: Generate C++ coverage report
       shell: cmd
-      working-directory: ${{runner.workspace}}/ribosoft/RibosoftAlgo
-      run: OpenCppCoverage --export_type cobertura:coverage-cpp.xml --sources=${{runner.workspace}}\ribosoft\RibosoftAlgo\src --modules=${{runner.workspace}}\ribosoft\RibosoftAlgo\build\*.dll -- build\bin\Debug\tests.exe
+      working-directory: ${{github.workspace}}/RibosoftAlgo
+      run: |
+        "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe" ^
+          --export_type cobertura:coverage-cpp.xml ^
+          --sources=${{github.workspace}}\RibosoftAlgo\src ^
+          --modules=${{github.workspace}}\RibosoftAlgo\build\*.dll ^
+          -- build\bin\Debug\tests.exe
 
-    - name: Generate C# report
-      shell: cmd
-      working-directory: ${{runner.workspace}}/ribosoft
-      run: dotnet test Ribosoft.sln --collect:"XPlat Code Coverage" --results-directory:${{runner.workspace}}/ribosoft --settings:coverlet.runsettings
+    - name: Generate C# coverage report
+      run: |
+        dotnet test Ribosoft.sln ^
+          --configuration Debug ^
+          --no-build ^
+          --collect:"XPlat Code Coverage" ^
+          --results-directory:${{github.workspace}} ^
+          --settings:coverlet.runsettings
 
-    - shell: cmd
-      working-directory: ${{runner.workspace}}/ribosoft
-      run: FOR /R . %%x IN (*.cobertura.xml) DO MOVE %%x .
+    - name: Move coverage files
+      shell: powershell
+      run: |
+        Get-ChildItem -Path . -Recurse -Filter "*.cobertura.xml" | Move-Item -Destination .
 
-    - name: Upload report
-      uses: codecov/codecov-action@v1
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: RibosoftAlgo/coverage-cpp.xml,coverage.cobertura.xml,coverage-python.xml
+        files: ./RibosoftAlgo/coverage-cpp.xml,./coverage.cobertura.xml,./coverage-python.xml
+        fail_ci_if_error: false
+        verbose: true

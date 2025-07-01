@@ -1,4 +1,4 @@
-name: Ribosoft .NET Core Builds
+name: Ribosoft .NET 8 Builds
 
 on: [push, workflow_dispatch]
 
@@ -6,27 +6,37 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest] # macOS-latest is missing
+        os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{matrix.os}}
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+    - uses: actions/checkout@v4
+    - name: Setup .NET 8
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 5.0.102
-    - name: Setup Node
-      uses: actions/setup-node@v2-beta
+        dotnet-version: '8.0.x'
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
       with:
-        node-version: '12'
-    - name: Install node modules
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: './Ribosoft/package-lock.json'
+    - name: Install and build frontend assets
       shell: bash
       working-directory: ./Ribosoft
       run: |
-        npm install
-        node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js
-        node node_modules/webpack/bin/webpack.js
+        npm ci
+        node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js --mode=production
+        node node_modules/webpack/bin/webpack.js --mode=production
+    - name: Restore dependencies
+      run: dotnet restore Ribosoft.sln
     - name: Build
-      run: dotnet build Ribosoft.sln --configuration Release
+      run: dotnet build Ribosoft.sln --configuration Release --no-restore
     - name: Test
-      run: dotnet test Ribosoft.Tests --configuration Release --no-restore --verbosity normal
+      run: dotnet test Ribosoft.sln --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
+    - name: Upload coverage reports
+      if: matrix.os == 'ubuntu-latest'
+      uses: codecov/codecov-action@v4
+      with:
+        files: '**/coverage.cobertura.xml'
+        fail_ci_if_error: false
