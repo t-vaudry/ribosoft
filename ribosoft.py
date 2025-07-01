@@ -1,49 +1,59 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+"""
+Modern dependency management script for Ribosoft C++ dependencies.
+Supports ViennaRNA and Melting library package management.
+"""
 import logging
-import click
-import click_log
-import requests
-import json
 import sys
-import os
+from pathlib import Path
+from typing import List, Optional, Dict, Any
+from enum import Enum
+from functools import reduce
 import tempfile
 import hashlib
 import zipfile
 import shutil
-from functools import reduce
-from enum import Enum
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
+import json
 
-if sys.version_info[0] != 3 and sys.version_info[1] < 5:
-    print("This script requires Python version 3.5")
+import click
+import click_log
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
+# Require Python 3.8+ for modern features
+if sys.version_info < (3, 8):
+    print("This script requires Python version 3.8 or higher")
+    print(f"Current version: {sys.version}")
     sys.exit(1)
 
-root_dir = os.path.dirname(os.path.realpath(__file__))
+# Use pathlib for modern path handling
+root_dir = Path(__file__).parent.resolve()
 
 # Environment setup
-dependency_file_path = os.path.join(root_dir, 'deps.json')
-lock_file_path = os.path.join(root_dir, 'deps.lock')
-install_path = os.path.join(root_dir, '.deps/')
+dependency_file_path = root_dir / 'deps.json'
+lock_file_path = root_dir / 'deps.lock'
+install_path = root_dir / '.deps'
 
 
-class Log(object):
-    def __init__(self, name=__name__, level=logging.ERROR):
+class Log:
+    """Modern logging wrapper with structured logging support."""
+    
+    def __init__(self, name: str = __name__, level: int = logging.ERROR):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(level)
-
         click_log.basic_config(self.logger)
 
-    def debug(self, msg):
+    def debug(self, msg: str) -> None:
         self.logger.debug(msg)
 
-    def info(self, msg):
+    def info(self, msg: str) -> None:
         self.logger.info(msg)
 
-    def warning(self, msg):
+    def warning(self, msg: str) -> None:
         self.logger.warning(msg)
 
-    def error(self, msg):
+    def error(self, msg: str) -> None:
         self.logger.error(msg)
 
 
@@ -51,10 +61,12 @@ log = Log()
 
 
 class UnsupportedOSException(Exception):
+    """Raised when the operating system is not supported."""
     pass
 
 
-def os_str():
+def os_str() -> str:
+    """Get the operating system string for package selection."""
     platform = sys.platform
 
     if platform == 'win32':
@@ -64,210 +76,215 @@ def os_str():
     elif platform == 'darwin':
         return 'mac'
 
-    raise UnsupportedOSException()
+    raise UnsupportedOSException(f"Unsupported platform: {platform}")
 
 
 class MalformedFileException(Exception):
+    """Raised when a configuration file is malformed."""
     pass
 
 
 class Action(Enum):
-    NONE = 1
-    INSTALL = 2
-    REPLACE = 3
-    REMOVE = 4
+    """Actions that can be performed on dependencies."""
+    NONE = "none"
+    INSTALL = "install"
+    REPLACE = "replace"
+    REMOVE = "remove"
 
 
-class Dependency(object):
+class Dependency:
+    """Represents a package dependency with name and version."""
+    
     def __init__(self, name: str, version: str):
         self.name = name
         self.version = version
+    
+    def __repr__(self) -> str:
+        return f"Dependency(name='{self.name}', version='{self.version}')"
 
 
-class DependencyAction(object):
-    def __init__(self, current: Dependency = None, target: Dependency = None, action: Action = Action.NONE):
+class DependencyAction:
+    """Represents an action to be performed on a dependency."""
+    
+    def __init__(self, current: Optional[Dependency] = None, 
+                 target: Optional[Dependency] = None, 
+                 action: Action = Action.NONE):
         self.current = current
         self.target = target
         self.action = action
 
-    def set_action(self, action: Action):
+    def set_action(self, action: Action) -> None:
         self.action = action
 
-    def name(self):
+    def name(self) -> str:
         return self.current.name if self.current is not None else self.target.name
 
-    def current_version(self):
+    def current_version(self) -> Optional[str]:
         return self.current.version if self.current is not None else None
 
-    def target_version(self):
+    def target_version(self) -> Optional[str]:
         return self.target.version if self.target is not None else None
 
 
-class DependencyFile(object):
-    catalog_url = ''
-    packages = []  # type: list[Dependency]
+class DependencyFile:
+    """Represents the deps.json configuration file."""
+    
+    def __init__(self):
+        self.catalog_url: str = ''
+        self.packages: List[Dependency] = []
 
-    def set_catalog_url(self, catalog_url):
+    def set_catalog_url(self, catalog_url: str) -> None:
         self.catalog_url = catalog_url
 
-    def add_package(self, name, version):
+    def add_package(self, name: str, version: str) -> None:
         self.packages.append(Dependency(name=name, version=version))
 
 
-class DependencyLockFile(object):
-    packages = []  # type: list[Dependency]
+class DependencyLockFile:
+    """Represents the deps.lock file tracking installed packages."""
+    
+    def __init__(self):
+        self.packages: List[Dependency] = []
 
-    def add_package(self, name, version):
-        # TODO: use Dependency as param
+    def add_package(self, name: str, version: str) -> None:
         self.packages.append(Dependency(name=name, version=version))
 
-    def remove_package(self, name):
+    def remove_package(self, name: str) -> None:
         self.packages = [p for p in self.packages if p.name != name]
 
-    def serialize(self):
-        root = {'packages': []}
-
-        for p in self.packages:
-            root['packages'].append(p.__dict__)
-
-        return root
+    def serialize(self) -> Dict[str, Any]:
+        return {
+            'packages': [{'name': p.name, 'version': p.version} for p in self.packages]
+        }
 
 
-class DependencyFileParser(object):
+class DependencyFileParser:
+    """Parser for dependency and lock files with modern error handling."""
+    
     def __init__(self):
-        self.__dependency_file = None  # type: DependencyFile
-        self.__lock_file = None  # type: DependencyLockFile
+        self._dependency_file: Optional[DependencyFile] = None
+        self._lock_file: Optional[DependencyLockFile] = None
 
-    def get_dependency_file(self):
-        if self.__dependency_file is None:
-            self.__load_dependency_file()
+    def get_dependency_file(self) -> DependencyFile:
+        if self._dependency_file is None:
+            self._load_dependency_file()
+        return self._dependency_file
 
-        return self.__dependency_file
+    def get_lock_file(self) -> DependencyLockFile:
+        if self._lock_file is None:
+            self._load_lock_file()
+        return self._lock_file
 
-    def get_lock_file(self):
-        if self.__lock_file is None:
-            self.__load_lock_file()
+    def write_lock_file(self, lock_file: DependencyLockFile) -> None:
+        """Write lock file with atomic operation."""
+        try:
+            with lock_file_path.open('w', encoding='utf-8') as f:
+                json.dump(lock_file.serialize(), f, indent=2, ensure_ascii=False)
+        except OSError as e:
+            log.error(f'Failed to write lock file: {e}')
+            raise
 
-        return self.__lock_file
-
-    def write_lock_file(self, lock_file: DependencyLockFile):
-        with open(lock_file_path, 'w') as f:
-            json.dump(lock_file.serialize(), f, indent=2)
-
-    def __load_dependency_file(self):
+    def _load_dependency_file(self) -> None:
         log.debug('Loading dependency file')
-
-        deps = self.__get_dependency_file_data(dependency_file_path)
+        
+        deps_data = self._get_dependency_file_data(dependency_file_path)
         dependency_file = DependencyFile()
 
-        if deps is not None:
-            dependency_file.set_catalog_url(deps['catalog-url'])
+        if deps_data is not None:
+            dependency_file.set_catalog_url(deps_data['catalog-url'])
 
-            for package in deps['packages']:
+            for package in deps_data['packages']:
                 dependency_file.add_package(package['name'], package['version'])
-                log.debug('Found package dependency: {0}@{1}'.format(package['name'], package['version']))
+                log.debug(f"Found package dependency: {package['name']}@{package['version']}")
 
-        self.__dependency_file = dependency_file
-
+        self._dependency_file = dependency_file
         log.debug('Finished loading dependency file')
 
-    def __load_lock_file(self):
+    def _load_lock_file(self) -> None:
         log.debug('Loading lock file')
-
-        lock = self.__get_lock_file_data(lock_file_path)
+        
+        lock_data = self._get_lock_file_data(lock_file_path)
         lock_file = DependencyLockFile()
 
-        if lock is not None and 'packages' in lock:
-            for package in lock['packages']:
+        if lock_data is not None and 'packages' in lock_data:
+            for package in lock_data['packages']:
                 lock_file.add_package(package['name'], package['version'])
-                log.debug('Found installed package: {0}@{1}'.format(package['name'], package['version']))
+                log.debug(f"Found installed package: {package['name']}@{package['version']}")
 
-        self.__lock_file = lock_file
-
+        self._lock_file = lock_file
         log.debug('Finished loading lock file')
 
-    def __parse_json(self, str):
+    def _get_dependency_file_data(self, filename: Path) -> Optional[Dict[str, Any]]:
         try:
-            return json.load(str)
-        except ValueError as e:
-            log.error('Failure parsing JSON: {0}'.format(e))
-            raise
-
-    def __get_dependency_file_data(self, filename):
-        deps = None
-
-        try:
-            with open(filename) as json_data:
-                deps = json.load(json_data)
-
-            self.__validate_dependency_schema(deps)
-        except IOError as e:
-            log.warning('Cannot open dependency file \'{0}\''.format(filename))
-            log.debug(e)
-        except ValueError:
-            log.error('Failure parsing JSON in \'{0}\''.format(filename))
+            with filename.open('r', encoding='utf-8') as f:
+                deps = json.load(f)
+            self._validate_dependency_schema(deps)
+            return deps
+        except FileNotFoundError:
+            log.warning(f'Cannot open dependency file: {filename}')
+            return None
+        except json.JSONDecodeError as e:
+            log.error(f'Invalid JSON in dependency file {filename}: {e}')
             raise
         except MalformedFileException:
-            log.error('Failure parsing dependency file \'{0}\''.format(filename))
+            log.error(f'Malformed dependency file: {filename}')
             raise
 
-        return deps
-
-    def __get_lock_file_data(self, filename):
-        deps = None
-
+    def _get_lock_file_data(self, filename: Path) -> Optional[Dict[str, Any]]:
         try:
-            with open(filename) as json_data:
-                deps = self.__parse_json(json_data)
-
-            self.__validate_lock_schema(deps)
-        except IOError:
+            with filename.open('r', encoding='utf-8') as f:
+                lock_data = json.load(f)
+            self._validate_lock_schema(lock_data)
+            return lock_data
+        except FileNotFoundError:
             log.debug('No lock file found')
+            return None
+        except json.JSONDecodeError as e:
+            log.error(f'Invalid JSON in lock file {filename}: {e}')
+            raise
         except MalformedFileException as e:
-            log.error('Failure parsing lock file \'{0}\': {1}'.format(filename, e))
-            raise e
+            log.error(f'Malformed lock file {filename}: {e}')
+            raise
 
-        return deps
-
-    def __validate_dependency_schema(self, root):
-        if 'catalog-url' not in root:
-            raise MalformedFileException('\'catalog-url\' value missing')
-
-        if 'packages' not in root:
-            raise MalformedFileException('\'packages\' value missing')
+    def _validate_dependency_schema(self, root: Dict[str, Any]) -> None:
+        """Validate dependency file schema."""
+        required_fields = ['catalog-url', 'packages']
+        for field in required_fields:
+            if field not in root:
+                raise MalformedFileException(f"Missing required field: '{field}'")
 
         if not isinstance(root['packages'], list):
-            raise MalformedFileException('\'packages\' is not an array')
+            raise MalformedFileException("'packages' must be an array")
 
         for package in root['packages']:
             if 'name' not in package:
-                raise MalformedFileException('\'name\' value missing for package')
-
+                raise MalformedFileException("Package missing 'name' field")
             if 'version' not in package:
-                raise MalformedFileException('\'version\' value missing for package \'{0}\''.format(package['name']))
+                raise MalformedFileException(f"Package '{package.get('name', 'unknown')}' missing 'version' field")
 
-    def __validate_lock_schema(self, root):
+    def _validate_lock_schema(self, root: Dict[str, Any]) -> None:
+        """Validate lock file schema."""
         if 'packages' in root:
             if not isinstance(root['packages'], list):
-                raise MalformedFileException('\'packages\' is not an array')
+                raise MalformedFileException("'packages' must be an array")
 
             for package in root['packages']:
                 if 'name' not in package:
-                    raise MalformedFileException('\'name\' value missing for package')
-
+                    raise MalformedFileException("Package missing 'name' field")
                 if 'version' not in package:
-                    raise MalformedFileException(
-                        '\'version\' value missing for package \'{0}\''.format(package['name']))
+                    raise MalformedFileException(f"Package '{package.get('name', 'unknown')}' missing 'version' field")
 
 
-class Downloader(object):
+class Downloader:
+    """Modern HTTP downloader with retry logic and integrity verification."""
+    
     def __init__(self):
-        # Set up requests with Retry mechanism (max 5 retries with 1s progressive backoff between retries)
+        # Set up requests with modern Retry mechanism
         retry_strategy = Retry(
             total=5,
             backoff_factor=1,
             status_forcelist=[429, 500, 502, 503, 504],
-            method_whitelist=['HEAD', 'GET', 'OPTIONS']
+            allowed_methods=['HEAD', 'GET', 'OPTIONS']  # Fixed deprecated method_whitelist
         )
         adapter = HTTPAdapter(max_retries=retry_strategy)
         session = requests.Session()
@@ -275,213 +292,266 @@ class Downloader(object):
         session.mount('http://', adapter)
         self.requests = session
 
-    def fetch_catalog(self, url):
+    def fetch_catalog(self, url: str) -> 'Catalog':
+        """Fetch and parse the remote package catalog."""
         try:
-            r = self.requests.get(url)
-            r.raise_for_status()
-            data = r.json()
+            log.debug(f'Fetching catalog from: {url}')
+            response = self.requests.get(url, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+            return Catalog(url, data)
         except requests.HTTPError as e:
             if e.response is not None and e.response.status_code == 404:
-                log.error('Failure fetching remote catalog: Catalog does not exist')
+                log.error('Catalog not found (404)')
             else:
-                log.error('Failure fetching remote catalog: Server returned bad status')
+                log.error(f'Server error: {e.response.status_code if e.response else "unknown"}')
             raise
-        except (requests.RequestException, ConnectionError):
-            log.error('Failure fetching remote catalog: Request failed')
+        except requests.RequestException as e:
+            log.error(f'Network error fetching catalog: {e}')
             raise
-        except ValueError:
-            log.error('Failure fetching remote catalog: Catalog is invalid')
+        except json.JSONDecodeError as e:
+            log.error(f'Invalid JSON in catalog: {e}')
             raise
 
-        return Catalog(url, data)
-
-    def download_zip(self, destination, url, sha256):
-        log.debug('Downloading \'{0}\' to \'{1}\''.format(url, destination))
+    def download_zip(self, destination: Path, url: str, sha256: str) -> None:
+        """Download and extract a zip file with integrity verification."""
+        log.debug(f'Downloading {url} to {destination}')
         log.info('  downloading...')
-        r = self.requests.get(url, stream=True)
-        file_sha256 = hashlib.sha256()
+        
+        try:
+            response = self.requests.get(url, stream=True, timeout=60)
+            response.raise_for_status()
+            file_sha256 = hashlib.sha256()
 
-        with tempfile.TemporaryFile() as f:
-            for chunk in r.iter_content(chunk_size=1024):
-                if chunk:
-                    f.write(chunk)
-                    file_sha256.update(chunk)
+            with tempfile.TemporaryFile() as temp_file:
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk:
+                        temp_file.write(chunk)
+                        file_sha256.update(chunk)
 
-            log.info('  verifying...')
-            if file_sha256.hexdigest() != sha256:
-                log.error('Download hash mismatch')
-                raise RuntimeError('SHA256 does not match')
+                log.info('  verifying...')
+                if file_sha256.hexdigest() != sha256:
+                    raise RuntimeError(f'SHA256 mismatch. Expected: {sha256}, Got: {file_sha256.hexdigest()}')
 
-            log.debug('Hash OK: {0}'.format(sha256))
+                log.debug(f'Hash verified: {sha256}')
+                self._extract_zip(temp_file, destination)
+                
+        except requests.RequestException as e:
+            log.error(f'Download failed: {e}')
+            raise
+        except Exception as e:
+            log.error(f'Unexpected error during download: {e}')
+            raise
 
-            self.extract_zip(file=f, destination=destination)
-
-    def extract_zip(self, file, destination):
-        with zipfile.ZipFile(file) as zip_ref:
-            try:
-                zip_ref.testzip()
-            except RuntimeError:
-                log.error('Downloaded zipfile is corrupt')
-                raise
+    def _extract_zip(self, file_obj, destination: Path) -> None:
+        """Extract zip file to destination with validation."""
+        destination.mkdir(parents=True, exist_ok=True)
+        
+        with zipfile.ZipFile(file_obj) as zip_ref:
+            # Test zip integrity
+            bad_file = zip_ref.testzip()
+            if bad_file:
+                raise RuntimeError(f'Corrupt zip file, bad file: {bad_file}')
 
             log.info('  extracting...')
             zip_ref.extractall(destination)
 
 
-class Catalog(object):
-    def __init__(self, url, data):
+class Catalog:
+    """Represents a remote package catalog with URL resolution."""
+    
+    def __init__(self, url: str, data: Dict[str, Any]):
         self.url = url
         self.data = data
 
-    def get_package_url(self, package: Dependency):
+    def get_package_url(self, package: Dependency) -> tuple[Optional[str], Optional[str]]:
+        """Get download URL and SHA256 for a package."""
         try:
             meta = reduce(dict.__getitem__,
-                          ['packages', package.name, 'versions', package.version, 'platforms', os_str()],
-                          self.data)
-        except KeyError:
-            log.error('Package does not exist in catalog')
+                         ['packages', package.name, 'versions', package.version, 'platforms', os_str()],
+                         self.data)
+            
+            base_url = str(Path(self.url).parent / self.data['archive-root'])
+            package_url = f"{base_url}/{package.name}_{package.version}_{os_str()}.zip"
+            
+            return package_url, meta['sha256']
+        except KeyError as e:
+            log.error(f'Package {package.name}@{package.version} not found in catalog: {e}')
             return None, None
 
-        return os.path.join(os.path.dirname(self.url), self.data['archive-root'],
-                            '{0}_{1}_{2}.zip'.format(package.name, package.version, os_str())), meta['sha256']
 
-
-class ActionStrategy(object):
-    def _ensure_dest_exists(self):
+class ActionStrategy:
+    """Base class for dependency action strategies."""
+    
+    def _ensure_dest_exists(self) -> None:
+        """Ensure the installation directory exists."""
         try:
-            if not os.path.exists(install_path):
-                log.debug('Creating new install directory at {0}'.format(install_path))
-                os.makedirs(install_path)
-        except OSError:
-            log.error('Failure creating dependency install directory \'{0}\''.format(install_path))
+            install_path.mkdir(parents=True, exist_ok=True)
+            log.debug(f'Ensured install directory exists: {install_path}')
+        except OSError as e:
+            log.error(f'Failed to create install directory {install_path}: {e}')
             raise
 
 
 class ActionInstallStrategy(ActionStrategy):
-    def resolve(self, catalog: Catalog, package: DependencyAction):
-        log.info('Installing {0}@{1}...'.format(package.name(), package.target_version()))
+    """Strategy for installing new packages."""
+    
+    def resolve(self, catalog: Catalog, package: DependencyAction) -> None:
+        log.info(f'Installing {package.name()}@{package.target_version()}...')
         self._ensure_dest_exists()
+        
         downloader = Downloader()
-
         location, sha256 = catalog.get_package_url(package.target)
 
         if location is None:
+            log.error(f'Cannot resolve package URL for {package.name()}')
             return
 
-        dest_path = os.path.join(install_path, package.name())
+        dest_path = install_path / package.name()
         downloader.download_zip(dest_path, location, sha256)
 
 
 class ActionReplaceStrategy(ActionStrategy):
-    def resolve(self, catalog: Catalog, package: DependencyAction):
-        log.info('Replacing {0}@{1} with {0}@{2}...'.format(package.name(), package.current_version(),
-                                                            package.target_version()))
+    """Strategy for replacing existing packages."""
+    
+    def resolve(self, catalog: Catalog, package: DependencyAction) -> None:
+        log.info(f'Replacing {package.name()}@{package.current_version()} '
+                f'with {package.name()}@{package.target_version()}...')
         self._ensure_dest_exists()
+        
         downloader = Downloader()
-
         location, sha256 = catalog.get_package_url(package.target)
 
         if location is None:
+            log.error(f'Cannot resolve package URL for {package.name()}')
             return
 
-        dest_path = os.path.join(install_path, package.name())
-        if os.path.exists(dest_path):
-            log.info('  removing...')
+        dest_path = install_path / package.name()
+        if dest_path.exists():
+            log.info('  removing old version...')
             shutil.rmtree(dest_path)
 
         downloader.download_zip(dest_path, location, sha256)
 
 
 class ActionRemoveStrategy(ActionStrategy):
-    def resolve(self, catalog: Catalog, package: DependencyAction):
-        log.info('Removing {0}@{1}...'.format(package.name(), package.current_version()))
-        self._ensure_dest_exists()
-        dest_path = os.path.join(install_path, package.name())
+    """Strategy for removing packages."""
+    
+    def resolve(self, catalog: Catalog, package: DependencyAction) -> None:
+        log.info(f'Removing {package.name()}@{package.current_version()}...')
+        dest_path = install_path / package.name()
 
-        if os.path.exists(dest_path):
+        if dest_path.exists():
             log.info('  removing...')
             shutil.rmtree(dest_path)
+        else:
+            log.warning(f'Package directory not found: {dest_path}')
 
 
-class DependencyResolver(object):
+class DependencyResolver:
+    """Main dependency resolution and management class."""
+    
     def __init__(self):
         self.downloader = Downloader()
         self.file_parser = DependencyFileParser()
 
-    def resolve(self, prompt=True):
+    def resolve(self, prompt: bool = True) -> None:
+        """Resolve and apply dependency changes."""
         dependencies = self.analyze_dependencies()
-        groups = {Action.INSTALL: [], Action.REPLACE: [], Action.REMOVE: []}
+        groups = {
+            Action.INSTALL: [],
+            Action.REPLACE: [],
+            Action.REMOVE: []
+        }
 
         for dep in dependencies:
             if dep.action in groups:
                 groups[dep.action].append(dep)
 
-        if sum(map(lambda x: len(x), groups.values())) == 0:
+        total_actions = sum(len(group) for group in groups.values())
+        if total_actions == 0:
             click.echo('Nothing to do')
             return
 
-        if len(groups[Action.INSTALL]):
-            click.echo('The following new dependencies will be installed:')
-            for d in groups[Action.INSTALL]:
-                click.secho('  {0}'.format(d.name()), fg='blue', nl=False)
-                click.echo(': {0}'.format(d.target_version()))
-            click.echo()
-
-        if len(groups[Action.REPLACE]):
-            click.echo('The following dependencies will be replaced:')
-            for d in groups[Action.REPLACE]:
-                click.secho('  {0}'.format(d.name()), fg='blue', nl=False)
-                click.echo(': {0} -> {1}'.format(d.current_version(), d.target_version()))
-            click.echo()
-
-        if len(groups[Action.REMOVE]):
-            click.echo('The following dependencies will be removed:')
-            for d in groups[Action.REMOVE]:
-                click.secho('  {0}'.format(d.name()), fg='blue', nl=False)
-                click.echo(': {0}'.format(d.current_version()))
-            click.echo()
+        self._display_planned_actions(groups)
 
         if prompt and not click.confirm('Do you want to continue?'):
             return
 
-        click.echo('Retrieving catalog')
-        catalog = self.downloader.fetch_catalog(self.get_catalog_url())
+        self._execute_actions(dependencies)
+
+    def _display_planned_actions(self, groups: Dict[Action, List[DependencyAction]]) -> None:
+        """Display planned actions to the user."""
+        if groups[Action.INSTALL]:
+            click.echo('The following new dependencies will be installed:')
+            for dep in groups[Action.INSTALL]:
+                click.secho(f'  {dep.name()}', fg='blue', nl=False)
+                click.echo(f': {dep.target_version()}')
+            click.echo()
+
+        if groups[Action.REPLACE]:
+            click.echo('The following dependencies will be replaced:')
+            for dep in groups[Action.REPLACE]:
+                click.secho(f'  {dep.name()}', fg='blue', nl=False)
+                click.echo(f': {dep.current_version()} -> {dep.target_version()}')
+            click.echo()
+
+        if groups[Action.REMOVE]:
+            click.echo('The following dependencies will be removed:')
+            for dep in groups[Action.REMOVE]:
+                click.secho(f'  {dep.name()}', fg='blue', nl=False)
+                click.echo(f': {dep.current_version()}')
+            click.echo()
+
+    def _execute_actions(self, dependencies: List[DependencyAction]) -> None:
+        """Execute the planned dependency actions."""
+        click.echo('Retrieving catalog...')
+        try:
+            catalog = self.downloader.fetch_catalog(self.get_catalog_url())
+        except Exception as e:
+            log.error(f'Failed to fetch catalog: {e}')
+            raise
+
         lock = self.file_parser.get_lock_file()
 
-        # TODO: pass touch_lock lambda
-
         for dep in dependencies:
-            resolver = None
-
-            if dep.action == Action.INSTALL:
-                resolver = ActionInstallStrategy()
-            elif dep.action == Action.REPLACE:
-                resolver = ActionReplaceStrategy()
-            elif dep.action == Action.REMOVE:
-                resolver = ActionRemoveStrategy()
-
-            if resolver is not None:
-                resolver.resolve(catalog=catalog, package=dep)
-
-                lock.remove_package(dep.name())
-                if dep.action != Action.REMOVE:
-                    lock.add_package(dep.name(), dep.target_version())
+            strategy = self._get_action_strategy(dep.action)
+            if strategy is not None:
+                try:
+                    strategy.resolve(catalog=catalog, package=dep)
+                    
+                    # Update lock file
+                    lock.remove_package(dep.name())
+                    if dep.action != Action.REMOVE:
+                        lock.add_package(dep.name(), dep.target_version())
+                        
+                except Exception as e:
+                    log.error(f'Failed to resolve {dep.name()}: {e}')
+                    raise
 
         self.file_parser.write_lock_file(lock)
 
-    def analyze_dependencies(self):
+    def _get_action_strategy(self, action: Action) -> Optional[ActionStrategy]:
+        """Get the appropriate strategy for an action."""
+        strategies = {
+            Action.INSTALL: ActionInstallStrategy(),
+            Action.REPLACE: ActionReplaceStrategy(),
+            Action.REMOVE: ActionRemoveStrategy()
+        }
+        return strategies.get(action)
+
+    def analyze_dependencies(self) -> List[DependencyAction]:
+        """Analyze current vs desired dependencies and determine actions."""
         log.debug('Starting dependency analysis')
+        
         dependencies = self.file_parser.get_dependency_file()
         lock = self.file_parser.get_lock_file()
-        result = []  # type: list[DependencyAction]
+        result = []
 
+        # Check for installs and replacements
         for dep in dependencies.packages:
-            installed = None
-            for l in lock.packages:
-                if l.name == dep.name:
-                    installed = l
-                    break
-
+            installed = next((l for l in lock.packages if l.name == dep.name), None)
+            
             if installed is None:
                 result.append(DependencyAction(target=dep, action=Action.INSTALL))
             elif installed.version != dep.version:
@@ -489,61 +559,89 @@ class DependencyResolver(object):
             else:
                 result.append(DependencyAction(current=installed, target=dep, action=Action.NONE))
 
-        for l in lock.packages:
-            wanted = None
-            for dep in dependencies.packages:
-                if l.name == dep.name:
-                    wanted = dep
-                    break
-
+        # Check for removals
+        for locked in lock.packages:
+            wanted = next((dep for dep in dependencies.packages if locked.name == dep.name), None)
             if wanted is None:
-                result.append(DependencyAction(current=l, target=wanted, action=Action.REMOVE))
+                result.append(DependencyAction(current=locked, action=Action.REMOVE))
 
         log.debug('Finished dependency analysis')
         return result
 
-    def get_catalog_url(self):
+    def get_catalog_url(self) -> str:
+        """Get the catalog URL from the dependency file."""
         return self.file_parser.get_dependency_file().catalog_url
 
 
 @click.group()
 @click_log.simple_verbosity_option(log.logger)
 def cli():
+    """Modern dependency management for Ribosoft C++ libraries.
+    
+    Manages ViennaRNA and Melting library dependencies for bioinformatics applications.
+    """
     pass
 
 
 @cli.group()
 def deps():
-    """Manage package dependencies"""
+    """Manage package dependencies for C++ libraries."""
     pass
 
 
 @deps.command()
 def check():
-    """Check local package install status"""
-    resolver = DependencyResolver()
-    dependencies = resolver.analyze_dependencies()
+    """Check local package installation status against requirements."""
+    try:
+        resolver = DependencyResolver()
+        dependencies = resolver.analyze_dependencies()
 
-    for dep in dependencies:
-        click.secho(dep.name(), fg='blue', nl=False)
-        click.echo(': installed = {0}, wanted = {1} '.format(dep.current_version(), dep.target_version()), nl=False)
+        if not dependencies:
+            click.echo('No dependencies configured.')
+            return
 
-        if dep.action == Action.INSTALL:
-            click.secho('(install required)', fg='yellow', nl=False)
-        elif dep.action == Action.REPLACE:
-            click.secho('(replace required)', fg='green', nl=False)
-        elif dep.action == Action.REMOVE:
-            click.secho('(remove required)', fg='red', nl=False)
+        for dep in dependencies:
+            click.secho(dep.name(), fg='blue', nl=False)
+            current = dep.current_version() or 'not installed'
+            target = dep.target_version() or 'not specified'
+            click.echo(f': installed = {current}, wanted = {target} ', nl=False)
 
-        click.echo()
+            status_colors = {
+                Action.INSTALL: ('install required', 'yellow'),
+                Action.REPLACE: ('update required', 'green'),
+                Action.REMOVE: ('removal required', 'red'),
+                Action.NONE: ('up to date', 'green')
+            }
+            
+            if dep.action in status_colors:
+                message, color = status_colors[dep.action]
+                click.secho(f'({message})', fg=color)
+            else:
+                click.echo()
+                
+    except Exception as e:
+        log.error(f'Failed to check dependencies: {e}')
+        sys.exit(1)
 
 
 @deps.command()
-@click.option('--yes', '-y', is_flag=True, help='do not prompt for confirmation')
-def install(yes):
-    """Install or update packages"""
-    resolver = DependencyResolver()
-    resolver.resolve(prompt=not yes)
+@click.option('--yes', '-y', is_flag=True, 
+              help='Skip confirmation prompt and proceed automatically')
+def install(yes: bool):
+    """Install or update packages according to deps.json configuration.
+    
+    Downloads and installs C++ libraries (ViennaRNA, Melting) required
+    for bioinformatics calculations in the Ribosoft application.
+    """
+    try:
+        resolver = DependencyResolver()
+        resolver.resolve(prompt=not yes)
+    except KeyboardInterrupt:
+        click.echo('\nOperation cancelled by user.')
+        sys.exit(1)
+    except Exception as e:
+        log.error(f'Installation failed: {e}')
+        sys.exit(1)
 
 
 if __name__ == '__main__':
