@@ -11,7 +11,7 @@ namespace Ribosoft.Models
     	/*! \property RequestId
          * \brief Request ID
          */
-        public string RequestId { get; set; }
+        public string RequestId { get; set; } = string.Empty;
 
         /*! \property ShowRequestId
          * \brief Check if request ID is displayed

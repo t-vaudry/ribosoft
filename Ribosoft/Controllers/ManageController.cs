@@ -84,7 +84,7 @@ namespace Ribosoft.Controllers
          * \brief Status message stored in temp data
          */
         [TempData]
-        public string StatusMessage { get; set; }
+        public string StatusMessage { get; set; } = string.Empty;
 
         /*!
          * \brief HTTP GET request for the manage account page
