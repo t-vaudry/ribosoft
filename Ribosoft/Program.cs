@@ -6,6 +6,7 @@ using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Razor;
+using NLog;
 using NLog.Web;
 using Ribosoft.Data;
 using Ribosoft.Models;
@@ -18,7 +19,7 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
-        var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+        var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
         
         try
         {
