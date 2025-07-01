@@ -29,7 +29,7 @@ namespace Ribosoft.ValidationAttributes
          * \param value Value to validate
          * \return Boolean result of check
          */
-        public override bool IsValid(object value)
+        public override bool IsValid(object? value)
         {
             int start = value as int? ?? -1;
 
