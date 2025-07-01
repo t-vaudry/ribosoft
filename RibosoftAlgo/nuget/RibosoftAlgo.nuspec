@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package >
+<package>
   <metadata>
     <id>RibosoftAlgo</id>
     <version>0.0.0</version>
@@ -8,13 +8,14 @@
     <licenseUrl>https://github.com/t-vaudry/ribosoft/blob/develop/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/t-vaudry/ribosoft</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Ribosoft algorithm support library</description>
-    <releaseNotes></releaseNotes>
-    <copyright>Copyright 2021</copyright>
-    <tags></tags>
-    <dependencies></dependencies>
+    <description>Modern Ribosoft algorithm support library for ribozyme design and bioinformatics calculations. Built with C++23, includes ViennaRNA and Melting temperature algorithms. Optimized for .NET 8+ with native AOT support.</description>
+    <releaseNotes>Major v2.0 release: Upgraded to C++23, modern CMake 3.20+, Catch2 v3.5.4, link-time optimization, and .NET 8+ exclusive support for better performance and native AOT compatibility.</releaseNotes>
+    <copyright>Copyright 2025</copyright>
+    <tags>bioinformatics ribozyme rna-folding melting-temperature viennarna cpp23 dotnet8 native-aot high-performance</tags>
   </metadata>
   <files>
-    <file src="build\*" target="build\netcoreapp3.1"/>
+    <file src="build\*" target="build\net5.0"/>
+    <file src="build\*" target="build\net8.0"/>
+    <file src="build\*" target="build\net9.0"/>
   </files>
 </package>
