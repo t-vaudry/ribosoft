@@ -35,11 +35,14 @@
     <PackageReference Include="HangFire" Version="1.8.12" />
     <PackageReference Include="Sendgrid" Version="9.29.3" />
     
-    <!-- Modern Roslyn analyzers -->
+    <!-- Modern Roslyn analyzers - using consistent stable versions to resolve NU1608 warnings -->
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.8.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.8.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.8.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.8.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.8.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Scripting.Common" Version="4.8.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
     
     <!-- Modern Entity Framework PostgreSQL -->
