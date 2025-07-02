@@ -77,7 +77,13 @@ public class Program
 
             services.AddHangfire(x => x
                 .UseLogProvider(new ColouredConsoleLogProvider())
-                .UsePostgreSqlStorage(connectionString));
+                .UsePostgreSqlStorage(options => 
+                {
+                    options.UseNpgsqlConnection(connectionString);
+                }, new PostgreSqlStorageOptions
+                {
+                    InvisibilityTimeout = TimeSpan.FromDays(1)
+                }));
         }
         else if (providerName == "SqlServer")
         {
