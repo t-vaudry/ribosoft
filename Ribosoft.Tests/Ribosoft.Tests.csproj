@@ -6,6 +6,13 @@
     <IsPackable>false</IsPackable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    
+    <!-- Version Information -->
+    <Version>2.2.0</Version>
+    <AssemblyVersion>2.2.0.0</AssemblyVersion>
+    <FileVersion>2.2.0.0</FileVersion>
+    <Copyright>Copyright © 2025</Copyright>
+    <Product>Ribosoft.Tests</Product>
   </PropertyGroup>
 
   <ItemGroup>

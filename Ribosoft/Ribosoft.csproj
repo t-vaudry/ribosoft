@@ -10,6 +10,14 @@
     <Nullable>enable</Nullable>
     <PublishAot>false</PublishAot>
     <InvariantGlobalization>false</InvariantGlobalization>
+    
+    <!-- Version Information -->
+    <Version>2.2.0</Version>
+    <AssemblyVersion>2.2.0.0</AssemblyVersion>
+    <FileVersion>2.2.0.0</FileVersion>
+    <Copyright>Copyright © 2025</Copyright>
+    <Product>Ribosoft</Product>
+    <Company>Ribosoft</Company>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,7 +37,7 @@
     
     <!-- Our cutting-edge C++23 library -->
     <PackageReference Include="RibosoftAlgo" Version="0.0.0" Condition="'$(Configuration)' == 'Debug'" />
-    <PackageReference Include="RibosoftAlgo" Version="2.0.0" Condition="'$(Configuration)' == 'Release'" />
+    <PackageReference Include="RibosoftAlgo" Version="2.2.0" Condition="'$(Configuration)' == 'Release'" />
     
     <!-- Modern Hangfire and communication -->
     <PackageReference Include="HangFire" Version="1.8.12" />
