@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(RibosoftAlgo 
-    VERSION 2.0.0
+    VERSION 2.2.0
     DESCRIPTION "Modern Ribosoft algorithm support library for ribozyme design"
     LANGUAGES CXX)
 
@@ -30,22 +30,27 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(NUGET_PACKAGE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/nuget)
 set(NUGET_PACKAGE_OUTPUT_DIR ${NUGET_PACKAGE_DIR}/build)
 
-# Modern testing with latest Catch2
+# Modern testing with Catch2 - use more reliable FetchContent configuration
 include(FetchContent)
 
-# Set FetchContent base directory to avoid path issues
+# Configure FetchContent to be more robust
+set(FETCHCONTENT_QUIET OFF)
 set(FETCHCONTENT_BASE_DIR ${CMAKE_BINARY_DIR}/_deps)
 
+# Use tarball download instead of git clone to avoid path issues
 FetchContent_Declare(
     Catch2
-    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-    GIT_TAG v3.5.4  # Latest stable version
-    FIND_PACKAGE_ARGS NAMES Catch2
+    URL https://github.com/catchorg/Catch2/archive/refs/tags/v3.5.4.tar.gz
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
-FetchContent_MakeAvailable(Catch2)
 
-# Add Catch2 CMake modules to path
-list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
+# Check if Catch2 is already available
+find_package(Catch2 3 QUIET)
+if(NOT Catch2_FOUND)
+    FetchContent_MakeAvailable(Catch2)
+    # Add Catch2 CMake modules to path
+    list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
+endif()
 
 # Modern OpenMP support
 find_package(OpenMP REQUIRED)
