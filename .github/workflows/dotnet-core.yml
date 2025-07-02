@@ -11,29 +11,36 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    
     - name: Setup .NET 8
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
+        
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'npm'
         cache-dependency-path: './Ribosoft/package-lock.json'
+        
     - name: Install and build frontend assets
       shell: bash
       working-directory: ./Ribosoft
       run: |
         npm ci
-        node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js --mode=production
-        node node_modules/webpack/bin/webpack.js --mode=production
-    - name: Restore dependencies
+        npm run build:vendor
+        npm run build
+        
+    - name: Restore .NET dependencies
       run: dotnet restore Ribosoft.sln
-    - name: Build
+      
+    - name: Build .NET solution
       run: dotnet build Ribosoft.sln --configuration Release --no-restore
-    - name: Test
+      
+    - name: Test .NET solution
       run: dotnet test Ribosoft.sln --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
+      
     - name: Upload coverage reports
       if: matrix.os == 'ubuntu-latest'
       uses: codecov/codecov-action@v4
