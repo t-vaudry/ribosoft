@@ -10,8 +10,10 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Enable modern CMake policies
-cmake_policy(SET CMP0135 NEW)  # FetchContent timestamp policy
+# Enable modern CMake policies (only if supported)
+if(POLICY CMP0135)
+    cmake_policy(SET CMP0135 NEW)  # FetchContent timestamp policy
+endif()
 
 # Add project dependencies directory to search path
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../.deps")
@@ -30,6 +32,10 @@ set(NUGET_PACKAGE_OUTPUT_DIR ${NUGET_PACKAGE_DIR}/build)
 
 # Modern testing with latest Catch2
 include(FetchContent)
+
+# Set FetchContent base directory to avoid path issues
+set(FETCHCONTENT_BASE_DIR ${CMAKE_BINARY_DIR}/_deps)
+
 FetchContent_Declare(
     Catch2
     GIT_REPOSITORY https://github.com/catchorg/Catch2.git
