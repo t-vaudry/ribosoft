@@ -12,22 +12,22 @@ namespace Ribosoft.CandidateGeneration
         /*! \property Sequence
          * \brief Sequence of the ribozyme
          */
-        public String Sequence { get; set; }
+        public String Sequence { get; set; } = string.Empty;
 
         /*! \property Structure
          * \brief Structure of the ribozyme
          */
-        public String Structure { get; set; }
+        public String Structure { get; set; } = string.Empty;
 
         /*! \property SubstrateSequence
          * \brief Substrate sequence for the ribozyme template
          */
-        public String SubstrateSequence { get; set; }
+        public String SubstrateSequence { get; set; } = string.Empty;
 
         /*! \property SubstrateStructure
          * \brief Substrate structure for the ribozyme template
          */
-        public String SubstrateStructure { get; set; }
+        public String SubstrateStructure { get; set; } = string.Empty;
 
         /*!
          * \brief Default constructor

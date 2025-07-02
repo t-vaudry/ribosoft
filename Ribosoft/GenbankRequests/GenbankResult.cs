@@ -8,12 +8,12 @@
         /*! \property AccessionId
          * \brief Accession ID of the RNA sequence
          */
-        public string AccessionId { get; set; }
+        public string AccessionId { get; set; } = string.Empty;
 
         /*! \property Sequence
          * \brief RNA sequence associated to accession number
          */
-        public string Sequence { get; set; }
+        public string Sequence { get; set; } = string.Empty;
 
         /*! \property OpenReadingFrameStart
          * \brief Index for the start of the open reading frame

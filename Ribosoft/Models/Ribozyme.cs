@@ -28,7 +28,7 @@ namespace Ribosoft.Models
          * \brief Ribozyme name
          */
         [Required]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /*! \property RibozymeStructures
          * \brief Collection of ribozyme structures

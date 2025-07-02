@@ -14,12 +14,12 @@ namespace Ribosoft.Biology
         /*! \property Sequence
          * \brief Sequence of the substrate
          */
-        public Sequence Sequence { get; set; }
+        public Sequence? Sequence { get; set; }
 
         /*! \property Structure
          * \brief Structure of the substrate
          */
-        public String Structure { get; set; }
+        public String? Structure { get; set; }
 
         /*! \property CutsiteOffset
          * \brief Cutsite offset of the substrate
@@ -31,8 +31,6 @@ namespace Ribosoft.Biology
          */
         public SubstrateInfo()
         {
-            Sequence = null;
-            Structure = null;
             CutsiteOffset = 0;
         }
 

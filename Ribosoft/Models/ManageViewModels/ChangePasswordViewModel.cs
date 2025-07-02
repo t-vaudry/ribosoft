@@ -17,11 +17,11 @@ namespace Ribosoft.Models.ManageViewModels
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Current password")]
-        public string OldPassword { get; set; }
+        public string OldPassword { get; set; } = string.Empty;
 
         /*! \property vm
          * \brief Set password view model object
          */
-        public SetPasswordViewModel vm { get; set; }
+        public SetPasswordViewModel vm { get; set; } = new SetPasswordViewModel();
     }
 }

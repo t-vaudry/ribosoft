@@ -16,12 +16,12 @@ namespace Ribosoft.Models.ManageViewModels
         /*! \property CurrentLogins
          * \brief List of current external logins
          */
-        public IList<UserLoginInfo> CurrentLogins { get; set; }
+        public IList<UserLoginInfo> CurrentLogins { get; set; } = new List<UserLoginInfo>();
 
         /*! \property OtherLogins
          * \brief List of other logins
          */
-        public IList<AuthenticationScheme> OtherLogins { get; set; }
+        public IList<AuthenticationScheme> OtherLogins { get; set; } = new List<AuthenticationScheme>();
 
         /*! \property ShowRemoveButton
          * \brief Boolean for display of remove button
@@ -31,6 +31,6 @@ namespace Ribosoft.Models.ManageViewModels
         /*! \property StatusMessage
          * \brief Status message
          */
-        public string StatusMessage { get; set; }
+        public string StatusMessage { get; set; } = string.Empty;
     }
 }

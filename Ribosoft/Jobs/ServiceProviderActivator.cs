@@ -33,7 +33,7 @@ namespace Ribosoft.Jobs
          */
         public override object ActivateJob(Type type)
         {
-            return _serviceProvider.GetService(type);
+            return _serviceProvider.GetService(type) ?? throw new InvalidOperationException($"Unable to create job of type {type.Name}");
         }
     }
 }

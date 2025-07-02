@@ -13,7 +13,7 @@ namespace Ribosoft.Models.RequestViewModels
     	/*! \property Name
          * \brief Target environment name
          */
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /*! \property Value
          * \brief Target environment value

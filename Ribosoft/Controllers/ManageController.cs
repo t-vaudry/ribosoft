@@ -101,9 +101,9 @@ namespace Ribosoft.Controllers
 
             var model = new IndexViewModel
             {
-                Username = user.UserName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
+                Username = user.UserName ?? "",
+                Email = user.Email ?? "",
+                PhoneNumber = user.PhoneNumber ?? "",
                 IsEmailConfirmed = user.EmailConfirmed,
                 StatusMessage = StatusMessage
             };
@@ -177,7 +177,7 @@ namespace Ribosoft.Controllers
 
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
-            var email = user.Email;
+            var email = user.Email ?? throw new InvalidOperationException("User email cannot be null");
             await _emailSender.SendEmailConfirmationAsync(email, callbackUrl);
 
             StatusMessage = "Verification email sent. Please check your email.";
@@ -520,7 +520,7 @@ namespace Ribosoft.Controllers
             await _userManager.SetTwoFactorEnabledAsync(user, true);
             _logger.LogInformation("User with ID {UserId} has enabled 2FA with an authenticator app.", user.Id);
             var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
-            TempData[RecoveryCodesKey] = recoveryCodes.ToArray();
+            TempData[RecoveryCodesKey] = (recoveryCodes ?? Enumerable.Empty<string>()).ToArray();
 
             return RedirectToAction(nameof(ShowRecoveryCodes));
         }
@@ -532,7 +532,7 @@ namespace Ribosoft.Controllers
         [HttpGet]
         public IActionResult ShowRecoveryCodes()
         {
-            var recoveryCodes = (string[])TempData[RecoveryCodesKey];
+            var recoveryCodes = (string[]?)TempData[RecoveryCodesKey];
             if (recoveryCodes == null)
             {
                 return RedirectToAction(nameof(TwoFactorAuthentication));
@@ -616,7 +616,7 @@ namespace Ribosoft.Controllers
             var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
             _logger.LogInformation("User with ID {UserId} has generated new 2FA recovery codes.", user.Id);
 
-            var model = new ShowRecoveryCodesViewModel { RecoveryCodes = recoveryCodes.ToArray() };
+            var model = new ShowRecoveryCodesViewModel { RecoveryCodes = (recoveryCodes ?? Enumerable.Empty<string>()).ToArray() };
 
             return View(nameof(ShowRecoveryCodes), model);
         }
@@ -686,8 +686,8 @@ namespace Ribosoft.Controllers
                 unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);
             }
 
-            model.SharedKey = FormatKey(unformattedKey);
-            model.AuthenticatorUri = GenerateQrCodeUri(user.Email, unformattedKey);
+            model.SharedKey = FormatKey(unformattedKey ?? "");
+            model.AuthenticatorUri = GenerateQrCodeUri(user.Email ?? "", unformattedKey ?? "");
         }
 
         #endregion

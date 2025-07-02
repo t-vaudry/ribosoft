@@ -15,7 +15,7 @@ namespace Ribosoft.Extensions
                 action: nameof(AccountController.ConfirmEmail),
                 controller: "Account",
                 values: new { userId, code },
-                protocol: scheme);
+                protocol: scheme) ?? "";
         }
 
         public static string ResetPasswordCallbackLink(this IUrlHelper urlHelper, string userId, string code, string scheme)
@@ -24,7 +24,7 @@ namespace Ribosoft.Extensions
                 action: nameof(AccountController.ResetPassword),
                 controller: "Account",
                 values: new { userId, code },
-                protocol: scheme);
+                protocol: scheme) ?? "";
         }
     }
 }

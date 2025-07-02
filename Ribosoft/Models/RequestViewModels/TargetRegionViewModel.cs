@@ -13,7 +13,7 @@
         /*! \property Name
          * \brief Target region name
          */
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /*! \property Selected
          * \brief Check if selected

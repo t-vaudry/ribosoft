@@ -14,11 +14,11 @@ namespace Ribosoft.Models.ManageViewModels
     	/*! \property LoginProvider
          * \brief External login provider
          */
-        public string LoginProvider { get; set; }
+        public string LoginProvider { get; set; } = string.Empty;
 
         /*! \property ProviderKey
          * \brief External provider key
          */
-        public string ProviderKey { get; set; }
+        public string ProviderKey { get; set; } = string.Empty;
     }
 }
