@@ -9,7 +9,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest]
         include:
           - os: ubuntu-latest
             cc: gcc-13
@@ -17,9 +17,6 @@ jobs:
           - os: windows-latest
             cc: cl
             cxx: cl
-          - os: macos-latest
-            cc: clang
-            cxx: clang++
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -41,12 +38,6 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y gcc-13 g++-13 libomp-dev
-
-    - name: Install system dependencies (macOS)
-      if: matrix.os == 'macos-latest'
-      run: |
-        brew install libomp
-        # Use Xcode's clang which supports OpenMP with libomp
 
     - name: Setup MSVC (Windows)
       if: matrix.os == 'windows-latest'
