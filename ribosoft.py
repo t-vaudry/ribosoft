@@ -458,8 +458,10 @@ class Catalog:
                          ['packages', package.name, 'versions', package.version, 'platforms', os_str()],
                          self.data)
             
-            base_url = str(Path(self.url).parent / self.data['archive-root'])
-            package_url = f"{base_url}/{package.name}_{package.version}_{os_str()}.zip"
+            # Properly construct URL by removing the filename and adding archive-root
+            base_url = self.url.rsplit('/', 1)[0]  # Remove catalog.json from URL
+            archive_root = self.data['archive-root']
+            package_url = f"{base_url}/{archive_root}/{package.name}_{package.version}_{os_str()}.zip"
             
             return package_url, meta['sha256']
         except KeyError as e:
