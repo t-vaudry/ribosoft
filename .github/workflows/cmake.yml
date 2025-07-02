@@ -31,6 +31,11 @@ jobs:
         python-version: '3.13'
         cache: 'pip'
 
+    - name: Setup CMake
+      uses: jwlawson/actions-setup-cmake@v2
+      with:
+        cmake-version: '3.20'
+
     - name: Install system dependencies (Ubuntu)
       if: matrix.os == 'ubuntu-latest'
       run: |
@@ -65,9 +70,7 @@ jobs:
       working-directory: ${{github.workspace}}/RibosoftAlgo/build
       run: |
         CC=${{ matrix.cc }} CXX=${{ matrix.cxx }} cmake .. \
-          -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-          -DCMAKE_CXX_STANDARD=23 \
-          -DCMAKE_CXX_STANDARD_REQUIRED=ON
+          -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
     - name: Configure CMake (Windows)
       if: matrix.os == 'windows-latest'
@@ -75,9 +78,7 @@ jobs:
       working-directory: ${{github.workspace}}/RibosoftAlgo/build
       run: |
         cmake .. \
-          -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-          -DCMAKE_CXX_STANDARD=23 \
-          -DCMAKE_CXX_STANDARD_REQUIRED=ON
+          -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
     - name: Build
       shell: bash
