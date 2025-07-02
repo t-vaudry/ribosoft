@@ -27,13 +27,13 @@ namespace Ribosoft.Models
          * \brief Ribozyme sequence
          */
         [Display(Name = "Ribozyme Sequence")]
-        public string Sequence { get; set; }
+        public string Sequence { get; set; } = string.Empty;
 
         /*! \property IdealStructure
          * \brief Ribozyme ideal structure
          */
         [Display(Name = "Ribozyme Ideal Structure")]
-        public string IdealStructure { get; set; }
+        public string IdealStructure { get; set; } = string.Empty;
 
         /*! \property Rank
          * \brief Ribozyme rank
@@ -74,7 +74,7 @@ namespace Ribosoft.Models
          * \brief Substrate sequence
          */
         [Display(Name = "Substrate Sequence")]
-        public string SubstrateSequence { get; set; }
+        public string SubstrateSequence { get; set; } = string.Empty;
 
         /*! \property CutsiteIndex
          * \brief Index of the ribozyme cut-site (beginning of substrate sequence)
@@ -89,7 +89,7 @@ namespace Ribosoft.Models
         /*! \property Job
          * \brief Job object
          */
-        public virtual Job Job { get; set; }
+        public virtual Job Job { get; set; } = new Job();
 
         /*! \property Comparables
          * \brief List of optimize item comparables

@@ -17,7 +17,7 @@ namespace Ribosoft.Biology
         /*! \property Bases
          * \brief List of bases for this symbol
          */
-        public List<char> Bases { get; set; }
+        public List<char> Bases { get; set; } = new List<char>();
 
         /*! \property IsBase
          * \brief Boolean to determine if symbol is a base

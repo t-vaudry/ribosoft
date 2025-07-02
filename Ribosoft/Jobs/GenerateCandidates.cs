@@ -64,7 +64,7 @@ namespace Ribosoft.Jobs
         /*! \property RNAStructure
          * \brief RNA structure string
          */
-        private String RNAStructure { get; set; }
+        private String RNAStructure { get; set; } = "";
 
         /*! \fn GenerateCandidates
          * \brief Default constructor
@@ -99,7 +99,7 @@ namespace Ribosoft.Jobs
             var job = GetJob(jobId);
 
             // TODO - temporarily catch retried jobs
-            await DoStage(job, JobState.Errored, j => j.JobState != JobState.New, async (j, c) => { await Task.FromResult<object>(null); }, cancellationToken);
+            await DoStage(job, JobState.Errored, j => j.JobState != JobState.New, async (j, c) => { await Task.CompletedTask; }, cancellationToken);
 
             // run candidate generator
             await DoStage(job, JobState.CandidateGenerator, j => j.JobState == JobState.New, RunCandidateGenerator, cancellationToken);
@@ -111,14 +111,14 @@ namespace Ribosoft.Jobs
             await DoStage(job, JobState.QueuedPhase2, j => j.JobState == JobState.Structure && j.TargetEnvironment == TargetEnvironment.InVivo, async (j, c) =>
                 {
                     BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase2(j.Id, c));
-                    await Task.FromResult<object>(null);
+                    await Task.CompletedTask;
                 }, cancellationToken);
             
             // queue phase 3 job for in-vitro runs, skipping phase 2 (MOO)
             await DoStage(job, JobState.QueuedPhase3, j => j.JobState == JobState.Structure && j.TargetEnvironment == TargetEnvironment.InVitro, async (j, c) =>
             {
                 BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase3(j.Id, c));
-                await Task.FromResult<object>(null);
+                await Task.CompletedTask;
             }, cancellationToken);
         }
 
@@ -136,7 +136,7 @@ namespace Ribosoft.Jobs
             var job = GetJob(jobId);
             
             // TODO - temporarily catch retried jobs
-            await DoStage(job, JobState.Errored, j => j.JobState != JobState.QueuedPhase2, async (j, c) => { await Task.FromResult<object>(null); }, cancellationToken);
+            await DoStage(job, JobState.Errored, j => j.JobState != JobState.QueuedPhase2, async (j, c) => { await Task.CompletedTask; }, cancellationToken);
 
             // run blast to calculate specificity
             await DoStage(job, JobState.Specificity, j => j.JobState == JobState.QueuedPhase2, RunBlast, cancellationToken);
@@ -145,7 +145,7 @@ namespace Ribosoft.Jobs
             await DoStage(job, JobState.QueuedPhase3, j => j.JobState == JobState.Specificity, async (j, c) =>
             {
                 BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase3(j.Id, c));
-                await Task.FromResult<object>(null);
+                await Task.CompletedTask;
             }, cancellationToken);
         }
 
@@ -161,7 +161,7 @@ namespace Ribosoft.Jobs
             var job = GetJob(jobId);
             
             // TODO - temporarily catch retried jobs
-            await DoStage(job, JobState.Errored, j => j.JobState != JobState.QueuedPhase3, async (j, c) => { await Task.FromResult<object>(null); }, cancellationToken);
+            await DoStage(job, JobState.Errored, j => j.JobState != JobState.QueuedPhase3, async (j, c) => { await Task.CompletedTask; }, cancellationToken);
 
             // run multi-objective optimization
             await DoStage(job, JobState.MultiObjectiveOptimization, j => j.JobState == JobState.QueuedPhase3, MultiObjectiveOptimize, cancellationToken);
@@ -383,16 +383,16 @@ namespace Ribosoft.Jobs
         private void RunScoreAlgorithms(Candidate candidate, Job job, RibozymeStructure ribozymeStructure, string RNAStructure)
         {
             var idealStructurePattern = new Regex(@"[^.^(^)]");
-            string ideal = idealStructurePattern.Replace(candidate.Structure, ".");
+            string ideal = idealStructurePattern.Replace(candidate.Structure ?? string.Empty, ".");
 
             float naConcentration = job.Na.GetValueOrDefault();
             float probeConcentration = job.Probe.GetValueOrDefault();
             float targetTemperature = job.TargetTemperature.GetValueOrDefault();
 
-            var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence,
-                candidate.SubstrateStructure, naConcentration, probeConcentration, targetTemperature);
+            var temperatureScore = _ribosoftAlgo.Anneal(candidate, candidate.SubstrateSequence ?? string.Empty,
+                candidate.SubstrateStructure ?? string.Empty, naConcentration, probeConcentration, targetTemperature);
 
-            foreach (var cutsiteIndex in candidate.CutsiteIndices)
+            foreach (var cutsiteIndex in candidate.CutsiteIndices ?? new List<int>())
             {
                 var accessibilityScore = _ribosoftAlgo.Accessibility(candidate, RNAStructure,
                     cutsiteIndex, naConcentration, probeConcentration, targetTemperature);
@@ -401,14 +401,14 @@ namespace Ribosoft.Jobs
                 {
                     JobId = job.Id,
 
-                    Sequence = candidate.Sequence.GetString(),
+                    Sequence = candidate.Sequence?.GetString() ?? string.Empty,
                     IdealStructure = ideal,
-                    SubstrateSequence = candidate.SubstrateSequence,
+                    SubstrateSequence = candidate.SubstrateSequence ?? "",
 
                     // TODO: save actual cutsite (cutsiteIndex + ribozymeStructure.Cutsite + candidate.CutsiteNumberOffset)
                     CutsiteIndex = cutsiteIndex,
 
-                    SubstrateSequenceLength = candidate.SubstrateSequence.Length,
+                    SubstrateSequenceLength = candidate.SubstrateSequence?.Length ?? 0,
                     AccessibilityScore = accessibilityScore,
                     DesiredTemperatureScore = temperatureScore
                 });
@@ -569,7 +569,7 @@ namespace Ribosoft.Jobs
         {
             var blastParameters = new BlastParameters
             {
-                BlastDbPath = _configuration.GetValue("Blast:BLASTDB", string.Empty),
+                BlastDbPath = _configuration.GetValue("Blast:BLASTDB", string.Empty) ?? string.Empty,
                 Database = database,
                 UseIndex = true,
                 LowercaseMasking = true,
@@ -604,7 +604,10 @@ namespace Ribosoft.Jobs
          */
         private async Task SendJobCompletionEmail(ApplicationUser user)
         {
-            await _emailSender.SendEmailAsync(user.Email, "Job completed", "Your Ribosoft job has completed.");
+            if (!string.IsNullOrEmpty(user.Email))
+            {
+                await _emailSender.SendEmailAsync(user.Email, "Job completed", "Your Ribosoft job has completed.");
+            }
         }
     }
 }

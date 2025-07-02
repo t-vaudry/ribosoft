@@ -77,10 +77,12 @@ public class Program
 
             services.AddHangfire(x => x
                 .UseLogProvider(new ColouredConsoleLogProvider())
+#pragma warning disable CS0618 // Type or member is obsolete
                 .UsePostgreSqlStorage(connectionString, new PostgreSqlStorageOptions
                 {
                     InvisibilityTimeout = TimeSpan.FromDays(1)
                 }));
+#pragma warning restore CS0618 // Type or member is obsolete
         }
         else if (providerName == "SqlServer")
         {

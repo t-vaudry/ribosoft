@@ -101,7 +101,7 @@ namespace Ribosoft.Blast
             process.Start();
             
             // read output
-            string outputLine;
+            string? outputLine;
             while ((outputLine = process.StandardOutput.ReadLine()) != null)
             {
                 if (string.IsNullOrWhiteSpace(outputLine))

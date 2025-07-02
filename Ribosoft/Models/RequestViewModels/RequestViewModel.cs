@@ -42,7 +42,7 @@ namespace Ribosoft.Models.RequestViewModels
         /*! \property inputSequence
          * \brief Input RNA sequence
          */
-        private string inputSequence;
+        private string inputSequence = "";
 
         /*! \property OpenReadingFrameStart
          * \brief Index of the start of the open reading frame

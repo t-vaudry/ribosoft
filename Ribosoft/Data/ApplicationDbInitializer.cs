@@ -23,12 +23,12 @@ namespace Ribosoft.Data
             }
         }
 
-        private static async Task<IdentityResult> EnsureRole(IServiceProvider serviceProvider, string role)
+        private static async Task<IdentityResult?> EnsureRole(IServiceProvider serviceProvider, string role)
         {
-            IdentityResult identityResult = null;
+            IdentityResult? identityResult = null;
             var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
 
-            if (!await roleManager.RoleExistsAsync(role))
+            if (roleManager != null && !await roleManager.RoleExistsAsync(role))
             {
                 identityResult = await roleManager.CreateAsync(new IdentityRole(role));
             }

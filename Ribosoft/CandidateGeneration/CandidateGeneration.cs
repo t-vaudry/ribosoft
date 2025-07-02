@@ -47,7 +47,7 @@ namespace Ribosoft.CandidateGeneration
         /*! \property Ribozyme
          * \brief Current ribozyme template
          */
-        public Ribozyme Ribozyme { get; set; }
+        public Ribozyme Ribozyme { get; set; } = new Ribozyme();
 
         /*! \property Sequences
          * \brief List of sequences from candidate generation
@@ -67,7 +67,7 @@ namespace Ribosoft.CandidateGeneration
         /*! \property InputRNASequence
          * \brief Input RNA sequence from request
          */
-        public String InputRNASequence { get; set; }
+        public String InputRNASequence { get; set; } = string.Empty;
 
         /*! \property NodesAtDepthSequence
          * \brief List of lists, containing nodes at each depth
@@ -102,7 +102,7 @@ namespace Ribosoft.CandidateGeneration
         /*! \property SubstrateBaseStructure
          * \brief Substrate base structure string
          */
-        private String SubstrateBaseStructure { get; set; }
+        private String SubstrateBaseStructure { get; set; } = string.Empty;
 
         /*
          * \brief Default constructor
@@ -523,10 +523,10 @@ namespace Ribosoft.CandidateGeneration
                     TraverseSequence(new Sequence(currentSequence), child);
                 }
                 //Else if the children have a neighbour (will all be the same, so just check 0) and that neighbour has already been set, we must choose 
-                else if (currentNode.Children[0].NeighbourIndex.HasValue && currentNode.Children[0].NeighbourIndex.Value < currentNode.Depth + 1)
+                else if (currentNode.Children[0].NeighbourIndex is int neighbourIndex && neighbourIndex < currentNode.Depth + 1)
                 {
                     //Get the complement of the base at the specified neighbour index in the input string
-                    char[] requiredBases = currentSequence.Nucleotides[currentNode.Children[0].NeighbourIndex.Value].GetSpecialComplements();
+                    char[] requiredBases = currentSequence.Nucleotides[neighbourIndex].GetSpecialComplements();
                     bool found = false;
                     foreach (char c in requiredBases)
                     {
@@ -543,7 +543,7 @@ namespace Ribosoft.CandidateGeneration
                         {
                             //If not found, there is the possibility that one of the neighbour's siblings is valid.
                             //In this case, there is no error: silently discard this sequence
-                            Nucleotide inputNeighbourNucleotide = new Nucleotide(Ribozyme.Sequence[currentNode.Children[0].NeighbourIndex.Value]);
+                            Nucleotide inputNeighbourNucleotide = new Nucleotide(Ribozyme.Sequence[neighbourIndex]);
                             if (inputNeighbourNucleotide.Bases.Contains(c))
                             {
                                 return;
@@ -708,6 +708,7 @@ namespace Ribosoft.CandidateGeneration
             //Complete each sequence with the complement of the substrate at the target positions
             foreach (SubstrateInfo substrateInfo in SubstrateInfo)
             {
+                if (substrateInfo.Sequence == null) continue;
                 String substrateComplement = substrateInfo.Sequence.GetComplement();
 
                 foreach (Sequence ribozymeSequence in Sequences)
@@ -723,7 +724,7 @@ namespace Ribosoft.CandidateGeneration
 
                         //Check if this substrate sequence has this bond (may not due to repeat notation)
                         char bondID = Ribozyme.SubstrateStructure[substrateIdx];
-                        substrateIdx = substrateInfo.Structure.IndexOf(bondID);
+                        substrateIdx = substrateInfo.Structure?.IndexOf(bondID) ?? -1;
                         if (substrateIdx == -1)
                         {
                             continue;
@@ -807,6 +808,7 @@ namespace Ribosoft.CandidateGeneration
                     {
                         foreach (SubstrateInfo seq in sequencesToBaseOffOf)
                         {
+                            if (seq.Sequence == null) continue;
                             Sequence newSeq = new Sequence(seq.Sequence);
                             int insertIdx = startRepeat ? 0 : newSeq.GetLength();
                             newSeq.Insert(insertIdx, new Nucleotide(baseSymbol));

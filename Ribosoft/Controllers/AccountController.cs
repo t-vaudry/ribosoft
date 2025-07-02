@@ -383,7 +383,7 @@ namespace Ribosoft.Controllers
          */
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string remoteError = null)
+        public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
         {
             if (remoteError != null)
             {
@@ -539,7 +539,7 @@ namespace Ribosoft.Controllers
          */
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult ResetPassword(string code = null)
+        public IActionResult ResetPassword(string? code = null)
         {
             if (code == null)
             {
@@ -618,9 +618,9 @@ namespace Ribosoft.Controllers
          * \param returnUrl Return URL
          * \return View based on returnUrl
          */
-        private IActionResult RedirectToLocal(string returnUrl)
+        private IActionResult RedirectToLocal(string? returnUrl)
         {
-            if (Url.IsLocalUrl(returnUrl))
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
             {
                 return Redirect(returnUrl);
             }

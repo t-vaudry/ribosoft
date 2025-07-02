@@ -13,22 +13,22 @@ namespace Ribosoft
         /*! \property Sequence 
          * \brief Ribozyme sequence of the candidate
          */
-        public Sequence Sequence { get; set; }
+        public Sequence? Sequence { get; set; }
 
         /*! \property Structure
          * \brief Ribozyme structure of the candidate
          */
-        public String Structure { get; set; }
+        public String? Structure { get; set; }
 
         /*! \property SubstrateSequence
          * \brief Substrate sequence of the candidate
          */
-        public String SubstrateSequence { get; set; }
+        public String? SubstrateSequence { get; set; }
 
         /*! \property SubstrateStructure
          * \brief Substrate structure of the candidate
          */
-        public String SubstrateStructure { get; set; }
+        public String? SubstrateStructure { get; set; }
 
         /*! \property CutsiteNumberOffset
          * \brief Initial cutsite number offset
@@ -38,18 +38,14 @@ namespace Ribosoft
         /*! \property CutsiteIndices
          * \brief List of cutsides indices of the candidate
          */
-        public List<int> CutsiteIndices { get; set; }
+        public List<int>? CutsiteIndices { get; set; }
 
         /*!
          * \brief Default constructor
          */
         public Candidate()
         {
-            Sequence = null;
-            Structure = null;
-            SubstrateSequence = null;
             CutsiteNumberOffset = 0;
-            CutsiteIndices = null;
         }
     }
 }
