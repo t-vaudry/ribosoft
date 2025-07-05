@@ -95,8 +95,15 @@ jobs:
       shell: bash
       working-directory: ${{github.workspace}}/RibosoftAlgo/build
       run: |
-        CC=${{ matrix.cc }} CXX=${{ matrix.cxx }} cmake .. \
-          -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+        if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+          # Force x86_64 architecture on macOS to match pre-built dependencies
+          CC=${{ matrix.cc }} CXX=${{ matrix.cxx }} cmake .. \
+            -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+            -DCMAKE_OSX_ARCHITECTURES=x86_64
+        else
+          CC=${{ matrix.cc }} CXX=${{ matrix.cxx }} cmake .. \
+            -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+        fi
 
     - name: Configure CMake (Windows)
       if: matrix.os == 'windows-latest'
