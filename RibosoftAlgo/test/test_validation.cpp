@@ -26,8 +26,8 @@ TEST_CASE("Invalid structure", "[validate_structure]") {
     REQUIRE(validate_structure("ONEOFWBDASDJJWEFWF") == R_APPLICATION_ERROR::R_INVALID_STRUCT_ELEMENT);
     REQUIRE(validate_structure("&*(@#DEWFBIBIWUBEF") == R_APPLICATION_ERROR::R_INVALID_STRUCT_ELEMENT);
     REQUIRE(validate_structure("") == R_APPLICATION_ERROR::R_EMPTY_PARAMETER);
-    REQUIRE(validate_structure("..)(.") == R_APPLICATION_ERROR::R_BAD_PAIR_MATCH);
+    REQUIRE(validate_structure("..)(..") == R_APPLICATION_ERROR::R_BAD_PAIR_MATCH);
     REQUIRE(validate_structure("((())") == R_APPLICATION_ERROR::R_BAD_PAIR_MATCH);
-    REQUIRE(validate_structure("(()){}{}") == R_APPLICATION_ERROR::R_BAD_PAIR_MATCH);
+    REQUIRE(validate_structure("(()){}{") == R_APPLICATION_ERROR::R_BAD_PAIR_MATCH);
     REQUIRE(validate_structure("}}{{()()") == R_APPLICATION_ERROR::R_BAD_PAIR_MATCH);
 }
