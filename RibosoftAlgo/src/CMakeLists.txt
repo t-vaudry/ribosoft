@@ -23,13 +23,13 @@ add_library(RibosoftAlgo SHARED ${SOURCE_FILES})
 # Modern CMake target properties with C++23 optimizations
 target_compile_definitions(RibosoftAlgo PRIVATE BUILDING_DLL)
 
-# C++17 specific compiler features for better cross-platform compatibility
+# C++23 specific compiler features and optimizations for modern development
 target_compile_features(RibosoftAlgo 
     PUBLIC 
-        cxx_std_17
+        cxx_std_23
 )
 
-# Enhanced compiler flags for C++17 and performance
+# Enhanced compiler flags for C++23 and performance
 target_compile_options(RibosoftAlgo 
     PRIVATE
         $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -O3 -march=native -flto>
