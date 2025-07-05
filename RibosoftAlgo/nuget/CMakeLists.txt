@@ -7,15 +7,6 @@ if (NOT DOTNET_EXECUTABLE)
     message(FATAL_ERROR "dotnet not found (install dotnet-sdk-8.0 or later)")
 endif ()
 
-# Copy library to NuGet package directory
-add_custom_command(TARGET nuget
-    POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E copy
-        "$<TARGET_FILE:RibosoftAlgo>"
-        "${NUGET_PACKAGE_OUTPUT_DIR}/$<TARGET_FILE_NAME:RibosoftAlgo>"
-    COMMENT "Copying binary to NuGet directory"
-)
-
 # Determine platform for NuGet package
 if(WIN32)
     set(NUGET_PLATFORM "windows")
@@ -24,6 +15,21 @@ elseif(APPLE)
 else()
     set(NUGET_PLATFORM "linux")
 endif()
+
+# Copy library to multiple locations to ensure NuGet can find it
+add_custom_command(TARGET nuget
+    POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E copy
+        "$<TARGET_FILE:RibosoftAlgo>"
+        "${NUGET_PACKAGE_OUTPUT_DIR}/$<TARGET_FILE_NAME:RibosoftAlgo>"
+    COMMAND "${CMAKE_COMMAND}" -E copy
+        "$<TARGET_FILE:RibosoftAlgo>"
+        "${CMAKE_SOURCE_DIR}/$<TARGET_FILE_NAME:RibosoftAlgo>"
+    COMMAND "${CMAKE_COMMAND}" -E copy
+        "$<TARGET_FILE:RibosoftAlgo>"
+        "${CMAKE_SOURCE_DIR}/build/$<TARGET_FILE_NAME:RibosoftAlgo>"
+    COMMENT "Copying binary to NuGet directories"
+)
 
 # Create NuGet package using modern dotnet pack
 add_custom_command(TARGET nuget

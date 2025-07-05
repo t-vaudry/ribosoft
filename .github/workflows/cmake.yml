@@ -99,8 +99,18 @@ jobs:
       shell: bash
       working-directory: ${{github.workspace}}/RibosoftAlgo/build
       run: |
-        cmake .. \
-          -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+        # Try different MSVC toolsets to find one compatible with pre-built ViennaRNA
+        echo "Trying MSVC v142 toolset..."
+        cmake .. -G "Visual Studio 17 2022" -A x64 \
+          -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+          -T v142 || \
+        (echo "v142 failed, trying v143..." && \
+         cmake .. -G "Visual Studio 17 2022" -A x64 \
+           -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+           -T v143) || \
+        (echo "v143 failed, trying default..." && \
+         cmake .. -G "Visual Studio 17 2022" -A x64 \
+           -DCMAKE_BUILD_TYPE=$BUILD_TYPE)
 
     - name: Build
       shell: bash

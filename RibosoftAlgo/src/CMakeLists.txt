@@ -47,8 +47,12 @@ target_link_libraries(RibosoftAlgo
     PRIVATE 
         ${RNA_LIBRARY} 
         ${MELTING_LIBRARY}
-        OpenMP::OpenMP_CXX
 )
+
+# Always try to link OpenMP if available
+if(OpenMP_FOUND)
+    target_link_libraries(RibosoftAlgo PRIVATE OpenMP::OpenMP_CXX)
+endif()
 
 # Include directories using modern CMake
 target_include_directories(RibosoftAlgo 

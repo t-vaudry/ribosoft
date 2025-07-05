@@ -36,17 +36,23 @@
     <Content Include="lib/**/*" PackagePath="lib/" />
   </ItemGroup>
 
-  <!-- Platform-specific native libraries -->
+  <!-- Platform-specific native libraries with multiple search paths -->
   <ItemGroup Condition="'$(PackagePlatform)' == 'linux'">
-    <Content Include="$(OutputPath)libRibosoftAlgo.so" PackagePath="runtimes/linux-x64/native/" />
+    <Content Include="$(OutputPath)libRibosoftAlgo.so" PackagePath="runtimes/linux-x64/native/" Condition="Exists('$(OutputPath)libRibosoftAlgo.so')" />
+    <Content Include="build/libRibosoftAlgo.so" PackagePath="runtimes/linux-x64/native/" Condition="Exists('build/libRibosoftAlgo.so') AND !Exists('$(OutputPath)libRibosoftAlgo.so')" />
+    <Content Include="libRibosoftAlgo.so" PackagePath="runtimes/linux-x64/native/" Condition="Exists('libRibosoftAlgo.so') AND !Exists('$(OutputPath)libRibosoftAlgo.so') AND !Exists('build/libRibosoftAlgo.so')" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(PackagePlatform)' == 'windows'">
-    <Content Include="$(OutputPath)RibosoftAlgo.dll" PackagePath="runtimes/win-x64/native/" />
+    <Content Include="$(OutputPath)RibosoftAlgo.dll" PackagePath="runtimes/win-x64/native/" Condition="Exists('$(OutputPath)RibosoftAlgo.dll')" />
+    <Content Include="build/RibosoftAlgo.dll" PackagePath="runtimes/win-x64/native/" Condition="Exists('build/RibosoftAlgo.dll') AND !Exists('$(OutputPath)RibosoftAlgo.dll')" />
+    <Content Include="RibosoftAlgo.dll" PackagePath="runtimes/win-x64/native/" Condition="Exists('RibosoftAlgo.dll') AND !Exists('$(OutputPath)RibosoftAlgo.dll') AND !Exists('build/RibosoftAlgo.dll')" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(PackagePlatform)' == 'osx'">
-    <Content Include="$(OutputPath)libRibosoftAlgo.dylib" PackagePath="runtimes/osx-x64/native/" />
+    <Content Include="$(OutputPath)libRibosoftAlgo.dylib" PackagePath="runtimes/osx-x64/native/" Condition="Exists('$(OutputPath)libRibosoftAlgo.dylib')" />
+    <Content Include="build/libRibosoftAlgo.dylib" PackagePath="runtimes/osx-x64/native/" Condition="Exists('build/libRibosoftAlgo.dylib') AND !Exists('$(OutputPath)libRibosoftAlgo.dylib')" />
+    <Content Include="libRibosoftAlgo.dylib" PackagePath="runtimes/osx-x64/native/" Condition="Exists('libRibosoftAlgo.dylib') AND !Exists('$(OutputPath)libRibosoftAlgo.dylib') AND !Exists('build/libRibosoftAlgo.dylib')" />
   </ItemGroup>
 
 </Project>
