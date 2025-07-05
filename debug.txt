@@ -1,0 +1,155 @@
+Run cmake --build . --config $BUILD_TYPE --parallel
+  cmake --build . --config $BUILD_TYPE --parallel
+  shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+  env:
+    BUILD_TYPE: Release
+    pythonLocation: C:\hostedtoolcache\windows\Python\3.13.5\x64
+    PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.13.5\x64/lib/pkgconfig
+    Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.13.5\x64
+    Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.13.5\x64
+    Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.13.5\x64
+    DOTNET_ROOT: C:\Program Files\dotnet
+    CommandPromptType: Native
+    DevEnvDir: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\
+    ExtensionSdkDir: C:\Program Files (x86)\Microsoft SDKs\Windows Kits\10\ExtensionSDKs
+    EXTERNAL_INCLUDE: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\include;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\ATLMFC\include;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\VS\include;C:\Program Files (x86)\Windows Kits\10\include\10.0.26100.0\ucrt;C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\um;C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\shared;C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\winrt;C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\cppwinrt;C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um
+    Framework40Version: v4.0
+    FrameworkDir: C:\Windows\Microsoft.NET\Framework64\
+    FrameworkDir64: C:\Windows\Microsoft.NET\Framework64\
+    FrameworkVersion: v4.0.30319
+    FrameworkVersion64: v4.0.30319
+    FSHARPINSTALLDIR: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\FSharp\Tools
+    HTMLHelpDir: C:\Program Files (x86)\HTML Help Workshop
+    IFCPATH: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\ifc\x64
+    INCLUDE: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\include;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\ATLMFC\include;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\VS\include;C:\Program Files (x86)\Windows Kits\10\include\10.0.26100.0\ucrt;C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\um;C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\shared;C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\winrt;C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\cppwinrt;C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um
+    is_x64_arch: true
+    LIB: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\ATLMFC\lib\x64;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\lib\x64;C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\lib\um\x64;C:\Program Files (x86)\Windows Kits\10\lib\10.0.26100.0\ucrt\x64;C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x64
+    LIBPATH: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\ATLMFC\lib\x64;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\lib\x64;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\lib\x86\store\references;C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.26100.0;C:\Program Files (x86)\Windows Kits\10\References\10.0.26100.0;C:\Windows\Microsoft.NET\Framework64\v4.0.30319
+    NETFXSDKDir: C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\
+    Path: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\VC\VCPackages;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TestWindow;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TeamFoundation\Team Explorer;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\bin\Roslyn;C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\x64\;C:\Program Files (x86)\HTML Help Workshop;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\FSharp\Tools;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\DiagnosticsHub\Collector;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\Extensions\Microsoft\CodeCoverage.Console;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\Llvm\x64\bin;C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\\x64;C:\Program Files (x86)\Windows Kits\10\bin\\x64;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\\MSBuild\Current\Bin\amd64;C:\Windows\Microsoft.NET\Framework64\v4.0.30319;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\;C:\Program Files\dotnet;C:\hostedtoolcache\windows\cmake\3.28.6\x64\cmake-3.28.6-windows-x86_64\bin;C:\Users\runneradmin\AppData\Roaming\Python\Python313\Scripts;C:\hostedtoolcache\windows\Python\3.13.5\x64\Scripts;C:\hostedtoolcache\windows\Python\3.13.5\x64;C:\Program Files\MongoDB\Server\5.0\bin;C:\aliyun-cli;C:\vcpkg;C:\Program Files (x86)\NSIS\;C:\tools\zstd;C:\Program Files\Mercurial\;C:\hostedtoolcache\windows\stack\3.5.1\x64;C:\cabal\bin;C:\\ghcup\bin;C:\mingw64\bin;C:\Program Files\MySQL\MySQL Server 8.0\bin;C:\Program Files\R\R-4.4.2\bin\x64;C:\SeleniumWebDrivers\GeckoDriver;C:\SeleniumWebDrivers\EdgeDriver\;C:\SeleniumWebDrivers\ChromeDriver;C:\Program Files (x86)\sbt\bin;C:\Program Files (x86)\GitHub CLI;C:\Program Files\Git\bin;C:\Program Files (x86)\pipx_bin;C:\npm\prefix;C:\hostedtoolcache\windows\go\1.24.4\x64\bin;C:\hostedtoolcache\windows\Python\3.9.13\x64\Scripts;C:\hostedtoolcache\windows\Python\3.9.13\x64;C:\hostedtoolcache\windows\Ruby\3.3.8\x64\bin;C:\Program Files\OpenSSL\bin;C:\tools\kotlinc\bin;C:\hostedtoolcache\windows\Java_Temurin-Hotspot_jdk\8.0.452-9\x64\bin;C:\Program Files\ImageMagick-7.1.1-Q16-HDRI;C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin;C:\ProgramData\kind;C:\ProgramData\Chocolatey\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\PowerShell\7\;C:\Program Files\Microsoft\Web Platform Installer\;C:\Program Files\TortoiseSVN\bin;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Program Files (x86)\WiX Toolset v3.14\bin;C:\Program Files\Microsoft SQL Server\130\DTS\Binn\;C:\Program Files\Microsoft SQL Server\140\DTS\Binn\;C:\Program Files\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files\Microsoft SQL Server\160\DTS\Binn\;C:\Strawberry\c\bin;C:\Strawberry\perl\site\bin;C:\Strawberry\perl\bin;C:\ProgramData\chocolatey\lib\pulumi\tools\Pulumi\bin;C:\Program Files\CMake\bin;C:\ProgramData\chocolatey\lib\maven\apache-maven-3.9.10\bin;C:\Program Files\Microsoft Service Fabric\bin\Fabric\Fabric.Code;C:\Program Files\Microsoft SDKs\Service Fabric\Tools\ServiceFabricLocalClusterManager;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Program Files\GitHub CLI\;c:\tools\php;C:\Program Files\Amazon\AWSCLIV2\;C:\Program Files\Amazon\SessionManagerPlugin\bin\;C:\Program Files\Amazon\AWSSAMCLI\bin\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\LLVM\bin;C:\Users\runneradmin\.dotnet\tools;C:\Users\runneradmin\.cargo\bin;C:\Users\runneradmin\AppData\Local\Microsoft\WindowsApps;C:\Program Files (x86)\Microsoft Visual Studio\Installer;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\VC\Linux\bin\ConnectionManagerExe;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\vcpkg
+    Platform: x64
+    UCRTVersion: 10.0.26100.0
+    UniversalCRTSdkDir: C:\Program Files (x86)\Windows Kits\10\
+    VCIDEInstallDir: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\VC\
+    VCINSTALLDIR: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\
+    VCPKG_ROOT: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\vcpkg
+    VCToolsInstallDir: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\
+    VCToolsRedistDir: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.44.35112\
+    VCToolsVersion: 14.44.35207
+    VisualStudioVersion: 17.0
+    VS170COMNTOOLS: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\
+    VSCMD_ARG_app_plat: Desktop
+    VSCMD_ARG_HOST_ARCH: x64
+    VSCMD_ARG_TGT_ARCH: x64
+    VSCMD_VER: 17.14.5
+    VSINSTALLDIR: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\
+    VSSDK150INSTALL: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VSSDK
+    VSSDKINSTALL: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VSSDK
+    WindowsLibPath: C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.26100.0;C:\Program Files (x86)\Windows Kits\10\References\10.0.26100.0
+    WindowsSdkBinPath: C:\Program Files (x86)\Windows Kits\10\bin\
+    WindowsSdkDir: C:\Program Files (x86)\Windows Kits\10\
+    WindowsSDKLibVersion: 10.0.26100.0\
+    WindowsSdkVerBinPath: C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\
+    WindowsSDKVersion: 10.0.26100.0\
+    WindowsSDK_ExecutablePath_x64: C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\x64\
+    WindowsSDK_ExecutablePath_x86: C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\
+    __DOTNET_ADD_64BIT: 1
+    __DOTNET_PREFERRED_BITNESS: 64
+    __VSCMD_PREINIT_PATH: C:\Program Files\dotnet;C:\hostedtoolcache\windows\cmake\3.28.6\x64\cmake-3.28.6-windows-x86_64\bin;C:\Users\runneradmin\AppData\Roaming\Python\Python313\Scripts;C:\hostedtoolcache\windows\Python\3.13.5\x64\Scripts;C:\hostedtoolcache\windows\Python\3.13.5\x64;C:\Program Files\MongoDB\Server\5.0\bin;C:\aliyun-cli;C:\vcpkg;C:\Program Files (x86)\NSIS\;C:\tools\zstd;C:\Program Files\Mercurial\;C:\hostedtoolcache\windows\stack\3.5.1\x64;C:\cabal\bin;C:\\ghcup\bin;C:\mingw64\bin;C:\Program Files\dotnet;C:\Program Files\MySQL\MySQL Server 8.0\bin;C:\Program Files\R\R-4.4.2\bin\x64;C:\SeleniumWebDrivers\GeckoDriver;C:\SeleniumWebDrivers\EdgeDriver\;C:\SeleniumWebDrivers\ChromeDriver;C:\Program Files (x86)\sbt\bin;C:\Program Files (x86)\GitHub CLI;C:\Program Files\Git\bin;C:\Program Files (x86)\pipx_bin;C:\npm\prefix;C:\hostedtoolcache\windows\go\1.24.4\x64\bin;C:\hostedtoolcache\windows\Python\3.9.13\x64\Scripts;C:\hostedtoolcache\windows\Python\3.9.13\x64;C:\hostedtoolcache\windows\Ruby\3.3.8\x64\bin;C:\Program Files\OpenSSL\bin;C:\tools\kotlinc\bin;C:\hostedtoolcache\windows\Java_Temurin-Hotspot_jdk\8.0.452-9\x64\bin;C:\Program Files\ImageMagick-7.1.1-Q16-HDRI;C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin;C:\ProgramData\kind;C:\ProgramData\Chocolatey\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\PowerShell\7\;C:\Program Files\Microsoft\Web Platform Installer\;C:\Program Files\TortoiseSVN\bin;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Program Files (x86)\WiX Toolset v3.14\bin;C:\Program Files\Microsoft SQL Server\130\DTS\Binn\;C:\Program Files\Microsoft SQL Server\140\DTS\Binn\;C:\Program Files\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files\Microsoft SQL Server\160\DTS\Binn\;C:\Strawberry\c\bin;C:\Strawberry\perl\site\bin;C:\Strawberry\perl\bin;C:\ProgramData\chocolatey\lib\pulumi\tools\Pulumi\bin;C:\Program Files\CMake\bin;C:\ProgramData\chocolatey\lib\maven\apache-maven-3.9.10\bin;C:\Program Files\Microsoft Service Fabric\bin\Fabric\Fabric.Code;C:\Program Files\Microsoft SDKs\Service Fabric\Tools\ServiceFabricLocalClusterManager;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Program Files\GitHub CLI\;c:\tools\php;C:\Program Files (x86)\sbt\bin;C:\Program Files\Amazon\AWSCLIV2\;C:\Program Files\Amazon\SessionManagerPlugin\bin\;C:\Program Files\Amazon\AWSSAMCLI\bin\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\LLVM\bin;C:\Users\runneradmin\.dotnet\tools;C:\Users\runneradmin\.cargo\bin;C:\Users\runneradmin\AppData\Local\Microsoft\WindowsApps;C:\Program Files (x86)\Microsoft Visual Studio\Installer
+MSBuild version 17.14.10+8b8e13593 for .NET Framework
+
+  1>Checking Build System
+  Building Custom Rule D:/a/ribosoft/ribosoft/RibosoftAlgo/src/CMakeLists.txt
+  Scanning sources for module dependencies...
+  validation.cpp
+  anneal.cpp
+  fold.cpp
+  structure.cpp
+  accessibility.cpp
+  mfe_default_fold.cpp
+  Compiling...
+  validation.cpp
+  anneal.cpp
+  structure.cpp
+  fold.cpp
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(58,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(84,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(101,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(220,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(250,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(274,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\constraints_hard.h(380,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\constraints_hard.h(387,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\constraints_soft.h(169,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\constraints_soft.h(176,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\fold_compound.h(202,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\fold_compound.h(242,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\RibosoftAlgo\src\fold.cpp(117,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\RibosoftAlgo\src\fold.cpp(115,9): warning C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  accessibility.cpp
+  mfe_default_fold.cpp
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(58,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/mfe_default_fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(84,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/mfe_default_fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(101,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/mfe_default_fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(220,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/mfe_default_fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(250,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/mfe_default_fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(274,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/mfe_default_fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\constraints_hard.h(380,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/mfe_default_fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\constraints_hard.h(387,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/mfe_default_fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\constraints_soft.h(169,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/mfe_default_fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\constraints_soft.h(176,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/mfe_default_fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\fold_compound.h(202,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/mfe_default_fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\fold_compound.h(242,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  (compiling source file '../../src/mfe_default_fold.cpp')
+  
+Warning: D:\a\ribosoft\ribosoft\RibosoftAlgo\src\mfe_default_fold.cpp(108,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\RibosoftAlgo\src\mfe_default_fold.cpp(112,9): warning C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+LINK : fatal error C1047: The object or library file 'D:\a\ribosoft\ribosoft\.deps\viennarna\lib\RNA.lib' was created by a different version of the compiler than other objects like 'RibosoftAlgo.dir\Release\anneal.obj'; rebuild all objects and libraries with the same compiler [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+LINK : fatal error LNK1257: code generation failed [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Error: Process completed with exit code 1.

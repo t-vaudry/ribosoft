@@ -1,0 +1,2 @@
+# Hashes of file build rules.
+cf461e0629d23a8bdca479de8a5dce6a nuget/CMakeFiles/nuget
