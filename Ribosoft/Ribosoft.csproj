@@ -36,8 +36,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
     
     <!-- Our cutting-edge C++23 library -->
-    <ProjectReference Include="..\RibosoftAlgo\RibosoftAlgo.csproj" Condition="'$(Configuration)' == 'Debug'" />
-    <PackageReference Include="RibosoftAlgo" Version="2.2.0" Condition="'$(Configuration)' == 'Release'" />
+    <ProjectReference Include="..\RibosoftAlgo\RibosoftAlgo.csproj" />
     
     <!-- Modern Hangfire and communication -->
     <PackageReference Include="HangFire" Version="1.8.12" />

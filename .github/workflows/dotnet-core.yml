@@ -1,13 +1,10 @@
-name: Ribosoft .NET 8 Builds
+name: Ribosoft .NET 8 Build and Test (Ubuntu)
 
 on: [push, workflow_dispatch]
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{matrix.os}}
+  build-and-test:
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -16,6 +13,25 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
+        
+    - name: Setup Python 3.13
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+        
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y g++-13 libomp-dev
+        
+    - name: Install Python dependencies
+      run: |
+        pip install pipenv
+        pipenv install
+        
+    - name: Install C++ dependencies
+      run: |
+        pipenv run python ribosoft.py deps install --yes
         
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -42,7 +58,6 @@ jobs:
       run: dotnet test Ribosoft.sln --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
       
     - name: Upload coverage reports
-      if: matrix.os == 'ubuntu-latest'
       uses: codecov/codecov-action@v4
       with:
         files: '**/coverage.cobertura.xml'
