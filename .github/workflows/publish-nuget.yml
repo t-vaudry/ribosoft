@@ -39,7 +39,7 @@ jobs:
     - name: Build and Pack RibosoftAlgo
       run: |
         cd RibosoftAlgo
-        dotnet pack --configuration Release --output ./nupkg
+        dotnet pack RibosoftAlgo.csproj --configuration Release --output ./nupkg
         
     - name: Publish to NuGet
       run: |
