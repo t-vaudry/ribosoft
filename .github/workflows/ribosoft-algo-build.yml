@@ -40,9 +40,9 @@ jobs:
     - name: Build RibosoftAlgo
       run: |
         cd RibosoftAlgo
-        dotnet build --configuration Release
+        dotnet build RibosoftAlgo.csproj --configuration Release
         
     - name: Test RibosoftAlgo
       run: |
         cd RibosoftAlgo
-        dotnet test --configuration Release
+        dotnet test RibosoftAlgo.Tests.csproj --configuration Release
