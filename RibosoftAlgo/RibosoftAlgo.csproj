@@ -20,11 +20,11 @@
     <PackageTags>bioinformatics;ribozyme;rna-folding;melting-temperature;viennarna;cpp23;dotnet8;native-aot;high-performance</PackageTags>
     <PackageReleaseNotes>Version 2.2.0 release: Enhanced stability, improved PostgreSQL Hangfire integration, resolved deprecation warnings, and comprehensive nullable reference type support for better code quality and maintainability.</PackageReleaseNotes>
     <Copyright>Copyright © 2025</Copyright>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     
     <!-- Build Configuration -->
-    <EnableDefaultItems>false</EnableDefaultItems>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>true</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
   <!-- Determine current runtime identifier -->
@@ -35,6 +35,16 @@
     <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">osx-x64</CurrentRuntimeIdentifier>
     <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == ''">linux-x64</CurrentRuntimeIdentifier>
   </PropertyGroup>
+
+  <!-- Exclude test files from main project -->
+  <ItemGroup>
+    <Compile Remove="Tests\**" />
+    <Compile Remove="test\**" />
+    <EmbeddedResource Remove="Tests\**" />
+    <EmbeddedResource Remove="test\**" />
+    <None Remove="Tests\**" />
+    <None Remove="test\**" />
+  </ItemGroup>
 
   <!-- Native Build Target -->
   <Target Name="BuildNativeLibrary" BeforeTargets="Build">
@@ -57,6 +67,7 @@
     <Content Include="lib\**\*" PackagePath="lib\" />
     <Content Include="bin\$(Configuration)\net8.0\runtimes\**\*" PackagePath="runtimes\" />
     <Content Include="src\*.h" PackagePath="build\native\include\" />
+    <Content Include="README.md" PackagePath="\" />
   </ItemGroup>
 
 </Project>
