@@ -1,7 +1,8 @@
-Run cd RibosoftAlgo
-  cd RibosoftAlgo
-  dotnet test RibosoftAlgo.Tests.csproj --configuration Release
-  shell: /usr/bin/bash -e {0}
+Run npm ci
+  npm ci
+  npm run build:vendor
+  npm run build
+  shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
   env:
     DOTNET_ROOT: /usr/share/dotnet
     pythonLocation: /opt/hostedtoolcache/Python/3.13.5/x64
@@ -10,55 +11,32 @@ Run cd RibosoftAlgo
     Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.5/x64
     Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.5/x64
     LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.5/x64/lib
-  Determining projects to restore...
-  Restored /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/RibosoftAlgo.Tests.csproj (in 1.72 sec).
-CSC : warning CS2008: No source files specified. [/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/RibosoftAlgo.csproj]
-  RibosoftAlgo -> /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/bin/Release/net8.0/RibosoftAlgo.dll
-  Building native library for linux-x64
-  Building RibosoftAlgo native library for linux-x64 (Release)
-  Executing: g++-13 -std=c++23 -fPIC -shared -Wall -Wextra -fopenmp -O3 -march=native -flto -DNDEBUG -I/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/src -I/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/../.deps/viennarna/include -I/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/../.deps/melting/include /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/src/anneal.cpp /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/src/validation.cpp /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/src/fold.cpp /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/src/structure.cpp /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/src/accessibility.cpp /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/src/mfe_default_fold.cpp /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/../.deps/viennarna/lib/libRNA.a /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/../.deps/melting/lib/libMELTING.a -fopenmp -flto -o /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/bin/Release/net8.0/runtimes/linux-x64/native/libRibosoftAlgo.so
-lto-wrapper : warning : using serial compilation of 2 LTRANS jobs [/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/RibosoftAlgo.csproj]
-  lto-wrapper: note: see the ‘-flto’ option documentation for more information
-  ✅ Successfully built libRibosoftAlgo.so for linux-x64
-  📁 Output: /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/bin/Release/net8.0/runtimes/linux-x64/native/libRibosoftAlgo.so
-  📊 Library size: 4.0M
-  🔗 Dependencies:
-  	linux-vdso.so.1 (0x00007f766a58a000)
-  	libstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007f766a000000)
-  	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f766a2a8000)
-  	libgomp.so.1 => /lib/x86_64-linux-gnu/libgomp.so.1 (0x00007f7669faa000)
-  	libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f7669f7c000)
-  	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f7669c00000)
-  	/lib64/ld-linux-x86-64.so.2 (0x00007f766a58c000)
-  The package RibosoftAlgo.2.2.0 is missing a readme. Go to https://aka.ms/nuget/authoring-best-practices/readme to learn why package readmes are important.
-  Successfully created package '/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/bin/Release/RibosoftAlgo.2.2.0.nupkg'.
-  RibosoftAlgo.Tests -> /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/bin/Release/net8.0/RibosoftAlgo.Tests.dll
-  Building C++ tests for linux-x64
-  Building RibosoftAlgo C++ tests for linux-x64 (Release)
-  Executing: g++-13 -std=c++23 -Wall -Wextra -fopenmp -O3 -march=native -flto -DNDEBUG -I/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/src -I/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/../.deps/viennarna/include -I/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/../.deps/melting/include -I/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/test /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/test/test_validation.cpp /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/test/test_anneal.cpp /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/test/test_fold.cpp /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/test/test_structure.cpp /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/test/test_accessibility.cpp /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/src/anneal.cpp /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/src/validation.cpp /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/src/fold.cpp /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/src/structure.cpp /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/src/accessibility.cpp /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/src/mfe_default_fold.cpp /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/test/catch2/catch_amalgamated.cpp /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/../.deps/viennarna/lib/libRNA.a /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/../.deps/melting/lib/libMELTING.a -fopenmp -flto -o /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/bin/Release/net8.0/runtimes/linux-x64/native/ribosoft-tests
-  /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/test/test_fold.cpp: In function ‘void CATCH2_INTERNAL_TEST_0()’:
-/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/test/test_fold.cpp(24,23): warning GB499C313: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare] [/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/RibosoftAlgo.Tests.csproj]
-     24 |     for (int i = 0; i < size; i++) {
-        |                     ~~^~~~~~
-  /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/test/test_fold.cpp: In function ‘void CATCH2_INTERNAL_TEST_2()’:
-/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/test/test_fold.cpp(46,23): warning GB499C313: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare] [/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/RibosoftAlgo.Tests.csproj]
-     46 |     for (int i = 0; i < size; i++) {
-        |                     ~~^~~~~~
-lto-wrapper : warning : using serial compilation of 11 LTRANS jobs [/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/RibosoftAlgo.Tests.csproj]
-  lto-wrapper: note: see the ‘-flto’ option documentation for more information
-  ✅ Successfully built ribosoft-tests for linux-x64
-  📁 Output: /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/bin/Release/net8.0/runtimes/linux-x64/native/ribosoft-tests
-  📊 Executable size: 4.6M
-Test run for /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/bin/Release/net8.0/RibosoftAlgo.Tests.dll (.NETCoreApp,Version=v8.0)
-VSTest version 17.11.1 (x64)
-
-Starting test execution, please wait...
-A total of 1 test files matched the specified pattern.
-[xUnit.net 00:00:00.16]     RibosoftAlgo.Tests.CppTestWrapper.RunAllCppTests [FAIL]
-  Failed RibosoftAlgo.Tests.CppTestWrapper.RunAllCppTests [14 ms]
-  Error Message:
-   C++ tests failed with exit code 1. Check the output above for details.
-  Stack Trace:
-     at RibosoftAlgo.Tests.CppTestWrapper.RunAllCppTests() in /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/Tests/CppTestWrapper.cs:line 55
-   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
-   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+npm error code ERESOLVE
+npm error ERESOLVE could not resolve
+npm error
+npm error While resolving: Ribosoft@2.0.0
+npm error Found: css-loader@0.28.10
+npm error node_modules/css-loader
+npm error   dev css-loader@"^7.1.1" from the root project
+npm error   peer css-loader@"*" from vue-loader@14.1.1
+npm error   node_modules/vue-loader
+npm error     dev vue-loader@"^17.4.2" from the root project
+npm error
+npm error Could not resolve dependency:
+npm error dev css-loader@"^7.1.1" from the root project
+npm error
+npm error Conflicting peer dependency: webpack@5.99.9
+npm error node_modules/webpack
+npm error   peerOptional webpack@"^5.27.0" from css-loader@7.1.2
+npm error   node_modules/css-loader
+npm error     dev css-loader@"^7.1.1" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry
+npm error this command with --force or --legacy-peer-deps
+npm error to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error /home/runner/.npm/_logs/2025-07-05T22_41_56_089Z-eresolve-report.txt
+npm error A complete log of this run can be found in: /home/runner/.npm/_logs/2025-07-05T22_41_56_089Z-debug-0.log
+Error: Process completed with exit code 1.
