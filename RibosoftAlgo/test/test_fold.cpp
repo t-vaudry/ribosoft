@@ -21,7 +21,7 @@ TEST_CASE("default", "[fold]") {
     REQUIRE(size == 51);
 
     float temp = 0.0f;
-    for (int i = 0; i < size; i++) {
+    for (size_t i = 0; i < size; i++) {
         temp += output[i].probability;
     }
 
@@ -43,7 +43,7 @@ TEST_CASE("valid", "[fold]") {
     REQUIRE(size == 173);
 
     float temp = 0.0f;
-    for (int i = 0; i < size; i++) {
+    for (size_t i = 0; i < size; i++) {
         temp += output[i].probability;
     }
 

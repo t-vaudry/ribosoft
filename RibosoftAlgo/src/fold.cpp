@@ -138,7 +138,7 @@ DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*o
 DLL_PUBLIC void fold_output_free(fold_output* output, size_t size)
 {
     if (output) {
-        for (int i = 0; i < size; ++i) {
+        for (size_t i = 0; i < size; ++i) {
             delete[] output[i].structure;
             output[i].structure = nullptr;
         }
