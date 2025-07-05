@@ -16,11 +16,11 @@ URL : http://ribosoft2.fungalgenomics.ca
 
 ## Platform Support
 
-- ✅ **Linux (Ubuntu)**: Fully supported with automated builds and NuGet packages
-- ✅ **macOS**: Fully supported with x86_64 builds and OpenMP integration  
-- ⚠️ **Windows**: Temporarily disabled due to ViennaRNA library compiler version compatibility issues
+- ✅ **Linux (Ubuntu)**: Primary development platform with C++23 modernization and automated builds
+- 🚧 **macOS**: Disabled for modernization - will be rebuilt for Apple Silicon (arm64) natively  
+- 🚧 **Windows**: Disabled for modernization - requires ViennaRNA dependency rebuild
 
-> **Note on Windows Support**: Windows builds are currently disabled due to a compiler version mismatch between the pre-built ViennaRNA libraries and the MSVC version available on GitHub Actions. The error `"The object or library file 'RNA.lib' was created by a different version of the compiler"` prevents successful linking. This will be resolved in a future update by either rebuilding ViennaRNA with a compatible compiler or finding alternative pre-built libraries.
+> **Development Focus**: Currently focusing on Ubuntu/Linux builds with C++23 modernization. macOS and Windows support will be reintroduced with proper native architecture support (Apple Silicon arm64 for macOS) and updated dependencies as part of the modernization effort.
 
 ## Building
 

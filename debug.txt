@@ -60,95 +60,39 @@ MSBuild version 17.14.10+8b8e13593 for .NET Framework
 
   1>Checking Build System
   Building Custom Rule D:/a/ribosoft/ribosoft/RibosoftAlgo/src/CMakeLists.txt
-  Scanning sources for module dependencies...
-  validation.cpp
   anneal.cpp
-  fold.cpp
-  structure.cpp
-  accessibility.cpp
-  mfe_default_fold.cpp
-  Compiling...
   validation.cpp
-  anneal.cpp
-  structure.cpp
   fold.cpp
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(58,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(84,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(101,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(220,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(250,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(274,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\constraints_hard.h(380,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\constraints_hard.h(387,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\constraints_soft.h(169,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\constraints_soft.h(176,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\fold_compound.h(202,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\fold_compound.h(242,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/fold.cpp')
-  
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/dp_matrices.h(83,2): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/dp_matrices.h(100,2): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/dp_matrices.h(195,2): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/dp_matrices.h(249,2): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/dp_matrices.h(273,2): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/dp_matrices.h(354,2): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/constraints_hard.h(386,6): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/constraints_hard.h(393,6): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/constraints_soft.h(175,6): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/constraints_soft.h(182,6): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/fold_compound.h(241,2): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/fold_compound.h(292,2): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
 Warning: D:\a\ribosoft\ribosoft\RibosoftAlgo\src\fold.cpp(117,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
 Warning: D:\a\ribosoft\ribosoft\RibosoftAlgo\src\fold.cpp(115,9): warning C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+  structure.cpp
   accessibility.cpp
   mfe_default_fold.cpp
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(58,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/mfe_default_fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(84,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/mfe_default_fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(101,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/mfe_default_fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(220,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/mfe_default_fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(250,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/mfe_default_fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\dp_matrices.h(274,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/mfe_default_fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\constraints_hard.h(380,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/mfe_default_fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\constraints_hard.h(387,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/mfe_default_fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\constraints_soft.h(169,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/mfe_default_fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\constraints_soft.h(176,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/mfe_default_fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\fold_compound.h(202,12): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/mfe_default_fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA\fold_compound.h(242,8): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
-  (compiling source file '../../src/mfe_default_fold.cpp')
-  
-Warning: D:\a\ribosoft\ribosoft\RibosoftAlgo\src\mfe_default_fold.cpp(108,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/dp_matrices.h(83,2): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/dp_matrices.h(100,2): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/dp_matrices.h(195,2): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/dp_matrices.h(249,2): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/dp_matrices.h(273,2): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/dp_matrices.h(354,2): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/constraints_hard.h(386,6): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/constraints_hard.h(393,6): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/constraints_soft.h(175,6): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/constraints_soft.h(182,6): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/fold_compound.h(241,2): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\.deps\viennarna\include\ViennaRNA/fold_compound.h(292,2): warning C4201: nonstandard extension used: nameless struct/union [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
+Warning: D:\a\ribosoft\ribosoft\RibosoftAlgo\src\mfe_default_fold.cpp(108,38): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
 Warning: D:\a\ribosoft\ribosoft\RibosoftAlgo\src\mfe_default_fold.cpp(112,9): warning C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
 LINK : fatal error C1047: The object or library file 'D:\a\ribosoft\ribosoft\.deps\viennarna\lib\RNA.lib' was created by a different version of the compiler than other objects like 'RibosoftAlgo.dir\Release\anneal.obj'; rebuild all objects and libraries with the same compiler [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
 LINK : fatal error LNK1257: code generation failed [D:\a\ribosoft\ribosoft\RibosoftAlgo\build\src\RibosoftAlgo.vcxproj]
