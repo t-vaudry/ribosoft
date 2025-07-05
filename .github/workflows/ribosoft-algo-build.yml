@@ -1,4 +1,4 @@
-name: RibosoftAlgo MSBuild Builds
+name: RibosoftAlgo Build and Test
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ master, develop ]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
     
     steps:
@@ -45,17 +45,4 @@ jobs:
     - name: Test RibosoftAlgo
       run: |
         cd RibosoftAlgo
-        # Run any C++ tests if they exist
-        if [ -f "build-native.sh" ]; then
-          echo "Native library built successfully"
-        fi
-        
-    - name: Build entire solution
-      run: |
-        dotnet build Ribosoft.sln --configuration Release
-        
-    - name: Upload NuGet package
-      uses: actions/upload-artifact@v4
-      with:
-        name: ribosoft-algo-package
-        path: RibosoftAlgo/bin/Release/*.nupkg
+        dotnet test --configuration Release
