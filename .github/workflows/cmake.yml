@@ -51,7 +51,10 @@ jobs:
       if: matrix.os == 'macos-latest'
       run: |
         brew install libomp
-        # Use Xcode's clang which supports OpenMP with libomp
+        # Set up environment for OpenMP detection
+        echo "OpenMP_ROOT=$(brew --prefix libomp)" >> $GITHUB_ENV
+        echo "LDFLAGS=-L$(brew --prefix libomp)/lib" >> $GITHUB_ENV
+        echo "CPPFLAGS=-I$(brew --prefix libomp)/include" >> $GITHUB_ENV
 
     - name: Setup MSVC (Windows)
       if: matrix.os == 'windows-latest'

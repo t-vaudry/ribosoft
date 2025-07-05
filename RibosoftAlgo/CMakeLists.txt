@@ -58,8 +58,26 @@ if(NOT Catch2_FOUND)
     list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 endif()
 
-# Modern OpenMP support
-find_package(OpenMP REQUIRED)
+# Modern OpenMP support with macOS compatibility
+if(APPLE)
+    # On macOS, help CMake find Homebrew-installed libomp
+    if(EXISTS "/opt/homebrew/opt/libomp")
+        # Apple Silicon Homebrew path
+        set(OpenMP_ROOT "/opt/homebrew/opt/libomp")
+    elseif(EXISTS "/usr/local/opt/libomp")
+        # Intel Mac Homebrew path
+        set(OpenMP_ROOT "/usr/local/opt/libomp")
+    endif()
+endif()
+
+find_package(OpenMP)
+if(NOT OpenMP_FOUND)
+    message(WARNING "OpenMP not found. Building without OpenMP support.")
+    # Create a dummy OpenMP target for compatibility
+    add_library(OpenMP::OpenMP_CXX INTERFACE IMPORTED)
+else()
+    message(STATUS "OpenMP found: ${OpenMP_CXX_VERSION}")
+endif()
 
 # Enable testing
 enable_testing()

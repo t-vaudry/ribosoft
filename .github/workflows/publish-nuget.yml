@@ -63,7 +63,12 @@ jobs:
 
     - name: Install system dependencies (macOS)
       if: matrix.os == 'macos-latest'
-      run: brew install libomp
+      run: |
+        brew install libomp
+        # Set up environment for OpenMP detection
+        echo "OpenMP_ROOT=$(brew --prefix libomp)" >> $GITHUB_ENV
+        echo "LDFLAGS=-L$(brew --prefix libomp)/lib" >> $GITHUB_ENV
+        echo "CPPFLAGS=-I$(brew --prefix libomp)/include" >> $GITHUB_ENV
 
     - name: Setup MSVC (Windows)
       if: matrix.os == 'windows-latest'
