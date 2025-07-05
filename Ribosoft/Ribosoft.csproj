@@ -36,7 +36,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
     
     <!-- Our cutting-edge C++23 library -->
-    <PackageReference Include="RibosoftAlgo" Version="0.0.0" Condition="'$(Configuration)' == 'Debug'" />
+    <ProjectReference Include="..\RibosoftAlgo\RibosoftAlgo.csproj" Condition="'$(Configuration)' == 'Debug'" />
     <PackageReference Include="RibosoftAlgo" Version="2.2.0" Condition="'$(Configuration)' == 'Release'" />
     
     <!-- Modern Hangfire and communication -->
@@ -97,8 +97,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <RestoreSources Condition="'$(Configuration)' == 'Debug'">$(RestoreSources);../RibosoftAlgo/build/bin;https://api.nuget.org/v3/index.json</RestoreSources>
-    <RestoreSources Condition="'$(Configuration)' == 'Release'">$(RestoreSources);https://api.nuget.org/v3/index.json</RestoreSources>
+    <RestoreSources>$(RestoreSources);https://api.nuget.org/v3/index.json</RestoreSources>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>

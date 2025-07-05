@@ -2,156 +2,41 @@ name: Publish RibosoftAlgo NuGet Package
 
 on:
   push:
-    branches: [master, develop]
-  release:
-    types: [published]
-
-env:
-  BUILD_TYPE: Release
-  NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_KEY}}
+    branches: [ master ]
+    tags: [ 'v*' ]
 
 jobs:
   publish:
-    strategy:
-      matrix:
-        # Focus on Ubuntu/Linux builds for modernization and C++23 development
-        # macOS disabled: Should build for Apple Silicon (arm64) natively, not x86_64 workarounds
-        # Windows disabled: ViennaRNA library compiler version compatibility issues
-        os: [ubuntu-latest]
-        include:
-          - os: ubuntu-latest
-            nuspec: RibosoftAlgo-linux.nuspec
-            version: 2.2.0
-            cc: gcc-13
-            cxx: g++-13
-    runs-on: ${{ matrix.os }}
-
+    runs-on: ubuntu-latest
+    
     steps:
     - uses: actions/checkout@v4
     
-    - name: Setup Python 3.13
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.13'
-        cache: 'pip'
-        
-    - name: Setup .NET 8
+    - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x'
-        source-url: https://api.nuget.org/v3/index.json
-      env:
-        NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_KEY}}
-
-    - name: Setup CMake
-      uses: jwlawson/actions-setup-cmake@v2
-      with:
-        cmake-version: '3.20'
-
-    - name: Install system dependencies (Ubuntu)
-      if: matrix.os == 'ubuntu-latest'
+        dotnet-version: 8.0.x
+        
+    - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y gcc-13 g++-13 libomp-dev
-
-    - name: Install system dependencies (macOS)
-      if: matrix.os == 'macos-latest'
-      run: |
-        # Install both arm64 and x86_64 versions of libomp
-        brew install libomp
-        # Install x86_64 version using Rosetta for x86_64 builds
-        arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || true
-        arch -x86_64 /usr/local/bin/brew install libomp || true
+        sudo apt-get install -y g++-13 libomp-dev
         
-        # Set up environment for x86_64 OpenMP
-        echo "OpenMP_ROOT=/usr/local/opt/libomp" >> $GITHUB_ENV
-        echo "LDFLAGS=-L/usr/local/opt/libomp/lib -lomp" >> $GITHUB_ENV
-        echo "CPPFLAGS=-I/usr/local/opt/libomp/include" >> $GITHUB_ENV
-
-    - name: Setup MSVC (Windows)
-      if: matrix.os == 'windows-latest'
-      uses: ilammy/msvc-dev-cmd@v1
-
-    - name: Copy platform-specific NuSpec
-      shell: bash
-      run: cp ./.github/nuspec/${{ matrix.nuspec }} ./RibosoftAlgo/nuget/RibosoftAlgo.nuspec
-
     - name: Install Python dependencies
       run: |
-        python -m pip install --upgrade pip
         pip install pipenv
-        pipenv install --dev
-
-    - name: Get library dependencies
-      run: pipenv run python ribosoft.py deps install --yes
-
-    - name: Create Build Environment
-      run: cmake -E make_directory ${{github.workspace}}/RibosoftAlgo/build
-
-    - name: Configure CMake (Unix)
-      if: matrix.os != 'windows-latest'
-      shell: bash
-      working-directory: ${{github.workspace}}/RibosoftAlgo/build
+        pipenv install
+        
+    - name: Install C++ dependencies
       run: |
-        if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-          # Force x86_64 architecture on macOS to match pre-built dependencies
-          CC=${{ matrix.cc }} CXX=${{ matrix.cxx }} cmake .. \
-            -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-            -DCMAKE_OSX_ARCHITECTURES=x86_64 \
-            -DCMAKE_EXE_LINKER_FLAGS="-L/usr/local/opt/libomp/lib -lomp" \
-            -DCMAKE_SHARED_LINKER_FLAGS="-L/usr/local/opt/libomp/lib -lomp"
-        else
-          CC=${{ matrix.cc }} CXX=${{ matrix.cxx }} cmake .. \
-            -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-        fi
-
-    - name: Configure CMake (Windows)
-      if: matrix.os == 'windows-latest'
-      shell: bash
-      working-directory: ${{github.workspace}}/RibosoftAlgo/build
+        pipenv run python ribosoft.py deps install --yes
+        
+    - name: Build and Pack RibosoftAlgo
       run: |
-        # Try different MSVC toolsets to find one compatible with pre-built ViennaRNA
-        echo "Trying MSVC v142 toolset..."
-        cmake .. -G "Visual Studio 17 2022" -A x64 \
-          -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-          -T v142 || \
-        (echo "v142 failed, trying v143..." && \
-         cmake .. -G "Visual Studio 17 2022" -A x64 \
-           -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-           -T v143) || \
-        (echo "v143 failed, trying default..." && \
-         cmake .. -G "Visual Studio 17 2022" -A x64 \
-           -DCMAKE_BUILD_TYPE=$BUILD_TYPE)
-
-    - name: Build
-      shell: bash
-      working-directory: ${{github.workspace}}/RibosoftAlgo/build
-      run: cmake --build . --config $BUILD_TYPE --parallel
-
-    - name: Test before publishing
-      shell: bash
-      working-directory: ${{github.workspace}}/RibosoftAlgo/build
-      run: ctest -C $BUILD_TYPE --output-on-failure
-
-    - name: Publish to NuGet.org
-      shell: bash
-      working-directory: ${{github.workspace}}/RibosoftAlgo/build
+        cd RibosoftAlgo
+        dotnet pack --configuration Release --output ./nupkg
+        
+    - name: Publish to NuGet
       run: |
-        dotnet nuget push ./bin/RibosoftAlgo.${{ matrix.version }}.nupkg \
-          --api-key $NUGET_AUTH_TOKEN \
-          --source https://api.nuget.org/v3/index.json \
-          --skip-duplicate
-
-    - name: Publish to GitHub Packages
-      shell: bash
-      working-directory: ${{github.workspace}}/RibosoftAlgo/build
-      run: |
-        dotnet nuget add source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json \
-          --name github \
-          --username ${{ github.actor }} \
-          --password ${{ secrets.GITHUB_TOKEN }} \
-          --store-password-in-clear-text
-        dotnet nuget push ./bin/RibosoftAlgo.${{ matrix.version }}.nupkg \
-          --api-key ${{ secrets.GITHUB_TOKEN }} \
-          --source github \
-          --skip-duplicate
+        cd RibosoftAlgo
+        dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
