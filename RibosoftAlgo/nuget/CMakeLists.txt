@@ -16,6 +16,15 @@ add_custom_command(TARGET nuget
     COMMENT "Copying binary to NuGet directory"
 )
 
+# Determine platform for NuGet package
+if(WIN32)
+    set(NUGET_PLATFORM "windows")
+elseif(APPLE)
+    set(NUGET_PLATFORM "osx")
+else()
+    set(NUGET_PLATFORM "linux")
+endif()
+
 # Create NuGet package using modern dotnet pack
 add_custom_command(TARGET nuget
     POST_BUILD
@@ -23,7 +32,7 @@ add_custom_command(TARGET nuget
         --configuration Release
         --output "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
         --verbosity normal
-        -p:PackagePlatform=${CMAKE_SYSTEM_NAME_LOWER}
+        -p:PackagePlatform=${NUGET_PLATFORM}
         -p:OutputPath="${NUGET_PACKAGE_OUTPUT_DIR}/"
     COMMENT "Creating NuGet package with dotnet pack"
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
