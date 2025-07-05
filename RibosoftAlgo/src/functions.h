@@ -7,8 +7,6 @@
 #include <cstring>
 #include <string>
 #include <string_view>  // C++17 feature for better string handling
-#include <span>         // C++20 feature for safer array handling
-#include <expected>     // C++23 feature for better error handling
 #include <optional>     // C++17 feature for optional values
 
 //! \namespace ribosoft
