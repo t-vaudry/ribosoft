@@ -64,11 +64,16 @@ jobs:
     - name: Install system dependencies (macOS)
       if: matrix.os == 'macos-latest'
       run: |
+        # Install both arm64 and x86_64 versions of libomp
         brew install libomp
-        # Set up environment for OpenMP detection
-        echo "OpenMP_ROOT=$(brew --prefix libomp)" >> $GITHUB_ENV
-        echo "LDFLAGS=-L$(brew --prefix libomp)/lib -lomp" >> $GITHUB_ENV
-        echo "CPPFLAGS=-I$(brew --prefix libomp)/include" >> $GITHUB_ENV
+        # Install x86_64 version using Rosetta for x86_64 builds
+        arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || true
+        arch -x86_64 /usr/local/bin/brew install libomp || true
+        
+        # Set up environment for x86_64 OpenMP
+        echo "OpenMP_ROOT=/usr/local/opt/libomp" >> $GITHUB_ENV
+        echo "LDFLAGS=-L/usr/local/opt/libomp/lib -lomp" >> $GITHUB_ENV
+        echo "CPPFLAGS=-I/usr/local/opt/libomp/include" >> $GITHUB_ENV
 
     - name: Setup MSVC (Windows)
       if: matrix.os == 'windows-latest'
@@ -100,8 +105,8 @@ jobs:
           CC=${{ matrix.cc }} CXX=${{ matrix.cxx }} cmake .. \
             -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
             -DCMAKE_OSX_ARCHITECTURES=x86_64 \
-            -DCMAKE_EXE_LINKER_FLAGS="-L$(brew --prefix libomp)/lib -lomp" \
-            -DCMAKE_SHARED_LINKER_FLAGS="-L$(brew --prefix libomp)/lib -lomp"
+            -DCMAKE_EXE_LINKER_FLAGS="-L/usr/local/opt/libomp/lib -lomp" \
+            -DCMAKE_SHARED_LINKER_FLAGS="-L/usr/local/opt/libomp/lib -lomp"
         else
           CC=${{ matrix.cc }} CXX=${{ matrix.cxx }} cmake .. \
             -DCMAKE_BUILD_TYPE=$BUILD_TYPE
