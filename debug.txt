@@ -1,180 +1,33 @@
-##[debug]Evaluating condition for step: 'Build'
-##[debug]Evaluating: success()
-##[debug]Evaluating success:
-##[debug]=> true
-##[debug]Result: true
-##[debug]Starting: Build
-##[debug]Loading inputs
-##[debug]Evaluating: format('{0}/RibosoftAlgo/build', github.workspace)
-##[debug]Evaluating format:
-##[debug]..Evaluating String:
-##[debug]..=> '{0}/RibosoftAlgo/build'
-##[debug]..Evaluating Index:
-##[debug]....Evaluating github:
-##[debug]....=> Object
-##[debug]....Evaluating String:
-##[debug]....=> 'workspace'
-##[debug]..=> '/home/runner/work/ribosoft/ribosoft'
-##[debug]=> '/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/build'
-##[debug]Result: '/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/build'
-##[debug]Loading env
-Run cmake --build . --config $BUILD_TYPE --parallel
-##[debug]/usr/bin/bash --noprofile --norc -e -o pipefail /home/runner/work/_temp/62cf72e1-231a-45e7-b5d3-45cd9d2657eb.sh
-[  1%] Building CXX object src/CMakeFiles/RibosoftAlgo.dir/anneal.cpp.o
-[  1%] Building CXX object src/CMakeFiles/RibosoftAlgo.dir/validation.cpp.o
-[  2%] Building CXX object src/CMakeFiles/RibosoftAlgo.dir/fold.cpp.o
-[  3%] Building CXX object src/CMakeFiles/RibosoftAlgo.dir/structure.cpp.o
-[  4%] Building CXX object src/CMakeFiles/RibosoftAlgo.dir/accessibility.cpp.o
-[  5%] Building CXX object src/CMakeFiles/RibosoftAlgo.dir/mfe_default_fold.cpp.o
-[  5%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/benchmark/catch_chronometer.cpp.o
-[  6%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/benchmark/detail/catch_benchmark_function.cpp.o
-[  7%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/benchmark/detail/catch_analyse.cpp.o
-[  8%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/benchmark/detail/catch_run_for_at_least.cpp.o
-[  8%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/generators/catch_generator_exception.cpp.o
-[  9%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/generators/catch_generators.cpp.o
-[ 10%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/benchmark/detail/catch_stats.cpp.o
-[ 11%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/generators/catch_generators_random.cpp.o
-[ 12%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/reporters/catch_reporter_automake.cpp.o
-[ 13%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/reporters/catch_reporter_compact.cpp.o
-[ 14%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/reporters/catch_reporter_common_base.cpp.o
-[ 14%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/reporters/catch_reporter_console.cpp.o
-[ 15%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/reporters/catch_reporter_cumulative_base.cpp.o
-[ 16%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/reporters/catch_reporter_event_listener.cpp.o
-[ 17%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/reporters/catch_reporter_helpers.cpp.o
-[ 18%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/reporters/catch_reporter_json.cpp.o
-[ 18%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/reporters/catch_reporter_junit.cpp.o
-[ 19%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/reporters/catch_reporter_multi.cpp.o
-[ 20%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/reporters/catch_reporter_registrars.cpp.o
-[ 21%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/reporters/catch_reporter_sonarqube.cpp.o
-[ 22%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/reporters/catch_reporter_streaming_base.cpp.o
-[ 23%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/reporters/catch_reporter_tap.cpp.o
-[ 24%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/interfaces/catch_interfaces_capture.cpp.o
-[ 24%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/reporters/catch_reporter_teamcity.cpp.o
-[ 25%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/reporters/catch_reporter_xml.cpp.o
-[ 26%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/interfaces/catch_interfaces_config.cpp.o
-[ 27%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/interfaces/catch_interfaces_exception.cpp.o
-[ 27%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/interfaces/catch_interfaces_generatortracker.cpp.o
-[ 28%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/interfaces/catch_interfaces_registry_hub.cpp.o
-[ 29%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/interfaces/catch_interfaces_reporter.cpp.o
-[ 30%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/interfaces/catch_interfaces_reporter_factory.cpp.o
-[ 31%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/interfaces/catch_interfaces_testcase.cpp.o
-[ 32%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/catch_approx.cpp.o
-[ 32%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/catch_assertion_result.cpp.o
-[ 33%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/catch_config.cpp.o
-[ 34%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/catch_get_random_seed.cpp.o
-[ 35%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/catch_registry_hub.cpp.o
-[ 36%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/catch_message.cpp.o
-[ 37%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/catch_tag_alias_autoregistrar.cpp.o
-[ 37%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/catch_session.cpp.o
-[ 38%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/catch_test_case_info.cpp.o
-[ 39%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/catch_test_spec.cpp.o
-[ 40%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/catch_timer.cpp.o
-[ 41%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/catch_tostring.cpp.o
-[ 41%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/catch_totals.cpp.o
-[ 42%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/catch_translate_exception.cpp.o
-[ 43%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/catch_version.cpp.o
-[ 44%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_assertion_handler.cpp.o
-[ 45%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_case_insensitive_comparisons.cpp.o
-[ 45%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_clara.cpp.o
-[ 46%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_commandline.cpp.o
-[ 47%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_enum_values_registry.cpp.o
-[ 47%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_decomposer.cpp.o
-[ 48%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_console_colour.cpp.o
-[ 49%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_debugger.cpp.o
-[ 50%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_enforce.cpp.o
-[ 51%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_debug_console.cpp.o
-[ 52%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_errno_guard.cpp.o
-[ 53%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_context.cpp.o
-[ 54%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_exception_translator_registry.cpp.o
-[ 55%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_floating_point_helpers.cpp.o
-[ 56%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_getenv.cpp.o
-[ 55%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_fatal_condition_handler.cpp.o
-[ 57%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_istream.cpp.o
-[ 58%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_jsonwriter.cpp.o
-[ 58%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_leak_detector.cpp.o
-[ 59%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_lazy_expr.cpp.o
-[ 61%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_message_info.cpp.o
-[ 62%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_output_redirect.cpp.o
-[ 60%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_list.cpp.o
-[ 63%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_polyfills.cpp.o
-[ 64%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_parse_numbers.cpp.o
-[ 64%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_random_number_generator.cpp.o
-[ 65%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_random_seed_generation.cpp.o
-[ 66%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_reporter_registry.cpp.o
-[ 67%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_section.cpp.o
-[ 68%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_reporter_spec_parser.cpp.o
-[ 69%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_reusable_string_stream.cpp.o
-[ 70%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_source_line_info.cpp.o
-[ 71%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_singletons.cpp.o
-[ 72%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_startup_exception_registry.cpp.o
-[ 72%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_stdstreams.cpp.o
-[ 73%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_run_context.cpp.o
-[ 73%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_result_type.cpp.o
-[ 75%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_stringref.cpp.o
-[ 76%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_tag_alias_registry.cpp.o
-[ 74%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_string_manip.cpp.o
-[ 77%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_test_case_info_hasher.cpp.o
-[ 77%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_test_case_registry_impl.cpp.o
-[ 78%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_test_case_tracker.cpp.o
-[ 79%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_test_failure_exception.cpp.o
-[ 80%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_test_registry.cpp.o
-[ 82%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_textflow.cpp.o
-[ 81%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_test_spec_parser.cpp.o
-[ 82%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_uncaught_exceptions.cpp.o
-[ 83%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_wildcard_pattern.cpp.o
-[ 84%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/internal/catch_xmlwriter.cpp.o
-[ 85%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/matchers/catch_matchers.cpp.o
-[ 85%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/matchers/catch_matchers_exception.cpp.o
-[ 86%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/matchers/catch_matchers_container_properties.cpp.o
-[ 87%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/matchers/catch_matchers_floating_point.cpp.o
-[ 88%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/matchers/catch_matchers_predicate.cpp.o
-[ 89%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/matchers/catch_matchers_quantifiers.cpp.o
-[ 90%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/matchers/catch_matchers_string.cpp.o
-[ 91%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/matchers/internal/catch_matchers_impl.cpp.o
-[ 91%] Building CXX object _deps/catch2-build/src/CMakeFiles/Catch2.dir/catch2/matchers/catch_matchers_templated.cpp.o
-[ 92%] Linking CXX shared library ../lib/libRibosoftAlgo.so
-[ 92%] Built target RibosoftAlgo
-Copying binary to NuGet directories
-Creating NuGet package with dotnet pack
-[ 93%] Linking CXX static library ../../../lib/libCatch2.a
-Build started 07/05/2025 19:33:05.
-     1>Project "/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/RibosoftAlgo.csproj" on node 1 (Restore target(s)).
-     1>_GetAllRestoreProjectPathItems:
-         Determining projects to restore...
-       Restore:
-         X.509 certificate chain validation will use the fallback certificate bundle at '/usr/share/dotnet/sdk/8.0.411/trustedroots/codesignctl.pem'.
-         X.509 certificate chain validation will use the fallback certificate bundle at '/usr/share/dotnet/sdk/8.0.411/trustedroots/timestampctl.pem'.
-         Restoring packages for /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/RibosoftAlgo.csproj...
-         Generating MSBuild file /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/obj/RibosoftAlgo.csproj.nuget.g.props.
-         Generating MSBuild file /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/obj/RibosoftAlgo.csproj.nuget.g.targets.
-         Writing assets file to disk. Path: /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/obj/project.assets.json
-         Restored /home/runner/work/ribosoft/ribosoft/RibosoftAlgo/RibosoftAlgo.csproj (in 75 ms).
-         
-         NuGet Config files used:
-             /home/runner/.nuget/NuGet/NuGet.Config
-         
-         Feeds used:
-             https://api.nuget.org/v3/index.json
-     1>Done Building Project "/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/RibosoftAlgo.csproj" (Restore target(s)).
-   1:7>Project "/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/RibosoftAlgo.csproj" on node 1 (pack target(s)).
-   1:7>Project "/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/RibosoftAlgo.csproj" (1:7) is building "/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/RibosoftAlgo.csproj" (1:9) on node 1 (_GetFrameworkAssemblyReferences target(s)).
-     1>PrepareForBuild:
-         Creating directory "/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/obj/Release/net8.0/refint/".
-         Creating directory "obj/Release/net8.0/ref".
-     1>Done Building Project "/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/RibosoftAlgo.csproj" (_GetFrameworkAssemblyReferences target(s)).
-     1>/usr/share/dotnet/sdk/8.0.411/Sdks/NuGet.Build.Tasks.Pack/build/NuGet.Build.Tasks.Pack.targets(221,5): error NU5017: Cannot create a package that has no dependencies nor content. [/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/RibosoftAlgo.csproj]
-     1>Done Building Project "/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/RibosoftAlgo.csproj" (pack target(s)) -- FAILED.
-Build FAILED.
-       "/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/RibosoftAlgo.csproj" (pack target) (1:7) ->
-       (GenerateNuspec target) -> 
-         /usr/share/dotnet/sdk/8.0.411/Sdks/NuGet.Build.Tasks.Pack/build/NuGet.Build.Tasks.Pack.targets(221,5): error NU5017: Cannot create a package that has no dependencies nor content. [/home/runner/work/ribosoft/ribosoft/RibosoftAlgo/RibosoftAlgo.csproj]
-    0 Warning(s)
-    1 Error(s)
-Time Elapsed 00:00:01.51
-gmake[2]: *** [nuget/CMakeFiles/nuget.dir/build.make:78: nuget] Error 1
-gmake[1]: *** [CMakeFiles/Makefile2:247: nuget/CMakeFiles/nuget.dir/all] Error 2
-gmake[1]: *** Waiting for unfinished jobs....
-[ 93%] Built target Catch2
-gmake: *** [Makefile:101: all] Error 2
-Error: Process completed with exit code 2.
-##[debug]Finishing: Build
+Run pip install pipenv
+  pip install pipenv
+  pipenv install
+  shell: /usr/bin/bash -e {0}
+  env:
+    DOTNET_ROOT: /usr/share/dotnet
+Defaulting to user installation because normal site-packages is not writeable
+Collecting pipenv
+  Downloading pipenv-2025.0.3-py3-none-any.whl.metadata (17 kB)
+Requirement already satisfied: certifi in /usr/lib/python3/dist-packages (from pipenv) (2023.11.17)
+Requirement already satisfied: packaging>=22 in /usr/lib/python3/dist-packages (from pipenv) (24.0)
+Requirement already satisfied: setuptools>=67 in /usr/lib/python3/dist-packages (from pipenv) (68.1.2)
+Collecting virtualenv>=20.24.2 (from pipenv)
+  Downloading virtualenv-20.31.2-py3-none-any.whl.metadata (4.5 kB)
+Collecting distlib<1,>=0.3.7 (from virtualenv>=20.24.2->pipenv)
+  Downloading distlib-0.3.9-py2.py3-none-any.whl.metadata (5.2 kB)
+Collecting filelock<4,>=3.12.2 (from virtualenv>=20.24.2->pipenv)
+  Downloading filelock-3.18.0-py3-none-any.whl.metadata (2.9 kB)
+Requirement already satisfied: platformdirs<5,>=3.9.1 in /usr/local/lib/python3.12/dist-packages (from virtualenv>=20.24.2->pipenv) (4.3.8)
+Downloading pipenv-2025.0.3-py3-none-any.whl (2.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.9/2.9 MB 53.8 MB/s eta 0:00:00
+Downloading virtualenv-20.31.2-py3-none-any.whl (6.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.1/6.1 MB 109.5 MB/s eta 0:00:00
+Downloading distlib-0.3.9-py2.py3-none-any.whl (468 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 469.0/469.0 kB 75.7 MB/s eta 0:00:00
+Downloading filelock-3.18.0-py3-none-any.whl (16 kB)
+Installing collected packages: distlib, filelock, virtualenv, pipenv
+Successfully installed distlib-0.3.9 filelock-3.18.0 pipenv-2025.0.3 virtualenv-20.31.2
+Warning: Python 3.13 was not found on your system...
+Neither 'pyenv' nor 'asdf' could be found to install Python.
+You can specify specific versions of Python with:
+$ pipenv --python path/to/python
+Error: Process completed with exit code 1.
