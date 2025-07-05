@@ -14,18 +14,21 @@ jobs:
   publish:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        # Temporarily exclude Windows due to ViennaRNA library compiler version mismatch
+        # Windows builds fail with: "The object or library file 'RNA.lib' was created by a different version of the compiler"
+        # TODO: Rebuild ViennaRNA dependencies with compatible MSVC version or find alternative solution
+        os: [ubuntu-latest, macos-latest] # windows-latest temporarily disabled
         include:
           - os: ubuntu-latest
             nuspec: RibosoftAlgo-linux.nuspec
             version: 2.2.0
             cc: gcc-13
             cxx: g++-13
-          - os: windows-latest
-            nuspec: RibosoftAlgo-windows.nuspec
-            version: 2.2.0
-            cc: cl
-            cxx: cl
+          # - os: windows-latest  # Disabled due to ViennaRNA compiler compatibility
+          #   nuspec: RibosoftAlgo-windows.nuspec
+          #   version: 2.2.0
+          #   cc: cl
+          #   cxx: cl
           - os: macos-latest
             nuspec: RibosoftAlgo-osx.nuspec
             version: 2.2.0

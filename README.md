@@ -14,6 +14,14 @@ URL : http://ribosoft2.fungalgenomics.ca
 ![RibosoftAlgo CMake Builds](https://github.com/t-vaudry/ribosoft/workflows/RibosoftAlgo%20CMake%20Builds/badge.svg)
 [![Robot Framework Testing](https://github.com/t-vaudry/ribosoft/actions/workflows/robot.yml/badge.svg)](https://github.com/t-vaudry/ribosoft/actions/workflows/robot.yml)
 
+## Platform Support
+
+- ✅ **Linux (Ubuntu)**: Fully supported with automated builds and NuGet packages
+- ✅ **macOS**: Fully supported with x86_64 builds and OpenMP integration  
+- ⚠️ **Windows**: Temporarily disabled due to ViennaRNA library compiler version compatibility issues
+
+> **Note on Windows Support**: Windows builds are currently disabled due to a compiler version mismatch between the pre-built ViennaRNA libraries and the MSVC version available on GitHub Actions. The error `"The object or library file 'RNA.lib' was created by a different version of the compiler"` prevents successful linking. This will be resolved in a future update by either rebuilding ViennaRNA with a compatible compiler or finding alternative pre-built libraries.
+
 ## Building
 
 Prerequisites:
