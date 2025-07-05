@@ -770,10 +770,10 @@ def check():
 
         # Python 3.13: Better status reporting with match statements
         status_info = {
-            Action.INSTALL: ('install required', 'yellow', '📦'),
-            Action.REPLACE: ('update available', 'green', '🔄'),
-            Action.REMOVE: ('removal required', 'red', '🗑️'),
-            Action.NONE: ('up to date', 'green', '✅')
+            Action.INSTALL: ('install required', 'yellow', '[INSTALL]'),
+            Action.REPLACE: ('update available', 'green', '[UPDATE]'),
+            Action.REMOVE: ('removal required', 'red', '[REMOVE]'),
+            Action.NONE: ('up to date', 'green', '[OK]')
         }
 
         for dep in dependencies:
@@ -812,20 +812,20 @@ def install(yes: bool, parallel: bool):
     """
     try:
         if parallel:
-            click.echo("🚀 Using Python 3.13 parallel download optimizations")
+            click.echo("[INFO] Using Python 3.13 parallel download optimizations")
             
         resolver = DependencyResolver()
         resolver.resolve(prompt=not yes)
         
-        click.secho("✅ Dependencies successfully resolved!", fg='green', bold=True)
+        click.secho("[SUCCESS] Dependencies successfully resolved!", fg='green', bold=True)
         
     except KeyboardInterrupt:
-        click.echo('\n⚠️  Operation cancelled by user.')
+        click.echo('\n[WARNING] Operation cancelled by user.')
         sys.exit(1)
     except Exception as e:
         log.error(f'Installation failed: {e}')
         # Python 3.13: Enhanced error context
-        click.secho(f"❌ Installation failed: {e}", fg='red', bold=True)
+        click.secho(f"[ERROR] Installation failed: {e}", fg='red', bold=True)
         sys.exit(1)
 
 
