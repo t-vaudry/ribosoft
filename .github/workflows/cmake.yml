@@ -53,7 +53,7 @@ jobs:
         brew install libomp
         # Set up environment for OpenMP detection
         echo "OpenMP_ROOT=$(brew --prefix libomp)" >> $GITHUB_ENV
-        echo "LDFLAGS=-L$(brew --prefix libomp)/lib" >> $GITHUB_ENV
+        echo "LDFLAGS=-L$(brew --prefix libomp)/lib -lomp" >> $GITHUB_ENV
         echo "CPPFLAGS=-I$(brew --prefix libomp)/include" >> $GITHUB_ENV
 
     - name: Setup MSVC (Windows)
@@ -81,7 +81,9 @@ jobs:
           # Force x86_64 architecture on macOS to match pre-built dependencies
           CC=${{ matrix.cc }} CXX=${{ matrix.cxx }} cmake .. \
             -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-            -DCMAKE_OSX_ARCHITECTURES=x86_64
+            -DCMAKE_OSX_ARCHITECTURES=x86_64 \
+            -DCMAKE_EXE_LINKER_FLAGS="-L$(brew --prefix libomp)/lib -lomp" \
+            -DCMAKE_SHARED_LINKER_FLAGS="-L$(brew --prefix libomp)/lib -lomp"
         else
           CC=${{ matrix.cc }} CXX=${{ matrix.cxx }} cmake .. \
             -DCMAKE_BUILD_TYPE=$BUILD_TYPE
