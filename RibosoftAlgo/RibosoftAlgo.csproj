@@ -27,32 +27,36 @@
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
-  <!-- Include native libraries and build files -->
-  <ItemGroup>
-    <Content Include="build/**/*.targets" PackagePath="build/net8.0/" />
-    <Content Include="build/**/*.props" PackagePath="build/net8.0/" />
-    <Content Include="build/**/*.targets" PackagePath="build/net9.0/" />
-    <Content Include="build/**/*.props" PackagePath="build/net9.0/" />
-    <Content Include="lib/**/*" PackagePath="lib/" />
-  </ItemGroup>
+  <!-- Determine current runtime identifier -->
+  <PropertyGroup>
+    <CurrentRuntimeIdentifier Condition="'$(RuntimeIdentifier)' != ''">$(RuntimeIdentifier)</CurrentRuntimeIdentifier>
+    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">win-x64</CurrentRuntimeIdentifier>
+    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true' AND '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'Arm64'">osx-arm64</CurrentRuntimeIdentifier>
+    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">osx-x64</CurrentRuntimeIdentifier>
+    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == ''">linux-x64</CurrentRuntimeIdentifier>
+  </PropertyGroup>
 
-  <!-- Platform-specific native libraries with multiple search paths -->
-  <ItemGroup Condition="'$(PackagePlatform)' == 'linux'">
-    <Content Include="$(OutputPath)libRibosoftAlgo.so" PackagePath="runtimes/linux-x64/native/" Condition="Exists('$(OutputPath)libRibosoftAlgo.so')" />
-    <Content Include="build/libRibosoftAlgo.so" PackagePath="runtimes/linux-x64/native/" Condition="Exists('build/libRibosoftAlgo.so') AND !Exists('$(OutputPath)libRibosoftAlgo.so')" />
-    <Content Include="libRibosoftAlgo.so" PackagePath="runtimes/linux-x64/native/" Condition="Exists('libRibosoftAlgo.so') AND !Exists('$(OutputPath)libRibosoftAlgo.so') AND !Exists('build/libRibosoftAlgo.so')" />
-  </ItemGroup>
-  
-  <ItemGroup Condition="'$(PackagePlatform)' == 'windows'">
-    <Content Include="$(OutputPath)RibosoftAlgo.dll" PackagePath="runtimes/win-x64/native/" Condition="Exists('$(OutputPath)RibosoftAlgo.dll')" />
-    <Content Include="build/RibosoftAlgo.dll" PackagePath="runtimes/win-x64/native/" Condition="Exists('build/RibosoftAlgo.dll') AND !Exists('$(OutputPath)RibosoftAlgo.dll')" />
-    <Content Include="RibosoftAlgo.dll" PackagePath="runtimes/win-x64/native/" Condition="Exists('RibosoftAlgo.dll') AND !Exists('$(OutputPath)RibosoftAlgo.dll') AND !Exists('build/RibosoftAlgo.dll')" />
-  </ItemGroup>
-  
-  <ItemGroup Condition="'$(PackagePlatform)' == 'osx'">
-    <Content Include="$(OutputPath)libRibosoftAlgo.dylib" PackagePath="runtimes/osx-x64/native/" Condition="Exists('$(OutputPath)libRibosoftAlgo.dylib')" />
-    <Content Include="build/libRibosoftAlgo.dylib" PackagePath="runtimes/osx-x64/native/" Condition="Exists('build/libRibosoftAlgo.dylib') AND !Exists('$(OutputPath)libRibosoftAlgo.dylib')" />
-    <Content Include="libRibosoftAlgo.dylib" PackagePath="runtimes/osx-x64/native/" Condition="Exists('libRibosoftAlgo.dylib') AND !Exists('$(OutputPath)libRibosoftAlgo.dylib') AND !Exists('build/libRibosoftAlgo.dylib')" />
+  <!-- Native Build Target -->
+  <Target Name="BuildNativeLibrary" BeforeTargets="Build">
+    <Message Text="Building native library for $(CurrentRuntimeIdentifier)" Importance="high" />
+    
+    <!-- Execute native build script -->
+    <Exec Command="bash build-native.sh $(CurrentRuntimeIdentifier) $(Configuration)" 
+          WorkingDirectory="$(MSBuildProjectDirectory)"
+          Condition="'$(OS)' != 'Windows_NT'" />
+    
+    <!-- Windows: Use PowerShell to call build script -->
+    <Exec Command="powershell -Command &quot;&amp; { bash build-native.sh $(CurrentRuntimeIdentifier) $(Configuration) }&quot;"
+          WorkingDirectory="$(MSBuildProjectDirectory)"
+          Condition="'$(OS)' == 'Windows_NT'" />
+  </Target>
+
+  <!-- Include build files and native libraries in package -->
+  <ItemGroup>
+    <Content Include="build\**\*" PackagePath="build\" />
+    <Content Include="lib\**\*" PackagePath="lib\" />
+    <Content Include="bin\$(Configuration)\net8.0\runtimes\**\*" PackagePath="runtimes\" />
+    <Content Include="src\*.h" PackagePath="build\native\include\" />
   </ItemGroup>
 
 </Project>
