@@ -61,6 +61,27 @@
           Condition="'$(OS)' == 'Windows_NT'" />
   </Target>
 
+  <!-- Copy native library to output directory for consuming projects -->
+  <Target Name="CopyNativeLibrary" AfterTargets="Build">
+    <ItemGroup>
+      <NativeLibraryFiles Include="bin\$(Configuration)\net8.0\runtimes\$(CurrentRuntimeIdentifier)\native\libRibosoftAlgo.*" />
+    </ItemGroup>
+    
+    <Copy SourceFiles="@(NativeLibraryFiles)" 
+          DestinationFolder="$(OutputPath)" 
+          SkipUnchangedFiles="true" />
+    
+    <Message Text="Copied native library files to $(OutputPath)" Importance="high" />
+  </Target>
+
+  <!-- Include native library as content for consuming projects -->
+  <ItemGroup>
+    <None Include="bin\$(Configuration)\net8.0\runtimes\**\*" 
+          CopyToOutputDirectory="PreserveNewest" 
+          Link="runtimes\%(RecursiveDir)%(Filename)%(Extension)"
+          Condition="Exists('bin\$(Configuration)\net8.0\runtimes')" />
+  </ItemGroup>
+
   <!-- Include build files and native libraries in package -->
   <ItemGroup>
     <Content Include="build\**\*" PackagePath="build\" />
