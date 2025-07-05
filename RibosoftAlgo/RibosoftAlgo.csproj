@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    
+    <!-- Package Information -->
+    <PackageId>RibosoftAlgo</PackageId>
+    <PackageVersion>2.2.0</PackageVersion>
+    <Authors>t-vaudry</Authors>
+    <Company>Ribosoft</Company>
+    <Product>RibosoftAlgo</Product>
+    <Description>Modern Ribosoft algorithm support library for ribozyme design and bioinformatics calculations. Built with C++23, includes ViennaRNA and Melting temperature algorithms. Optimized for .NET 8+ with native AOT support.</Description>
+    <PackageProjectUrl>https://github.com/t-vaudry/ribosoft</PackageProjectUrl>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/t-vaudry/ribosoft</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>bioinformatics;ribozyme;rna-folding;melting-temperature;viennarna;cpp23;dotnet8;native-aot;high-performance</PackageTags>
+    <PackageReleaseNotes>Version 2.2.0 release: Enhanced stability, improved PostgreSQL Hangfire integration, resolved deprecation warnings, and comprehensive nullable reference type support for better code quality and maintainability.</PackageReleaseNotes>
+    <Copyright>Copyright © 2025</Copyright>
+    
+    <!-- Build Configuration -->
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+  </PropertyGroup>
+
+  <!-- Include native libraries and build files -->
+  <ItemGroup>
+    <Content Include="build/**/*.targets" PackagePath="build/net8.0/" />
+    <Content Include="build/**/*.props" PackagePath="build/net8.0/" />
+    <Content Include="build/**/*.targets" PackagePath="build/net9.0/" />
+    <Content Include="build/**/*.props" PackagePath="build/net9.0/" />
+    <Content Include="lib/**/*" PackagePath="lib/" />
+  </ItemGroup>
+
+  <!-- Platform-specific native libraries -->
+  <ItemGroup Condition="'$(PackagePlatform)' == 'linux'">
+    <Content Include="$(OutputPath)libRibosoftAlgo.so" PackagePath="runtimes/linux-x64/native/" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(PackagePlatform)' == 'windows'">
+    <Content Include="$(OutputPath)RibosoftAlgo.dll" PackagePath="runtimes/win-x64/native/" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(PackagePlatform)' == 'osx'">
+    <Content Include="$(OutputPath)libRibosoftAlgo.dylib" PackagePath="runtimes/osx-x64/native/" />
+  </ItemGroup>
+
+</Project>

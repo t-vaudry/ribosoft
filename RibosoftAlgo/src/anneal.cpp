@@ -68,8 +68,6 @@ R_STATUS anneal(const char* sequence, const char* structure, const float na_conc
     auto substruct_begin = std::sregex_iterator(local_structure.begin(), local_structure.end(), base_regex);
     auto substruct_end = std::sregex_iterator();
 
-    size_t num_substrings = distance(substruct_begin, substruct_end);
-
     std::vector<std::string> substrings;
 
     for (std::sregex_iterator i = substruct_begin; i != substruct_end; ++i) {
@@ -80,7 +78,7 @@ R_STATUS anneal(const char* sequence, const char* structure, const float na_conc
     double temp_sum = 0.0;
     double difference = 0.0;
 
-    for (int i = 0; i < substrings.size(); i++) {
+    for (size_t i = 0; i < substrings.size(); i++) {
         // A arm length of 1 will cause melting to crash
         // Ignore that arm
         if (substrings[i].length() != 1)
