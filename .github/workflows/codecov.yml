@@ -42,7 +42,15 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y g++-13 libomp-dev curl lcov gcov
+        sudo apt-get install -y g++-13 libomp-dev curl lcov
+
+    - name: Verify coverage tools
+      run: |
+        echo "Verifying coverage tools installation..."
+        g++-13 --version
+        gcov-13 --version
+        lcov --version
+        echo "✅ All coverage tools are available"
 
     - name: Install Python dependencies
       run: |
