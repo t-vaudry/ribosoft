@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['handleextremityrepeats_0',['HandleExtremityRepeats',['../d7/d95/classRibosoft_1_1CandidateGeneration_1_1CandidateGenerator.html#a98abe989ccee4c5ce15f233d2cc0bbc7',1,'Ribosoft::CandidateGeneration::CandidateGenerator']]],
-  ['hangfirestartupfilter_1',['HangfireStartupFilter',['../dd/db9/classRibosoft_1_1HangfireStartupFilter.html#aadedd5285b44e35370d2e1f117cfcc5b',1,'Ribosoft::HangfireStartupFilter']]],
-  ['hasneighbor_2',['HasNeighbor',['../d7/d95/classRibosoft_1_1CandidateGeneration_1_1CandidateGenerator.html#a032a9d28e0004ab81793d990ccde75f2',1,'Ribosoft::CandidateGeneration::CandidateGenerator']]]
+  ['handleextremityrepeats_0',['HandleExtremityRepeats',['../d7/d95/classRibosoft_1_1CandidateGeneration_1_1CandidateGenerator.html#a5ea89fbf31585d9c3d6efb05b5c35ed0',1,'Ribosoft::CandidateGeneration::CandidateGenerator']]],
+  ['hasneighbor_1',['HasNeighbor',['../d7/d95/classRibosoft_1_1CandidateGeneration_1_1CandidateGenerator.html#a82ecfb6e68a8bb29f0f69171c1990814',1,'Ribosoft::CandidateGeneration::CandidateGenerator']]]
 ];
