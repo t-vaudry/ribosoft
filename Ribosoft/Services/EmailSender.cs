@@ -13,8 +13,8 @@ namespace Ribosoft.Services
     // For more details see https://go.microsoft.com/fwlink/?LinkID=532713
     public class EmailSender : IEmailSender
     {
-        private readonly SendGridClient _sendGridClient;
-        private readonly string _senderEmail;
+        private readonly SendGridClient? _sendGridClient;
+        private readonly string _senderEmail = string.Empty;
 
         public EmailSender(IConfiguration configuration)
         {
@@ -24,7 +24,7 @@ namespace Ribosoft.Services
             }
 
             _sendGridClient = new SendGridClient(configuration["SendGridAPIKey"]);
-            _senderEmail = configuration["SenderEmail"];
+            _senderEmail = configuration["SenderEmail"] ?? string.Empty;
         }
 
         public Task SendEmailAsync(string email, string subject, string message)

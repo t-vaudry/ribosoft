@@ -14,6 +14,6 @@ namespace Ribosoft.Models.ManageViewModels
     	/*! \property RecoveryCodes
          * \brief Array of recovery codes
          */
-        public string[] RecoveryCodes { get; set; }
+        public string[] RecoveryCodes { get; set; } = Array.Empty<string>();
     }
 }

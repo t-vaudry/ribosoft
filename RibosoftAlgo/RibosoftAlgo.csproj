@@ -1,0 +1,87 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    
+    <!-- Package Information -->
+    <PackageId>RibosoftAlgo</PackageId>
+    <PackageVersion>2.2.0</PackageVersion>
+    <Authors>t-vaudry</Authors>
+    <Company>Ribosoft</Company>
+    <Product>RibosoftAlgo</Product>
+    <Description>Modern Ribosoft algorithm support library for ribozyme design and bioinformatics calculations. Built with C++23, includes ViennaRNA and Melting temperature algorithms. Optimized for .NET 8+ with native AOT support.</Description>
+    <PackageProjectUrl>https://github.com/t-vaudry/ribosoft</PackageProjectUrl>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/t-vaudry/ribosoft</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>bioinformatics;ribozyme;rna-folding;melting-temperature;viennarna;cpp23;dotnet8;native-aot;high-performance</PackageTags>
+    <PackageReleaseNotes>Version 2.2.0 release: Enhanced stability, improved PostgreSQL Hangfire integration, resolved deprecation warnings, and comprehensive nullable reference type support for better code quality and maintainability.</PackageReleaseNotes>
+    <Copyright>Copyright © 2025</Copyright>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    
+    <!-- Build Configuration -->
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>true</GenerateTargetFrameworkAttribute>
+  </PropertyGroup>
+
+  <!-- Determine current runtime identifier -->
+  <PropertyGroup>
+    <CurrentRuntimeIdentifier Condition="'$(RuntimeIdentifier)' != ''">$(RuntimeIdentifier)</CurrentRuntimeIdentifier>
+    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">win-x64</CurrentRuntimeIdentifier>
+    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true' AND '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'Arm64'">osx-arm64</CurrentRuntimeIdentifier>
+    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">osx-x64</CurrentRuntimeIdentifier>
+    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == ''">linux-x64</CurrentRuntimeIdentifier>
+  </PropertyGroup>
+
+
+
+  <!-- Native Build Target -->
+  <Target Name="BuildNativeLibrary" BeforeTargets="Build">
+    <Message Text="Building native library for $(CurrentRuntimeIdentifier)" Importance="high" />
+    
+    <!-- Execute native build script -->
+    <Exec Command="bash build-native.sh $(CurrentRuntimeIdentifier) $(Configuration)" 
+          WorkingDirectory="$(MSBuildProjectDirectory)"
+          Condition="'$(OS)' != 'Windows_NT'"
+          EnvironmentVariables="LC_ALL=C.utf8;LANG=C.utf8"
+          IgnoreStandardErrorWarningFormat="true" />
+    
+    <!-- Windows: Use PowerShell to call build script -->
+    <Exec Command="powershell -Command &quot;&amp; { $env:LC_ALL='C.utf8'; $env:LANG='C.utf8'; bash build-native.sh $(CurrentRuntimeIdentifier) $(Configuration) }&quot;"
+          WorkingDirectory="$(MSBuildProjectDirectory)"
+          Condition="'$(OS)' == 'Windows_NT'"
+          IgnoreStandardErrorWarningFormat="true" />
+  </Target>
+
+  <!-- Copy native library to output directory for consuming projects -->
+  <Target Name="CopyNativeLibrary" AfterTargets="Build">
+    <ItemGroup>
+      <NativeLibraryFiles Include="bin\$(Configuration)\net8.0\runtimes\$(CurrentRuntimeIdentifier)\native\libRibosoftAlgo.*" />
+    </ItemGroup>
+    
+    <Copy SourceFiles="@(NativeLibraryFiles)" 
+          DestinationFolder="$(OutputPath)" 
+          SkipUnchangedFiles="true" />
+    
+    <Message Text="Copied native library files to $(OutputPath)" Importance="high" />
+  </Target>
+
+  <!-- Include native library as content for consuming projects -->
+  <ItemGroup>
+    <None Include="bin\$(Configuration)\net8.0\runtimes\**\*" 
+          CopyToOutputDirectory="PreserveNewest" 
+          Link="runtimes\%(RecursiveDir)%(Filename)%(Extension)"
+          Condition="Exists('bin\$(Configuration)\net8.0\runtimes')" />
+  </ItemGroup>
+
+  <!-- Include build files and native libraries in package -->
+  <ItemGroup>
+    <Content Include="bin\$(Configuration)\net8.0\runtimes\**\*" PackagePath="runtimes\" />
+    <Content Include="src\*.h" PackagePath="build\native\include\" />
+    <Content Include="README.md" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

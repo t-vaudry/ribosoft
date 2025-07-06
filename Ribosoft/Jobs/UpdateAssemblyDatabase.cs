@@ -45,7 +45,7 @@ namespace Ribosoft.Jobs
         public async Task Rescan(IJobCancellationToken cancellationToken)
         {
             var blaster = new Blaster();
-            var availableDatabases = blaster.GetAvailableDatabases(_configuration["Blast:BLASTDB"]);
+            var availableDatabases = blaster.GetAvailableDatabases(_configuration["Blast:BLASTDB"] ?? "");
             var currentAssemblies = await _db.Assemblies.ToDictionaryAsync(x => x.TaxonomyId, x => x);
             
             cancellationToken.ThrowIfCancellationRequested();

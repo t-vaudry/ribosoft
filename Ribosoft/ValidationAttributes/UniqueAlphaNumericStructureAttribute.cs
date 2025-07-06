@@ -37,10 +37,12 @@ namespace Ribosoft.ValidationAttributes
          * \param value Value to validate
          * \return Boolean result of check
          */
-        public override bool IsValid(object value)
+        public override bool IsValid(object? value)
         {
+            if (value == null) return false;
+            
             _isValid = true;
-            string structure = value.ToString();
+            string structure = value.ToString() ?? string.Empty;
             var validInputs = new List<char>(new char[] {'.', '(', ')', '[', ']'});
             var occured = new List<char>();
 

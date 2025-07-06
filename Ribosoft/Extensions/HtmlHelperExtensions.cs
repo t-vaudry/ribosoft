@@ -10,17 +10,17 @@ namespace Ribosoft.Extensions
     [HtmlTargetElement(Attributes = "is-active-route")]
     public class ActiveRouteTagHelper : TagHelper
     {
-        private IDictionary<string, string> _routeValues;
+        private IDictionary<string, string> _routeValues = new Dictionary<string, string>();
 
         /// <summary>The name of the action method.</summary>
         /// <remarks>Must be <c>null</c> if <see cref="P:Microsoft.AspNetCore.Mvc.TagHelpers.AnchorTagHelper.Route" /> is non-<c>null</c>.</remarks>
         [HtmlAttributeName("asp-action")]
-        public string Action { get; set; }
+        public string Action { get; set; } = "";
 
         /// <summary>The name of the controller.</summary>
         /// <remarks>Must be <c>null</c> if <see cref="P:Microsoft.AspNetCore.Mvc.TagHelpers.AnchorTagHelper.Route" /> is non-<c>null</c>.</remarks>
         [HtmlAttributeName("asp-controller")]
-        public string Controller { get; set; }
+        public string Controller { get; set; } = "";
 
         /// <summary>Additional parameters for the route.</summary>
         [HtmlAttributeName("asp-all-route-data", DictionaryAttributePrefix = "asp-route-")]
@@ -41,7 +41,7 @@ namespace Ribosoft.Extensions
         /// Gets or sets the <see cref="T:Microsoft.AspNetCore.Mvc.Rendering.ViewContext" /> for the current request.
         /// </summary>
         [HtmlAttributeNotBound]
-        [ViewContext] public ViewContext ViewContext { get; set; }
+        [ViewContext] public ViewContext ViewContext { get; set; } = null!;
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -57,15 +57,15 @@ namespace Ribosoft.Extensions
 
         private bool ShouldBeActive()
         {
-            string currentController = ViewContext.RouteData.Values["Controller"].ToString();
-            string currentAction = ViewContext.RouteData.Values["Action"].ToString();
+            string? currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
+            string? currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
 
-            if (!string.IsNullOrWhiteSpace(Controller) && Controller.ToLower() != currentController.ToLower())
+            if (!string.IsNullOrWhiteSpace(Controller) && Controller.ToLower() != currentController?.ToLower())
             {
                 return false;
             }
 
-            if (!string.IsNullOrWhiteSpace(Action) && Action.ToLower() != currentAction.ToLower())
+            if (!string.IsNullOrWhiteSpace(Action) && Action.ToLower() != currentAction?.ToLower())
             {
                 return false;
             }
@@ -73,7 +73,7 @@ namespace Ribosoft.Extensions
             foreach (KeyValuePair<string, string> routeValue in RouteValues)
             {
                 if (!ViewContext.RouteData.Values.ContainsKey(routeValue.Key) ||
-                    ViewContext.RouteData.Values[routeValue.Key].ToString() != routeValue.Value)
+                    ViewContext.RouteData.Values[routeValue.Key]?.ToString() != routeValue.Value)
                 {
                     return false;
                 }
@@ -90,7 +90,7 @@ namespace Ribosoft.Extensions
                 classAttr = new TagHelperAttribute("class", "active");
                 output.Attributes.Add(classAttr);
             }
-            else if (classAttr.Value == null || classAttr.Value.ToString().IndexOf("active") < 0)
+            else if (classAttr.Value == null || classAttr.Value.ToString()?.IndexOf("active") < 0)
             {
                 output.Attributes.SetAttribute("class", classAttr.Value == null
                     ? "active"

@@ -115,7 +115,7 @@ namespace ribosoft {
         // Default fold
         structure = new char[length + 1];
         vrna_fold_compound_t* defaultFoldCompound = vrna_fold_compound(local_sequence, NULL, VRNA_OPTION_DEFAULT);
-        float defaultMFE = (float)vrna_mfe(defaultFoldCompound, structure);
+        (void)vrna_mfe(defaultFoldCompound, structure); // MFE value not used, just computing structure
 
         structure[length] = '\0';
 

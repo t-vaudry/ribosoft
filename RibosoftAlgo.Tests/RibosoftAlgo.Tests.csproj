@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <!-- Determine current runtime identifier -->
+  <PropertyGroup>
+    <CurrentRuntimeIdentifier Condition="'$(RuntimeIdentifier)' != ''">$(RuntimeIdentifier)</CurrentRuntimeIdentifier>
+    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">win-x64</CurrentRuntimeIdentifier>
+    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true' AND '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'Arm64'">osx-arm64</CurrentRuntimeIdentifier>
+    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">osx-x64</CurrentRuntimeIdentifier>
+    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == ''">linux-x64</CurrentRuntimeIdentifier>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="6.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../RibosoftAlgo/RibosoftAlgo.csproj" />
+  </ItemGroup>
+
+  <!-- Build C++ test executable before running tests -->
+  <Target Name="BuildCppTests" BeforeTargets="Build">
+    <Message Text="Building C++ tests for $(CurrentRuntimeIdentifier)" Importance="high" />
+    
+    <!-- Execute C++ test build script -->
+    <Exec Command="bash build-cpp-tests.sh $(CurrentRuntimeIdentifier) $(Configuration)" 
+          WorkingDirectory="$(MSBuildProjectDirectory)"
+          Condition="'$(OS)' != 'Windows_NT'" 
+          ContinueOnError="false"
+          EnvironmentVariables="LC_ALL=C.utf8;LANG=C.utf8"
+          IgnoreStandardErrorWarningFormat="true" />
+    
+    <!-- Windows: Use PowerShell to call build script -->
+    <Exec Command="powershell -Command &quot;&amp; { $env:LC_ALL='C.utf8'; $env:LANG='C.utf8'; bash build-cpp-tests.sh $(CurrentRuntimeIdentifier) $(Configuration) }&quot;"
+          WorkingDirectory="$(MSBuildProjectDirectory)"
+          Condition="'$(OS)' == 'Windows_NT'"
+          ContinueOnError="false"
+          IgnoreStandardErrorWarningFormat="true" />
+          
+    <!-- Verify the test executable was created -->
+    <PropertyGroup>
+      <CppTestExecutable Condition="'$(CurrentRuntimeIdentifier)' == 'win-x64'">$(OutputPath)runtimes/$(CurrentRuntimeIdentifier)/native/ribosoft-tests.exe</CppTestExecutable>
+      <CppTestExecutable Condition="'$(CurrentRuntimeIdentifier)' != 'win-x64'">$(OutputPath)runtimes/$(CurrentRuntimeIdentifier)/native/ribosoft-tests</CppTestExecutable>
+    </PropertyGroup>
+    
+    <Message Text="Checking for C++ test executable at: $(CppTestExecutable)" Importance="high" />
+    
+    <Error Text="C++ test executable was not created at $(CppTestExecutable). Check the build-cpp-tests.sh script output above for errors."
+           Condition="!Exists('$(CppTestExecutable)')" />
+           
+    <Message Text="✅ C++ test executable successfully built at $(CppTestExecutable)" Importance="high" 
+             Condition="Exists('$(CppTestExecutable)')" />
+  </Target>
+
+</Project>

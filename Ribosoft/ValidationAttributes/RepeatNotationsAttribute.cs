@@ -34,10 +34,12 @@ namespace Ribosoft.ValidationAttributes
          * \param value Value to validate
          * \return Boolean result of check
          */
-        public override bool IsValid(object value)
+        public override bool IsValid(object? value)
         {
+            if (value == null) return false;
+            
             int count = 0;
-            string sequence = value.ToString();
+            string sequence = value.ToString() ?? string.Empty;
             
             foreach (char c in sequence)
             {

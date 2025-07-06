@@ -14,7 +14,7 @@ namespace Ribosoft.Models.ManageViewModels
         /*! \property Username
          * \brief Username
          */
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
 
         /*! \property IsEmailConfirmed
          * \brief Is the user's email confirmed?
@@ -26,18 +26,18 @@ namespace Ribosoft.Models.ManageViewModels
          */
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = "";
 
         /*! \property PhoneNumber
          * \brief User phone number
          */
         [Phone]
         [Display(Name = "Phone number")]
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
 
         /*! \property StatusMessage
          * \brief Status message
          */
-        public string StatusMessage { get; set; }
+        public string StatusMessage { get; set; } = string.Empty;
     }
 }

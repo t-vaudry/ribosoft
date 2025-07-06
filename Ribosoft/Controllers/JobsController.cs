@@ -81,11 +81,14 @@ namespace Ribosoft.Controllers
             if (Int32.TryParse(model.JobId, out val) && _context.Jobs.Any(job => job.Id == val))
             {
                 // modify owner of job to current user
-                Job job = await _context.Jobs.SingleOrDefaultAsync(m => m.Id == Int32.Parse(model.JobId));
-                job.OwnerId = user.Id;
-                _context.Jobs.Update(job);
-                await _context.SaveChangesAsync();
-                model.SuccessMessages.Add(String.Format("Successfully added Job [{0}]!", model.JobId));
+                Job? job = await _context.Jobs.SingleOrDefaultAsync(m => m.Id == Int32.Parse(model.JobId));
+                if (job != null)
+                {
+                    job.OwnerId = user.Id;
+                    _context.Jobs.Update(job);
+                    await _context.SaveChangesAsync();
+                    model.SuccessMessages.Add(String.Format("Successfully added Job [{0}]!", model.JobId));
+                }
             }
             else
             {
@@ -148,11 +151,14 @@ namespace Ribosoft.Controllers
                     if (Int32.TryParse(id, out val) && _context.Jobs.Any(job => job.Id == val))
                     {
                         // modify owner of job to current user
-                        Job job = await _context.Jobs.SingleOrDefaultAsync(m => m.Id == Int32.Parse(id));
-                        job.OwnerId = user.Id;
-                        _context.Jobs.Update(job);
-                        await _context.SaveChangesAsync();
-                        model.SuccessMessages.Add(String.Format("Successfully added Job [{0}]!", id));
+                        Job? job = await _context.Jobs.SingleOrDefaultAsync(m => m.Id == Int32.Parse(id));
+                        if (job != null)
+                        {
+                            job.OwnerId = user.Id;
+                            _context.Jobs.Update(job);
+                            await _context.SaveChangesAsync();
+                            model.SuccessMessages.Add(String.Format("Successfully added Job [{0}]!", id));
+                        }
                     }
                     else
                     {
@@ -199,7 +205,11 @@ namespace Ribosoft.Controllers
             if (!string.IsNullOrEmpty(filterData))
             {
                 filterData = Encoding.UTF8.GetString(Convert.FromBase64String(filterData));
-                filterList = JsonConvert.DeserializeObject<List<Filter>>(filterData);
+                var deserializedFilters = JsonConvert.DeserializeObject<List<Filter>>(filterData);
+                if (deserializedFilters != null)
+                {
+                    filterList = deserializedFilters;
+                }
                 foreach (var filter in filterList)
                 {
                     FilterDesigns(ref designs, filter.param, filter.condition, float.Parse(filter.value));
@@ -371,9 +381,12 @@ namespace Ribosoft.Controllers
             {
                 filterData = Encoding.UTF8.GetString(Convert.FromBase64String(filterData));
                 var filterList = JsonConvert.DeserializeObject<List<Filter>>(filterData);
-                foreach (var filter in filterList)
+                if (filterList != null)
                 {
-                    FilterDesigns(ref designs, filter.param, filter.condition, float.Parse(filter.value));
+                    foreach (var filter in filterList)
+                    {
+                        FilterDesigns(ref designs, filter.param, filter.condition, float.Parse(filter.value));
+                    }
                 }
             }
             string handle = Guid.NewGuid().ToString();
@@ -415,13 +428,15 @@ namespace Ribosoft.Controllers
         {
             if (TempData[fileGuid] != null)
             {
-                byte[] data = Convert.FromBase64String(TempData[fileGuid] as string);
-                return File(data, fileType, fileName);
+                var tempDataString = TempData[fileGuid] as string;
+                if (tempDataString != null)
+                {
+                    byte[] data = Convert.FromBase64String(tempDataString);
+                    return File(data, fileType, fileName);
+                }
             }
-            else
-            {
-                return new EmptyResult();
-            }
+            
+            return new EmptyResult();
         }
 
         /*! \fn GetViewModel
@@ -682,7 +697,7 @@ namespace Ribosoft.Controllers
          * \param extension File extension (ie. .csv, .fasta, .zip)
          * \param type File type
          */
-        private void DownloadFiles(IQueryable<Design> designs, JObject obj, string format, out MemoryStream stream, out string extension, out string type)
+        private void DownloadFiles(IQueryable<Design> designs, JObject? obj, string format, out MemoryStream stream, out string extension, out string type)
         {
             var payload = "";
             stream = new MemoryStream();

@@ -14,7 +14,7 @@ namespace Ribosoft.CandidateGeneration
         /*! \property Nucleotide
          * \brief Nucleotide base of the current node
          */
-        public Nucleotide Nucleotide { get; set; }
+        public Nucleotide Nucleotide { get; set; } = new Nucleotide();
 
         /*! \property Parents
          * \brief List of parent nodes attached to this node

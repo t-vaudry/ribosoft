@@ -24,7 +24,7 @@ namespace Ribosoft.Models.RibozymeViewModel
          */
         [Required]
         [Display(Name = "Ribozyme Name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /*! \property RibozymeStructures
          * \brief List of ribozyme structures

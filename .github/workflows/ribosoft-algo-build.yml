@@ -1,0 +1,47 @@
+name: RibosoftAlgo Build and Test
+
+on:
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+        
+    - name: Setup Python 3.13
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+        
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y g++-13 libomp-dev
+        
+    - name: Install Python dependencies
+      run: |
+        pip install pipenv
+        pipenv install
+        
+    - name: Install C++ dependencies
+      run: |
+        pipenv run python ribosoft.py deps install --yes
+        
+    - name: Build RibosoftAlgo
+      run: |
+        cd RibosoftAlgo
+        dotnet build RibosoftAlgo.csproj --configuration Release
+        
+    - name: Test RibosoftAlgo
+      run: |
+        dotnet test RibosoftAlgo.Tests/RibosoftAlgo.Tests.csproj --configuration Release
