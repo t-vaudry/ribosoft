@@ -42,13 +42,16 @@
     <Exec Command="bash build-cpp-tests.sh $(CurrentRuntimeIdentifier) $(Configuration)" 
           WorkingDirectory="$(MSBuildProjectDirectory)"
           Condition="'$(OS)' != 'Windows_NT'" 
-          ContinueOnError="false" />
+          ContinueOnError="false"
+          EnvironmentVariables="LC_ALL=C.utf8;LANG=C.utf8"
+          IgnoreStandardErrorWarningFormat="true" />
     
     <!-- Windows: Use PowerShell to call build script -->
-    <Exec Command="powershell -Command &quot;&amp; { bash build-cpp-tests.sh $(CurrentRuntimeIdentifier) $(Configuration) }&quot;"
+    <Exec Command="powershell -Command &quot;&amp; { $env:LC_ALL='C.utf8'; $env:LANG='C.utf8'; bash build-cpp-tests.sh $(CurrentRuntimeIdentifier) $(Configuration) }&quot;"
           WorkingDirectory="$(MSBuildProjectDirectory)"
           Condition="'$(OS)' == 'Windows_NT'"
-          ContinueOnError="false" />
+          ContinueOnError="false"
+          IgnoreStandardErrorWarningFormat="true" />
           
     <!-- Verify the test executable was created -->
     <PropertyGroup>

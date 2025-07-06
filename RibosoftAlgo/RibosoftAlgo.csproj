@@ -45,12 +45,15 @@
     <!-- Execute native build script -->
     <Exec Command="bash build-native.sh $(CurrentRuntimeIdentifier) $(Configuration)" 
           WorkingDirectory="$(MSBuildProjectDirectory)"
-          Condition="'$(OS)' != 'Windows_NT'" />
+          Condition="'$(OS)' != 'Windows_NT'"
+          EnvironmentVariables="LC_ALL=C.utf8;LANG=C.utf8"
+          IgnoreStandardErrorWarningFormat="true" />
     
     <!-- Windows: Use PowerShell to call build script -->
-    <Exec Command="powershell -Command &quot;&amp; { bash build-native.sh $(CurrentRuntimeIdentifier) $(Configuration) }&quot;"
+    <Exec Command="powershell -Command &quot;&amp; { $env:LC_ALL='C.utf8'; $env:LANG='C.utf8'; bash build-native.sh $(CurrentRuntimeIdentifier) $(Configuration) }&quot;"
           WorkingDirectory="$(MSBuildProjectDirectory)"
-          Condition="'$(OS)' == 'Windows_NT'" />
+          Condition="'$(OS)' == 'Windows_NT'"
+          IgnoreStandardErrorWarningFormat="true" />
   </Target>
 
   <!-- Copy native library to output directory for consuming projects -->
