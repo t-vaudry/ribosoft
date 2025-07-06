@@ -32,6 +32,9 @@ Obj/
 
 /yarn.lock
 
+# Webpack cache
+.webpack-cache/
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
