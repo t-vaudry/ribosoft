@@ -5,7 +5,6 @@ on:
     branches:
       - master
       - develop
-      - test-csharp-codecov
   pull_request:
     branches:
       - master
@@ -30,142 +29,99 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.13'
-        cache: 'pipenv'
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: './Ribosoft/package.json'
 
     - name: Install system dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y g++-13 libomp-dev curl lcov
 
-    - name: Verify coverage tools
-      run: |
-        echo "Verifying coverage tools installation..."
-        g++-13 --version
-        gcov-13 --version
-        lcov --version
-        echo "✅ All coverage tools are available"
-
     - name: Install Python dependencies
       run: |
-        pip install pipenv
+        pip install pipenv pytest pytest-cov
         pipenv install --dev
 
-    - name: Generate Python coverage report
-      run: pipenv run pytest --cov-report=xml:coverage-python.xml --cov=. --cov-config=.coveragerc
-
-    - name: Install C++ dependencies (required for both main library and tests)
+    - name: Install C++ dependencies
       run: |
         pipenv run python ribosoft.py deps install --yes
 
-    - name: Fix npm dependency conflicts and build frontend assets
-      shell: bash
-      working-directory: ./Ribosoft
+    # Python Coverage
+    - name: Generate Python coverage report
       run: |
-        # Remove conflicting shrinkwrap file that has old dependencies
-        rm -f npm-shrinkwrap.json
-        
-        # Clean install with legacy peer deps to handle version conflicts
-        npm install --legacy-peer-deps
-        
-        # Build vendor and main bundles
-        npm run build:vendor:dev || echo "Vendor build completed with warnings"
-        npm run build:dev || echo "Main build completed with warnings"
+        pipenv run pytest test_ribosoft.py \
+          --cov=ribosoft \
+          --cov-report=xml:coverage-python.xml \
+          --cov-config=.coveragerc
 
-    - name: Build RibosoftAlgo with coverage flags
-      run: |
-        cd RibosoftAlgo
-        # Build with coverage instrumentation
-        CXXFLAGS="--coverage -fprofile-arcs -ftest-coverage" \
-        LDFLAGS="--coverage" \
-        dotnet build RibosoftAlgo.csproj --configuration Debug
-
-    - name: Build and run C++ tests with coverage
+    # C++ Coverage  
+    - name: Build and test C++ with coverage
       run: |
         cd RibosoftAlgo.Tests
-        # Build C++ tests with coverage flags
-        CXXFLAGS="--coverage -fprofile-arcs -ftest-coverage" \
-        LDFLAGS="--coverage" \
-        dotnet build RibosoftAlgo.Tests.csproj --configuration Debug
+        ENABLE_COVERAGE=true ./build-cpp-tests.sh linux-x64 Debug
+        ./bin/Debug/net8.0/runtimes/linux-x64/native/ribosoft-tests
         
-        # Run C++ tests to generate coverage data
-        dotnet test RibosoftAlgo.Tests.csproj --configuration Debug --no-build
-
-    - name: Generate C++ coverage report with gcov/lcov
-      working-directory: ./RibosoftAlgo
-      run: |
-        echo "Searching for coverage files..."
-        find . -name "*.gcda" -o -name "*.gcno" | head -10
-        
-        # Create coverage info file
-        lcov --capture --directory . --output-file coverage.info --gcov-tool gcov-13 || true
-        
-        # Filter out system headers and test files
-        if [ -f coverage.info ]; then
-          lcov --remove coverage.info '/usr/*' '*/test/*' '*/catch2/*' --output-file coverage_filtered.info || true
+        # Generate coverage report
+        lcov --capture \
+          --directory ./bin/Debug/net8.0/runtimes/linux-x64/native \
+          --output-file coverage-cpp.info \
+          --ignore-errors gcov,source
           
-          # Generate XML format for codecov
-          if [ -f coverage_filtered.info ]; then
-            # Convert lcov to cobertura XML format using a simple placeholder
-            cat > coverage-cpp.xml << 'EOF'
-        <?xml version="1.0" encoding="UTF-8"?>
-        <coverage>
-        <sources><source>.</source></sources>
-        <packages>
-        <package name="RibosoftAlgo" line-rate="0.8" branch-rate="0.8">
-        <classes>
-        <class name="RibosoftAlgo" filename="src/" line-rate="0.8" branch-rate="0.8">
-        <methods></methods>
-        <lines></lines>
-        </class>
-        </classes>
-        </package>
-        </packages>
-        </coverage>
-        EOF
-          else
-            echo "No filtered coverage data available" > coverage-cpp.xml
-          fi
-        else
-          echo "No coverage data generated - creating placeholder" > coverage-cpp.xml
-        fi
+        lcov --remove coverage-cpp.info \
+          '*/test/*' '*/usr/*' '*/catch2/*' \
+          --output-file coverage-cpp-filtered.info \
+          --ignore-errors unused
 
-    - name: Build Ribosoft solution
-      run: dotnet build Ribosoft.sln --configuration Debug
-
-    - name: Generate C# coverage report
+    # C# Coverage
+    - name: Generate C# coverage report  
       run: |
         dotnet test Ribosoft.sln \
           --configuration Debug \
-          --no-build \
           --collect:"XPlat Code Coverage" \
-          --results-directory:./coverage-results \
-          --settings:coverlet.runsettings
+          --results-directory ./TestResults \
+          --settings coverlet.runsettings
 
-    - name: Move and organize coverage files
+    - name: Find and prepare coverage files
       run: |
-        # Find and move .NET coverage files
-        find ./coverage-results -name "*.cobertura.xml" -exec cp {} ./coverage.cobertura.xml \; || echo "No .NET coverage files found"
+        echo "=== Finding coverage files ==="
         
-        # Ensure all expected coverage files exist
-        touch ./coverage-python.xml ./RibosoftAlgo/coverage-cpp.xml ./coverage.cobertura.xml
+        # Find C# coverage files
+        find ./TestResults -name "coverage.cobertura.xml" -type f | head -1 | xargs -I {} cp {} ./coverage-csharp.xml || echo "No C# coverage found"
         
-        # List all coverage files for debugging
-        echo "Coverage files found:"
-        ls -la *.xml ./RibosoftAlgo/*.xml || true
+        # Convert C++ lcov to cobertura format (if lcov file exists)
+        if [ -f "RibosoftAlgo.Tests/coverage-cpp-filtered.info" ]; then
+          # For now, create a placeholder - you might want to use lcov_cobertura converter
+          echo '<?xml version="1.0"?><coverage><sources><source>.</source></sources><packages></packages></coverage>' > coverage-cpp.xml
+        else
+          echo "No C++ coverage data found"
+          touch coverage-cpp.xml
+        fi
+        
+        # Ensure Python coverage exists
+        [ ! -f "coverage-python.xml" ] && touch coverage-python.xml
+        
+        echo "=== Coverage files prepared ==="
+        ls -la coverage-*.xml
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./RibosoftAlgo/coverage-cpp.xml,./coverage.cobertura.xml,./coverage-python.xml
+        files: ./coverage-csharp.xml,./coverage-cpp.xml,./coverage-python.xml
         fail_ci_if_error: false
         verbose: true
         flags: unittests
         name: codecov-umbrella
+        
+    - name: Upload individual coverage reports
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage-csharp.xml
+        flags: csharp
+        name: csharp-coverage
+        
+    - uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage-python.xml  
+        flags: python
+        name: python-coverage
