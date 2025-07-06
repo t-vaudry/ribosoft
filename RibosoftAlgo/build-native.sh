@@ -5,6 +5,12 @@
 
 set -e
 
+# Fix locale warnings - use available locale
+export LC_ALL=C.utf8
+export LANG=C.utf8
+export LANGUAGE=C
+unset LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION
+
 RUNTIME_ID=${1:-linux-x64}
 CONFIGURATION=${2:-Release}
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -47,8 +53,8 @@ case $RUNTIME_ID in
         OUTPUT_NAME="libRibosoftAlgo.so"
         
         if [ "$CONFIGURATION" = "Release" ]; then
-            CXXFLAGS="$CXXFLAGS -O3 -march=native -flto -DNDEBUG"
-            LDFLAGS="$LDFLAGS -flto"
+            CXXFLAGS="$CXXFLAGS -O3 -march=native -flto=auto -DNDEBUG"
+            LDFLAGS="$LDFLAGS -flto=auto"
         else
             CXXFLAGS="$CXXFLAGS -g -O0 -DDEBUG"
         fi
@@ -75,8 +81,8 @@ case $RUNTIME_ID in
         OUTPUT_NAME="libRibosoftAlgo.dylib"
         
         if [ "$CONFIGURATION" = "Release" ]; then
-            CXXFLAGS="$CXXFLAGS -O3 -march=native -flto -DNDEBUG"
-            LDFLAGS="$LDFLAGS -flto"
+            CXXFLAGS="$CXXFLAGS -O3 -march=native -flto=thin -DNDEBUG"
+            LDFLAGS="$LDFLAGS -flto=thin"
         else
             CXXFLAGS="$CXXFLAGS -g -O0 -DDEBUG"
         fi
@@ -89,8 +95,8 @@ case $RUNTIME_ID in
         OUTPUT_NAME="libRibosoftAlgo.dylib"
         
         if [ "$CONFIGURATION" = "Release" ]; then
-            CXXFLAGS="$CXXFLAGS -O3 -mcpu=apple-m1 -flto -DNDEBUG"
-            LDFLAGS="$LDFLAGS -flto"
+            CXXFLAGS="$CXXFLAGS -O3 -mcpu=apple-m1 -flto=thin -DNDEBUG"
+            LDFLAGS="$LDFLAGS -flto=thin"
         else
             CXXFLAGS="$CXXFLAGS -g -O0 -DDEBUG"
         fi
