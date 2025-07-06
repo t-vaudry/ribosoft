@@ -2,7 +2,7 @@ name: RibosoftAlgo Build and Test
 
 on:
   push:
-    branches: [ master, develop, tmp/update-2025 ]
+    branches: [ master, develop ]
   pull_request:
     branches: [ master, develop ]
 
