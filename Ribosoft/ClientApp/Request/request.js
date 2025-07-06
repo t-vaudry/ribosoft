@@ -1,9 +1,7 @@
-import { createApp, ref, onMounted } from 'vue';
+import { createApp, ref, onMounted, defineComponent } from 'vue';
 import axios from 'axios';
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
-
-const { defineComponent } = Vue;
 
 const RequestApp = defineComponent({
   components: {
