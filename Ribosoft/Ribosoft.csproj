@@ -76,7 +76,7 @@
     <Exec Command="npm run build:dev" />
   </Target>
 
-  <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+  <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish" Condition="'$(SkipNpmBuild)' != 'true'">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
     <Exec Command="npm ci" />
     <Exec Command="npm run build:vendor" />
