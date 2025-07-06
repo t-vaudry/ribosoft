@@ -64,6 +64,29 @@ jobs:
         npm run build:vendor:dev || echo "Vendor build completed with warnings"
         npm run build:dev || echo "Main build completed with warnings"
 
+    # Build the solution first to ensure native libraries are built
+    - name: Build solution with native libraries
+      run: |
+        dotnet build Ribosoft.sln --configuration Debug
+        
+        # Verify native library was built
+        echo "=== Checking for native library ==="
+        find . -name "libRibosoftAlgo.so" -type f
+        
+        # Copy native library to test directories if needed
+        if [ -f "RibosoftAlgo/bin/Debug/net8.0/runtimes/linux-x64/native/libRibosoftAlgo.so" ]; then
+          echo "Found native library, copying to test directories..."
+          mkdir -p "Ribosoft.Tests/bin/Debug/net8.0/"
+          cp "RibosoftAlgo/bin/Debug/net8.0/runtimes/linux-x64/native/libRibosoftAlgo.so" "Ribosoft.Tests/bin/Debug/net8.0/"
+          
+          # Also copy to the runtime-specific directory
+          mkdir -p "Ribosoft.Tests/bin/Debug/net8.0/runtimes/linux-x64/native/"
+          cp "RibosoftAlgo/bin/Debug/net8.0/runtimes/linux-x64/native/libRibosoftAlgo.so" "Ribosoft.Tests/bin/Debug/net8.0/runtimes/linux-x64/native/"
+        else
+          echo "Native library not found!"
+          exit 1
+        fi
+
     # Python Coverage
     - name: Generate Python coverage report
       run: |
@@ -93,8 +116,12 @@ jobs:
     # C# Coverage
     - name: Generate C# coverage report  
       run: |
+        # Set LD_LIBRARY_PATH to help find the native library
+        export LD_LIBRARY_PATH="$PWD/RibosoftAlgo/bin/Debug/net8.0/runtimes/linux-x64/native:$LD_LIBRARY_PATH"
+        
         dotnet test Ribosoft.sln \
           --configuration Debug \
+          --no-build \
           --collect:"XPlat Code Coverage" \
           --results-directory ./TestResults \
           --settings coverlet.runsettings
