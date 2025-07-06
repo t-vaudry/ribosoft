@@ -8,7 +8,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ribosoft.Tests", "Ribosoft.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RibosoftAlgo", "RibosoftAlgo\RibosoftAlgo.csproj", "{B8F3D4E2-1A5C-4B6D-8E7F-9C0A1B2C3D4E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RibosoftAlgo.Tests", "RibosoftAlgo\RibosoftAlgo.Tests.csproj", "{C9G4E5F3-2B6D-4C7E-9F8A-0D1B2C3D4E5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RibosoftAlgo.Tests", "RibosoftAlgo.Tests\RibosoftAlgo.Tests.csproj", "{C9G4E5F3-2B6D-4C7E-9F8A-0D1B2C3D4E5F}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{3889A8F2-7004-4585-BE15-FC9EA7F06F53}"
 EndProject

@@ -39,10 +39,13 @@
   <!-- Exclude test files from main project -->
   <ItemGroup>
     <Compile Remove="Tests\**" />
+    <Compile Remove="Tests.backup\**" />
     <Compile Remove="test\**" />
     <EmbeddedResource Remove="Tests\**" />
+    <EmbeddedResource Remove="Tests.backup\**" />
     <EmbeddedResource Remove="test\**" />
     <None Remove="Tests\**" />
+    <None Remove="Tests.backup\**" />
     <None Remove="test\**" />
   </ItemGroup>
 
