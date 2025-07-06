@@ -1,8 +1,10 @@
-#include <catch.hpp>
+#include <catch2/catch_amalgamated.hpp>
+
 
 #include "functions.h"
 
 using namespace ribosoft;
+using Catch::Approx;
 
 TEST_CASE("equal structures", "[structure]") {
     float dist;

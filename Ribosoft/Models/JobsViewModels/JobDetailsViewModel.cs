@@ -82,7 +82,7 @@ namespace Ribosoft.Models.JobsViewModels
         /*! \property Job
          * \brief Current job
          */
-        public Job Job { get; set; }
+        public Job Job { get; set; } = null!;
 
         /*! \property Designs
          * \brief Paged result of designs

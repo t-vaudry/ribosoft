@@ -14,6 +14,14 @@ URL : http://ribosoft2.fungalgenomics.ca
 ![RibosoftAlgo CMake Builds](https://github.com/t-vaudry/ribosoft/workflows/RibosoftAlgo%20CMake%20Builds/badge.svg)
 [![Robot Framework Testing](https://github.com/t-vaudry/ribosoft/actions/workflows/robot.yml/badge.svg)](https://github.com/t-vaudry/ribosoft/actions/workflows/robot.yml)
 
+## Platform Support
+
+- ✅ **Linux (Ubuntu)**: Primary development platform with C++23 modernization and automated builds
+- 🚧 **macOS**: Disabled for modernization - will be rebuilt for Apple Silicon (arm64) natively  
+- 🚧 **Windows**: Disabled for modernization - requires ViennaRNA dependency rebuild
+
+> **Development Focus**: Currently focusing on Ubuntu/Linux builds with C++23 modernization. macOS and Windows support will be reintroduced with proper native architecture support (Apple Silicon arm64 for macOS) and updated dependencies as part of the modernization effort.
+
 ## Building
 
 Prerequisites:

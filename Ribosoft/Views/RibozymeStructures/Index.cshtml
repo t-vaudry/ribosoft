@@ -70,7 +70,7 @@
                 @Html.DisplayFor(modelItem => item.UpdatedAt)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Ribozyme.Name)
+                @Html.DisplayFor(modelItem => item.Ribozyme!.Name)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

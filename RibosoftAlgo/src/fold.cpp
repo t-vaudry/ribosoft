@@ -90,7 +90,7 @@ DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*o
     vrna_subopt_solution_t *sol = vrna_subopt(vc, 500, 1, NULL);
 
     // Get pf energy
-    char *pf_struc = new char[length + 1];
+    char *pf_struc = (char*)malloc(length + 1);
     float energy = vrna_pf(vc, pf_struc);
 
     if (vc->exp_params == NULL) {
@@ -138,7 +138,7 @@ DLL_PUBLIC R_STATUS fold(const char* sequence, /*out*/ fold_output*& output, /*o
 DLL_PUBLIC void fold_output_free(fold_output* output, size_t size)
 {
     if (output) {
-        for (int i = 0; i < size; ++i) {
+        for (size_t i = 0; i < size; ++i) {
             delete[] output[i].structure;
             output[i].structure = nullptr;
         }

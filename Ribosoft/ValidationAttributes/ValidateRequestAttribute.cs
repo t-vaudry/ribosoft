@@ -35,9 +35,13 @@ namespace Ribosoft.ValidationAttributes
          * \param value Value to validate
          * \return Boolean result of check
          */
-        public override bool IsValid(object value)
+        public override bool IsValid(object? value)
         {
-            RequestViewModel model = value as RequestViewModel;
+            if (value == null) return false;
+            
+            RequestViewModel? model = value as RequestViewModel;
+            if (model == null) return false;
+            
             _isValid = true;
 
             if (model.OpenReadingFrameEnd < model.OpenReadingFrameStart) {

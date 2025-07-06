@@ -154,11 +154,11 @@ namespace Ribosoft
 
         public float Accessibility(Candidate candidate, string rnaStructure, int cutsiteIndex, float naConcentration, float probeConcentration, float targetTemperature)
         {
-            string substrateSequence = candidate.SubstrateSequence;
-            string substrateStructure = candidate.SubstrateStructure;
-            string foldedStructure = rnaStructure.Substring(cutsiteIndex, substrateSequence.Length);
+            string? substrateSequence = candidate.SubstrateSequence;
+            string? substrateStructure = candidate.SubstrateStructure;
+            string foldedStructure = rnaStructure?.Substring(cutsiteIndex, substrateSequence?.Length ?? 0) ?? "";
 
-            R_STATUS status = accessibility(substrateSequence, substrateStructure, foldedStructure, naConcentration, probeConcentration, targetTemperature, out float score);
+            R_STATUS status = accessibility(substrateSequence ?? "", substrateStructure ?? "", foldedStructure, naConcentration, probeConcentration, targetTemperature, out float score);
 
             if (status != R_STATUS.R_STATUS_OK)
             {
@@ -236,10 +236,10 @@ namespace Ribosoft
                 throw new RibosoftAlgoException(status);
             }
 
-            string rnaStructure = Marshal.PtrToStringAnsi(structure);
+            string? rnaStructure = Marshal.PtrToStringAnsi(structure);
             mfe_default_fold_free(structure);
 
-            return rnaStructure;
+            return rnaStructure ?? "";
         }
 
         /*! \fn Structure

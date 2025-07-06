@@ -213,8 +213,11 @@ namespace Ribosoft.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var ribozyme = await _context.Ribozymes.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Ribozymes.Remove(ribozyme);
-            await _context.SaveChangesAsync();
+            if (ribozyme != null)
+            {
+                _context.Ribozymes.Remove(ribozyme);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
         }
 

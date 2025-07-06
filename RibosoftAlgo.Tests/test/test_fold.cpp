@@ -1,9 +1,11 @@
-#include <catch.hpp>
+#include <catch2/catch_amalgamated.hpp>
+
 #include <cstring>
 
 #include "functions.h"
 
 using namespace ribosoft;
+using Catch::Approx;
 
 TEST_CASE("default", "[fold]") {
     fold_output* output = nullptr;
@@ -19,7 +21,7 @@ TEST_CASE("default", "[fold]") {
     REQUIRE(size == 51);
 
     float temp = 0.0f;
-    for (int i = 0; i < size; i++) {
+    for (size_t i = 0; i < size; i++) {
         temp += output[i].probability;
     }
 
@@ -41,7 +43,7 @@ TEST_CASE("valid", "[fold]") {
     REQUIRE(size == 173);
 
     float temp = 0.0f;
-    for (int i = 0; i < size; i++) {
+    for (size_t i = 0; i < size; i++) {
         temp += output[i].probability;
     }
 

@@ -24,7 +24,7 @@ namespace Ribosoft.Models
          */
         [Required]
         [Display(Name = "Accession ID")]
-        public string AccessionId { get; set; }
+        public string AccessionId { get; set; } = string.Empty;
 
         /*! \property SpeciesId
          * \brief Species Taxon
@@ -38,26 +38,26 @@ namespace Ribosoft.Models
          */
         [Required]
         [Display(Name = "Organism")]
-        public string OrganismName { get; set; }
+        public string OrganismName { get; set; } = string.Empty;
 
         /*! \property AssemblyName
          * \brief Assembly Name
          */
         [Required]
         [Display(Name = "Assembly Name")]
-        public string AssemblyName { get; set; }
+        public string AssemblyName { get; set; } = string.Empty;
 
         /*! \property Type
          * \brief Assembly type
          */
         [Required]
-        public string Type { get; set; }
+        public string Type { get; set; } = string.Empty;
 
         /*! \property Path
          * \brief Assembly database path
          */
         [Required]
-        public string Path { get; set; }
+        public string Path { get; set; } = string.Empty;
 
         /*! \property IsEnabled
          * \brief Check if assembly is enabled

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  
+  <PropertyGroup>
+    <RibosoftAlgoVersion>2.2.0</RibosoftAlgoVersion>
+    <RibosoftAlgoNativeLibraryPath>$(MSBuildThisFileDirectory)..\runtimes</RibosoftAlgoNativeLibraryPath>
+  </PropertyGroup>
+
+  <!-- Determine runtime identifier for native library loading -->
+  <PropertyGroup>
+    <RibosoftAlgoRuntimeId Condition="'$(RuntimeIdentifier)' != ''">$(RuntimeIdentifier)</RibosoftAlgoRuntimeId>
+    <RibosoftAlgoRuntimeId Condition="'$(RibosoftAlgoRuntimeId)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">win-x64</RibosoftAlgoRuntimeId>
+    <RibosoftAlgoRuntimeId Condition="'$(RibosoftAlgoRuntimeId)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true' AND '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'Arm64'">osx-arm64</RibosoftAlgoRuntimeId>
+    <RibosoftAlgoRuntimeId Condition="'$(RibosoftAlgoRuntimeId)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">osx-x64</RibosoftAlgoRuntimeId>
+    <RibosoftAlgoRuntimeId Condition="'$(RibosoftAlgoRuntimeId)' == ''">linux-x64</RibosoftAlgoRuntimeId>
+  </PropertyGroup>
+
+  <!-- Native library file names -->
+  <PropertyGroup>
+    <RibosoftAlgoLibraryName Condition="'$(RibosoftAlgoRuntimeId)' == 'win-x64'">RibosoftAlgo.dll</RibosoftAlgoLibraryName>
+    <RibosoftAlgoLibraryName Condition="'$(RibosoftAlgoRuntimeId)' == 'linux-x64'">libRibosoftAlgo.so</RibosoftAlgoLibraryName>
+    <RibosoftAlgoLibraryName Condition="$(RibosoftAlgoRuntimeId.StartsWith('osx'))">libRibosoftAlgo.dylib</RibosoftAlgoLibraryName>
+  </PropertyGroup>
+
+  <!-- Full path to native library -->
+  <PropertyGroup>
+    <RibosoftAlgoNativeLibraryFullPath>$(RibosoftAlgoNativeLibraryPath)\$(RibosoftAlgoRuntimeId)\native\$(RibosoftAlgoLibraryName)</RibosoftAlgoNativeLibraryFullPath>
+  </PropertyGroup>
+
+</Project>

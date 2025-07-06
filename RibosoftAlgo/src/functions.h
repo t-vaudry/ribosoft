@@ -6,11 +6,15 @@
 #include <cstdint>
 #include <cstring>
 #include <string>
+#include <string_view>  // C++17 feature for better string handling
+#include <span>         // C++20 feature for safer array handling
+#include <expected>     // C++23 feature for better error handling
+#include <optional>     // C++17 feature for optional values
 
 //! \namespace ribosoft
 namespace ribosoft {
 
-typedef uint8_t idx_t; //!< Index value
+using idx_t = std::uint8_t; //!< Index value (modern using syntax)
 
 #pragma pack(push, 8)
 /*! \struct fold_output

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+  <!-- Copy native libraries to output directory -->
+  <Target Name="CopyRibosoftAlgoNativeLibraries" BeforeTargets="Build">
+    <Message Text="Copying RibosoftAlgo native library: $(RibosoftAlgoNativeLibraryFullPath)" Importance="normal" />
+    
+    <!-- Ensure output directory exists -->
+    <MakeDir Directories="$(OutputPath)" />
+    
+    <!-- Copy the native library to output directory -->
+    <Copy SourceFiles="$(RibosoftAlgoNativeLibraryFullPath)" 
+          DestinationFolder="$(OutputPath)" 
+          SkipUnchangedFiles="true"
+          Condition="Exists('$(RibosoftAlgoNativeLibraryFullPath)')" />
+    
+    <!-- Also copy to runtime-specific directory for self-contained deployments -->
+    <MakeDir Directories="$(OutputPath)runtimes\$(RibosoftAlgoRuntimeId)\native" />
+    <Copy SourceFiles="$(RibosoftAlgoNativeLibraryFullPath)" 
+          DestinationFolder="$(OutputPath)runtimes\$(RibosoftAlgoRuntimeId)\native" 
+          SkipUnchangedFiles="true"
+          Condition="Exists('$(RibosoftAlgoNativeLibraryFullPath)')" />
+  </Target>
+
+  <!-- Include native libraries in publish -->
+  <ItemGroup>
+    <ResolvedFileToPublish Include="$(RibosoftAlgoNativeLibraryFullPath)" 
+                           Condition="Exists('$(RibosoftAlgoNativeLibraryFullPath)')">
+      <RelativePath>$(RibosoftAlgoLibraryName)</RelativePath>
+      <PublishUrl>$(RibosoftAlgoLibraryName)</PublishUrl>
+    </ResolvedFileToPublish>
+    
+    <ResolvedFileToPublish Include="$(RibosoftAlgoNativeLibraryFullPath)" 
+                           Condition="Exists('$(RibosoftAlgoNativeLibraryFullPath)')">
+      <RelativePath>runtimes\$(RibosoftAlgoRuntimeId)\native\$(RibosoftAlgoLibraryName)</RelativePath>
+      <PublishUrl>runtimes\$(RibosoftAlgoRuntimeId)\native\$(RibosoftAlgoLibraryName)</PublishUrl>
+    </ResolvedFileToPublish>
+  </ItemGroup>
+
+  <!-- Warn if native library is missing -->
+  <Target Name="WarnMissingRibosoftAlgoLibrary" BeforeTargets="Build">
+    <Warning Text="RibosoftAlgo native library not found at: $(RibosoftAlgoNativeLibraryFullPath). Please build RibosoftAlgo first." 
+             Condition="!Exists('$(RibosoftAlgoNativeLibraryFullPath)')" />
+  </Target>
+
+</Project>

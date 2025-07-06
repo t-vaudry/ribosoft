@@ -50,7 +50,7 @@ namespace Ribosoft.Models
         /*! \property sequence
          * \brief Ribozyme sequence
          */
-        private string sequence;
+        private string sequence = "";
 
         /*! \property Structure
          * \brief Ribozyme structure template
@@ -60,7 +60,7 @@ namespace Ribosoft.Models
         [RegularExpression(@"^[.()\[\]a-z0-9]+$", ErrorMessage = "Sequence structure must only contain ., (, ), [, ], letters, or numbers")]
         [ValidationAttributes.UniqueAlphaNumericStructure]
         [ValidationAttributes.ValidStructure]
-        public string Structure { get; set; }
+        public string Structure { get; set; } = "";
 
         /*! \property SubstrateTemplate
          * \brief Substrate sequence template
@@ -84,7 +84,7 @@ namespace Ribosoft.Models
         /*! \property substrateTemplate
          * \brief Substrate sequence template
          */
-        private string substrateTemplate;
+        private string substrateTemplate = "";
 
         /*! \property SubstrateStructure
          * \brief Substrate structure template
@@ -94,7 +94,7 @@ namespace Ribosoft.Models
         [Display(Name = "Substrate structure")]
         [RegularExpression(@"^[\.a-z0-9]+$", ErrorMessage = "Subtrate structure must only contain ., letters, or numbers")]
         [ValidationAttributes.UniqueAlphaNumericStructure]
-        public string SubstrateStructure { get; set; }
+        public string SubstrateStructure { get; set; } = "";
 
         /*! \property PostProcess
          * \brief Currently unused
@@ -106,6 +106,6 @@ namespace Ribosoft.Models
         /*! \property Ribozyme
          * \brief Ribozyme object
          */
-        public virtual Ribozyme Ribozyme { get; set; }
+        public virtual Ribozyme? Ribozyme { get; set; }
     }
 }

@@ -64,6 +64,9 @@ namespace Ribosoft.Models
         public Job()
         {
             this.Designs = new HashSet<Design>();
+            this.Owner = new ApplicationUser();
+            this.Ribozyme = new Ribozyme();
+            this.Assembly = new Assembly();
         }
 
         /*! \property Id
@@ -75,7 +78,7 @@ namespace Ribosoft.Models
         /*! \property OwnerId
          * \brief Owner ID
          */
-        public string OwnerId { get; set; }
+        public string OwnerId { get; set; } = string.Empty;
 
         /*! \property JobState
          * \brief Job state
@@ -93,20 +96,20 @@ namespace Ribosoft.Models
          * \brief RNA input
          */
         [Display(Name = "RNA input")]
-        public string RNAInput { get; set; }
+        public string RNAInput { get; set; } = string.Empty;
 
         /*! \property HangfireJobId
          * \brief Hangfire Job ID
          */
         [ScaffoldColumn(false)]
-        public string HangfireJobId { get; set; }
+        public string? HangfireJobId { get; set; }
 
         /*! \property StatusMessage
          * \brief Status message
          */
         [Display(Name = "Status message")]
         [DisplayFormat(NullDisplayText =  "None")]
-        public string StatusMessage { get; set; }
+        public string StatusMessage { get; set; } = string.Empty;
 
         /*! \property Temperature
          * \brief Temperature (℃)

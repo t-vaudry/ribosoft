@@ -1,8 +1,9 @@
-#include <catch.hpp>
+#include <catch2/catch_amalgamated.hpp>
 
 #include "functions.h"
 
 using namespace ribosoft;
+using Catch::Approx;
 
 TEST_CASE("Valid sequence", "[validate_sequence]") {
     REQUIRE(validate_sequence("AUGCGAUAGCUAUGUGCAUG") == R_SUCCESS::R_STATUS_OK);
@@ -17,7 +18,7 @@ TEST_CASE("Invalid sequence", "[validate_sequence]") {
 
 TEST_CASE("Valid structure", "[validate_structure]") {
     REQUIRE(validate_structure("...()...") == R_SUCCESS::R_STATUS_OK);
-    REQUIRE(validate_structure("(){}..") == R_SUCCESS::R_STATUS_OK);
+    REQUIRE(validate_structure("(){}.") == R_SUCCESS::R_STATUS_OK);
     REQUIRE(validate_structure("{()()()...()()()}") == R_SUCCESS::R_STATUS_OK);
 }
 

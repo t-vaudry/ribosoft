@@ -16,14 +16,14 @@ namespace Ribosoft.Models.AccountViewModels
          */
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         /*! \property Password
          * \brief User password
          */
         [Required]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
 
         /*! \property RememberMe
          * \brief Remember me flag

@@ -88,8 +88,8 @@ namespace Ribosoft.GenbankRequests
             try
             {
                 doc.LoadXml(xmlString);
-                XmlNode node = doc.DocumentElement.SelectSingleNode("/eSearchResult/IdList/Id");
-                id = node.InnerText;
+                XmlNode? node = doc.DocumentElement?.SelectSingleNode("/eSearchResult/IdList/Id");
+                id = node?.InnerText ?? throw new GenbankRequestsException("The accession ID does not exist.");
             }
             catch (Exception exc)
             {
@@ -173,14 +173,14 @@ namespace Ribosoft.GenbankRequests
                 doc.LoadXml(xmlString);
 
                 // start index
-                XmlNode node = doc.DocumentElement.SelectSingleNode(
+                XmlNode? node = doc.DocumentElement?.SelectSingleNode(
                     "/Seq-entry/Seq-entry_set/Bioseq-set/Bioseq-set_annot/Seq-annot/Seq-annot_data/Seq-annot_data_ftable/Seq-feat/Seq-feat_location/Seq-loc/Seq-loc_int/Seq-interval/Seq-interval_from");
-                startIndex = int.Parse(node.InnerText);
+                startIndex = int.Parse(node?.InnerText ?? throw new GenbankRequestsException("An error occurred while parsing the GenBank response."));
 
                 // end index
-                node = doc.DocumentElement.SelectSingleNode(
+                node = doc.DocumentElement?.SelectSingleNode(
                     "/Seq-entry/Seq-entry_set/Bioseq-set/Bioseq-set_annot/Seq-annot/Seq-annot_data/Seq-annot_data_ftable/Seq-feat/Seq-feat_location/Seq-loc/Seq-loc_int/Seq-interval/Seq-interval_to");
-                endIndex = int.Parse(node.InnerText);
+                endIndex = int.Parse(node?.InnerText ?? throw new GenbankRequestsException("An error occurred while parsing the GenBank response."));
             }
             catch (Exception exc)
             {

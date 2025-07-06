@@ -23,7 +23,7 @@ namespace Ribosoft.Models.JobsViewModels
         /*! \property JobId
          * \brief Job ID to transfer ownership
          */
-        public string JobId { get; set; }
+        public string JobId { get; set; } = "";
 
         /*! \property ErrorMessages
          * \brief List of Error message strings
@@ -39,7 +39,7 @@ namespace Ribosoft.Models.JobsViewModels
          * \brief Holder for uploaded jobs file
          */
         [BindProperty]
-        public IFormFile UploadFile { get; set; }
+        public IFormFile UploadFile { get; set; } = null!;
 
         /*! \fn JobIndexViewModel
          * \brief Default constructor

@@ -11,22 +11,22 @@ namespace Ribosoft.Blast
         /*! \property AbsolutePath
          * \brief Absolute path to the BLAST database
          */
-        public string AbsolutePath { get; set; }
+        public string AbsolutePath { get; set; } = string.Empty;
         
         /*! \property RelativePath
          * \brief Relative path to the BLAST database
          */
-        public string RelativePath { get; set; }
+        public string RelativePath { get; set; } = string.Empty;
         
         /*! \property AccessionId
          * \brief Accession id of database organism
          */
-        public string AccessionId { get; set; }
+        public string AccessionId { get; set; } = string.Empty;
         
         /*! \property AssemblyName
          * \brief Assembly name of the organism database
          */
-        public string AssemblyName { get; set; }
+        public string AssemblyName { get; set; } = string.Empty;
         
         /*! \property TaxonomyId
          * \brief Taxonomy id of the organism
@@ -41,12 +41,12 @@ namespace Ribosoft.Blast
         /*! \property OrganismName
          * \brief Name of the organism
          */
-        public string OrganismName { get; set; }
+        public string OrganismName { get; set; } = string.Empty;
         
         /*! \property Type
          * \brief Organism database type
          */
-        public string Type { get; set; }
+        public string Type { get; set; } = string.Empty;
         
         /*! \property Nucleotides
          * \brief Nucleotides in the database

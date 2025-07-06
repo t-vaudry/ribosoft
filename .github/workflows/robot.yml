@@ -10,41 +10,53 @@ jobs:
     test:
         runs-on: ubuntu-latest
         steps:
-        - uses: actions/checkout@v2
-        - name: Setup python
-          uses: actions/setup-python@v2
+        - uses: actions/checkout@v4
+        
+        - name: Setup Python 3.13
+          uses: actions/setup-python@v5
           with:
-            python-version: 3.9
-            architecture: x64
-        - name: Install pipenv
+            python-version: '3.13'
+            cache: 'pipenv'
+            
+        - name: Install pipenv and dependencies
           working-directory: ${{github.workspace}}/test
           run: |
+            python -m pip install --upgrade pip
             pip install pipenv
-            pipenv install
-        - name: Execute test
+            pipenv install --dev
+            
+        - name: Execute Robot Framework tests
           working-directory: ${{github.workspace}}/test
-          run: pipenv run robot --outputdir ${{github.workspace}}/test/reports tests/startup.robot
+          run: |
+            pipenv run robot \
+              --outputdir ${{github.workspace}}/test/reports \
+              --loglevel INFO \
+              --report report.html \
+              --log log.html \
+              tests/startup.robot
+              
         - name: Upload test results
-          uses: actions/upload-artifact@v1
+          uses: actions/upload-artifact@v4
           if: always()
           with:
-            name: reports
+            name: robot-test-reports
             path: ${{github.workspace}}/test/reports
+            retention-days: 30
 
     generate_report:
         if: always()
         needs: [test]
         runs-on: ubuntu-latest
         steps:
-        - name: Download reports
-          uses: actions/download-artifact@v1
+        - name: Download test reports
+          uses: actions/download-artifact@v4
           with:
-            name: reports
-        - name: Send report to commit
-          uses: joonvena/robotframework-reporter-action@v0.1
-          env:
-            GH_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            REPO_OWNER: ${{ secrets.OWNER }}
-            COMMIT_SHA: ${{ github.sha }}
-            REPOSITORY: ${{ secrets.REPOSITORY_NAME }}
-            REPORT_PATH: reports
+            name: robot-test-reports
+            path: reports
+            
+        - name: Generate and publish test report
+          uses: joonvena/robotframework-reporter-action@v2.4
+          if: always()
+          with:
+            gh_access_token: ${{ secrets.GITHUB_TOKEN }}
+            report_path: reports

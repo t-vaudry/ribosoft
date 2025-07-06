@@ -2,7 +2,6 @@ import Vue from 'vue';
 import { Dropdown } from 'bootstrap-vue/es/components';
 
 require('jquery/dist/jquery.js');
-require('jquery-ui/ui/core.js');
 require('jquery-ui/ui/widget.js');
 require('jquery-ui/ui/effects/effect-highlight.js');
 require('jquery-ui/ui/widgets/button.js');

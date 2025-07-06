@@ -13,21 +13,21 @@ namespace Ribosoft.Data.Factories
         {
             return Create(
                 Directory.GetCurrentDirectory(),
-                Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+                Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development");
         }
 
         protected abstract TContext CreateNewInstance(DbContextOptionsBuilder<TContext> options, string connectionString);
 
         public TContext Create()
         {
-            var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
 
             var basePath = AppContext.BaseDirectory;
 
             return Create(basePath, environmentName);
         }
 
-        private TContext Create(string basePath, string environmentName)
+        private TContext Create(string basePath, string? environmentName)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(basePath)
