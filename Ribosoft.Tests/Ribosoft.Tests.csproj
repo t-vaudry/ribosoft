@@ -42,4 +42,20 @@
     <RestoreSources>$(RestoreSources);https://api.nuget.org/v3/index.json</RestoreSources>
   </PropertyGroup>
 
+  <!-- Copy native library to output directory root for .NET runtime to find -->
+  <Target Name="CopyNativeLibraryForTesting" AfterTargets="Build">
+    <ItemGroup>
+      <NativeLibraryFiles Include="$(OutputPath)runtimes\**\native\libRibosoftAlgo.*" />
+    </ItemGroup>
+    
+    <Copy SourceFiles="@(NativeLibraryFiles)" 
+          DestinationFolder="$(OutputPath)" 
+          SkipUnchangedFiles="true" 
+          Condition="'@(NativeLibraryFiles)' != ''" />
+    
+    <Message Text="Copied native library files to $(OutputPath) for testing" 
+             Importance="high" 
+             Condition="'@(NativeLibraryFiles)' != ''" />
+  </Target>
+
 </Project>
