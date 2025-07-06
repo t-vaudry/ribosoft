@@ -45,7 +45,7 @@ jobs:
         echo "Build environment verification:"
         dotnet --version
         g++-13 --version
-        python3.13 --version
+        python3 --version
         echo "✅ All build tools verified"
         
     - name: Install Python dependencies
@@ -113,15 +113,23 @@ jobs:
           
         echo "✅ Build completed successfully"
         
-    - name: Run tests before packaging
+    - name: Build and run modernized C++ tests
       run: |
-        echo "🧪 Running tests to ensure package quality..."
+        echo "🧪 Building and running modernized C++ tests..."
+        
+        # Build the test project (this will trigger C++ test building via MSBuild targets)
+        dotnet build RibosoftAlgo.Tests/RibosoftAlgo.Tests.csproj \
+          --configuration Release \
+          --verbosity normal
+        
+        # Run the .NET test wrapper which executes the C++ tests
         dotnet test RibosoftAlgo.Tests/RibosoftAlgo.Tests.csproj \
           --configuration Release \
           --no-build \
           --verbosity normal \
           --logger "console;verbosity=normal"
-        echo "✅ All tests passed"
+        
+        echo "✅ All tests completed"
         
     - name: Create NuGet package
       run: |
@@ -192,6 +200,7 @@ jobs:
           - Automated release from tag ${{ github.ref_name }}
           - Built with .NET 8 and C++23 modernization
           - Includes native libraries for Linux x64
+          - Comprehensive C++ test suite with Catch2 framework
           
           ### NuGet Package
           ```
@@ -202,6 +211,8 @@ jobs:
           - Commit: ${{ github.sha }}
           - Build Date: ${{ github.run_id }}
           - Workflow: ${{ github.workflow }}
+          - C++ Standard: C++23
+          - Test Framework: Catch2 + xUnit wrapper
         draft: false
         prerelease: ${{ contains(steps.version.outputs.version, '-') }}
         
