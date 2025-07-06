@@ -116,16 +116,17 @@ jobs:
               ca-certificates \
               g++-13 \
               libomp-dev \
-              python3.13 \
-              python3.13-pip \
-              python3.13-venv \
+              python3 \
+              python3-pip \
+              python3-venv \
+              software-properties-common \
               && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
               && apt-get install -y nodejs \
               && apt-get clean \
               && rm -rf /var/lib/apt/lists/*
           
-          # Set up Python environment
-          RUN python3.13 -m pip install --upgrade pip pipenv
+          # Set up Python environment with pipenv
+          RUN python3 -m pip install --upgrade pip pipenv
           
           WORKDIR /src
           
@@ -135,7 +136,7 @@ jobs:
           
           # Install C++ dependencies
           COPY ribosoft.py ./
-          RUN python3.13 ribosoft.py deps install --yes
+          RUN python3 ribosoft.py deps install --yes
           
           # Copy and restore .NET dependencies
           COPY Ribosoft/*.csproj ./Ribosoft/
