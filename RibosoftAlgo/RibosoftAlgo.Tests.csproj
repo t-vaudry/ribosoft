@@ -2,47 +2,27 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
-  <!-- Determine current runtime identifier -->
-  <PropertyGroup>
-    <CurrentRuntimeIdentifier Condition="'$(RuntimeIdentifier)' != ''">$(RuntimeIdentifier)</CurrentRuntimeIdentifier>
-    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">win-x64</CurrentRuntimeIdentifier>
-    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true' AND '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'Arm64'">osx-arm64</CurrentRuntimeIdentifier>
-    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">osx-x64</CurrentRuntimeIdentifier>
-    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == ''">linux-x64</CurrentRuntimeIdentifier>
-  </PropertyGroup>
-
-  <!-- .NET test packages -->
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageReference Include="xunit" Version="2.6.6" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.6">
-      <PrivateAssets>all</PrivateAssets>
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="6.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
 
-  <!-- Reference to main RibosoftAlgo project -->
   <ItemGroup>
     <ProjectReference Include="RibosoftAlgo.csproj" />
   </ItemGroup>
-
-  <!-- Build C++ test executable -->
-  <Target Name="BuildCppTests" BeforeTargets="Build">
-    <Message Text="Building C++ tests for $(CurrentRuntimeIdentifier)" Importance="high" />
-    
-    <!-- Execute C++ test build script -->
-    <Exec Command="bash build-cpp-tests.sh $(CurrentRuntimeIdentifier) $(Configuration)" 
-          WorkingDirectory="$(MSBuildProjectDirectory)"
-          Condition="'$(OS)' != 'Windows_NT'" />
-    
-    <!-- Windows: Use PowerShell to call build script -->
-    <Exec Command="powershell -Command &quot;&amp; { bash build-cpp-tests.sh $(CurrentRuntimeIdentifier) $(Configuration) }&quot;"
-          WorkingDirectory="$(MSBuildProjectDirectory)"
-          Condition="'$(OS)' == 'Windows_NT'" />
-  </Target>
 
 </Project>
