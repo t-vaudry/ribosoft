@@ -36,18 +36,7 @@
     <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == ''">linux-x64</CurrentRuntimeIdentifier>
   </PropertyGroup>
 
-  <!-- Exclude test files from main project -->
-  <ItemGroup>
-    <Compile Remove="Tests\**" />
-    <Compile Remove="Tests.backup\**" />
-    <Compile Remove="test\**" />
-    <EmbeddedResource Remove="Tests\**" />
-    <EmbeddedResource Remove="Tests.backup\**" />
-    <EmbeddedResource Remove="test\**" />
-    <None Remove="Tests\**" />
-    <None Remove="Tests.backup\**" />
-    <None Remove="test\**" />
-  </ItemGroup>
+
 
   <!-- Native Build Target -->
   <Target Name="BuildNativeLibrary" BeforeTargets="Build">
@@ -87,8 +76,6 @@
 
   <!-- Include build files and native libraries in package -->
   <ItemGroup>
-    <Content Include="build\**\*" PackagePath="build\" />
-    <Content Include="lib\**\*" PackagePath="lib\" />
     <Content Include="bin\$(Configuration)\net8.0\runtimes\**\*" PackagePath="runtimes\" />
     <Content Include="src\*.h" PackagePath="build\native\include\" />
     <Content Include="README.md" PackagePath="\" />
