@@ -44,5 +44,4 @@ jobs:
         
     - name: Test RibosoftAlgo
       run: |
-        cd RibosoftAlgo
-        dotnet test RibosoftAlgo.Tests.csproj --configuration Release
+        dotnet test RibosoftAlgo.Tests/RibosoftAlgo.Tests.csproj --configuration Release

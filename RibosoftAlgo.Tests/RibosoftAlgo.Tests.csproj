@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="RibosoftAlgo.csproj" />
+    <ProjectReference Include="../RibosoftAlgo/RibosoftAlgo.csproj" />
   </ItemGroup>
 
   <!-- Build C++ test executable before running tests -->

@@ -26,17 +26,17 @@ TEST_SOURCES=(
 
 # Main library source files (needed for testing)
 LIB_SOURCES=(
-    "$SCRIPT_DIR/src/anneal.cpp"
-    "$SCRIPT_DIR/src/validation.cpp" 
-    "$SCRIPT_DIR/src/fold.cpp"
-    "$SCRIPT_DIR/src/structure.cpp"
-    "$SCRIPT_DIR/src/accessibility.cpp"
-    "$SCRIPT_DIR/src/mfe_default_fold.cpp"
+    "$SCRIPT_DIR/../RibosoftAlgo/src/anneal.cpp"
+    "$SCRIPT_DIR/../RibosoftAlgo/src/validation.cpp" 
+    "$SCRIPT_DIR/../RibosoftAlgo/src/fold.cpp"
+    "$SCRIPT_DIR/../RibosoftAlgo/src/structure.cpp"
+    "$SCRIPT_DIR/../RibosoftAlgo/src/accessibility.cpp"
+    "$SCRIPT_DIR/../RibosoftAlgo/src/mfe_default_fold.cpp"
 )
 
 # Include paths
 INCLUDES=(
-    "-I$SCRIPT_DIR/src"
+    "-I$SCRIPT_DIR/../RibosoftAlgo/src"
     "-I$SCRIPT_DIR/../.deps/viennarna/include"
     "-I$SCRIPT_DIR/../.deps/melting/include"
 )

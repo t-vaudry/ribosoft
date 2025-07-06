@@ -71,10 +71,10 @@ jobs:
     - name: Build and test RibosoftAlgo.Tests (includes C++ test build)
       run: |
         echo "Building RibosoftAlgo.Tests (this will also build C++ tests)..."
-        dotnet build RibosoftAlgo/RibosoftAlgo.Tests.csproj --configuration Release --no-restore --verbosity normal
+        dotnet build RibosoftAlgo.Tests/RibosoftAlgo.Tests.csproj --configuration Release --no-restore --verbosity normal
         
         echo "Running RibosoftAlgo.Tests..."
-        dotnet test RibosoftAlgo/RibosoftAlgo.Tests.csproj --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" || echo "⚠️ Some RibosoftAlgo.Tests failed - check output above"
+        dotnet test RibosoftAlgo.Tests/RibosoftAlgo.Tests.csproj --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" || echo "⚠️ Some RibosoftAlgo.Tests failed - check output above"
       
     - name: Build complete .NET solution (excluding test projects already built)
       run: |
