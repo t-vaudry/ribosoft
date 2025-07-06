@@ -23,47 +23,45 @@ RUN apt-get update && apt-get install -y software-properties-common \
 RUN python3.13 -m ensurepip --upgrade \
     && python3.13 -m pip install --upgrade pip
 
-# Install Mono for legacy compatibility if needed
+# Install Mono from Ubuntu repositories
 RUN apt-get update && apt-get install -y \
-    dirmngr \
-    gnupg \
-    apt-transport-https \
-    software-properties-common \
-    && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF \
-    && apt-add-repository 'deb https://download.mono-project.com/repo/ubuntu stable-jammy main' \
-    && apt-get update \
-    && apt-get install -y mono-complete \
+    mono-complete \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /src
 
 # Copy Python dependency files and install Python dependencies
-COPY ../Pipfile ../Pipfile.lock ./
+COPY Pipfile Pipfile.lock ./
 
-# Install pipenv with Python 3.13 and install dependencies with explicit Python version
-RUN python3.13 -m pip install pipenv \
-    && PIPENV_PYTHON=/usr/bin/python3.13 python3.13 -m pipenv install --system --deploy
+# Install Python dependencies directly with pip
+RUN python3.13 -m pip install \
+    'click>=8.1,<9.0' \
+    'click-log>=0.4,<0.5' \
+    'requests>=2.31,<3.0' \
+    'urllib3>=2.0,<3.0' \
+    'aiohttp>=3.9,<4.0' \
+    'aiofiles>=23.0,<24.0'
 
 # Install C++ dependencies using Python 3.13
-COPY ../ribosoft.py ./
+COPY ribosoft.py ./
 RUN python3.13 ribosoft.py deps install --yes
 
 # Copy package files first for better caching
-COPY package*.json ./
-RUN npm ci --only=production
+COPY Ribosoft/package*.json ./
+RUN npm ci
 
 # Copy project files
-COPY *.csproj ./
+COPY Ribosoft/*.csproj ./
 RUN dotnet restore
 
 # Copy source code
-COPY . .
+COPY Ribosoft/ .
 
 # Copy Docker-specific configuration files
-COPY .docker/appsettings.json ./appsettings.json
-COPY .docker/20210327162902_PreloadRibozymes.cs ./Data/Migrations/NpgsqlMigrations/20210327162902_PreloadRibozymes.cs
-COPY .docker/20210327162902_PreloadRibozymes.Designer.cs ./Data/Migrations/NpgsqlMigrations/20210327162902_PreloadRibozymes.Designer.cs
+COPY Ribosoft/.docker/appsettings.json ./appsettings.json
+COPY Ribosoft/.docker/20210327162902_PreloadRibozymes.cs ./Data/Migrations/NpgsqlMigrations/20210327162902_PreloadRibozymes.cs
+COPY Ribosoft/.docker/20210327162902_PreloadRibozymes.Designer.cs ./Data/Migrations/NpgsqlMigrations/20210327162902_PreloadRibozymes.Designer.cs
 
 # Build frontend assets
 RUN npm run build:vendor
@@ -72,28 +70,33 @@ RUN npm run build
 # Build .NET application
 RUN dotnet build "Ribosoft.csproj" -c Release --no-restore
 
-# Publish application
-RUN dotnet publish "Ribosoft.csproj" -c Release -o /app/publish --no-restore
+# Publish application (skip npm build since we already built frontend assets)
+RUN dotnet publish "Ribosoft.csproj" -c Release -o /app/publish --no-restore -p:SkipNpmBuild=true
 
 # Runtime stage
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy AS runtime
+FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS runtime
 
 # Install runtime dependencies
 RUN apt-get update && apt-get install -y \
     curl \
+    postgresql-client \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Create non-root user
+# Create non-root user first
 RUN groupadd -r ribosoft && useradd -r -g ribosoft ribosoft
 
 WORKDIR /app
+
+# Install Entity Framework tools in /app/.dotnet/tools (accessible to ribosoft user)
+RUN dotnet tool install dotnet-ef --tool-path /app/.dotnet/tools
+ENV PATH="${PATH}:/app/.dotnet/tools"
 
 # Copy published application
 COPY --from=build /app/publish .
 
 # Copy migration script
-COPY .docker/migrations.sh .
+COPY Ribosoft/.docker/migrations.sh .
 RUN chmod +x ./migrations.sh
 
 # Set ownership
