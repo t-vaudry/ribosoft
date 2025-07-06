@@ -11,41 +11,41 @@ window.fornac = require('fornac');
 
 // Modern FontAwesome implementation
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { 
-    faEdit, 
-    faPlusCircle, 
-    faInfoCircle, 
-    faTrash, 
-    faArrowLeft, 
-    faCheck, 
-    faCheckCircle, 
-    faExclamationTriangle, 
-    faCircleNotch, 
-    faQuestionCircle, 
-    faFilter, 
-    faSortUp, 
-    faSortDown, 
-    faSort, 
-    faDownload, 
-    faUpload 
+import {
+  faEdit,
+  faPlusCircle,
+  faInfoCircle,
+  faTrash,
+  faArrowLeft,
+  faCheck,
+  faCheckCircle,
+  faExclamationTriangle,
+  faCircleNotch,
+  faQuestionCircle,
+  faFilter,
+  faSortUp,
+  faSortDown,
+  faSort,
+  faDownload,
+  faUpload
 } from '@fortawesome/free-solid-svg-icons';
 
 // Add icons to the library
 library.add(
-    faEdit, 
-    faPlusCircle, 
-    faInfoCircle, 
-    faTrash, 
-    faArrowLeft, 
-    faCheck, 
-    faCheckCircle, 
-    faExclamationTriangle, 
-    faCircleNotch, 
-    faQuestionCircle, 
-    faFilter, 
-    faSortUp, 
-    faSortDown, 
-    faSort, 
-    faDownload, 
-    faUpload
+  faEdit,
+  faPlusCircle,
+  faInfoCircle,
+  faTrash,
+  faArrowLeft,
+  faCheck,
+  faCheckCircle,
+  faExclamationTriangle,
+  faCircleNotch,
+  faQuestionCircle,
+  faFilter,
+  faSortUp,
+  faSortDown,
+  faSort,
+  faDownload,
+  faUpload
 );
