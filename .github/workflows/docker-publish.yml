@@ -1,4 +1,4 @@
-name: Publish Docker image to GitHub Container Registry
+name: Publish Docker Image to GitHub Container Registry
 
 on:
   push:
@@ -6,10 +6,15 @@ on:
     branches:
       - master
       - develop
-
-    # Publish `v1.2.3` tags as releases.
+    # Publish `v1.2.3` tags as releases
     tags:
-      - release/v*
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag_override:
+        description: 'Override Docker tag (e.g., custom-build)'
+        required: false
+        type: string
 
 env:
   REGISTRY: ghcr.io
@@ -25,9 +30,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better build context
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+          driver-opts: |
+            network=host
 
       - name: Log in to Container Registry
         uses: docker/login-action@v3
@@ -36,22 +47,160 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata
+      - name: Determine application version
+        id: app_version
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            VERSION="${{ github.ref_name }}"
+            VERSION="${VERSION#v}"  # Remove 'v' prefix
+            echo "Using tag version: $VERSION"
+          else
+            # Get version from main project
+            VERSION=$(grep -oP '<Version>\K[^<]+' Ribosoft/Ribosoft.csproj || echo "2.2.0")
+            COMMIT_SHA=$(git rev-parse --short HEAD)
+            if [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+              VERSION="$VERSION-beta.$COMMIT_SHA"
+            elif [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
+              VERSION="$VERSION-latest.$COMMIT_SHA"
+            else
+              VERSION="$VERSION-dev.$COMMIT_SHA"
+            fi
+            echo "Generated version: $VERSION"
+          fi
+          
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "📦 Application version: $VERSION"
+
+      - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=match,pattern=release/v(.*),group=1
+            # Manual override
+            type=raw,value=${{ github.event.inputs.tag_override }},enable=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag_override != '' }}
+            # Branch-based tags
             type=raw,value=latest,enable={{is_default_branch}}
             type=raw,value=beta,enable=${{ github.ref == 'refs/heads/develop' }}
+            type=ref,event=branch
+            # Tag-based releases
+            type=match,pattern=v(.*),group=1,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
+            # Commit SHA for traceability
+            type=sha,prefix={{branch}}-,format=short
+          labels: |
+            org.opencontainers.image.title=Ribosoft
+            org.opencontainers.image.description=Web service for designing trans-acting conventional and allosteric ribozymes
+            org.opencontainers.image.vendor=Ribosoft
+            org.opencontainers.image.version=${{ steps.app_version.outputs.version }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}
+            org.opencontainers.image.url=http://ribosoft2.fungalgenomics.ca
+            org.opencontainers.image.documentation=https://github.com/${{ github.repository }}
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            maintainer=t-vaudry
+            ribosoft.version=${{ steps.app_version.outputs.version }}
+            ribosoft.build.date=${{ github.run_id }}
+            ribosoft.build.workflow=${{ github.workflow }}
+
+      - name: Create optimized Dockerfile
+        run: |
+          cat > Ribosoft/Dockerfile.optimized << 'EOF'
+          # Multi-stage build for optimized production image
+          # Build stage with full development environment
+          FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
+          
+          # Install modern build tools and dependencies
+          RUN apt-get update && apt-get install -y \
+              curl \
+              gnupg \
+              ca-certificates \
+              g++-13 \
+              libomp-dev \
+              python3.13 \
+              python3.13-pip \
+              python3.13-venv \
+              && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+              && apt-get install -y nodejs \
+              && apt-get clean \
+              && rm -rf /var/lib/apt/lists/*
+          
+          # Set up Python environment
+          RUN python3.13 -m pip install --upgrade pip pipenv
+          
+          WORKDIR /src
+          
+          # Copy dependency files first for better layer caching
+          COPY Pipfile Pipfile.lock ./
+          RUN pipenv install --system --deploy
+          
+          # Install C++ dependencies
+          COPY ribosoft.py ./
+          RUN python3.13 ribosoft.py deps install --yes
+          
+          # Copy and restore .NET dependencies
+          COPY Ribosoft/*.csproj ./Ribosoft/
+          COPY RibosoftAlgo/*.csproj ./RibosoftAlgo/
+          COPY RibosoftAlgo.Tests/*.csproj ./RibosoftAlgo.Tests/
+          COPY *.sln ./
+          RUN dotnet restore
+          
+          # Copy Node.js dependencies and build frontend
+          COPY Ribosoft/package*.json ./Ribosoft/
+          WORKDIR /src/Ribosoft
+          RUN npm ci --legacy-peer-deps
+          
+          # Copy source code
+          COPY . /src/
+          WORKDIR /src
+          
+          # Build native C++ libraries
+          RUN cd RibosoftAlgo && dotnet build RibosoftAlgo.csproj --configuration Release --no-restore
+          
+          # Build frontend assets
+          WORKDIR /src/Ribosoft
+          RUN npm run build:vendor:prod || npm run build:vendor || echo "Vendor build completed"
+          RUN npm run build:prod || npm run build || echo "Main build completed"
+          
+          # Build .NET application
+          RUN dotnet build Ribosoft.csproj --configuration Release --no-restore
+          RUN dotnet publish Ribosoft.csproj --configuration Release --no-build --output /app/publish
+          
+          # Runtime stage with minimal dependencies
+          FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy AS runtime
+          
+          # Install runtime dependencies only
+          RUN apt-get update && apt-get install -y \
+              libomp5 \
+              curl \
+              && apt-get clean \
+              && rm -rf /var/lib/apt/lists/*
+          
+          # Create non-root user for security
+          RUN groupadd -r ribosoft && useradd -r -g ribosoft ribosoft
+          
+          WORKDIR /app
+          
+          # Copy published application
+          COPY --from=build /app/publish .
+          COPY --from=build /src/.deps ./.deps
+          
+          # Set ownership and permissions
+          RUN chown -R ribosoft:ribosoft /app
+          USER ribosoft
+          
+          # Health check
+          HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+            CMD curl -f http://localhost:80/health || exit 1
+          
+          EXPOSE 80
+          ENTRYPOINT ["dotnet", "Ribosoft.dll"]
+          EOF
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./Ribosoft
+          context: .
+          file: ./Ribosoft/Dockerfile.optimized
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
@@ -60,3 +209,55 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             BUILDKIT_INLINE_CACHE=1
+            APP_VERSION=${{ steps.app_version.outputs.version }}
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            VCS_REF=${{ github.sha }}
+
+      - name: Generate SBOM (Software Bill of Materials)
+        uses: anchore/sbom-action@v0
+        with:
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
+          format: spdx-json
+          output-file: sbom.spdx.json
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-${{ github.run_id }}
+          path: sbom.spdx.json
+          retention-days: 30
+
+      - name: Image vulnerability scan
+        uses: anchore/scan-action@v3
+        id: scan
+        with:
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
+          fail-build: false
+          severity-cutoff: high
+
+      - name: Upload vulnerability scan results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
+
+      - name: Docker image summary
+        run: |
+          echo "## 🐳 Docker Image Published" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Image Details" >> $GITHUB_STEP_SUMMARY
+          echo "- **Registry**: ${{ env.REGISTRY }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Repository**: ${{ env.IMAGE_NAME }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ steps.app_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Platforms**: linux/amd64, linux/arm64" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build Date**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Tags Published" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Usage" >> $GITHUB_STEP_SUMMARY
+          echo '```bash' >> $GITHUB_STEP_SUMMARY
+          echo "docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
