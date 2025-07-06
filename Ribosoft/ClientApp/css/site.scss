@@ -1,0 +1,392 @@
+// Modern CSS Custom Properties (CSS Variables)
+:root {
+  // Color palette
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #17a2b8;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+  
+  // Spacing
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 3rem;
+  
+  // Typography
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-size-base: 1rem;
+  --font-size-sm: 0.875rem;
+  --font-size-lg: 1.25rem;
+  --line-height-base: 1.5;
+  
+  // Borders
+  --border-radius: 0.375rem;
+  --border-color: #dee2e6;
+  
+  // Shadows
+  --box-shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  --box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+  
+  // Transitions
+  --transition-base: all 0.2s ease-in-out;
+  --transition-fade: opacity 0.15s linear;
+}
+
+// Base styles
+html, body {
+  height: 100%;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+}
+
+// Vue.js specific
+[v-cloak] {
+  display: none !important;
+}
+
+// Layout components
+.body-content {
+  padding: 70px var(--spacing-md) var(--spacing-lg);
+  
+  @media (max-width: 768px) {
+    padding: 60px var(--spacing-sm) var(--spacing-md);
+  }
+}
+
+// Landing page
+.landing-page {
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+              url("../images/concordia-1.jpg") center/cover no-repeat;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  
+  h1 {
+    font-size: clamp(2rem, 8vw, 5rem);
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  h2 {
+    font-size: clamp(1.5rem, 5vw, 3rem);
+    font-weight: 400;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .btn {
+    font-size: var(--font-size-lg);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    margin: var(--spacing-xs);
+    border: 2px solid white;
+    transition: var(--transition-base);
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--box-shadow);
+    }
+  }
+}
+
+// Panel components
+.panel {
+  h3 {
+    position: relative;
+    cursor: pointer;
+    transition: var(--transition-base);
+    
+    &::after {
+      font-family: 'Font Awesome 6 Free';
+      content: "\f107"; // fa-angle-down
+      float: right;
+      color: var(--secondary-color);
+      transition: var(--transition-base);
+    }
+    
+    &.collapsed::after {
+      content: "\f105"; // fa-angle-right
+      transform: rotate(0deg);
+    }
+    
+    &:hover {
+      color: var(--primary-color);
+    }
+  }
+}
+
+// Utility classes
+.border-bottom {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.border-top {
+  border-top: 1px solid var(--border-color);
+}
+
+.box-shadow {
+  box-shadow: var(--box-shadow-sm);
+}
+
+// Card enhancements
+.card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow-sm);
+  transition: var(--transition-base);
+  
+  &:hover {
+    box-shadow: var(--box-shadow);
+    transform: translateY(-2px);
+  }
+  
+  .card-body .table tr:first-child td {
+    border-top: 0;
+  }
+}
+
+// Interactive elements
+.clickable-row {
+  cursor: pointer;
+  transition: var(--transition-base);
+  
+  &:hover {
+    background-color: rgba(var(--primary-color), 0.1);
+  }
+  
+  &.selected {
+    background-color: rgba(135, 206, 250, 0.3);
+  }
+}
+
+// Collapsible content
+.showMore {
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+  line-height: var(--line-height-base);
+  color: inherit;
+  width: 100%;
+  border: none;
+  background: none;
+  padding: var(--spacing-sm);
+  transition: var(--transition-base);
+  
+  &:hover {
+    color: var(--primary-color);
+  }
+  
+  + input {
+    display: none;
+    
+    + * {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-in-out;
+    }
+    
+    &:checked + * {
+      max-height: 30em;
+      transition: max-height 0.5s ease-in-out;
+    }
+  }
+}
+
+// Background decorations
+.helix {
+  position: fixed;
+  height: 382px;
+  width: 188px;
+  top: 50%;
+  left: 50%;
+  margin-left: -94px;
+  margin-top: -191px;
+  z-index: -1;
+  background: url("../images/helix.svg") 0 0 repeat-y;
+  transform: rotate(30deg) scale(6);
+  opacity: 0.3;
+  overflow: hidden;
+}
+
+// Form enhancements
+.dropdown-item {
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+  }
+  
+  &:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
+  }
+}
+
+input.dropdown-item {
+  outline: 0;
+  cursor: pointer;
+  
+  &:focus {
+    box-shadow: 0 0 0 2px var(--primary-color);
+  }
+}
+
+// Evolution filter styles
+.evo-lBold, .evo-lLight {
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family-base);
+}
+
+.disabled-link {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.no-height {
+  min-height: 0 !important;
+}
+
+// Sorting indicators
+.fa-sort {
+  color: rgba(var(--primary-color), 0.5);
+  margin-left: var(--spacing-sm);
+  transition: var(--transition-base);
+}
+
+.fa-sort-up, .fa-sort-down {
+  color: var(--primary-color);
+  margin-left: var(--spacing-sm);
+}
+
+div.sortable {
+  cursor: pointer !important;
+  
+  &:hover .fa-sort {
+    color: var(--primary-color);
+  }
+}
+
+// Ribozyme visualization
+.ribozyme-structure {
+  background-color: var(--light-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+}
+
+line.pseudoknot {
+  stroke: var(--info-color) !important;
+}
+
+// Status indicators
+.dot {
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 2px solid var(--secondary-color);
+  margin: 7px var(--spacing-sm) 0;
+  transition: var(--transition-base);
+  
+  &.dot-orange {
+    background-color: var(--warning-color);
+  }
+  
+  &.dot-white {
+    background-color: white;
+  }
+  
+  &.dot-red {
+    background-color: var(--danger-color);
+  }
+  
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.line {
+  border-left: 6px solid;
+  height: 25px;
+  margin: 0 var(--spacing-sm) 0 100px;
+  
+  &.line-red {
+    border-color: var(--danger-color);
+  }
+  
+  &.line-blue {
+    border-color: var(--info-color);
+  }
+  
+  &.line-grey {
+    border-color: var(--secondary-color);
+  }
+}
+
+// Plotting area
+#plotting-area {
+  height: 500px !important;
+  width: 750px !important;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  
+  > g > g:nth-child(2) {
+    transform: scale(1.5, 1.5) translate(90px, 125px);
+  }
+}
+
+path.node {
+  display: none !important;
+}
+
+rect.background {
+  width: 750px !important;
+  height: 500px !important;
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  :root {
+    --light-color: #2d3748;
+    --dark-color: #f7fafc;
+    --border-color: #4a5568;
+  }
+  
+  body {
+    background-color: var(--light-color);
+    color: var(--dark-color);
+  }
+}
+
+// Print styles
+@media print {
+  .landing-page {
+    background: none !important;
+    color: black !important;
+  }
+  
+  .helix {
+    display: none;
+  }
+  
+  .btn {
+    display: none;
+  }
+}
