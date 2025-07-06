@@ -22,14 +22,14 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y g++-13 libomp-dev
+        sudo apt-get install -y g++-13 libomp-dev curl
         
     - name: Install Python dependencies
       run: |
         pip install pipenv
         pipenv install
         
-    - name: Install C++ dependencies
+    - name: Install C++ dependencies (required for both main library and tests)
       run: |
         pipenv run python ribosoft.py deps install --yes
         
@@ -65,30 +65,31 @@ jobs:
       
     - name: Build RibosoftAlgo first (required for other projects)
       run: |
-        dotnet build RibosoftAlgo/RibosoftAlgo.csproj --configuration Release --no-restore
+        echo "Building RibosoftAlgo main library..."
+        dotnet build RibosoftAlgo/RibosoftAlgo.csproj --configuration Release --no-restore --verbosity normal
       
-    - name: Build RibosoftAlgo.Tests (allow failure for now)
+    - name: Build and test RibosoftAlgo.Tests (includes C++ test build)
       run: |
-        dotnet build RibosoftAlgo/RibosoftAlgo.Tests.csproj --configuration Release --no-restore || echo "⚠️ RibosoftAlgo.Tests build failed - needs investigation but won't block CI"
+        echo "Building RibosoftAlgo.Tests (this will also build C++ tests)..."
+        dotnet build RibosoftAlgo/RibosoftAlgo.Tests.csproj --configuration Release --no-restore --verbosity normal
+        
+        echo "Running RibosoftAlgo.Tests..."
+        dotnet test RibosoftAlgo/RibosoftAlgo.Tests.csproj --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" || echo "⚠️ Some RibosoftAlgo.Tests failed - check output above"
       
-    - name: Build complete .NET solution (excluding problematic test project)
+    - name: Build complete .NET solution (excluding test projects already built)
       run: |
         # Build main projects that we know work
-        dotnet build Ribosoft/Ribosoft.csproj --configuration Release --no-restore
-        dotnet build Ribosoft.Tests/Ribosoft.Tests.csproj --configuration Release --no-restore || echo "⚠️ Ribosoft.Tests build issues - continuing"
+        echo "Building main Ribosoft web application..."
+        dotnet build Ribosoft/Ribosoft.csproj --configuration Release --no-restore --verbosity minimal
+        
+        echo "Building Ribosoft.Tests..."
+        dotnet build Ribosoft.Tests/Ribosoft.Tests.csproj --configuration Release --no-restore --verbosity minimal || echo "⚠️ Ribosoft.Tests build issues - continuing"
       
-    - name: Test .NET solution (skip problematic tests for now)
+    - name: Test main .NET solution
       run: |
         # Test main Ribosoft project
-        dotnet test Ribosoft.Tests/Ribosoft.Tests.csproj --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" || echo "⚠️ Some tests failed - continuing"
-        
-        # Try to test RibosoftAlgo.Tests if it built successfully
-        if [ -f "RibosoftAlgo/bin/Release/net8.0/RibosoftAlgo.Tests.dll" ]; then
-          echo "✅ RibosoftAlgo.Tests.dll found, attempting to run tests"
-          dotnet test RibosoftAlgo/RibosoftAlgo.Tests.csproj --configuration Release --no-build --verbosity normal || echo "⚠️ RibosoftAlgo.Tests failed - needs investigation"
-        else
-          echo "⚠️ RibosoftAlgo.Tests.dll not found, skipping tests"
-        fi
+        echo "Running Ribosoft.Tests..."
+        dotnet test Ribosoft.Tests/Ribosoft.Tests.csproj --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" || echo "⚠️ Some Ribosoft.Tests failed - continuing"
       
     - name: Upload coverage reports
       uses: codecov/codecov-action@v4
