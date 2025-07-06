@@ -60,7 +60,8 @@ module.exports = {
     'QRious': 'readonly',
     'fornac': 'readonly',
     '$': 'readonly',
-    'jQuery': 'readonly'
+    'jQuery': 'readonly',
+    'Vue': 'readonly'
   },
   ignorePatterns: [
     'node_modules/',
