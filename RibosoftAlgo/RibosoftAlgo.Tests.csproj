@@ -8,6 +8,15 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
+  <!-- Determine current runtime identifier -->
+  <PropertyGroup>
+    <CurrentRuntimeIdentifier Condition="'$(RuntimeIdentifier)' != ''">$(RuntimeIdentifier)</CurrentRuntimeIdentifier>
+    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">win-x64</CurrentRuntimeIdentifier>
+    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true' AND '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'Arm64'">osx-arm64</CurrentRuntimeIdentifier>
+    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == '' AND '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">osx-x64</CurrentRuntimeIdentifier>
+    <CurrentRuntimeIdentifier Condition="'$(CurrentRuntimeIdentifier)' == ''">linux-x64</CurrentRuntimeIdentifier>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="xunit" Version="2.4.2" />
@@ -24,5 +33,36 @@
   <ItemGroup>
     <ProjectReference Include="RibosoftAlgo.csproj" />
   </ItemGroup>
+
+  <!-- Build C++ test executable before running tests -->
+  <Target Name="BuildCppTests" BeforeTargets="Build">
+    <Message Text="Building C++ tests for $(CurrentRuntimeIdentifier)" Importance="high" />
+    
+    <!-- Execute C++ test build script -->
+    <Exec Command="bash build-cpp-tests.sh $(CurrentRuntimeIdentifier) $(Configuration)" 
+          WorkingDirectory="$(MSBuildProjectDirectory)"
+          Condition="'$(OS)' != 'Windows_NT'" 
+          ContinueOnError="false" />
+    
+    <!-- Windows: Use PowerShell to call build script -->
+    <Exec Command="powershell -Command &quot;&amp; { bash build-cpp-tests.sh $(CurrentRuntimeIdentifier) $(Configuration) }&quot;"
+          WorkingDirectory="$(MSBuildProjectDirectory)"
+          Condition="'$(OS)' == 'Windows_NT'"
+          ContinueOnError="false" />
+          
+    <!-- Verify the test executable was created -->
+    <PropertyGroup>
+      <CppTestExecutable Condition="'$(CurrentRuntimeIdentifier)' == 'win-x64'">$(OutputPath)runtimes/$(CurrentRuntimeIdentifier)/native/ribosoft-tests.exe</CppTestExecutable>
+      <CppTestExecutable Condition="'$(CurrentRuntimeIdentifier)' != 'win-x64'">$(OutputPath)runtimes/$(CurrentRuntimeIdentifier)/native/ribosoft-tests</CppTestExecutable>
+    </PropertyGroup>
+    
+    <Message Text="Checking for C++ test executable at: $(CppTestExecutable)" Importance="high" />
+    
+    <Error Text="C++ test executable was not created at $(CppTestExecutable). Check the build-cpp-tests.sh script output above for errors."
+           Condition="!Exists('$(CppTestExecutable)')" />
+           
+    <Message Text="✅ C++ test executable successfully built at $(CppTestExecutable)" Importance="high" 
+             Condition="Exists('$(CppTestExecutable)')" />
+  </Target>
 
 </Project>
