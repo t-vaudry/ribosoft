@@ -1,5 +1,5 @@
 // Import modern CSS and styles
-import './css/site.css';
+import './css/site.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'jquery-ui-themes/themes/redmond/jquery-ui.css';
 import 'jquery-ui-themes/themes/redmond/theme.css';
