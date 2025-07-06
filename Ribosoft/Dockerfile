@@ -11,6 +11,18 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Python 3.13 from deadsnakes PPA
+RUN apt-get update && apt-get install -y software-properties-common \
+    && add-apt-repository ppa:deadsnakes/ppa \
+    && apt-get update \
+    && apt-get install -y python3.13 python3.13-dev python3.13-venv \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set up pip for Python 3.13
+RUN python3.13 -m ensurepip --upgrade \
+    && python3.13 -m pip install --upgrade pip
+
 # Install Mono for legacy compatibility if needed
 RUN apt-get update && apt-get install -y \
     dirmngr \
@@ -25,6 +37,17 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /src
+
+# Copy Python dependency files and install Python dependencies
+COPY ../Pipfile ../Pipfile.lock ./
+
+# Install pipenv with Python 3.13 and install dependencies with explicit Python version
+RUN python3.13 -m pip install pipenv \
+    && PIPENV_PYTHON=/usr/bin/python3.13 python3.13 -m pipenv install --system --deploy
+
+# Install C++ dependencies using Python 3.13
+COPY ../ribosoft.py ./
+RUN python3.13 ribosoft.py deps install --yes
 
 # Copy package files first for better caching
 COPY package*.json ./
