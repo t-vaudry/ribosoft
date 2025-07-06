@@ -127,13 +127,12 @@ jobs:
               && apt-get install -y \
                   python3.13 \
                   python3.13-dev \
-                  python3.13-distutils \
+                  python3.13-venv \
               && apt-get clean \
               && rm -rf /var/lib/apt/lists/*
           
           # Set up Python 3.13 with pip and pipenv
-          # Note: python3.13-pip and python3.13-venv don't exist in deadsnakes PPA
-          # We use ensurepip to install pip, and venv is built into Python 3.13
+          # Use ensurepip to install pip (distutils is included in Python 3.13 core)
           RUN python3.13 -m ensurepip --upgrade \
               && python3.13 -m pip install --upgrade pip pipenv
           
