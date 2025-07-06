@@ -1,0 +1,78 @@
+# Codecov Configuration for Ribosoft
+# This file tells Codecov which files to include/exclude from coverage reports
+
+coverage:
+  precision: 2
+  round: down
+  range: "70...100"
+  
+  status:
+    project:
+      default:
+        target: 80%
+        threshold: 1%
+        if_no_uploads: error
+    patch:
+      default:
+        target: 70%
+        threshold: 5%
+
+ignore:
+  # C# Exclusions (matching coverlet.runsettings)
+  - "Ribosoft/Controllers/**/*"     # MVC Controllers
+  - "Ribosoft/Data/**/*"            # Entity Framework contexts
+  - "Ribosoft/Extensions/**/*"      # Extension methods  
+  - "Ribosoft/Jobs/**/*"            # Hangfire background jobs
+  - "Ribosoft/Services/**/*"        # Business logic services (consider removing this)
+  - "Ribosoft/Resources/**/*"       # Resource files
+  - "Ribosoft/Views/**/*"           # Razor views
+  - "Ribosoft/Blast/**/*"           # BLAST integration
+  - "Ribosoft/wwwroot/**/*"         # Static web assets
+  - "Ribosoft/ClientApp/**/*"       # Vue.js frontend
+  - "Ribosoft/bin/**/*"             # Build outputs
+  - "Ribosoft/obj/**/*"             # Build intermediates
+  
+  # Test Projects
+  - "Ribosoft.Tests/**/*"           # C# test project
+  - "RibosoftAlgo.Tests/**/*"       # C++ test wrapper project
+  
+  # C++ Test Files
+  - "**/test/**/*"                  # C++ test source files
+  - "**/catch2/**/*"                # Catch2 framework files
+  
+  # Python Test Files  
+  - "test_ribosoft.py"              # Python test file
+  - "test/**/*"                     # Robot Framework tests
+  
+  # Build and Config Files
+  - "**/*.json"                     # Configuration files
+  - "**/*.xml"                      # Project files
+  - "**/*.yml"                      # YAML configuration
+  - "**/*.yaml"                     # YAML configuration
+  - "**/*.md"                       # Documentation
+  - "**/Dockerfile*"                # Docker files
+  - "**/.git*"                      # Git files
+  - "**/node_modules/**/*"          # Node.js dependencies
+  - "**/bin/**/*"                   # Binary outputs
+  - "**/obj/**/*"                   # Object files
+  - "**/.deps/**/*"                 # Dependency cache
+  - "**/venv*/**/*"                 # Python virtual environments
+  - "**/__pycache__/**/*"           # Python cache
+  - "**/.pytest_cache/**/*"        # Pytest cache
+
+comment:
+  layout: "reach,diff,flags,tree"
+  behavior: default
+  require_changes: false
+
+flags:
+  unittests:
+    paths:
+      - RibosoftAlgo/src/
+      - Ribosoft/Biology/
+      - Ribosoft/CandidateGeneration/
+      - Ribosoft/MultiObjectiveOptimization/
+      - Ribosoft/GenbankRequests/
+      - Ribosoft/RibosoftAlgo/
+      - Ribosoft/ValidationAttributes/
+      - ribosoft.py
