@@ -58,6 +58,13 @@ case $RUNTIME_ID in
         else
             CXXFLAGS="$CXXFLAGS -g -O0 -DDEBUG"
         fi
+        
+        # Add coverage flags if requested via environment variables
+        if [[ "$CXXFLAGS" == *"--coverage"* ]] || [[ "$ENABLE_COVERAGE" == "true" ]]; then
+            echo "Adding coverage instrumentation flags"
+            CXXFLAGS="$CXXFLAGS --coverage -fprofile-arcs -ftest-coverage"
+            LDFLAGS="$LDFLAGS --coverage"
+        fi
         ;;
         
     win-x64)
