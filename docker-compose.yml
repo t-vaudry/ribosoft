@@ -45,8 +45,8 @@ services:
     ports:
       - "5001:80"
     build:
-      context: ./Ribosoft
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Ribosoft/Dockerfile
       target: runtime
     environment:
       ASPNETCORE_ENVIRONMENT: Production

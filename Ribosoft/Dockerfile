@@ -1,7 +1,7 @@
 # Build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
 
-# Install Node.js 20 and build tools
+# Install Node.js for frontend build
 RUN apt-get update && apt-get install -y \
     curl \
     gnupg \
@@ -11,53 +11,39 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Mono for legacy compatibility if needed
-RUN apt-get update && apt-get install -y \
-    dirmngr \
-    gnupg \
-    apt-transport-https \
-    software-properties-common \
-    && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF \
-    && apt-add-repository 'deb https://download.mono-project.com/repo/ubuntu stable-jammy main' \
-    && apt-get update \
-    && apt-get install -y mono-complete \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
 WORKDIR /src
 
-# Copy package files first for better caching
-COPY package*.json ./
-RUN npm ci --only=production
+# Copy and restore .NET dependencies for Ribosoft project only
+COPY Ribosoft/Ribosoft.csproj ./
+RUN dotnet restore "Ribosoft.csproj"
 
-# Copy project files
-COPY *.csproj ./
-RUN dotnet restore
+# Copy Node.js dependencies and install
+COPY Ribosoft/package*.json ./
+RUN npm ci
 
-# Copy source code
-COPY . .
+# Copy Ribosoft source code
+COPY Ribosoft/ ./
 
 # Copy Docker-specific configuration files
-COPY .docker/appsettings.json ./appsettings.json
-COPY .docker/20210327162902_PreloadRibozymes.cs ./Data/Migrations/NpgsqlMigrations/20210327162902_PreloadRibozymes.cs
-COPY .docker/20210327162902_PreloadRibozymes.Designer.cs ./Data/Migrations/NpgsqlMigrations/20210327162902_PreloadRibozymes.Designer.cs
+COPY Ribosoft/.docker/appsettings.json ./appsettings.json
+COPY Ribosoft/.docker/20210327162902_PreloadRibozymes.cs ./Data/Migrations/NpgsqlMigrations/20210327162902_PreloadRibozymes.cs
+COPY Ribosoft/.docker/20210327162902_PreloadRibozymes.Designer.cs ./Data/Migrations/NpgsqlMigrations/20210327162902_PreloadRibozymes.Designer.cs
 
 # Build frontend assets
 RUN npm run build:vendor
 RUN npm run build
 
-# Build .NET application
-RUN dotnet build "Ribosoft.csproj" -c Release --no-restore
-
-# Publish application
-RUN dotnet publish "Ribosoft.csproj" -c Release -o /app/publish --no-restore
+# Build and publish .NET application in Release mode
+RUN dotnet build "Ribosoft.csproj" --configuration Release --no-restore
+RUN SkipNpmBuild=true dotnet publish "Ribosoft.csproj" --configuration Release --no-build --output /app/publish
 
 # Runtime stage
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy AS runtime
+FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS runtime
 
-# Install runtime dependencies
+# Install minimal runtime dependencies
 RUN apt-get update && apt-get install -y \
     curl \
+    postgresql-client \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -66,11 +52,15 @@ RUN groupadd -r ribosoft && useradd -r -g ribosoft ribosoft
 
 WORKDIR /app
 
+# Install Entity Framework tools for migrations
+RUN dotnet tool install dotnet-ef --tool-path /app/.dotnet/tools
+ENV PATH="${PATH}:/app/.dotnet/tools"
+
 # Copy published application
 COPY --from=build /app/publish .
 
 # Copy migration script
-COPY .docker/migrations.sh .
+COPY Ribosoft/.docker/migrations.sh .
 RUN chmod +x ./migrations.sh
 
 # Set ownership
@@ -80,7 +70,6 @@ RUN chown -R ribosoft:ribosoft /app
 USER ribosoft
 
 EXPOSE 80
-EXPOSE 5432
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \

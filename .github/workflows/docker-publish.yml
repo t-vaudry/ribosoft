@@ -2,15 +2,18 @@ name: Publish Docker Image to GitHub Container Registry
 
 on:
   push:
-    # Publish `develop` as Docker `beta` image and `master` as Docker `latest` image
+    # Only publish `master` as Docker `latest` image
     branches:
       - master
-      - develop
     # Publish `v1.2.3` tags as releases
     tags:
       - 'v*'
   workflow_dispatch:
     inputs:
+      version_override:
+        description: 'Override version (e.g., 2.3.0-beta.1)'
+        required: false
+        type: string
       tag_override:
         description: 'Override Docker tag (e.g., custom-build)'
         required: false
@@ -26,7 +29,8 @@ jobs:
     permissions:
       contents: read
       packages: write
-      
+      actions: read  # Required to upload SARIF file to CodeQL
+      security-events: write  # Require writing security events to upload SARIF file to security tab
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -36,7 +40,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
-          platforms: linux/amd64,linux/arm64
           driver-opts: |
             network=host
 
@@ -50,7 +53,10 @@ jobs:
       - name: Determine application version
         id: app_version
         run: |
-          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ github.event.inputs.version_override }}" ]]; then
+            VERSION="${{ github.event.inputs.version_override }}"
+            echo "Using manual override version: $VERSION"
+          elif [[ "${{ github.ref }}" == refs/tags/v* ]]; then
             VERSION="${{ github.ref_name }}"
             VERSION="${VERSION#v}"  # Remove 'v' prefix
             echo "Using tag version: $VERSION"
@@ -58,16 +64,14 @@ jobs:
             # Get version from main project
             VERSION=$(grep -oP '<Version>\K[^<]+' Ribosoft/Ribosoft.csproj || echo "2.2.0")
             COMMIT_SHA=$(git rev-parse --short HEAD)
-            if [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
-              VERSION="$VERSION-beta.$COMMIT_SHA"
-            elif [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
+            if [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
               VERSION="$VERSION-latest.$COMMIT_SHA"
             else
               VERSION="$VERSION-dev.$COMMIT_SHA"
             fi
             echo "Generated version: $VERSION"
           fi
-          
+
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "📦 Application version: $VERSION"
 
@@ -81,7 +85,6 @@ jobs:
             type=raw,value=${{ github.event.inputs.tag_override }},enable=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag_override != '' }}
             # Branch-based tags
             type=raw,value=latest,enable={{is_default_branch}}
-            type=raw,value=beta,enable=${{ github.ref == 'refs/heads/develop' }}
             type=ref,event=branch
             # Tag-based releases
             type=match,pattern=v(.*),group=1,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
@@ -94,7 +97,6 @@ jobs:
             org.opencontainers.image.version=${{ steps.app_version.outputs.version }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}
-            org.opencontainers.image.url=http://ribosoft2.fungalgenomics.ca
             org.opencontainers.image.documentation=https://github.com/${{ github.repository }}
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             maintainer=t-vaudry
@@ -102,112 +104,21 @@ jobs:
             ribosoft.build.date=${{ github.run_id }}
             ribosoft.build.workflow=${{ github.workflow }}
 
-      - name: Create optimized Dockerfile
-        run: |
-          cat > Ribosoft/Dockerfile.optimized << 'EOF'
-          # Multi-stage build for optimized production image
-          # Build stage with full development environment
-          FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
-          
-          # Install modern build tools and dependencies
-          RUN apt-get update && apt-get install -y \
-              curl \
-              gnupg \
-              ca-certificates \
-              g++-13 \
-              libomp-dev \
-              python3 \
-              python3-pip \
-              python3-venv \
-              software-properties-common \
-              && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-              && apt-get install -y nodejs \
-              && apt-get clean \
-              && rm -rf /var/lib/apt/lists/*
-          
-          # Set up Python environment with pipenv
-          RUN python3 -m pip install --upgrade pip pipenv
-          
-          WORKDIR /src
-          
-          # Copy dependency files first for better layer caching
-          COPY Pipfile Pipfile.lock ./
-          RUN pipenv install --system --deploy
-          
-          # Install C++ dependencies
-          COPY ribosoft.py ./
-          RUN python3 ribosoft.py deps install --yes
-          
-          # Copy and restore .NET dependencies
-          COPY Ribosoft/*.csproj ./Ribosoft/
-          COPY RibosoftAlgo/*.csproj ./RibosoftAlgo/
-          COPY RibosoftAlgo.Tests/*.csproj ./RibosoftAlgo.Tests/
-          COPY *.sln ./
-          RUN dotnet restore
-          
-          # Copy Node.js dependencies and build frontend
-          COPY Ribosoft/package*.json ./Ribosoft/
-          WORKDIR /src/Ribosoft
-          RUN npm ci --legacy-peer-deps
-          
-          # Copy source code
-          COPY . /src/
-          WORKDIR /src
-          
-          # Build native C++ libraries
-          RUN cd RibosoftAlgo && dotnet build RibosoftAlgo.csproj --configuration Release --no-restore
-          
-          # Build frontend assets
-          WORKDIR /src/Ribosoft
-          RUN npm run build:vendor:prod || npm run build:vendor || echo "Vendor build completed"
-          RUN npm run build:prod || npm run build || echo "Main build completed"
-          
-          # Build .NET application
-          RUN dotnet build Ribosoft.csproj --configuration Release --no-restore
-          RUN dotnet publish Ribosoft.csproj --configuration Release --no-build --output /app/publish
-          
-          # Runtime stage with minimal dependencies
-          FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy AS runtime
-          
-          # Install runtime dependencies only
-          RUN apt-get update && apt-get install -y \
-              libomp5 \
-              curl \
-              && apt-get clean \
-              && rm -rf /var/lib/apt/lists/*
-          
-          # Create non-root user for security
-          RUN groupadd -r ribosoft && useradd -r -g ribosoft ribosoft
-          
-          WORKDIR /app
-          
-          # Copy published application
-          COPY --from=build /app/publish .
-          COPY --from=build /src/.deps ./.deps
-          
-          # Set ownership and permissions
-          RUN chown -R ribosoft:ribosoft /app
-          USER ribosoft
-          
-          # Health check
-          HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-            CMD curl -f http://localhost:80/health || exit 1
-          
-          EXPOSE 80
-          ENTRYPOINT ["dotnet", "Ribosoft.dll"]
-          EOF
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Ribosoft/Dockerfile.optimized
-          platforms: linux/amd64,linux/arm64
+          file: ./Ribosoft/Dockerfile
+          platforms: linux/amd64  # Focus on primary platform for faster builds
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: |
+            type=gha
+            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
+          cache-to: |
+            type=gha,mode=max
+            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
           build-args: |
             BUILDKIT_INLINE_CACHE=1
             APP_VERSION=${{ steps.app_version.outputs.version }}
