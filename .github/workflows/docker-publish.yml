@@ -105,78 +105,11 @@ jobs:
             ribosoft.build.date=${{ github.run_id }}
             ribosoft.build.workflow=${{ github.workflow }}
 
-      - name: Create optimized Dockerfile
-        run: |
-          cat > Ribosoft/Dockerfile.optimized << 'EOF'
-          # Multi-stage build for Ribosoft web application
-          FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
-          
-          # Install Node.js for frontend build
-          RUN apt-get update && apt-get install -y \
-              curl \
-              gnupg \
-              ca-certificates \
-              && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-              && apt-get install -y nodejs \
-              && apt-get clean \
-              && rm -rf /var/lib/apt/lists/*
-          
-          WORKDIR /src
-          
-          # Copy and restore .NET dependencies for Ribosoft project only
-          COPY Ribosoft/Ribosoft.csproj ./Ribosoft/
-          RUN dotnet restore ./Ribosoft/Ribosoft.csproj --configuration Release
-          
-          # Copy Node.js dependencies and install
-          COPY Ribosoft/package*.json ./Ribosoft/
-          WORKDIR /src/Ribosoft
-          RUN npm ci --legacy-peer-deps
-          
-          # Copy Ribosoft source code
-          COPY Ribosoft/ ./
-          
-          # Build frontend assets
-          RUN npm run build:vendor || echo "Vendor build completed"
-          RUN npm run build || echo "Main build completed"
-          
-          # Build and publish .NET application in Release mode
-          RUN dotnet build Ribosoft.csproj --configuration Release --no-restore
-          RUN dotnet publish Ribosoft.csproj --configuration Release --no-build --output /app/publish
-          
-          # Runtime stage
-          FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy AS runtime
-          
-          # Install minimal runtime dependencies
-          RUN apt-get update && apt-get install -y \
-              curl \
-              && apt-get clean \
-              && rm -rf /var/lib/apt/lists/*
-          
-          # Create non-root user
-          RUN groupadd -r ribosoft && useradd -r -g ribosoft ribosoft
-          
-          WORKDIR /app
-          
-          # Copy published application
-          COPY --from=build /app/publish .
-          
-          # Set ownership and permissions
-          RUN chown -R ribosoft:ribosoft /app
-          USER ribosoft
-          
-          # Health check
-          HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-            CMD curl -f http://localhost:80/health || exit 1
-          
-          EXPOSE 80
-          ENTRYPOINT ["dotnet", "Ribosoft.dll"]
-          EOF
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Ribosoft/Dockerfile.optimized
+          file: ./Ribosoft/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
@@ -227,7 +160,6 @@ jobs:
           echo "- **Version**: ${{ steps.app_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Platforms**: linux/amd64, linux/arm64" >> $GITHUB_STEP_SUMMARY
           echo "- **Build Date**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_STEP_SUMMARY
-          echo "- **Python Version**: Not included (web application only)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Tags Published" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
