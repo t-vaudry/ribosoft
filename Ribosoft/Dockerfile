@@ -15,7 +15,7 @@ WORKDIR /src
 
 # Copy and restore .NET dependencies for Ribosoft project only
 COPY Ribosoft/Ribosoft.csproj ./
-RUN dotnet restore "Ribosoft.csproj" --configuration Release
+RUN dotnet restore "Ribosoft.csproj"
 
 # Copy Node.js dependencies and install
 COPY Ribosoft/package*.json ./
@@ -35,7 +35,7 @@ RUN npm run build
 
 # Build and publish .NET application in Release mode
 RUN dotnet build "Ribosoft.csproj" --configuration Release --no-restore
-RUN dotnet publish "Ribosoft.csproj" --configuration Release --no-build --output /app/publish
+RUN SkipNpmBuild=true dotnet publish "Ribosoft.csproj" --configuration Release --no-build --output /app/publish
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS runtime
