@@ -16,30 +16,22 @@ until pg_isready -h db -p 5432 -U postgres; do
 done
 echo "Database is ready!"
 
-# Try to run migrations using the application itself
-# Many ASP.NET Core apps support this pattern
+# Run database migrations using EF tools
 echo "Attempting to run database migrations..."
 
-# First, try to see if the application has a migrate command or similar
-if dotnet Ribosoft.dll --migrate 2>/dev/null; then
-    echo "Migrations completed successfully using --migrate flag"
-elif dotnet Ribosoft.dll migrate 2>/dev/null; then
-    echo "Migrations completed successfully using migrate command"
-else
-    echo "No built-in migration command found, trying EF tools..."
-    # Fallback to EF tools if available
-    if command -v dotnet-ef >/dev/null 2>&1; then
-        # Try with the DLL directly
-        if dotnet ef database update --assembly Ribosoft.dll --startup-assembly Ribosoft.dll --context NpgsqlDbContext --verbose 2>/dev/null; then
-            echo "Migrations completed using EF tools"
-        else
-            echo "EF tools migration failed, starting application anyway..."
-            echo "Note: Application will need to handle migrations on startup"
-        fi
+# Check if dotnet ef is available
+if dotnet ef --version >/dev/null 2>&1; then
+    echo "Running EF migrations for NpgsqlDbContext..."
+    # Run migrations for the Npgsql context
+    if dotnet ef database update --connection "$ConnectionStrings__NpgsqlConnection" --verbose; then
+        echo "Migrations completed successfully"
     else
-        echo "EF tools not available, starting application..."
-        echo "Note: Application will need to handle migrations on startup"
+        echo "EF migrations failed, but continuing to start application..."
+        echo "Note: Application may handle migrations on startup"
     fi
+else
+    echo "dotnet ef tool not found, skipping migrations..."
+    echo "Note: Application will need to handle migrations on startup"
 fi
 
 echo "Starting Ribosoft application..."
