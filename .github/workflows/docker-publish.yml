@@ -108,95 +108,57 @@ jobs:
       - name: Create optimized Dockerfile
         run: |
           cat > Ribosoft/Dockerfile.optimized << 'EOF'
-          # Multi-stage build for optimized production image
-          # Build stage with full development environment
+          # Multi-stage build for Ribosoft web application
           FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
           
-          # Install modern build tools and dependencies with Python 3.13
+          # Install Node.js for frontend build
           RUN apt-get update && apt-get install -y \
               curl \
               gnupg \
               ca-certificates \
-              g++-13 \
-              libomp-dev \
-              software-properties-common \
               && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
               && apt-get install -y nodejs \
-              && add-apt-repository ppa:deadsnakes/ppa \
-              && apt-get update \
-              && apt-get install -y \
-                  python3.13 \
-                  python3.13-dev \
-                  python3.13-venv \
               && apt-get clean \
               && rm -rf /var/lib/apt/lists/*
           
-          # Set up Python 3.13 with pip and pipenv
-          # Use ensurepip to install pip (distutils is included in Python 3.13 core)
-          RUN python3.13 -m ensurepip --upgrade \
-              && python3.13 -m pip install --upgrade pip pipenv
-          
           WORKDIR /src
           
-          # Install Python dependencies directly (avoiding pipenv issues in CI)
-          RUN python3.13 -m pip install \
-              'click>=8.1,<9.0' \
-              'click-log>=0.4,<0.5' \
-              'requests>=2.31,<3.0' \
-              'urllib3>=2.0,<3.0' \
-              'aiohttp>=3.9,<4.0' \
-              'aiofiles>=23.0,<24.0'
+          # Copy and restore .NET dependencies for Ribosoft project only
+          COPY Ribosoft/Ribosoft.csproj ./Ribosoft/
+          RUN dotnet restore ./Ribosoft/Ribosoft.csproj --configuration Release
           
-          # Install C++ dependencies using Python 3.13
-          COPY ribosoft.py ./
-          RUN python3.13 ribosoft.py deps install --yes
-          
-          # Copy and restore .NET dependencies
-          COPY Ribosoft/*.csproj ./Ribosoft/
-          COPY RibosoftAlgo/*.csproj ./RibosoftAlgo/
-          COPY RibosoftAlgo.Tests/*.csproj ./RibosoftAlgo.Tests/
-          COPY *.sln ./
-          RUN dotnet restore
-          
-          # Copy Node.js dependencies and build frontend
+          # Copy Node.js dependencies and install
           COPY Ribosoft/package*.json ./Ribosoft/
           WORKDIR /src/Ribosoft
           RUN npm ci --legacy-peer-deps
           
-          # Copy source code
-          COPY . /src/
-          WORKDIR /src
-          
-          # Build native C++ libraries
-          RUN cd RibosoftAlgo && dotnet build RibosoftAlgo.csproj --configuration Release --no-restore
+          # Copy Ribosoft source code
+          COPY Ribosoft/ ./
           
           # Build frontend assets
-          WORKDIR /src/Ribosoft
-          RUN npm run build:vendor:prod || npm run build:vendor || echo "Vendor build completed"
-          RUN npm run build:prod || npm run build || echo "Main build completed"
+          RUN npm run build:vendor || echo "Vendor build completed"
+          RUN npm run build || echo "Main build completed"
           
-          # Build .NET application
+          # Build and publish .NET application in Release mode
           RUN dotnet build Ribosoft.csproj --configuration Release --no-restore
           RUN dotnet publish Ribosoft.csproj --configuration Release --no-build --output /app/publish
           
-          # Runtime stage with minimal dependencies
+          # Runtime stage
           FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy AS runtime
           
-          # Install runtime dependencies only
+          # Install minimal runtime dependencies
           RUN apt-get update && apt-get install -y \
-              libomp5 \
               curl \
               && apt-get clean \
               && rm -rf /var/lib/apt/lists/*
           
-          # Create non-root user for security
+          # Create non-root user
           RUN groupadd -r ribosoft && useradd -r -g ribosoft ribosoft
           
           WORKDIR /app
           
           # Copy published application
           COPY --from=build /app/publish .
-          COPY --from=build /src/.deps ./.deps
           
           # Set ownership and permissions
           RUN chown -R ribosoft:ribosoft /app
@@ -265,7 +227,7 @@ jobs:
           echo "- **Version**: ${{ steps.app_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Platforms**: linux/amd64, linux/arm64" >> $GITHUB_STEP_SUMMARY
           echo "- **Build Date**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_STEP_SUMMARY
-          echo "- **Python Version**: 3.13 (via deadsnakes PPA)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Python Version**: Not included (web application only)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Tags Published" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
