@@ -29,7 +29,8 @@ jobs:
     permissions:
       contents: read
       packages: write
-      
+      actions: read  # Required to upload SARIF file to CodeQL
+      security-events: write  # Require writing security events to upload SARIF file to security tab
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -70,7 +71,7 @@ jobs:
             fi
             echo "Generated version: $VERSION"
           fi
-          
+
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "📦 Application version: $VERSION"
 
@@ -96,7 +97,6 @@ jobs:
             org.opencontainers.image.version=${{ steps.app_version.outputs.version }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}
-            org.opencontainers.image.url=http://ribosoft2.fungalgenomics.ca
             org.opencontainers.image.documentation=https://github.com/${{ github.repository }}
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             maintainer=t-vaudry
