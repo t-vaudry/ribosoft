@@ -1,21 +1,8 @@
 var searchData=
 [
-  ['param_0',['param',['../da/d16/structRibosoft_1_1Models_1_1JobsViewModels_1_1JobDetailsViewModel_1_1Filter.html#a2ad9dd5b33615666bc495eed78fb3b42',1,'Ribosoft::Models::JobsViewModels::JobDetailsViewModel::Filter']]],
-  ['parameters_1',['Parameters',['../d0/dcc/classRibosoft_1_1Blast_1_1Blaster.html#a84f5b5d72eb636a74a2abfe896f344c3',1,'Ribosoft::Blast::Blaster']]],
-  ['parents_2',['Parents',['../d4/d01/classRibosoft_1_1CandidateGeneration_1_1Node.html#a82d8a5d2685fb0028160d970ba9e2d35',1,'Ribosoft::CandidateGeneration::Node']]],
-  ['paretodominate_3',['ParetoDominate',['../d1/d96/classRibosoft_1_1MultiObjectiveOptimization_1_1MultiObjectiveOptimizer.html#a7d855ffc57cd0c3fa98aef6468070745',1,'Ribosoft::MultiObjectiveOptimization::MultiObjectiveOptimizer']]],
-  ['partialdominate_4',['PartialDominate',['../d1/d96/classRibosoft_1_1MultiObjectiveOptimization_1_1MultiObjectiveOptimizer.html#ad9ed71cc7edcafeb33232aa83db39dfc',1,'Ribosoft::MultiObjectiveOptimization::MultiObjectiveOptimizer']]],
-  ['password_5',['Password',['../db/d48/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginViewModel.html#a13fca0663085fdfbbc022c360f6c8cf9',1,'Ribosoft.Models.AccountViewModels.LoginViewModel.Password'],['../d7/d1f/classRibosoft_1_1Models_1_1AccountViewModels_1_1RegisterViewModel.html#ad9f7996f4c5d8a598baea240c68954a5',1,'Ribosoft.Models.AccountViewModels.RegisterViewModel.Password'],['../d2/d24/classRibosoft_1_1Models_1_1AccountViewModels_1_1ResetPasswordViewModel.html#ae7984432a26975fe833fd58f639a2ed4',1,'Ribosoft.Models.AccountViewModels.ResetPasswordViewModel.Password']]],
-  ['path_6',['Path',['../d4/d1a/classRibosoft_1_1Models_1_1Assembly.html#a265743303a5e3ddc4ae4c741b2104a00',1,'Ribosoft::Models::Assembly']]],
-  ['phase1_7',['Phase1',['../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#a8d81cf07169a035b9469da288445f9d1',1,'Ribosoft::Jobs::GenerateCandidates']]],
-  ['phase2_8',['Phase2',['../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#ae238e3c8774ea3a447173e2c06c89331',1,'Ribosoft::Jobs::GenerateCandidates']]],
-  ['phase3_9',['Phase3',['../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#a571689a25beeca36feb31eb2e8bf0e2a',1,'Ribosoft::Jobs::GenerateCandidates']]],
-  ['phonenumber_10',['PhoneNumber',['../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#a5cf8546c15b29a1df80a119deac2a78e',1,'Ribosoft::Models::ManageViewModels::IndexViewModel']]],
-  ['platform_20support_11',['Platform Support',['../index.html#autotoc_md1',1,'']]],
-  ['postprocess_12',['PostProcess',['../d4/de8/classRibosoft_1_1Models_1_1RibozymeStructure.html#ac6f3829bda9b6cde81ebec8a6745ccd7',1,'Ribosoft::Models::RibozymeStructure']]],
-  ['probability_13',['Probability',['../df/d7c/structRibosoft_1_1FoldOutput.html#a823ac22c9ea006f94d9d207ad2bc847f',1,'Ribosoft::FoldOutput']]],
-  ['probability_14',['probability',['../da/db7/structribosoft_1_1fold__output.html#af11b7d46e29cd27db3af26d39918f4ab',1,'ribosoft::fold_output']]],
-  ['probe_15',['Probe',['../d8/dc9/classRibosoft_1_1Models_1_1Job.html#ac47c8bf600a781670fc3f7c461a47ab6',1,'Ribosoft.Models.Job.Probe'],['../d4/d20/classRibosoft_1_1Models_1_1RequestViewModels_1_1RequestViewModel.html#ace2d024bd0e816fbd96bbea19fcdb2dc',1,'Ribosoft.Models.RequestViewModels.RequestViewModel.Probe']]],
-  ['program_16',['Program',['../dc/db5/classProgram.html',1,'']]],
-  ['providerkey_17',['ProviderKey',['../d5/d10/classRibosoft_1_1Models_1_1ManageViewModels_1_1RemoveLoginViewModel.html#a6a59d4d78f1e95ddec23c251a372d4a1',1,'Ribosoft::Models::ManageViewModels::RemoveLoginViewModel']]]
+  ['handleextremityrepeats_0',['HandleExtremityRepeats',['../d7/d95/classRibosoft_1_1CandidateGeneration_1_1CandidateGenerator.html#a5ea89fbf31585d9c3d6efb05b5c35ed0',1,'Ribosoft::CandidateGeneration::CandidateGenerator']]],
+  ['hangfirejobid_1',['HangfireJobId',['../d8/dc9/classRibosoft_1_1Models_1_1Job.html#a0a2cc32f0c3d9bb9db2ed7b8e9ad08fe',1,'Ribosoft::Models::Job']]],
+  ['hasauthenticator_2',['HasAuthenticator',['../d0/dbe/classRibosoft_1_1Models_1_1ManageViewModels_1_1TwoFactorAuthenticationViewModel.html#a7ab2c70fd10a9a152420494c038245ba',1,'Ribosoft::Models::ManageViewModels::TwoFactorAuthenticationViewModel']]],
+  ['hasneighbor_3',['HasNeighbor',['../d7/d95/classRibosoft_1_1CandidateGeneration_1_1CandidateGenerator.html#a82ecfb6e68a8bb29f0f69171c1990814',1,'Ribosoft::CandidateGeneration::CandidateGenerator']]],
+  ['homecontroller_4',['HomeController',['../d7/d6c/classRibosoft_1_1Controllers_1_1HomeController.html',1,'Ribosoft::Controllers']]]
 ];

@@ -1,27 +1,4 @@
 var searchData=
 [
-  ['dashboardauthorizationfilter_0',['DashboardAuthorizationFilter',['../de/d79/classRibosoft_1_1DashboardAuthorizationFilter.html',1,'Ribosoft']]],
-  ['database_1',['Database',['../d9/d4a/classRibosoft_1_1Blast_1_1Database.html',1,'Ribosoft.Blast.Database'],['../d7/d7c/classRibosoft_1_1Blast_1_1BlastParameters.html#adf2921b5f54c69fab2134d3f5cdcad12',1,'Ribosoft.Blast.BlastParameters.Database']]],
-  ['delete_2',['Delete',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ab353e29ba3a088c07721566d857510a5',1,'Ribosoft.Controllers.JobsController.Delete()'],['../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#acc0bfbfc5d3e240260f6ac07b991f1ef',1,'Ribosoft.Controllers.RibozymesController.Delete()'],['../df/d79/classRibosoft_1_1Controllers_1_1RibozymeStructuresController.html#a916e84688f671c7a581cfbbe8c3a39b7',1,'Ribosoft.Controllers.RibozymeStructuresController.Delete()']]],
-  ['deleteconfirmed_3',['DeleteConfirmed',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ad9ae3b615d0f6a45a0a8d3d6daa17042',1,'Ribosoft.Controllers.JobsController.DeleteConfirmed()'],['../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a25853e6d1a8cf087d50249b33c08c053',1,'Ribosoft.Controllers.RibozymesController.DeleteConfirmed()'],['../df/d79/classRibosoft_1_1Controllers_1_1RibozymeStructuresController.html#a4a2967a68c95798994650fcaf1af3f64',1,'Ribosoft.Controllers.RibozymeStructuresController.DeleteConfirmed()']]],
-  ['depth_4',['Depth',['../d4/d01/classRibosoft_1_1CandidateGeneration_1_1Node.html#a407ccb704e49740533eb64d3318457e5',1,'Ribosoft::CandidateGeneration::Node']]],
-  ['design_5',['Design',['../da/d25/classRibosoft_1_1Models_1_1Design.html',1,'Ribosoft::Models']]],
-  ['designs_6',['Designs',['../d8/dc9/classRibosoft_1_1Models_1_1Job.html#afc9489d61da8e7b04fcf366fdd7b23b3',1,'Ribosoft.Models.Job.Designs'],['../d6/d8a/classRibosoft_1_1Models_1_1JobsViewModels_1_1JobDetailsViewModel.html#a39b773086c6764461e428bcfc5ae9fc5',1,'Ribosoft.Models.JobsViewModels.JobDetailsViewModel.Designs']]],
-  ['designscontroller_7',['DesignsController',['../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html',1,'Ribosoft.Controllers.DesignsController'],['../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#ac5a7a3d9c1db91a1c7707521d9e58f59',1,'Ribosoft.Controllers.DesignsController.DesignsController()']]],
-  ['desiredtemperaturescore_8',['DesiredTemperatureScore',['../da/d25/classRibosoft_1_1Models_1_1Design.html#aa8f3c7c5f79dc0c0a24e8b029ba33c91',1,'Ribosoft::Models::Design']]],
-  ['desiredtemperaturetolerance_9',['DesiredTemperatureTolerance',['../d4/d20/classRibosoft_1_1Models_1_1RequestViewModels_1_1RequestViewModel.html#a27f15804cf649122164d17dacbe25568',1,'Ribosoft::Models::RequestViewModels::RequestViewModel']]],
-  ['desiredtemptolerance_10',['DesiredTempTolerance',['../d8/dc9/classRibosoft_1_1Models_1_1Job.html#a74c2e6514b419bf99ae6d69eb3670958',1,'Ribosoft::Models::Job']]],
-  ['details_11',['Details',['../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a0287817f3e7d6e47306f5670d469ca40',1,'Ribosoft.Controllers.DesignsController.Details()'],['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a946e07ce01029248181580a08f9cf5d3',1,'Ribosoft.Controllers.JobsController.Details()'],['../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a7f5bcff4a97b7ac14815aeb3f8a5a538',1,'Ribosoft.Controllers.RibozymesController.Details()'],['../df/d79/classRibosoft_1_1Controllers_1_1RibozymeStructuresController.html#a1370568d24fce202976db34a74235cf6',1,'Ribosoft.Controllers.RibozymeStructuresController.Details()']]],
-  ['disable2fa_12',['Disable2fa',['../dd/d56/classRibosoft_1_1Controllers_1_1ManageController.html#ab7ee662f648b05e73606894c1b04c575',1,'Ribosoft::Controllers::ManageController']]],
-  ['disable2fawarning_13',['Disable2faWarning',['../dd/d56/classRibosoft_1_1Controllers_1_1ManageController.html#a88a0f3ef9acaba293e8aa2ef9fad503a',1,'Ribosoft::Controllers::ManageController']]],
-  ['docker_20compose_14',['Docker Compose',['../index.html#autotoc_md8',1,'']]],
-  ['docker_20support_15',['Docker Support',['../index.html#autotoc_md7',1,'']]],
-  ['dostage_16',['DoStage',['../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#a99a4e97b530e99da841674799521e9a8',1,'Ribosoft::Jobs::GenerateCandidates']]],
-  ['download_17',['Download',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ac5ffe1157b3aa5b342fe186863ffd940',1,'Ribosoft::Controllers::JobsController']]],
-  ['downloaddesign_18',['DownloadDesign',['../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a14cf917ff5b1530e81df825f6c7021d4',1,'Ribosoft::Controllers::DesignsController']]],
-  ['downloaddesigns_19',['DownloadDesigns',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a11e318c8abfd72230f4b1a72c79c74f6',1,'Ribosoft::Controllers::JobsController']]],
-  ['downloadfiles_20',['DownloadFiles',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ad95fc105db5a40d1927ce56d5210c9a8',1,'Ribosoft::Controllers::JobsController']]],
-  ['downloadjobs_21',['DownloadJobs',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a82c3a7af53b2dec69f3cd4377651b3fc',1,'Ribosoft::Controllers::JobsController']]],
-  ['downloadselecteddesigns_22',['DownloadSelectedDesigns',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ad0b803d74d2a6870649402ec2beca7a4',1,'Ribosoft::Controllers::JobsController']]],
-  ['dust_23',['Dust',['../d7/d7c/classRibosoft_1_1Blast_1_1BlastParameters.html#a28a0533e4f94027534c9bd2fe4934804',1,'Ribosoft::Blast::BlastParameters']]]
+  ['5_20configure_20database_0',['5. Configure Database',['../index.html#autotoc_md12',1,'']]]
 ];

@@ -1,29 +1,6 @@
 var searchData=
 [
-  ['about_0',['About',['../d7/d6c/classRibosoft_1_1Controllers_1_1HomeController.html#acb1b9023ed3c75175f362ba41d6876c0',1,'Ribosoft::Controllers::HomeController']]],
-  ['absolutepath_1',['AbsolutePath',['../d9/d4a/classRibosoft_1_1Blast_1_1Database.html#a4cadcf15144631dbd266d24b5afefada',1,'Ribosoft::Blast::Database']]],
-  ['accessdenied_2',['AccessDenied',['../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html#aa8287f3d27bf63aba9f79466e2ac396e',1,'Ribosoft::Controllers::AccountController']]],
-  ['accessibility_3',['Accessibility',['../d8/d91/classRibosoft_1_1RibosoftAlgo.html#a5e69e04f06c533ace0c31099242c82cd',1,'Ribosoft::RibosoftAlgo']]],
-  ['accessibility_4',['accessibility',['../d8/d91/classRibosoft_1_1RibosoftAlgo.html#a1a5ea6f8023f4d5c5166faf20d44918b',1,'Ribosoft.RibosoftAlgo.accessibility()'],['../df/df2/accessibility_8cpp.html#a78ceedb01d65fdf8a81beb56848da9d8',1,'ribosoft::accessibility()']]],
-  ['accessibility_2ecpp_5',['accessibility.cpp',['../df/df2/accessibility_8cpp.html',1,'']]],
-  ['accessibilityscore_6',['AccessibilityScore',['../da/d25/classRibosoft_1_1Models_1_1Design.html#a928ca9fffbecdceaeb87ffa7ca98c170',1,'Ribosoft::Models::Design']]],
-  ['accessibilitytolerance_7',['AccessibilityTolerance',['../d8/dc9/classRibosoft_1_1Models_1_1Job.html#ab79ea710685bd76671cd5e6e3f16499c',1,'Ribosoft.Models.Job.AccessibilityTolerance'],['../d4/d20/classRibosoft_1_1Models_1_1RequestViewModels_1_1RequestViewModel.html#a05fac0c317e9df99c07b430908c8a0aa',1,'Ribosoft.Models.RequestViewModels.RequestViewModel.AccessibilityTolerance']]],
-  ['accessionid_8',['AccessionId',['../d9/d4a/classRibosoft_1_1Blast_1_1Database.html#af27bb8a2defec2025ab991f86d640a28',1,'Ribosoft.Blast.Database.AccessionId'],['../dc/dab/classRibosoft_1_1GenbankRequests_1_1GenbankResult.html#a449109f0b2751270a73d642014ac91d8',1,'Ribosoft.GenbankRequests.GenbankResult.AccessionId'],['../d4/d1a/classRibosoft_1_1Models_1_1Assembly.html#ab5e8afa899a990fdba314fec2b87dda2',1,'Ribosoft.Models.Assembly.AccessionId']]],
-  ['accountcontroller_9',['AccountController',['../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html',1,'Ribosoft.Controllers.AccountController'],['../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html#a77155ce7634a465f4bee7dfd447f3459',1,'Ribosoft.Controllers.AccountController.AccountController()']]],
-  ['activatejob_10',['ActivateJob',['../d7/db8/classRibosoft_1_1Jobs_1_1ServiceProviderActivator.html#a1b58b92487a815219d5defc9d8b314bb',1,'Ribosoft::Jobs::ServiceProviderActivator']]],
-  ['adderrors_11',['AddErrors',['../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html#a856ce94d6341f454e9c33348c2d6dd0c',1,'Ribosoft.Controllers.AccountController.AddErrors()'],['../dd/d56/classRibosoft_1_1Controllers_1_1ManageController.html#a1c21472d819809daf71ed500bb2391f2',1,'Ribosoft.Controllers.ManageController.AddErrors()']]],
-  ['addjob_12',['AddJob',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a4195967f0d26862093804ab806b5aab7',1,'Ribosoft::Controllers::JobsController']]],
-  ['addtozip_13',['AddToZip',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a327c9df4a6e6fc1c98d4cfcccf1b6624',1,'Ribosoft::Controllers::JobsController']]],
-  ['allindicesof_14',['AllIndicesOf',['../d7/d95/classRibosoft_1_1CandidateGeneration_1_1CandidateGenerator.html#ad4497a9715adfe2f345df6164ec0a6fe',1,'Ribosoft::CandidateGeneration::CandidateGenerator']]],
-  ['anneal_15',['Anneal',['../d8/d91/classRibosoft_1_1RibosoftAlgo.html#a34e023bcab33bf00b3969c7f43f2160d',1,'Ribosoft::RibosoftAlgo']]],
-  ['anneal_16',['anneal',['../d8/d91/classRibosoft_1_1RibosoftAlgo.html#aa3c91f1935bc36ee1294cc39873a28bc',1,'Ribosoft.RibosoftAlgo.anneal()'],['../d8/d96/anneal_8cpp.html#a24ffa8866a825e47c9ff7c1a6b0a4cc1',1,'ribosoft::anneal()']]],
-  ['anneal_2ecpp_17',['anneal.cpp',['../d8/d96/anneal_8cpp.html',1,'']]],
-  ['applicationuser_18',['ApplicationUser',['../d7/d9c/classRibosoft_1_1Models_1_1ApplicationUser.html',1,'Ribosoft::Models']]],
-  ['assembliescontroller_19',['AssembliesController',['../dc/da6/classRibosoft_1_1Controllers_1_1AssembliesController.html',1,'Ribosoft.Controllers.AssembliesController'],['../dc/da6/classRibosoft_1_1Controllers_1_1AssembliesController.html#a9d02a02772f35c6f5466985f28c5e2c5',1,'Ribosoft.Controllers.AssembliesController.AssembliesController()']]],
-  ['assembly_20',['Assembly',['../d4/d1a/classRibosoft_1_1Models_1_1Assembly.html',1,'Ribosoft.Models.Assembly'],['../d8/dc9/classRibosoft_1_1Models_1_1Job.html#a61cc489b3f15a180ab9fa596acd4040a',1,'Ribosoft.Models.Job.Assembly'],['../d4/d1a/classRibosoft_1_1Models_1_1Assembly.html#a2a2d2fbe508e2495ee4ccb3d54c78185',1,'Ribosoft.Models.Assembly.Assembly()']]],
-  ['assemblyid_21',['AssemblyId',['../d8/dc9/classRibosoft_1_1Models_1_1Job.html#af27240af5fe04e1afa6e973b36408d87',1,'Ribosoft::Models::Job']]],
-  ['assemblyname_22',['AssemblyName',['../d9/d4a/classRibosoft_1_1Blast_1_1Database.html#a19444154c1421e90364ffbe65a997538',1,'Ribosoft.Blast.Database.AssemblyName'],['../d4/d1a/classRibosoft_1_1Models_1_1Assembly.html#aea9a372332d9c90295b5fa2f024dee6a',1,'Ribosoft.Models.Assembly.AssemblyName']]],
-  ['authenticatoruri_23',['AuthenticatorUri',['../d7/d05/classRibosoft_1_1Models_1_1ManageViewModels_1_1EnableAuthenticatorViewModel.html#a84e2ad9ba1306b62c7e3af7ce213d577',1,'Ribosoft::Models::ManageViewModels::EnableAuthenticatorViewModel']]],
-  ['authenticatoruriformat_24',['AuthenticatorUriFormat',['../dd/d56/classRibosoft_1_1Controllers_1_1ManageController.html#aae66790d8c19caceb38380ac94129053',1,'Ribosoft::Controllers::ManageController']]],
-  ['authorize_25',['Authorize',['../de/d79/classRibosoft_1_1DashboardAuthorizationFilter.html#aa77638d30a7ad3f5938fc59bc15307b6',1,'Ribosoft::DashboardAuthorizationFilter']]]
+  ['2_20install_20dependencies_0',['2. Install Dependencies',['../index.html#autotoc_md9',1,'']]],
+  ['23_1',['Core Algorithm (C++23)',['../index.html#autotoc_md4',1,'']]],
+  ['23_20modernization_2',['C++23 Modernization',['../index.html#autotoc_md34',1,'']]]
 ];
