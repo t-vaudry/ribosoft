@@ -14,6 +14,28 @@ URL : http://ribosoft2.fungalgenomics.ca
 ![RibosoftAlgo CMake Builds](https://github.com/t-vaudry/ribosoft/workflows/RibosoftAlgo%20CMake%20Builds/badge.svg)
 [![Robot Framework Testing](https://github.com/t-vaudry/ribosoft/actions/workflows/robot.yml/badge.svg)](https://github.com/t-vaudry/ribosoft/actions/workflows/robot.yml)
 
+## Technology Stack (Modernized)
+
+### Backend (.NET 8)
+- **Framework**: ASP.NET Core 8.0
+- **Language**: C# with Entity Framework Core
+- **Database**: PostgreSQL (primary) / SQL Server (alternative)
+- **Background Jobs**: Hangfire with PostgreSQL storage
+- **Authentication**: ASP.NET Core Identity
+
+### Frontend (Modern)
+- **Framework**: Vue.js 3.4.21 with Bootstrap 5.3.3
+- **Build Tools**: Webpack 5.99.9, Node.js ≥18.0.0, npm ≥9.0.0
+- **UI Components**: Bootstrap-Vue-Next, modern ES2024 support
+- **Visualization**: fornac (RNA structure visualization)
+- **Bundling**: Modern DLL-based vendor/app bundle splitting
+
+### Core Algorithm (C++23)
+- **Language**: C++23 with CMake build system (≥3.5)
+- **Parallelization**: OpenMP support
+- **Testing**: Catch2 framework
+- **Distribution**: NuGet packages (RibosoftAlgo)
+
 ## Platform Support
 
 - ✅ **Linux (Ubuntu)**: Primary development platform with C++23 modernization and automated builds
@@ -22,55 +44,189 @@ URL : http://ribosoft2.fungalgenomics.ca
 
 > **Development Focus**: Currently focusing on Ubuntu/Linux builds with C++23 modernization. macOS and Windows support will be reintroduced with proper native architecture support (Apple Silicon arm64 for macOS) and updated dependencies as part of the modernization effort.
 
-## Building
+## Prerequisites
 
-Prerequisites:
+- **.NET 8 SDK**: https://dotnet.microsoft.com/download/dotnet/8.0
+- **Node.js ≥18.0.0**: https://nodejs.org/
+- **npm ≥9.0.0**: Included with Node.js
+- **CMake ≥3.5**: https://cmake.org/download/
+- **Python 3.5+**: For dependency management
+- **PostgreSQL**: Recommended database (or SQL Server)
 
-- mono (http://www.mono-project.com/download/)
-- .NET 5.0 (https://www.microsoft.com/net/learn/get-started)
-- cmake >=3.5 (https://cmake.org/download/)
-- Visual Studio 2019 with .NET Core development enabled 
+## Quick Start
 
-RibosoftAlgo uses CMake and can be built with any CMake-supported generator:
-
-```sh
-$ cd RibosoftAlgo/build
-$ cmake .. -G "Visual Studio 16 2019" # set up the project with your favourite generator
-$ msbuild # or make, or open the vcxproj, etc...
+### 1. Clone and Setup
+```bash
+git clone https://github.com/t-vaudry/ribosoft.git
+cd ribosoft/Ribosoft
 ```
 
-Ribosoft uses a Visual Studio .sln project and should be opened with Visual Studio 2017 or above.
+### 2. Install Dependencies
+```bash
+# Install Node.js dependencies
+npm install
 
-```sh
-$ dotnet build Ribosoft.sln # specifying Ribosoft.sln is optional
-$ dotnet run # will run the actual Ribosoft project
+# Install Python dependencies (optional, for advanced features)
+pip install pipenv
+pipenv install
 ```
 
-## Unit tests
-
-### RibosoftAlgo (Catch/C++)
-
-Catch2 (https://github.com/catchorg/Catch2) has been integrated for unit testing the C++ library. Refer to its documentation for instructions on how to use it. 2 sample tests have been written under `test/main.cpp`.
-
-A new target called `tests` was added which builds an executable that can run tests. It can be built with `make` or via whatever build system is being used.
-
-```
-$ RibosoftAlgo/build/bin/tests
-===============================================================================
-All tests passed (4 assertions in 2 test cases)
+### 3. Build C++ Algorithm Library
+```bash
+cd ../RibosoftAlgo/build
+cmake .. -G "Unix Makefiles"
+make
+cd ../../Ribosoft
 ```
 
-### Ribosoft (xUnit/C#)
+### 4. Build Frontend (Critical Step)
+```bash
+# Development build (recommended for local development)
+npm run build:all:dev
 
-The xUnit project is called Ribosoft.Tests. You can run it as follows:
-
-```sh
-$ dotnet test Ribosoft.Tests # Ribosoft.Tests is optional
+# OR Production build
+npm run build:all
 ```
 
-## Usage
+### 5. Configure Database
+Edit `appsettings.json` with your database connection:
+```json
+{
+  "ConnectionStrings": {
+    "NpgsqlConnection": "Host=localhost;Port=5432;Database=ribosoft;Username=your_user;Password=your_password;Pooling=true;"
+  },
+  "EntityFrameworkProvider": "Npgsql"
+}
+```
 
-For more information on the usage of Ribosoft, please visit our Wiki for more setup.
+### 6. Run Application
+```bash
+# Build and run the .NET application
+dotnet build
+dotnet run
+
+# Application will be available at: http://localhost:50273/
+```
+
+## Development Workflow
+
+### Frontend Development
+```bash
+# Watch mode for continuous frontend rebuilding
+npm run dev
+
+# Clean and rebuild everything
+npm run clean
+npm run build:all:dev
+
+# Individual builds
+npm run build:vendor:dev    # Build vendor libraries (Bootstrap, Vue, etc.)
+npm run build:dev          # Build application code
+```
+
+### Backend Development
+```bash
+# Run with hot reload
+dotnet watch run
+
+# Run tests
+dotnet test
+```
+
+### Available npm Scripts
+- `npm run dev` - Development watch mode
+- `npm run build` - Production build (main bundle)
+- `npm run build:dev` - Development build (main bundle)
+- `npm run build:vendor` - Production vendor bundle
+- `npm run build:vendor:dev` - Development vendor bundle
+- `npm run build:all` - Build both vendor and main (production)
+- `npm run build:all:dev` - Build both vendor and main (development)
+- `npm run clean` - Clean build artifacts
+- `npm run lint` - ESLint code checking
+- `npm run format` - Prettier code formatting
+
+## Testing
+
+### C++ Unit Tests (Catch2)
+```bash
+cd RibosoftAlgo/build
+make tests
+./bin/tests
+```
+
+### .NET Unit Tests (xUnit)
+```bash
+dotnet test Ribosoft.Tests
+```
+
+### Integration Tests (Robot Framework)
+```bash
+cd test
+pipenv install
+pipenv run robot --outputdir reports tests/startup.robot
+```
+
+## Troubleshooting
+
+### Frontend Build Issues
+```bash
+# If styles are missing or console errors occur
+npm run clean
+npm run build:all:dev
+
+# Check that vendor-manifest.json exists
+ls -la wwwroot/dist/vendor-manifest.json
+```
+
+### Database Connection Issues
+- Ensure PostgreSQL is running: `sudo systemctl status postgresql`
+- Verify connection string in `appsettings.json`
+- Check database exists and user has proper permissions
+
+### C++ Library Issues
+```bash
+# Rebuild C++ components
+cd RibosoftAlgo/build
+make clean
+cmake .. && make
+```
+
+### Port Conflicts
+- Default application port: `50273`
+- Check `Properties/launchSettings.json` for configuration
+- Verify port availability: `ss -tlnp | grep :50273`
+
+## Architecture Overview
+
+### Project Structure
+```
+ribosoft/
+├── Ribosoft/                    # Main ASP.NET Core web application
+│   ├── ClientApp/               # Vue.js 3 frontend application
+│   ├── Controllers/             # MVC controllers
+│   ├── Models/                  # Data models and view models
+│   ├── Views/                   # Razor views
+│   ├── Data/                    # Entity Framework contexts
+│   ├── Services/                # Business logic services
+│   ├── Jobs/                    # Hangfire background jobs
+│   └── wwwroot/dist/            # Built frontend assets
+├── RibosoftAlgo/                # C++23 core algorithm library
+│   ├── src/                     # C++ source files
+│   ├── include/                 # Header files
+│   ├── test/                    # Catch2 unit tests
+│   └── build/                   # CMake build directory
+├── Ribosoft.Tests/              # xUnit test project
+└── test/                        # Robot Framework integration tests
+```
+
+### Key Features
+- **Ribozyme Design**: Template-based ribozyme generation
+- **Multi-Objective Optimization**: Advanced optimization algorithms
+- **BLAST Integration**: Sequence similarity searching
+- **GenBank Integration**: Sequence data retrieval
+- **Background Processing**: Hangfire job queue system
+- **User Management**: ASP.NET Core Identity
+- **RNA Visualization**: Interactive structure visualization
 
 ## Docker Support
 
@@ -122,5 +278,46 @@ The docker compose command to start the service is;
 
 The service will run at http://localhost:5001/
 
+## Development Notes
+
+### Frontend Modernization
+The frontend has been completely modernized with:
+- **Vue.js 3.4.21**: Composition API, improved TypeScript support
+- **Bootstrap 5.3.3**: Modern CSS framework with improved accessibility
+- **Webpack 5.99.9**: Modern bundling with improved tree-shaking and caching
+- **ES2024**: Latest JavaScript features and syntax
+- **Modern Build Pipeline**: Separate vendor and application bundles for optimal loading
+
+### C++23 Modernization
+The core algorithm library has been updated to:
+- **C++23 Standard**: Latest language features and improvements
+- **Modern CMake**: Improved build system configuration
+- **Enhanced Testing**: Comprehensive Catch2 test suite
+- **Cross-platform**: Focus on Linux with planned macOS/Windows support
+
+### Performance Optimizations
+- **DLL-based Bundling**: Vendor libraries cached separately from application code
+- **Code Splitting**: Lazy loading of route-specific components
+- **Modern Caching**: Webpack 5 persistent caching for faster rebuilds
+- **OpenMP Parallelization**: Multi-threaded C++ algorithm execution
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes following the modernized architecture
+4. Ensure all tests pass (`npm test`, `dotnet test`, `make tests`)
+5. Run code formatting (`npm run format`, `npm run lint`)
+6. Commit your changes (`git commit -m 'Add amazing feature'`)
+7. Push to the branch (`git push origin feature/amazing-feature`)
+8. Open a Pull Request
+
 ## License
 [GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/)
+
+## Acknowledgments
+
+- Built with modern web technologies for optimal performance
+- Scientific computing powered by C++23 algorithms
+- Responsive design with Bootstrap 5 and Vue.js 3
+- Continuous integration and deployment via GitHub Actions
