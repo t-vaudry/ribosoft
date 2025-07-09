@@ -86,7 +86,7 @@
     "build:vendor:dev": "webpack --mode development --config webpack.config.vendor.js --progress",
     "build:all": "npm run build:vendor && npm run build",
     "build:all:dev": "npm run build:vendor:dev && npm run build:dev",
-    "clean": "rimraf wwwroot/dist .webpack-cache",
+    "clean": "rimraf wwwroot/dist .webpack-cache-vendor .webpack-cache-main",
     "clean:all": "rimraf node_modules package-lock.json && npm install",
     "lint": "eslint . --ext .js,.vue,.ts --fix",
     "lint:check": "eslint . --ext .js,.vue,.ts",
@@ -96,8 +96,6 @@
     "analyze": "webpack --mode production --config webpack.config.js --analyze",
     "serve": "webpack serve --mode development --config webpack.config.js",
     "test": "echo \"No tests specified\" && exit 0",
-    "audit:fix": "npm audit fix",
-    "prebuild:all": "npm run clean",
-    "prebuild:all:dev": "npm run clean"
+    "audit:fix": "npm audit fix"
   }
 }
