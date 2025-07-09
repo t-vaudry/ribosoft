@@ -135,7 +135,8 @@ module.exports = (env, argv) => {
       buildDependencies: {
         config: [__filename]
       },
-      cacheDirectory: path.resolve(__dirname, '.webpack-cache')
+      cacheDirectory: path.resolve(__dirname, '.webpack-cache-vendor'),
+      version: 'v2'
     },
     performance: {
       hints: isDevBuild ? false : 'warning',

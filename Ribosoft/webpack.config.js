@@ -82,7 +82,10 @@ module.exports = (env, argv) => {
                         {
                             loader: 'sass-loader',
                             options: {
-                                sourceMap: isDevBuild
+                                sourceMap: isDevBuild,
+                                sassOptions: {
+                                    silenceDeprecations: ['legacy-js-api']
+                                }
                             }
                         }
                     ]
@@ -124,7 +127,9 @@ module.exports = (env, argv) => {
             filename: isDevBuild ? '[name].js' : '[name].[contenthash:8].js',
             chunkFilename: isDevBuild ? '[name].chunk.js' : '[name].[contenthash:8].chunk.js',
             publicPath: '../dist/',
-            clean: true,
+            clean: {
+                keep: /vendor\.(js|css|map)$|vendor-manifest\.json$/
+            },
             assetModuleFilename: 'assets/[name].[hash:8][ext]'
         },
         optimization: {
@@ -175,10 +180,20 @@ module.exports = (env, argv) => {
                 '__VUE_PROD_DEVTOOLS__': JSON.stringify(isDevBuild),
                 '__VUE_PROD_HYDRATION_MISMATCH_DETAILS__': JSON.stringify(isDevBuild)
             }),
-            new webpack.DllReferencePlugin({
-                context: __dirname,
-                manifest: require('./wwwroot/dist/vendor-manifest.json')
-            }),
+            // Only add DllReferencePlugin if vendor-manifest.json exists
+            ...((() => {
+                try {
+                    const manifestPath = path.join(__dirname, 'wwwroot/dist/vendor-manifest.json');
+                    require.resolve(manifestPath);
+                    return [new webpack.DllReferencePlugin({
+                        context: __dirname,
+                        manifest: require(manifestPath)
+                    })];
+                } catch (e) {
+                    console.warn('vendor-manifest.json not found. Run "npm run build:vendor:dev" first.');
+                    return [];
+                }
+            })()),
             ...(isDevBuild ? [
                 new webpack.HotModuleReplacementPlugin()
             ] : [
@@ -199,7 +214,8 @@ module.exports = (env, argv) => {
             buildDependencies: {
                 config: [__filename]
             },
-            cacheDirectory: path.resolve(__dirname, '.webpack-cache')
+            cacheDirectory: path.resolve(__dirname, '.webpack-cache-main'),
+            version: 'v2'
         },
         performance: {
             hints: isDevBuild ? false : 'warning',
