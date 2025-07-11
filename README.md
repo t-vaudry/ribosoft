@@ -47,7 +47,7 @@ URL : http://ribosoft2.fungalgenomics.ca
 ## Prerequisites
 
 - **.NET 8 SDK**: https://dotnet.microsoft.com/download/dotnet/8.0
-- **Node.js ≥18.0.0**: https://nodejs.org/
+- **Node.js ≥20.19.0**: https://nodejs.org/ (Node.js 24.4.0 recommended)
 - **npm ≥9.0.0**: Included with Node.js
 - **CMake ≥3.5**: https://cmake.org/download/
 - **Python 3.5+**: For dependency management
