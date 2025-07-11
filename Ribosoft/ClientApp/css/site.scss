@@ -78,15 +78,10 @@ body {
   max-width: none;
   height: 100%;
   display: flex;
-  flex-direction: column;
 }
 
 // Footer styling
 .footer {
-  background: linear-gradient(135deg, var(--dark-color) 0%, #2c3e50 100%);
-  border-top: 3px solid var(--primary-color);
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-  
   .text-muted {
     color: #adb5bd !important;
   }
@@ -102,49 +97,19 @@ body {
 
 // Landing page
 .landing-page {
-  height: 100%;
-  min-height: calc(100vh - 60px); // Account for navbar height
+  min-height: calc(100vh - 120px); // Account for navbar and footer
   width: 100%;
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--info-color) 100%);
-  color: white;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   position: relative;
   overflow: hidden;
-  flex: 1;
   
   .landing-content {
     z-index: 2;
     position: relative;
-  }
-  
-  h1 {
-    font-size: clamp(2rem, 8vw, 5rem);
-    font-weight: 700;
-    margin-bottom: var(--spacing-md);
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  }
-  
-  h2 {
-    font-size: clamp(1.5rem, 5vw, 3rem);
-    font-weight: 400;
-    margin-bottom: var(--spacing-lg);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-  }
-  
-  .btn {
-    font-size: var(--font-size-lg);
-    padding: var(--spacing-sm) var(--spacing-lg);
-    margin: var(--spacing-xs);
-    border: 2px solid white;
-    transition: var(--transition-base);
-    
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--box-shadow);
-    }
   }
 }
 
@@ -263,7 +228,7 @@ body {
   margin-top: -191px;
   z-index: 1;
   background: url("../../wwwroot/img/helix.svg") 0 0 repeat-y;
-  transform: rotate(30deg) scale(6);
+  transform: rotate(30deg) scale(4);
   opacity: 0.3;
   overflow: hidden;
   pointer-events: none;
