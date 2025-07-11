@@ -53,10 +53,10 @@ html, body {
 
 // Layout components
 .body-content {
-  padding: 70px var(--spacing-md) var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-md);
   
   @media (max-width: 768px) {
-    padding: 60px var(--spacing-sm) var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-sm);
   }
 }
 
