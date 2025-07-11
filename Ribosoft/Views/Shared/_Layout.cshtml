@@ -12,7 +12,10 @@
 
     <link rel="stylesheet" href="~/dist/vendor.css" asp-append-version="true" />
     <environment exclude="Development">
-        <link rel="stylesheet" href="~/dist/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/dist/main.css" asp-append-version="true" />
+    </environment>
+    <environment include="Development">
+        <!-- CSS is injected inline by webpack style-loader in development mode -->
     </environment>
 </head>
 <body class="bg-light d-flex flex-column h-100">
@@ -51,7 +54,7 @@
         </div>
     </nav>
 
-    <main class="container body-content flex-grow-1" role="main">
+    <main class="@(ViewData["FullWidth"] != null ? "full-width-content" : "container body-content") flex-grow-1" role="main">
         @RenderBody()
     </main>
 
@@ -66,6 +69,8 @@
     </footer>
 
     <script src="~/dist/vendor.js" asp-append-version="true"></script>
+    <script src="~/dist/runtime.js" asp-append-version="true"></script>
+    <script src="~/dist/vendors.js" asp-append-version="true"></script>
     <script src="~/dist/main.js" asp-append-version="true"></script>
     @RenderSection("scripts", required: false)
 </body>

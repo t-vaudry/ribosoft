@@ -71,6 +71,16 @@ body {
   }
 }
 
+// Full-width content for landing page
+.full-width-content {
+  padding: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 // Footer styling
 .footer {
   background: linear-gradient(135deg, var(--dark-color) 0%, #2c3e50 100%);
@@ -92,8 +102,9 @@ body {
 
 // Landing page
 .landing-page {
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  min-height: calc(100vh - 60px); // Account for navbar height
+  width: 100%;
   background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
               url("../images/concordia-1.jpg") center/cover no-repeat;
   color: white;
@@ -101,17 +112,27 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  
+  .landing-content {
+    z-index: 2;
+    position: relative;
+  }
   
   h1 {
     font-size: clamp(2rem, 8vw, 5rem);
     font-weight: 700;
     margin-bottom: var(--spacing-md);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   }
   
   h2 {
     font-size: clamp(1.5rem, 5vw, 3rem);
     font-weight: 400;
     margin-bottom: var(--spacing-lg);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
   }
   
   .btn {
@@ -234,18 +255,19 @@ body {
 
 // Background decorations
 .helix {
-  position: fixed;
+  position: absolute;
   height: 382px;
   width: 188px;
   top: 50%;
   left: 50%;
   margin-left: -94px;
   margin-top: -191px;
-  z-index: -1;
-  background: url("../images/helix.svg") 0 0 repeat-y;
+  z-index: 1;
+  background: url("../../wwwroot/img/helix.svg") 0 0 repeat-y;
   transform: rotate(30deg) scale(6);
   opacity: 0.3;
   overflow: hidden;
+  pointer-events: none;
 }
 
 // Form enhancements
