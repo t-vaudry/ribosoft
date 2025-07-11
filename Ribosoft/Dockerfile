@@ -1,15 +1,18 @@
 # Build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
 
-# Install Node.js for frontend build
+# Install Node.js 24.x for frontend build (required for Vite 7)
 RUN apt-get update && apt-get install -y \
     curl \
     gnupg \
     ca-certificates \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
     && apt-get install -y nodejs \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Verify Node.js version
+RUN node --version && npm --version
 
 WORKDIR /src
 
@@ -29,7 +32,7 @@ COPY Ribosoft/.docker/appsettings.json ./appsettings.json
 COPY Ribosoft/.docker/20210327162902_PreloadRibozymes.cs ./Data/Migrations/NpgsqlMigrations/20210327162902_PreloadRibozymes.cs
 COPY Ribosoft/.docker/20210327162902_PreloadRibozymes.Designer.cs ./Data/Migrations/NpgsqlMigrations/20210327162902_PreloadRibozymes.Designer.cs
 
-# Build frontend assets
+# Build frontend assets with Vite 7
 RUN npm run build:vendor
 RUN npm run build
 
