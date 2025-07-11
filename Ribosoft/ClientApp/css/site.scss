@@ -46,6 +46,15 @@ html, body {
   line-height: var(--line-height-base);
 }
 
+// Mobile-specific body styling
+body {
+  @media (max-width: 768px) {
+    min-height: 100vh;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}
+
 // Vue.js specific
 [v-cloak] {
   display: none !important;
@@ -57,6 +66,27 @@ html, body {
   
   @media (max-width: 768px) {
     padding: var(--spacing-md) var(--spacing-sm);
+    flex: 1 0 auto;
+    min-height: calc(100vh - 120px); // Account for navbar and footer
+  }
+}
+
+// Footer styling
+.footer {
+  background: linear-gradient(135deg, var(--dark-color) 0%, #2c3e50 100%);
+  border-top: 3px solid var(--primary-color);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  
+  .text-muted {
+    color: #adb5bd !important;
+  }
+  
+  // Ensure footer is visible on mobile
+  @media (max-width: 768px) {
+    position: relative;
+    margin-top: auto;
+    width: 100%;
+    z-index: 10;
   }
 }
 

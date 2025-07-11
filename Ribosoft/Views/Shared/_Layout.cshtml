@@ -4,7 +4,7 @@
 @inject SignInManager<ApplicationUser> SignInManager
 
 <!doctype html>
-<html>
+<html class="h-100">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -15,7 +15,7 @@
         <link rel="stylesheet" href="~/dist/site.css" asp-append-version="true" />
     </environment>
 </head>
-<body class="bg-light">
+<body class="bg-light d-flex flex-column h-100">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a asp-controller="Home" asp-action="Index" class="navbar-brand">
@@ -51,12 +51,18 @@
         </div>
     </nav>
 
-    <div class="container body-content" role="main">
+    <main class="container body-content flex-grow-1" role="main">
         @RenderBody()
-    </div>
+    </main>
 
-    <footer class="container">
-        <p class="text-muted">&copy; 2025 - Ribosoft [2.2.0]</p>
+    <footer class="footer bg-dark text-light py-2 mt-auto">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; 2025 - <strong>Ribosoft</strong> [2.2.0]</p>
+                </div>
+            </div>
+        </div>
     </footer>
 
     <script src="~/dist/vendor.js" asp-append-version="true"></script>
