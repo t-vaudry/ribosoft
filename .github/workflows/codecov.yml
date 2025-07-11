@@ -30,10 +30,10 @@ jobs:
       with:
         python-version: '3.13'
 
-    - name: Setup Node.js
+    - name: Setup Node.js 24
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '24'
         cache: 'npm'
         cache-dependency-path: './Ribosoft/package.json'
 
@@ -57,12 +57,12 @@ jobs:
         # Remove conflicting shrinkwrap file that has old dependencies
         rm -f npm-shrinkwrap.json
         
-        # Clean install with legacy peer deps to handle version conflicts
-        npm install --legacy-peer-deps
+        # Clean install (no legacy peer deps needed with Vite 7 and Node.js 24)
+        npm install
         
         # Build vendor and main bundles (required for C# build)
-        npm run build:vendor:dev || echo "Vendor build completed with warnings"
-        npm run build:dev || echo "Main build completed with warnings"
+        npm run build:vendor:dev
+        npm run build:dev
 
     # Build the solution first to ensure native libraries are built
     - name: Build solution with native libraries
