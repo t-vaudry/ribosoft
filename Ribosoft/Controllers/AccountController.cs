@@ -335,8 +335,8 @@ namespace Ribosoft.Controllers
                     var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
                     await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
 
-                    // Show success message instead of auto-login
-                    ViewData["SuccessMessage"] = "Your account has been created successfully! You can now sign in below.";
+                    // Show success message with email confirmation instruction
+                    ViewData["SuccessMessage"] = "Your account has been created successfully! Please check your email and click the confirmation link to activate your account before signing in.";
                     return View(new RegisterViewModel()); // Return empty model for clean form
                 }
                 AddErrors(result);
@@ -539,13 +539,25 @@ namespace Ribosoft.Controllers
          */
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult ResetPassword(string? code = null)
+        public async Task<IActionResult> ResetPassword(string? userId = null, string? code = null)
         {
             if (code == null)
             {
                 throw new ApplicationException("A code must be supplied for password reset.");
             }
+            
             var model = new ResetPasswordViewModel { Code = code };
+            
+            // If userId is provided, look up the user and populate the email
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user != null)
+                {
+                    model.Email = user.Email ?? string.Empty;
+                }
+            }
+            
             return View(model);
         }
 
@@ -575,7 +587,7 @@ namespace Ribosoft.Controllers
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
             AddErrors(result);
-            return View();
+            return View(model);
         }
 
         /*! \fn ResetPasswordConfirmation
