@@ -105,7 +105,7 @@ public class Program
             .AddDefaultTokenProviders();
 
         // Application services
-        services.AddTransient<IEmailSender, EmailSender>();
+        services.AddTransient<IEmailSender, MailgunEmailSender>();
 
         // Localization
         services.AddLocalization(options => options.ResourcesPath = "Resources");
