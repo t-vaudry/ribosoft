@@ -38,6 +38,11 @@ namespace Ribosoft.Controllers
          */
         private readonly IEmailSender _emailSender;
 
+        /*! \property _oneTimeCodeService
+         * \brief One-time code service object
+         */
+        private readonly IOneTimeCodeService _oneTimeCodeService;
+
         /*! \property _logger
          * \brief Log service object
          */
@@ -50,11 +55,13 @@ namespace Ribosoft.Controllers
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
+            IOneTimeCodeService oneTimeCodeService,
             ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _oneTimeCodeService = oneTimeCodeService;
             _logger = logger;
         }
 
@@ -218,9 +225,9 @@ namespace Ribosoft.Controllers
         }
 
         /*!
-         * \brief HTTP GET for logging in with recovery code
+         * \brief HTTP GET for logging in with one-time email code
          * \param returnUrl Return URL
-         * \return View for login with recovery code
+         * \return View for login with one-time code
          */
         [HttpGet]
         [AllowAnonymous]
@@ -233,13 +240,23 @@ namespace Ribosoft.Controllers
                 throw new ApplicationException($"Unable to load two-factor authentication user.");
             }
 
-            ViewData["ReturnUrl"] = returnUrl;
+            // Generate and send the one-time code
+            await _oneTimeCodeService.GenerateAndSendCodeAsync(user.Id, user.Email!, "2FA_BYPASS");
 
-            return View();
+            var model = new LoginWithRecoveryCodeViewModel
+            {
+                Email = user.Email!,
+                CodeSent = true,
+                CanResend = true,
+                ResendCooldownSeconds = 0
+            };
+
+            ViewData["ReturnUrl"] = returnUrl;
+            return View(model);
         }
 
         /*!
-         * \brief HTTP POST for logging in with recovery code
+         * \brief HTTP POST for logging in with one-time email code
          * \param model Model object of the login view
          * \param returnUrl Return URL
          * \return View based on result
@@ -260,25 +277,59 @@ namespace Ribosoft.Controllers
                 throw new ApplicationException($"Unable to load two-factor authentication user.");
             }
 
-            var recoveryCode = model.RecoveryCode.Replace(" ", string.Empty);
+            // Validate the one-time code
+            var isValidCode = await _oneTimeCodeService.ValidateCodeAsync(user.Id, model.OneTimeCode, "2FA_BYPASS");
 
-            var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
-
-            if (result.Succeeded)
+            if (isValidCode)
             {
-                _logger.LogInformation("User with ID {UserId} logged in with a recovery code.", user.Id);
+                // Sign in the user (similar to 2FA recovery code sign-in)
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                
+                _logger.LogInformation("User with ID {UserId} logged in with a one-time email code.", user.Id);
                 return RedirectToLocal(returnUrl);
-            }
-            if (result.IsLockedOut)
-            {
-                _logger.LogWarning("User with ID {UserId} account locked out.", user.Id);
-                return RedirectToAction(nameof(Lockout));
             }
             else
             {
-                _logger.LogWarning("Invalid recovery code entered for user with ID {UserId}", user.Id);
-                ModelState.AddModelError(string.Empty, "Invalid recovery code entered.");
-                return View();
+                _logger.LogWarning("Invalid one-time code entered for user with ID {UserId}", user.Id);
+                ModelState.AddModelError(string.Empty, "Invalid or expired verification code. Please try again or request a new code.");
+                
+                // Prepare model for re-display
+                model.Email = user.Email!;
+                model.CodeSent = true;
+                model.CanResend = true;
+                model.ResendCooldownSeconds = 0;
+                
+                return View(model);
+            }
+        }
+
+        /*!
+         * \brief HTTP POST for resending one-time email code
+         * \param returnUrl Return URL
+         * \return JSON result indicating success/failure
+         */
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResendOneTimeCode(string? returnUrl = null)
+        {
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user == null)
+            {
+                return Json(new { success = false, message = "Session expired. Please start over." });
+            }
+
+            try
+            {
+                await _oneTimeCodeService.GenerateAndSendCodeAsync(user.Id, user.Email!, "2FA_BYPASS");
+                _logger.LogInformation("One-time code resent for user with ID {UserId}", user.Id);
+                
+                return Json(new { success = true, message = "A new verification code has been sent to your email." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to resend one-time code for user with ID {UserId}", user.Id);
+                return Json(new { success = false, message = "Failed to send verification code. Please try again." });
             }
         }
 

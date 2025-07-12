@@ -75,5 +75,6 @@ namespace Ribosoft.Data
         public DbSet<RibozymeStructure> RibozymeStructures { get; set; }
         public DbSet<Design> Designs { get; set; }
         public DbSet<Assembly> Assemblies { get; set; }
+        public DbSet<OneTimeCode> OneTimeCodes { get; set; }
     }
 }
