@@ -106,6 +106,7 @@ public class Program
 
         // Application services
         services.AddTransient<IEmailSender, MailgunEmailSender>();
+        services.AddScoped<IOneTimeCodeService, OneTimeCodeService>();
 
         // Localization
         services.AddLocalization(options => options.ResourcesPath = "Resources");
