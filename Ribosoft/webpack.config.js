@@ -128,7 +128,7 @@ module.exports = (env, argv) => {
             chunkFilename: isDevBuild ? '[name].chunk.js' : '[name].[contenthash:8].chunk.js',
             publicPath: '../dist/',
             clean: {
-                keep: /vendor\.(js|css|map)$|vendor-manifest\.json$/
+                keep: /vendor\.(js|css|map)$|vendor-manifest\.json$|assets\//
             },
             assetModuleFilename: 'assets/[name].[hash:8][ext]'
         },

@@ -335,8 +335,9 @@ namespace Ribosoft.Controllers
                     var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
                     await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToLocal(returnUrl);
+                    // Show success message instead of auto-login
+                    ViewData["SuccessMessage"] = "Your account has been created successfully! You can now sign in below.";
+                    return View(new RegisterViewModel()); // Return empty model for clean form
                 }
                 AddErrors(result);
             }

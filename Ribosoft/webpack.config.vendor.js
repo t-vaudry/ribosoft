@@ -44,8 +44,7 @@ module.exports = (env, argv) => {
         'vue-select/dist/vue-select.css',
         'qrious',
         'axios',
-        '@fortawesome/fontawesome-svg-core',
-        '@fortawesome/free-solid-svg-icons'
+        '@fortawesome/fontawesome-free/css/all.css'
       ]
     },
     module: {
@@ -86,7 +85,7 @@ module.exports = (env, argv) => {
     },
     output: {
       path: path.join(__dirname, 'wwwroot', 'dist'),
-      publicPath: 'dist/',
+      publicPath: '/dist/',
       filename: isDevBuild ? '[name].js' : '[name].[contenthash:8].js',
       library: '[name]_[fullhash]',
       clean: false, // Don't clean vendor files when main build runs

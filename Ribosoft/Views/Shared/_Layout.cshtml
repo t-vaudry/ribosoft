@@ -18,55 +18,57 @@
         <!-- CSS is injected inline by webpack style-loader in development mode -->
     </environment>
 </head>
-<body class="bg-light d-flex flex-column h-100">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a asp-controller="Home" asp-action="Index" class="navbar-brand">
-                <img src="/img/logo.svg" height="30" alt="Ribosoft">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+<body class="bg-light">
+    <div class="main-wrapper">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a asp-controller="Home" asp-action="Index" class="navbar-brand">
+                    <img src="/img/logo.svg" height="30" alt="Ribosoft">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    @if (SignInManager.IsSignedIn(User))
-                    {
-                        <li class="nav-item" is-active-route asp-controller="Request" asp-action="Index">
-                            <a asp-controller="Request" asp-action="Index" class="nav-link">New request</a>
-                        </li>
-                        <li class="nav-item" is-active-route asp-controller="Jobs">
-                            <a asp-controller="Jobs" asp-action="Index" class="nav-link">Jobs</a>
-                        </li>
-                        <li class="nav-item" is-active-route asp-controller="Ribozymes">
-                            <a asp-controller="Ribozymes" asp-action="Index" class="nav-link">Ribozymes</a>
-                        </li>
-                        if (User.IsInRole("Administrator"))
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        @if (SignInManager.IsSignedIn(User))
                         {
-                            <li class="nav-item" is-active-route asp-controller="Assemblies">
-                                <a asp-controller="Assemblies" asp-action="Index" class="nav-link">Assemblies</a>
+                            <li class="nav-item" is-active-route asp-controller="Request" asp-action="Index">
+                                <a asp-controller="Request" asp-action="Index" class="nav-link">New request</a>
                             </li>
+                            <li class="nav-item" is-active-route asp-controller="Jobs">
+                                <a asp-controller="Jobs" asp-action="Index" class="nav-link">Jobs</a>
+                            </li>
+                            <li class="nav-item" is-active-route asp-controller="Ribozymes">
+                                <a asp-controller="Ribozymes" asp-action="Index" class="nav-link">Ribozymes</a>
+                            </li>
+                            if (User.IsInRole("Administrator"))
+                            {
+                                <li class="nav-item" is-active-route asp-controller="Assemblies">
+                                    <a asp-controller="Assemblies" asp-action="Index" class="nav-link">Assemblies</a>
+                                </li>
+                            }
                         }
-                    }
-                </ul>
-                @await Html.PartialAsync("_LoginPartial")
-            </div>
-        </div>
-    </nav>
-
-    <main class="@(ViewData["FullWidth"] != null ? "full-width-content" : "container body-content") flex-grow-1" role="main">
-        @RenderBody()
-    </main>
-
-    <footer class="footer bg-dark text-light py-2 mt-auto">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-12 text-center">
-                    <p class="mb-0">&copy; 2025 - <strong>Ribosoft</strong> [2.2.0]</p>
+                    </ul>
+                    @await Html.PartialAsync("_LoginPartial")
                 </div>
             </div>
-        </div>
-    </footer>
+        </nav>
+
+        <main class="@(ViewData["FullWidth"] != null ? "full-width-content" : "container body-content") main-content" role="main">
+            @RenderBody()
+        </main>
+
+        <footer class="footer bg-dark text-light py-2">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-12 text-center">
+                        <p class="mb-0">&copy; 2025 - <strong>Ribosoft</strong> [2.2.0]</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
 
     <script src="~/dist/vendor.js" asp-append-version="true"></script>
     <script src="~/dist/runtime.js" asp-append-version="true"></script>
