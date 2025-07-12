@@ -34,6 +34,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
+    <PackageReference Include="RestSharp" Version="112.1.0" />
     
     <!-- Our cutting-edge C++23 library -->
     <!-- Use project reference in Debug mode for local development -->
