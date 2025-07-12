@@ -5,97 +5,309 @@
 @inject SignInManager<ApplicationUser> SignInManager
 
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Sign In";
     // var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 }
 
-<h2 class="my-3">@ViewData["Title"]</h2>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+            <div class="text-center mb-4">
+                <h1 class="h3 mb-2 font-weight-normal">Welcome Back</h1>
+                <p class="text-muted">Sign in to your Ribosoft account</p>
+            </div>
 
-<div class="row">
-    <div class="col-md-12">
-        <section>
+            <!-- Success Message -->
+            @if (ViewData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <strong>Success!</strong> @ViewData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
 
-            <div class="card box-shadow">
-                <div class="card-body">
-                    <h5 class="card-title border-bottom border-gray pb-2 mb-3">Log in</h5>
-                    <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
-                        <div asp-validation-summary="All" class="text-danger"></div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="Email"></label>
-                                    <input asp-for="Email" class="form-control"/>
-                                    <span asp-validation-for="Email" class="text-danger"></span>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" novalidate>
+                        <!-- Error Summary -->
+                        <div asp-validation-summary="All" class="alert alert-danger validation-summary" role="alert" style="display: none;">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-exclamation-circle fa-lg text-danger"></i>
                                 </div>
-                                <div class="form-group">
-                                    <label asp-for="Password"></label>
-                                    <input asp-for="Password" class="form-control"/>
-                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="alert-heading mb-2">Please correct the following errors:</h6>
+                                    <ul class="mb-0 small"></ul>
                                 </div>
-                                <div class="form-check">
-                                    <input asp-for="RememberMe" class="form-check-input"/>
-                                    <label asp-for="RememberMe" class="form-check-label"></label>
+                            </div>
+                        </div>
+
+                        <!-- Email Field -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="Email" 
+                                   type="email"
+                                   class="form-control" 
+                                   id="email" 
+                                   placeholder="name@example.com"
+                                   autocomplete="email"
+                                   required />
+                            <label for="email">
+                                <i class="fas fa-envelope me-2 text-muted"></i>Email Address
+                            </label>
+                            <span asp-validation-for="Email" class="invalid-feedback"></span>
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="Password" 
+                                   type="password"
+                                   class="form-control" 
+                                   id="password" 
+                                   placeholder="Password"
+                                   autocomplete="current-password"
+                                   required />
+                            <label for="password">
+                                <i class="fas fa-lock me-2 text-muted"></i>Password
+                            </label>
+                            <span asp-validation-for="Password" class="invalid-feedback"></span>
+                        </div>
+
+                        <!-- Remember Me -->
+                        <div class="form-check mb-4">
+                            <input asp-for="RememberMe" class="form-check-input" type="checkbox" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">
+                                <i class="fas fa-clock me-2 text-muted"></i>Keep me signed in
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg py-3" id="submitBtn">
+                                <span class="btn-text">
+                                    <i class="fas fa-sign-in-alt me-2"></i>
+                                    Sign In
+                                </span>
+                                <span class="btn-loading" style="display: none;">
+                                    <i class="fas fa-spinner fa-spin me-2"></i>
+                                    Signing In...
+                                </span>
+                            </button>
+                        </div>
+
+                        <!-- Helper Links -->
+                        <div class="text-center">
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <a asp-action="ForgotPassword" class="text-decoration-none small">
+                                        <i class="fas fa-key me-1"></i>Forgot your password?
+                                    </a>
                                 </div>
-                                <div class="form-group mt-3">
-                                    <button type="submit" class="btn btn-primary">Log in</button>
-                                </div>
-                                <div class="form-group mb-0">
-                                    <p>
-                                        <a asp-action="ForgotPassword">Forgot your password?</a>
-                                    </p>
-                                    <p>
-                                        <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]">Register as a new user?</a>
-                                    </p>
+                                <div class="col-12">
+                                    <span class="text-muted small">Don't have an account? </span>
+                                    <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" class="text-decoration-none small">
+                                        <i class="fas fa-user-plus me-1"></i>Create one here
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
-                <div class="card-body">
-                    <h5 class="card-title border-bottom border-gray pb-2 mb-3">Continue as guest</h5>
+
+                <!-- Guest Login Section -->
+                <div class="card-body border-top bg-light p-4">
+                    <div class="text-center mb-3">
+                        <h6 class="mb-2">
+                            <i class="fas fa-user-secret me-2 text-muted"></i>
+                            Quick Access
+                        </h6>
+                        <p class="text-muted small mb-0">
+                            Try Ribosoft without creating an account
+                        </p>
+                    </div>
+                    
                     <form asp-action="GuestLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="Guest"></label>
-                                    <input asp-for="Guest" class="form-check-input" hidden checked/>
-                                </div>
-                                <div class="form-group mt-3">
-                                    <button type="submit" class="btn btn-primary">Continue as guest</button>
-                                </div>
-                            </div>
+                        <input asp-for="Guest" type="hidden" value="true" />
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-outline-secondary btn-lg py-3" id="guestBtn">
+                                <span class="btn-text">
+                                    <i class="fas fa-user-secret me-2"></i>
+                                    Continue as Guest
+                                </span>
+                                <span class="btn-loading" style="display: none;">
+                                    <i class="fas fa-spinner fa-spin me-2"></i>
+                                    Continuing...
+                                </span>
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
-        </section>
+
+            <!-- Additional Info -->
+            <div class="text-center mt-4">
+                <small class="text-muted">
+                    <i class="fas fa-shield-alt me-1"></i>
+                    Your data is secure and protected
+                </small>
+            </div>
+        </div>
     </div>
-@*     <div class="col-md-6 col-md-offset-2"> *@
-@*         <section> *@
-@*             <div class="card box-shadow"> *@
-@*                 <div class="card-body"> *@
-@*                     <h5 class="card-title border-bottom border-gray pb-2 mb-3">Use another service to log in</h5> *@
-@*                     @{ *@
-@*                         if (loginProviders.Count > 0) *@
-@*                         { *@
-@*                             <form asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal"> *@
-@*                                 <div> *@
-@*                                     <p> *@
-@*                                         @foreach (var provider in loginProviders) *@
-@*                                         { *@
-@*                                             <button type="submit" class="btn btn-default" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.Name</button> *@
-@*                                         } *@
-@*                                     </p> *@
-@*                                 </div> *@
-@*                             </form> *@
-@*                         } *@
-@*                     } *@
-@*                 </div> *@
-@*             </div> *@
-@*         </section> *@
-@*     </div> *@
 </div>
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
+    
+    <style>
+        /* Enhanced form validation styles */
+        .form-control.is-valid {
+            border-color: #198754;
+            box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.15);
+        }
+        
+        .form-control.is-invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
+        }
+        
+        /* Subtle glow effect for focused fields */
+        .form-floating > .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15), 0 0 10px rgba(13, 110, 253, 0.1);
+        }
+        
+        /* Guest section styling */
+        .bg-light {
+            background-color: #f8f9fa !important;
+        }
+        
+        /* Button hover effects */
+        .btn-outline-secondary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+            transition: all 0.2s ease;
+        }
+    </style>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const form = document.querySelector('form');
+            const submitBtn = document.getElementById('submitBtn');
+            const guestBtn = document.getElementById('guestBtn');
+            const validationSummary = document.querySelector('.validation-summary');
+            
+            // Form submission handling for main login
+            form.addEventListener('submit', function(e) {
+                showLoadingState(submitBtn);
+            });
+            
+            // Guest form submission handling
+            const guestForm = document.querySelector('form[asp-action="GuestLogin"]');
+            if (guestForm) {
+                guestForm.addEventListener('submit', function(e) {
+                    showLoadingState(guestBtn);
+                });
+            }
+            
+            // Enhanced validation summary display - only show if there are actual errors
+            function updateValidationSummary() {
+                if (!validationSummary) return;
+                
+                // Check if ASP.NET Core has populated any validation errors
+                const existingErrors = validationSummary.querySelectorAll('li');
+                const hasServerErrors = existingErrors.length > 0 && 
+                    Array.from(existingErrors).some(li => li.textContent.trim().length > 0);
+                
+                if (hasServerErrors) {
+                    validationSummary.style.display = 'block';
+                } else {
+                    validationSummary.style.display = 'none';
+                }
+            }
+            
+            // Call validation summary update on page load
+            updateValidationSummary();
+            
+            function showLoadingState(button) {
+                const btnText = button.querySelector('.btn-text');
+                const btnLoading = button.querySelector('.btn-loading');
+                
+                if (btnText && btnLoading) {
+                    btnText.style.display = 'none';
+                    btnLoading.style.display = 'inline';
+                    button.disabled = true;
+                }
+            }
+            
+            // Email validation using HTML5 validation
+            emailInput.addEventListener('blur', validateEmail);
+            emailInput.addEventListener('input', function() {
+                // Reset validation state when field is cleared
+                if (this.value.length === 0) {
+                    this.classList.remove('is-valid', 'is-invalid');
+                } else if (this.classList.contains('is-invalid') || this.classList.contains('is-valid')) {
+                    // Re-validate if field already has a validation state
+                    validateEmail.call(this);
+                }
+            });
+            
+            function validateEmail() {
+                const email = this.value;
+                
+                if (email.length === 0) {
+                    // No validation state for empty field
+                    this.classList.remove('is-valid', 'is-invalid');
+                    return;
+                }
+                
+                const isValid = this.checkValidity() && email.length > 0;
+                
+                if (isValid) {
+                    this.classList.add('is-valid');
+                    this.classList.remove('is-invalid');
+                } else {
+                    this.classList.add('is-invalid');
+                    this.classList.remove('is-valid');
+                }
+            }
+            
+            // Password field validation (basic non-empty check)
+            passwordInput.addEventListener('blur', validatePassword);
+            passwordInput.addEventListener('input', function() {
+                // Reset validation state when field is cleared
+                if (this.value.length === 0) {
+                    this.classList.remove('is-valid', 'is-invalid');
+                } else if (this.classList.contains('is-invalid') || this.classList.contains('is-valid')) {
+                    // Re-validate if field already has a validation state
+                    validatePassword.call(this);
+                }
+            });
+            
+            function validatePassword() {
+                const password = this.value;
+                
+                if (password.length === 0) {
+                    // No validation state for empty field
+                    this.classList.remove('is-valid', 'is-invalid');
+                    return;
+                }
+                
+                // Simple validation - just check if password is not empty
+                if (password.length > 0) {
+                    this.classList.add('is-valid');
+                    this.classList.remove('is-invalid');
+                } else {
+                    this.classList.add('is-invalid');
+                    this.classList.remove('is-valid');
+                }
+            }
+        });
+    </script>
 }
