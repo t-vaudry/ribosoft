@@ -156,31 +156,48 @@ namespace Ribosoft.Controllers
         }
 
         /*! \fn SendVerificationEmail
-         * \brief HTTP POST request to send verification email for account
-         * \param model Model object of index view
-         * \return View of the manage account index
+         * \brief HTTP GET request to send verification email for account
+         * \return Redirect to manage account index with status message
          */
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SendVerificationEmail(IndexViewModel model)
+        [HttpGet]
+        public async Task<IActionResult> SendVerificationEmail()
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
-            var email = user.Email ?? throw new InvalidOperationException("User email cannot be null");
-            await _emailSender.SendEmailConfirmationAsync(email, callbackUrl);
+            // Check if email is already confirmed
+            if (user.EmailConfirmed)
+            {
+                StatusMessage = "Your email is already verified.";
+                return RedirectToAction(nameof(Index));
+            }
 
-            StatusMessage = "Verification email sent. Please check your email.";
+            // Check if user has an email address
+            if (string.IsNullOrEmpty(user.Email))
+            {
+                StatusMessage = "Error: No email address found. Please update your profile with a valid email address.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                // Generate email confirmation token and send verification email
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
+                await _emailSender.SendEmailConfirmationAsync(user.Email, callbackUrl);
+
+                _logger.LogInformation("Verification email sent to user {UserId} at {Email}", user.Id, user.Email);
+                StatusMessage = "Verification email sent successfully! Please check your email and click the confirmation link.";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send verification email to user {UserId}", user.Id);
+                StatusMessage = "Error: Failed to send verification email. Please try again later.";
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

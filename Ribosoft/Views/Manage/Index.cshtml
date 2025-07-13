@@ -84,10 +84,10 @@
                         <input asp-for="Email" class="form-control border-warning" placeholder="Enter your email" />
                         <label asp-for="Email">Email Address</label>
                     </div>
-                    <a asp-action="SendVerificationEmail" class="btn btn-warning d-flex align-items-center">
-                        <i class="fas fa-paper-plane me-1"></i>
-                        <span class="d-none d-sm-inline">Send Verification</span>
-                        <span class="d-sm-none">Verify</span>
+                    <a asp-action="SendVerificationEmail" class="btn btn-warning d-flex align-items-center" id="sendVerificationBtn">
+                        <i class="fas fa-paper-plane me-1" id="sendVerificationIcon"></i>
+                        <span class="d-none d-sm-inline" id="sendVerificationText">Send Verification</span>
+                        <span class="d-sm-none" id="sendVerificationTextMobile">Verify</span>
                     </a>
                 </div>
                 <div class="form-text text-warning">
@@ -294,6 +294,31 @@
                 }, 1000);
             });
         });
+        
+        // Send verification email button enhancement
+        const sendVerificationBtn = document.getElementById('sendVerificationBtn');
+        if (sendVerificationBtn) {
+            sendVerificationBtn.addEventListener('click', function(e) {
+                // Prevent double-clicking
+                if (this.classList.contains('disabled')) {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Show loading state
+                const icon = document.getElementById('sendVerificationIcon');
+                const text = document.getElementById('sendVerificationText');
+                const textMobile = document.getElementById('sendVerificationTextMobile');
+                
+                this.classList.add('disabled');
+                icon.className = 'fas fa-spinner fa-spin me-1';
+                if (text) text.textContent = 'Sending...';
+                if (textMobile) textMobile.textContent = 'Sending...';
+                
+                // Allow the navigation to proceed
+                return true;
+            });
+        }
         
         // Ensure phone number is never required on the client side
         document.addEventListener('DOMContentLoaded', function() {
