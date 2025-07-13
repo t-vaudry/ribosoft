@@ -32,8 +32,6 @@ module.exports = (env, argv) => {
     },
     entry: {
       vendor: [
-        'bootstrap',
-        'bootstrap/dist/css/bootstrap.css',
         'bootstrap-vue-next',
         'event-source-polyfill',
         'jquery',
