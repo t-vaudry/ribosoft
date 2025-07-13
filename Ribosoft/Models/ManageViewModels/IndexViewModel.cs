@@ -29,11 +29,10 @@ namespace Ribosoft.Models.ManageViewModels
         public string Email { get; set; } = "";
 
         /*! \property PhoneNumber
-         * \brief User phone number
+         * \brief User phone number (optional)
          */
-        [Phone]
         [Display(Name = "Phone number")]
-        public string PhoneNumber { get; set; } = string.Empty;
+        public string? PhoneNumber { get; set; }
 
         /*! \property StatusMessage
          * \brief Status message

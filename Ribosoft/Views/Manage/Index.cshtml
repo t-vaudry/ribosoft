@@ -32,11 +32,14 @@
     </div>
 
     <!-- Profile Form -->
-    <form method="post" class="needs-validation" novalidate>
-        <div asp-validation-summary="All" class="alert alert-danger d-none" role="alert">
-            <i class="fas fa-exclamation-triangle me-2"></i>
-            <strong>Please correct the following errors:</strong>
-        </div>
+    <form method="post">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="All" class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Please correct the following errors:</strong>
+            </div>
+        }
 
         <!-- Username Section -->
         <div class="form-section mb-4">
@@ -81,7 +84,7 @@
                         <input asp-for="Email" class="form-control border-warning" placeholder="Enter your email" />
                         <label asp-for="Email">Email Address</label>
                     </div>
-                    <a asp-action="SendVerificationEmail" class="btn btn-warning">
+                    <a asp-action="SendVerificationEmail" class="btn btn-warning d-flex align-items-center">
                         <i class="fas fa-paper-plane me-1"></i>
                         <span class="d-none d-sm-inline">Send Verification</span>
                         <span class="d-sm-none">Verify</span>
@@ -98,9 +101,9 @@
         <!-- Phone Number Section -->
         <div class="form-section mb-4">
             <div class="form-floating">
-                <input asp-for="PhoneNumber" class="form-control" placeholder="Enter your phone number" />
+                <input asp-for="PhoneNumber" class="form-control" placeholder="Enter your phone number" type="tel" />
                 <label asp-for="PhoneNumber" class="form-label">
-                    <i class="fas fa-phone me-2 text-primary"></i>Phone Number
+                    <i class="fas fa-phone me-2 text-primary"></i>Phone Number (Optional)
                 </label>
                 <div class="form-text">
                     <i class="fas fa-info-circle me-1"></i>
@@ -194,6 +197,12 @@
         z-index: 4;
     }
 
+    .input-group .btn {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+    }
+
     .form-actions {
         margin-top: 2rem;
     }
@@ -262,39 +271,14 @@
 </style>
 
 <script>
-    // Form validation and UX enhancements
+    // Simple UX enhancements
     (function() {
         'use strict';
-        
-        // Bootstrap form validation
-        const forms = document.querySelectorAll('.needs-validation');
-        Array.from(forms).forEach(function(form) {
-            form.addEventListener('submit', function(event) {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    
-                    // Show validation summary
-                    const validationSummary = form.querySelector('[asp-validation-summary]');
-                    if (validationSummary) {
-                        validationSummary.classList.remove('d-none');
-                    }
-                }
-                form.classList.add('was-validated');
-            }, false);
-        });
         
         // Reset form function
         window.resetForm = function() {
             const form = document.querySelector('form');
             form.reset();
-            form.classList.remove('was-validated');
-            
-            // Hide validation summary
-            const validationSummary = form.querySelector('[asp-validation-summary]');
-            if (validationSummary) {
-                validationSummary.classList.add('d-none');
-            }
         };
         
         // Auto-save indication (visual feedback)
@@ -309,6 +293,15 @@
                     this.classList.remove('border-warning');
                 }, 1000);
             });
+        });
+        
+        // Ensure phone number is never required on the client side
+        document.addEventListener('DOMContentLoaded', function() {
+            const phoneInput = document.querySelector('input[name="PhoneNumber"]');
+            if (phoneInput) {
+                phoneInput.removeAttribute('required');
+                phoneInput.setAttribute('aria-required', 'false');
+            }
         });
     })();
 </script>
