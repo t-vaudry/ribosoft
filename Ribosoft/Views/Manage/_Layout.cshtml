@@ -2,20 +2,204 @@
     Layout = "/Views/Shared/_Layout.cshtml";
 }
 
-<h2 class="my-3">Manage your account</h2>
-
-<div class="row my-3">
-    <div class="col-md-3">
-        <div class="card card-body box-shadow">
-            @await Html.PartialAsync("_ManageNav")
+<div class="manage-layout-container">
+    <!-- Clean Header -->
+    <div class="manage-header mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item">
+                    <a href="/" class="text-decoration-none">
+                        <i class="fas fa-home me-1"></i>Home
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Account Settings</li>
+            </ol>
+        </nav>
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <h1 class="h3 mb-1 fw-bold">Account Settings</h1>
+                <p class="text-muted mb-0">Manage your profile, security, and preferences</p>
+            </div>
+            <div class="d-none d-md-block">
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="window.history.back()">
+                    <i class="fas fa-arrow-left me-1"></i>Back
+                </button>
+            </div>
         </div>
     </div>
-    <div class="col-md-9">
-        @RenderBody()
+
+    <!-- Integrated Tab Container -->
+    <div class="manage-tab-container">
+        <!-- Tab Navigation -->
+        <ul class="nav nav-tabs manage-tabs" id="manageTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")" 
+                   asp-action="Index" role="tab">
+                    <i class="fas fa-user me-2"></i>
+                    <span class="d-none d-sm-inline">Profile</span>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "ChangePassword" ? "active" : "")" 
+                   asp-action="ChangePassword" role="tab">
+                    <i class="fas fa-key me-2"></i>
+                    <span class="d-none d-sm-inline">Password</span>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "TwoFactorAuthentication" ? "active" : "")" 
+                   asp-action="TwoFactorAuthentication" role="tab">
+                    <i class="fas fa-shield-alt me-2"></i>
+                    <span class="d-none d-sm-inline">Security</span>
+                </a>
+            </li>
+            @{
+                var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+            }
+            @if (hasExternalLogins)
+            {
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "ExternalLogins" ? "active" : "")" 
+                       asp-action="ExternalLogins" role="tab">
+                        <i class="fas fa-link me-2"></i>
+                        <span class="d-none d-sm-inline">External</span>
+                    </a>
+                </li>
+            }
+        </ul>
+
+        <!-- Tab Content (Direct Connection) -->
+        <div class="tab-content-area">
+            @RenderBody()
+        </div>
     </div>
 </div>
+
+<style>
+    .manage-layout-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    .manage-header {
+        padding: 1.5rem 0;
+    }
+
+    .breadcrumb {
+        background: none;
+        padding: 0;
+        margin: 0;
+        font-size: 0.875rem;
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: "›";
+        color: #6c757d;
+    }
+
+    /* Integrated Tab Container */
+    .manage-tab-container {
+        background: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        overflow: hidden;
+    }
+
+    /* Tab Navigation */
+    .manage-tabs {
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        margin: 0;
+        padding: 0 1rem;
+    }
+
+    .manage-tabs .nav-link {
+        border: none;
+        color: #6c757d;
+        font-weight: 500;
+        padding: 1rem 1.5rem;
+        transition: all 0.2s ease;
+        position: relative;
+        background: transparent;
+    }
+
+    .manage-tabs .nav-link:hover {
+        color: #0d6efd;
+        background: rgba(13, 110, 253, 0.05);
+    }
+
+    .manage-tabs .nav-link.active {
+        color: #0d6efd;
+        background: white;
+        border-bottom: 2px solid #0d6efd;
+        font-weight: 600;
+    }
+
+    .manage-tabs .nav-link.active::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #0d6efd;
+    }
+
+    /* Content Area */
+    .tab-content-area {
+        padding: 2rem;
+        background: white;
+        min-height: 400px;
+    }
+
+    /* Mobile responsiveness */
+    @@media (max-width: 768px) {
+        .manage-layout-container {
+            padding: 0;
+        }
+
+        .manage-header {
+            padding: 1rem;
+        }
+
+        .manage-tab-container {
+            border-radius: 0;
+            box-shadow: none;
+            border-top: 1px solid #dee2e6;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .manage-tabs {
+            padding: 0 0.5rem;
+        }
+
+        .manage-tabs .nav-link {
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .tab-content-area {
+            padding: 1rem;
+        }
+    }
+
+    /* Tab hover effects */
+    .manage-tabs .nav-link i {
+        transition: transform 0.2s ease;
+    }
+
+    .manage-tabs .nav-link:hover i {
+        transform: scale(1.1);
+    }
+
+    .manage-tabs .nav-link.active i {
+        transform: scale(1.05);
+    }
+</style>
 
 @section Scripts {
     @RenderSection("Scripts", required: false)
 }
-        
+
+@inject SignInManager<ApplicationUser> SignInManager
