@@ -9,16 +9,11 @@
 
 <div class="security-content">
     <!-- Two-Factor Authentication Section -->
-    <div class="security-section mb-4">
-        <div class="section-header d-flex align-items-center justify-content-between mb-3">
-            <div class="d-flex align-items-center">
-                <div class="section-icon me-3">
-                    <i class="fas fa-shield-alt text-primary"></i>
-                </div>
-                <div>
-                    <h5 class="mb-1">Two-Factor Authentication</h5>
-                    <p class="text-muted mb-0 small">Add an extra layer of security to your account</p>
-                </div>
+    <div class="form-section mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+                <h5 class="mb-1">Two-Factor Authentication</h5>
+                <p class="text-muted mb-0 small">Add an extra layer of security to your account</p>
             </div>
             <div class="status-badge">
                 @if (Model.Is2faEnabled)
@@ -35,8 +30,6 @@
                 }
             </div>
         </div>
-
-        <div class="section-content">
             @if (Model.Is2faEnabled)
             {
                 <!-- 2FA Enabled State -->
@@ -107,17 +100,15 @@
         </div>
     </div>
 
+    <!-- Divider -->
+    <hr class="my-4">
+
     <!-- Authenticator App Section -->
-    <div class="security-section mb-4">
-        <div class="section-header d-flex align-items-center justify-content-between mb-3">
-            <div class="d-flex align-items-center">
-                <div class="section-icon me-3">
-                    <i class="fas fa-mobile-alt text-info"></i>
-                </div>
-                <div>
-                    <h5 class="mb-1">Authenticator App</h5>
-                    <p class="text-muted mb-0 small">Manage your authenticator app configuration</p>
-                </div>
+    <div class="form-section mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+                <h5 class="mb-1">Authenticator App</h5>
+                <p class="text-muted mb-0 small">Manage your authenticator app configuration</p>
             </div>
             <div class="status-badge">
                 @if (Model.HasAuthenticator)
@@ -135,23 +126,22 @@
             </div>
         </div>
 
-        <div class="section-content">
-            @if (Model.HasAuthenticator)
-            {
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <p class="mb-1">Your authenticator app is configured and ready to use.</p>
-                        <small class="text-muted">Use your authenticator app to generate verification codes.</small>
-                    </div>
-                    <div class="action-buttons">
-                        <button type="button" class="btn btn-outline-primary me-2" onclick="reconfigureAuthenticator()">
-                            <i class="fas fa-cog me-1"></i>Reconfigure
-                        </button>
-                        <button type="button" class="btn btn-outline-warning" onclick="resetAuthenticator()">
-                            <i class="fas fa-sync me-1"></i>Reset Key
-                        </button>
-                    </div>
+        @if (Model.HasAuthenticator)
+        {
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <p class="mb-1">Your authenticator app is configured and ready to use.</p>
+                    <small class="text-muted">Use your authenticator app to generate verification codes.</small>
                 </div>
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-outline-primary me-2" onclick="reconfigureAuthenticator()">
+                        <i class="fas fa-cog me-1"></i>Reconfigure
+                    </button>
+                    <button type="button" class="btn btn-outline-warning" onclick="resetAuthenticator()">
+                        <i class="fas fa-sync me-1"></i>Reset Key
+                    </button>
+                </div>
+            </div>
             }
             else
             {
@@ -163,7 +153,6 @@
                     </button>
                 </div>
             }
-        </div>
     </div>
 
     <!-- Security Information Section -->
@@ -348,41 +337,13 @@
         max-width: 100%;
     }
 
-    .security-section {
-        background: white;
-        border: 1px solid #e9ecef;
-        border-radius: 0.5rem;
-        padding: 1.5rem;
-        transition: box-shadow 0.2s ease;
-    }
-
-    .security-section:hover {
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-    }
-
-    .section-header {
-        border-bottom: 1px solid #e9ecef;
-        padding-bottom: 1rem;
-    }
-
-    .section-icon {
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #f8f9fa;
-        border-radius: 50%;
-        font-size: 1.2rem;
+    .form-section {
+        margin-bottom: 2rem;
     }
 
     .status-badge .badge {
         font-size: 0.75rem;
         padding: 0.5rem 0.75rem;
-    }
-
-    .section-content {
-        padding-top: 1rem;
     }
 
     .alert-sm {
