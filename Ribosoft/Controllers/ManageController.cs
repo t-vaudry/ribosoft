@@ -459,7 +459,7 @@ namespace Ribosoft.Controllers
 
         /*! \fn Disable2fa
          * \brief HTTP POST request to disable two-factor authentication
-         * \return View of the two-factor authentication index
+         * \return View of the two-factor authentication index or JSON response for AJAX
          */
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -468,16 +468,30 @@ namespace Ribosoft.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, error = "User not found" });
+                }
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
             var disable2faResult = await _userManager.SetTwoFactorEnabledAsync(user, false);
             if (!disable2faResult.Succeeded)
             {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, error = "Unexpected error occurred disabling 2FA" });
+                }
                 throw new ApplicationException($"Unexpected error occured disabling 2FA for user with ID '{user.Id}'.");
             }
 
             _logger.LogInformation("User with ID {UserId} has disabled 2fa.", user.Id);
+            
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return Json(new { success = true, message = "Two-factor authentication has been disabled" });
+            }
+            
             return RedirectToAction(nameof(TwoFactorAuthentication));
         }
 
@@ -571,7 +585,7 @@ namespace Ribosoft.Controllers
 
         /*! \fn ResetAuthenticator
          * \brief HTTP POST request to reset the authentication app key
-         * \return View of the enable authenticator index
+         * \return View of the enable authenticator index or JSON response for AJAX
          */
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -580,12 +594,21 @@ namespace Ribosoft.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, error = "User not found" });
+                }
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
             await _userManager.SetTwoFactorEnabledAsync(user, false);
             await _userManager.ResetAuthenticatorKeyAsync(user);
             _logger.LogInformation("User with id '{UserId}' has reset their authentication app key.", user.Id);
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return Json(new { success = true, message = "Authenticator key has been reset" });
+            }
 
             return RedirectToAction(nameof(EnableAuthenticator));
         }
@@ -613,7 +636,7 @@ namespace Ribosoft.Controllers
 
         /*! \fn GenerateRecoveryCodes
          * \brief HTTP POST request to generate new two-factor authentication recovery codes
-         * \return View of the show recovery codes index
+         * \return View of the show recovery codes index or JSON response for AJAX
          */
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -622,23 +645,125 @@ namespace Ribosoft.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, error = "User not found" });
+                }
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
             if (!user.TwoFactorEnabled)
             {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, error = "Cannot generate recovery codes as 2FA is not enabled" });
+                }
                 throw new ApplicationException($"Cannot generate recovery codes for user with ID '{user.Id}' as they do not have 2FA enabled.");
             }
 
             var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
             _logger.LogInformation("User with ID {UserId} has generated new 2FA recovery codes.", user.Id);
 
-            var model = new ShowRecoveryCodesViewModel { RecoveryCodes = (recoveryCodes ?? Enumerable.Empty<string>()).ToArray() };
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return Json(new { 
+                    success = true, 
+                    codes = recoveryCodes?.ToArray() ?? new string[0],
+                    message = "New recovery codes generated successfully"
+                });
+            }
 
+            var model = new ShowRecoveryCodesViewModel { RecoveryCodes = (recoveryCodes ?? Enumerable.Empty<string>()).ToArray() };
             return View(nameof(ShowRecoveryCodes), model);
         }
 
-        #region Helpers
+        /*! \fn GetAuthenticatorData
+         * \brief HTTP POST request to get authenticator setup data as JSON
+         * \return JSON with shared key and authenticator URI
+         */
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetAuthenticatorData()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Json(new { success = false, error = "User not found" });
+            }
+
+            try
+            {
+                var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);
+                if (string.IsNullOrEmpty(unformattedKey))
+                {
+                    await _userManager.ResetAuthenticatorKeyAsync(user);
+                    unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);
+                }
+
+                var sharedKey = FormatKey(unformattedKey ?? "");
+                var authenticatorUri = GenerateQrCodeUri(user.Email ?? "", unformattedKey ?? "");
+
+                return Json(new { 
+                    success = true, 
+                    sharedKey = sharedKey, 
+                    authenticatorUri = authenticatorUri 
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error generating authenticator data for user {UserId}", user.Id);
+                return Json(new { success = false, error = "Error generating authenticator data" });
+            }
+        }
+
+        /*! \fn GetRecoveryCodes
+         * \brief HTTP GET request to get current recovery codes as JSON
+         * \return JSON with recovery codes
+         */
+        [HttpGet]
+        public async Task<IActionResult> GetRecoveryCodes()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Json(new { success = false, error = "User not found" });
+            }
+
+            if (!user.TwoFactorEnabled)
+            {
+                return Json(new { success = false, error = "Two-factor authentication is not enabled" });
+            }
+
+            try
+            {
+                // Get the count of remaining recovery codes
+                var recoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user);
+                
+                if (recoveryCodesLeft == 0)
+                {
+                    return Json(new { 
+                        success = false, 
+                        error = "No recovery codes available. Please generate new codes.",
+                        needsGeneration = true 
+                    });
+                }
+
+                // Note: ASP.NET Core Identity doesn't provide a way to retrieve the actual 
+                // recovery codes for security reasons. They are hashed and stored securely.
+                // We can only show the count and suggest generating new ones.
+                return Json(new { 
+                    success = false, 
+                    error = $"You have {recoveryCodesLeft} recovery codes remaining, but the actual codes cannot be displayed for security reasons. You can generate new codes if needed.",
+                    recoveryCodesLeft = recoveryCodesLeft,
+                    cannotDisplay = true
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving recovery codes for user {UserId}", user.Id);
+                return Json(new { success = false, error = "Error retrieving recovery codes" });
+            }
+        }
 
         /*! \fn AddErrors
          * \brief Helper function to add errors to the model
@@ -706,7 +831,5 @@ namespace Ribosoft.Controllers
             model.SharedKey = FormatKey(unformattedKey ?? "");
             model.AuthenticatorUri = GenerateQrCodeUri(user.Email ?? "", unformattedKey ?? "");
         }
-
-        #endregion
     }
 }
