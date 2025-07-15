@@ -3,28 +3,11 @@
 }
 
 <div class="manage-layout-container">
-    <!-- Clean Header -->
+    <!-- Centered Header -->
     <div class="manage-header mb-4">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-2">
-                <li class="breadcrumb-item">
-                    <a href="/" class="text-decoration-none">
-                        <i class="fas fa-home me-1"></i>Home
-                    </a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">Account Settings</li>
-            </ol>
-        </nav>
-        <div class="d-flex align-items-center justify-content-between">
-            <div>
-                <h1 class="h3 mb-1 fw-bold">Account Settings</h1>
-                <p class="text-muted mb-0">Manage your profile, security, and preferences</p>
-            </div>
-            <div class="d-none d-md-block">
-                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="window.history.back()">
-                    <i class="fas fa-arrow-left me-1"></i>Back
-                </button>
-            </div>
+        <div class="text-center">
+            <h1 class="h3 mb-2 font-weight-normal">Account Settings</h1>
+            <p class="text-muted">Manage your profile, security, and preferences</p>
         </div>
     </div>
 
@@ -84,18 +67,6 @@
 
     .manage-header {
         padding: 1.5rem 0;
-    }
-
-    .breadcrumb {
-        background: none;
-        padding: 0;
-        margin: 0;
-        font-size: 0.875rem;
-    }
-
-    .breadcrumb-item + .breadcrumb-item::before {
-        content: "›";
-        color: #6c757d;
     }
 
     /* Integrated Tab Container */
