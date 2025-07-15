@@ -7,30 +7,6 @@
 @await Html.PartialAsync("_StatusMessage", Model.StatusMessage)
 
 <div class="profile-content">
-    <!-- Profile Header -->
-    <div class="profile-header mb-4">
-        <div class="d-flex align-items-center">
-            <div class="profile-avatar me-3">
-                @if (User.IsInRole("Administrator"))
-                {
-                    <div class="avatar-circle bg-warning">
-                        <i class="fas fa-crown text-white"></i>
-                    </div>
-                }
-                else
-                {
-                    <div class="avatar-circle bg-primary">
-                        <i class="fas fa-user text-white"></i>
-                    </div>
-                }
-            </div>
-            <div>
-                <h4 class="mb-1">Profile Information</h4>
-                <p class="text-muted mb-0">Update your personal details and contact information</p>
-            </div>
-        </div>
-    </div>
-
     <!-- Profile Form -->
     <form method="post">
         @if (!ViewData.ModelState.IsValid)
@@ -163,22 +139,6 @@
         max-width: 100%;
     }
 
-    .profile-header {
-        padding-bottom: 1rem;
-        border-bottom: 1px solid #e9ecef;
-    }
-
-    .profile-avatar .avatar-circle {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        border: 2px solid rgba(255,255,255,0.3);
-    }
-
     .form-section {
         position: relative;
     }
@@ -240,16 +200,6 @@
 
     /* Mobile responsiveness */
     @@media (max-width: 576px) {
-        .profile-avatar .avatar-circle {
-            width: 40px;
-            height: 40px;
-            font-size: 16px;
-        }
-        
-        .profile-header h4 {
-            font-size: 1.1rem;
-        }
-
         .help-item {
             padding: 0.75rem;
         }
