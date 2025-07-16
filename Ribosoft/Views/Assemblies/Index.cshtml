@@ -1,87 +1,359 @@
-﻿@model IEnumerable<Ribosoft.Models.Assembly>
+@model IEnumerable<Ribosoft.Models.Assembly>
 
 @{
-    ViewData["Title"] = "Assemblies";
+    ViewData["Title"] = "Assembly Databases";
 }
 
-<h1 class="my-3">Assembly databases</h1>
-
-@if (TempData.ContainsKey("Alert"))
-{
-    <div class="alert alert-success" role="alert">
-        @TempData["Alert"]
-    </div>
-}
-
-<div class="card my-3 box-shadow">
-    <div class="card-body">
-        <div class="clearfix pb-2">
-            <h5 class="float-sm-left card-title">Available databases</h5>
-            <div class="float-sm-right"><a class="btn btn-sm btn-primary" asp-action="Rescan">Rescan</a></div>
+<div class="container-fluid px-3 px-md-4">
+    <div class="assemblies-content">
+        <!-- Page Header -->
+        <div class="page-header mb-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-database me-2 text-primary"></i>Assembly Databases
+                    </h1>
+                    <p class="text-muted mb-0">Manage sequence assembly databases for BLAST searches</p>
+                </div>
+                <div class="admin-badge-container">
+                    <span class="badge bg-warning text-dark">
+                        <i class="fas fa-crown me-1"></i>Admin Only
+                    </span>
+                </div>
+            </div>
         </div>
 
-        <div class="table-responsive mb-2">
-            <table class="table table-hover mb-0">
-                <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.TaxonomyId)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.SpeciesId)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.OrganismName)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.AccessionId)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.AssemblyName)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Type)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Path)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.IsEnabled)
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TaxonomyId)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SpeciesId)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.OrganismName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.AccessionId)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.AssemblyName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Type)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Path)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.IsEnabled)
-                        </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
+    <!-- Alert Messages -->
+    @if (TempData.ContainsKey("Alert"))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            @TempData["Alert"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Main Content Card -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-bottom">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h5 class="card-title mb-1">Available Databases</h5>
+                    <small class="text-muted">@Model.Count() database(s) found</small>
+                </div>
+                <div>
+                    <form asp-action="Rescan" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sync me-1"></i>Rescan Databases
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-0">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="border-0 fw-semibold">
+                                    <i class="fas fa-hashtag me-1 text-muted"></i>
+                                    @Html.DisplayNameFor(model => model.TaxonomyId)
+                                </th>
+                                <th class="border-0 fw-semibold">
+                                    <i class="fas fa-dna me-1 text-muted"></i>
+                                    @Html.DisplayNameFor(model => model.SpeciesId)
+                                </th>
+                                <th class="border-0 fw-semibold">
+                                    <i class="fas fa-microscope me-1 text-muted"></i>
+                                    @Html.DisplayNameFor(model => model.OrganismName)
+                                </th>
+                                <th class="border-0 fw-semibold">
+                                    <i class="fas fa-barcode me-1 text-muted"></i>
+                                    @Html.DisplayNameFor(model => model.AccessionId)
+                                </th>
+                                <th class="border-0 fw-semibold">
+                                    <i class="fas fa-tag me-1 text-muted"></i>
+                                    @Html.DisplayNameFor(model => model.AssemblyName)
+                                </th>
+                                <th class="border-0 fw-semibold">
+                                    <i class="fas fa-cube me-1 text-muted"></i>
+                                    @Html.DisplayNameFor(model => model.Type)
+                                </th>
+                                <th class="border-0 fw-semibold">
+                                    <i class="fas fa-folder me-1 text-muted"></i>
+                                    @Html.DisplayNameFor(model => model.Path)
+                                </th>
+                                <th class="border-0 fw-semibold text-center">
+                                    <i class="fas fa-toggle-on me-1 text-muted"></i>
+                                    @Html.DisplayNameFor(model => model.IsEnabled)
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="align-middle">
+                                        <span class="badge bg-light text-dark border">
+                                            @Html.DisplayFor(modelItem => item.TaxonomyId)
+                                        </span>
+                                    </td>
+                                    <td class="align-middle">
+                                        <span class="badge bg-info text-white">
+                                            @Html.DisplayFor(modelItem => item.SpeciesId)
+                                        </span>
+                                    </td>
+                                    <td class="align-middle">
+                                        <div class="organism-name">
+                                            <strong>@Html.DisplayFor(modelItem => item.OrganismName)</strong>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">
+                                        <code class="text-primary">@Html.DisplayFor(modelItem => item.AccessionId)</code>
+                                    </td>
+                                    <td class="align-middle">
+                                        <div class="assembly-name">
+                                            @Html.DisplayFor(modelItem => item.AssemblyName)
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">
+                                        <span class="badge bg-secondary">
+                                            @Html.DisplayFor(modelItem => item.Type)
+                                        </span>
+                                    </td>
+                                    <td class="align-middle">
+                                        <small class="text-muted font-monospace">
+                                            @Html.DisplayFor(modelItem => item.Path)
+                                        </small>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <div class="form-check form-switch d-flex justify-content-center">
+                                            <input class="form-check-input assembly-toggle" 
+                                                   type="checkbox" 
+                                                   @(item.IsEnabled ? "checked" : "") 
+                                                   data-taxonomy-id="@item.TaxonomyId"
+                                                   id="toggle-@item.TaxonomyId"
+                                                   title="@(item.IsEnabled ? "Click to disable" : "Click to enable")">
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-database fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No Assembly Databases Found</h5>
+                    <p class="text-muted mb-3">No assembly databases are currently available in the system.</p>
+                    <form asp-action="Rescan" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sync me-1"></i>Scan for Databases
+                        </button>
+                    </form>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Information Section -->
+    <div class="info-section mt-4">
+        <h6 class="mb-3">
+            <i class="fas fa-info-circle me-2 text-info"></i>Assembly Database Information
+        </h6>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="info-item">
+                    <h6 class="small fw-semibold"><i class="fas fa-database me-2"></i>Database Purpose</h6>
+                    <p class="small text-muted mb-0">Assembly databases contain genomic sequences used for BLAST searches and sequence analysis in ribozyme design workflows.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="info-item">
+                    <h6 class="small fw-semibold"><i class="fas fa-sync me-2"></i>Rescan Function</h6>
+                    <p class="small text-muted mb-2">Use the Rescan button to refresh the database list and detect newly added assembly files in the system directory.</p>
+                    <p class="small text-muted mb-0"><strong>Configured Path:</strong> <code>@ViewBag.BlastDbPath</code></p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="info-item">
+                    <h6 class="small fw-semibold"><i class="fas fa-toggle-on me-2"></i>Enable/Disable</h6>
+                    <p class="small text-muted mb-0">Only enabled databases are available for use in job submissions. Disabled databases are ignored during processing.</p>
+                </div>
+            </div>
+        </div>
         </div>
     </div>
 </div>
+
+<style>
+    .assemblies-content {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .admin-badge-container .badge {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    .table th {
+        font-size: 0.875rem;
+        padding: 1rem 0.75rem;
+        vertical-align: middle;
+    }
+
+    .table td {
+        padding: 0.75rem;
+        vertical-align: middle;
+    }
+
+    .organism-name {
+        font-size: 0.9rem;
+    }
+
+    .assembly-name {
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .info-section {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 0.375rem;
+    }
+
+    .info-item {
+        padding: 1rem;
+        background: white;
+        border-radius: 0.375rem;
+        height: 100%;
+        border: 1px solid #e9ecef;
+    }
+
+    /* Mobile responsiveness */
+    @@media (max-width: 768px) {
+        .page-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .admin-badge-container {
+            margin-top: 0.5rem;
+        }
+
+        .card-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .card-header .btn {
+            margin-top: 0.5rem;
+        }
+
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+
+        .info-item {
+            padding: 0.75rem;
+        }
+    }
+
+    /* Assembly toggle styling */
+    .assembly-toggle {
+        cursor: pointer;
+        transform: scale(1.2);
+    }
+
+    .assembly-toggle:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    /* Custom toggle colors for better visual feedback */
+    .assembly-toggle:checked {
+        background-color: #198754;
+        border-color: #198754;
+    }
+
+    .assembly-toggle:not(:checked) {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .assembly-toggle:focus {
+        box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle assembly toggle switches
+        document.querySelectorAll('.assembly-toggle').forEach(function(toggle) {
+            toggle.addEventListener('change', function() {
+                const taxonomyId = this.dataset.taxonomyId;
+                const isEnabled = this.checked;
+                
+                // Disable the toggle while processing
+                this.disabled = true;
+                this.title = 'Processing...';
+                
+                fetch('/Assemblies/ToggleEnabled', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                    },
+                    body: 'id=' + encodeURIComponent(taxonomyId)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Ensure the toggle reflects the actual state
+                        this.checked = data.isEnabled;
+                        this.title = data.isEnabled ? 'Click to disable' : 'Click to enable';
+                    } else {
+                        // Revert the toggle state on error
+                        this.checked = !isEnabled;
+                        this.title = !isEnabled ? 'Click to disable' : 'Click to enable';
+                        alert('Error: ' + (data.message || 'Failed to update assembly status'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    
+                    // Revert the toggle state on error
+                    this.checked = !isEnabled;
+                    this.title = !isEnabled ? 'Click to disable' : 'Click to enable';
+                    alert('An error occurred while updating the assembly status');
+                })
+                .finally(() => {
+                    // Re-enable the toggle
+                    this.disabled = false;
+                });
+            });
+        });
+    });
+</script>
