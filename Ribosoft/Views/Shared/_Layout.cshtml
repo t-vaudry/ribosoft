@@ -34,18 +34,27 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item" is-active-route asp-controller="Request" asp-action="Index">
-                                <a asp-controller="Request" asp-action="Index" class="nav-link">New request</a>
+                                <a asp-controller="Request" asp-action="Index" class="nav-link">
+                                    <i class="fas fa-plus me-2"></i>New Request
+                                </a>
                             </li>
                             <li class="nav-item" is-active-route asp-controller="Jobs">
-                                <a asp-controller="Jobs" asp-action="Index" class="nav-link">Jobs</a>
+                                <a asp-controller="Jobs" asp-action="Index" class="nav-link">
+                                    <i class="fas fa-list me-2"></i>Jobs
+                                </a>
                             </li>
                             <li class="nav-item" is-active-route asp-controller="Ribozymes">
-                                <a asp-controller="Ribozymes" asp-action="Index" class="nav-link">Ribozymes</a>
+                                <a asp-controller="Ribozymes" asp-action="Index" class="nav-link">
+                                    <i class="fas fa-dna me-2"></i>Ribozymes
+                                </a>
                             </li>
-                            if (User.IsInRole("Administrator"))
+                            @if (User.IsInRole("Administrator"))
                             {
                                 <li class="nav-item" is-active-route asp-controller="Assemblies">
-                                    <a asp-controller="Assemblies" asp-action="Index" class="nav-link">Assemblies</a>
+                                    <a asp-controller="Assemblies" asp-action="Index" class="nav-link admin-link">
+                                        <i class="fas fa-database me-2"></i>Assemblies
+                                        <span class="admin-badge">Admin</span>
+                                    </a>
                                 </li>
                             }
                         }
@@ -74,6 +83,60 @@
     <script src="~/dist/runtime.js" asp-append-version="true"></script>
     <script src="~/dist/vendors.js" asp-append-version="true"></script>
     <script src="~/dist/main.js" asp-append-version="true"></script>
+    
+    <style>
+        /* Clean Navigation Styling */
+        .navbar-nav .nav-link {
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+            border-radius: 0.25rem;
+            transition: background-color 0.2s ease;
+            font-weight: 500;
+        }
+        
+        .navbar-nav .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .navbar-nav .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        .navbar-nav .nav-link i {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        /* Admin link styling */
+        .admin-link {
+            position: relative;
+        }
+        
+        .admin-badge {
+            background-color: #ffc107;
+            color: #000;
+            font-size: 0.65rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 0.75rem;
+            margin-left: 0.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Mobile responsiveness */
+        @@media (max-width: 991.98px) {
+            .navbar-nav .nav-link {
+                margin: 0.25rem 0;
+                padding: 0.75rem 1rem;
+            }
+            
+            .admin-badge {
+                margin-left: 0.75rem;
+            }
+        }
+    </style>
+    
     @RenderSection("scripts", required: false)
 </body>
 </html>
