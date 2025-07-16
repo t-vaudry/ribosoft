@@ -128,7 +128,10 @@ public class Program
         services.AddCloudscribePagination();
         
         // Hangfire server
-        services.AddHangfireServer();
+        services.AddHangfireServer(options =>
+        {
+            options.Queues = new[] { "default", "blast" };
+        });
     }
     
     private static void ConfigurePipeline(WebApplication app)
