@@ -32,7 +32,7 @@
             </div>
         </div>
 
-        <div id="app">
+        <div class="request-content">
             <form method="post">
                 <!-- Error Messages -->
                 @if (Model.ExceededMaxRequests)
@@ -150,7 +150,7 @@
                                         <label class="btn btn-outline-primary" for="FASTAfileInput">
                                             <i class="fas fa-file-upload me-2"></i>Choose FASTA File
                                         </label>
-                                        <input type="file" class="form-control d-none" v-on:change="processFASTAfile" :disabled="genbankLoading" id="FASTAfileInput">
+                                        <input type="file" class="form-control d-none" id="FASTAfileInput">
                                     </div>
                                     <small class="text-muted mt-2 d-block">Upload a FASTA file to automatically populate the sequence</small>
                                 </div>
@@ -161,16 +161,16 @@
                                         <i class="fas fa-database me-2"></i>GenBank Lookup
                                     </h6>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" id="accesionNumber" :disabled="genbankLoading" placeholder="Accession number">
-                                        <button type="button" class="btn btn-outline-success" v-on:click="getFromGenbank" :disabled="genbankLoading">
+                                        <input type="text" class="form-control" id="accesionNumber" placeholder="Accession number">
+                                        <button type="button" class="btn btn-outline-success" id="genbankSearchBtn">
                                             <i class="fas fa-search me-1"></i>Search
                                         </button>
                                     </div>
                                     <div class="mt-2">
-                                        <span v-if="genbankLoading" v-cloak>
+                                        <span id="genbankLoading" style="display: none;">
                                             <i class="fas fa-spinner fa-spin me-1"></i>Loading...
                                         </span>
-                                        <span class="text-danger" v-cloak>{{ genbankStatus }}</span>
+                                        <span class="text-danger" id="genbankStatus"></span>
                                     </div>
                                     <small class="text-muted mt-1 d-block">@Localizer["GenBankTooltip"]</small>
                                 </div>
@@ -185,8 +185,6 @@
                                            id="orfStart" 
                                            class="form-control" 
                                            min="0" 
-                                           v-on:change="openReadingFrame" 
-                                           :disabled="genbankLoading"
                                            placeholder="0">
                                     <label asp-for="OpenReadingFrameStart">
                                         <i class="fas fa-play me-2"></i>@Html.DisplayNameFor(model => model.OpenReadingFrameStart)
@@ -204,8 +202,6 @@
                                            id="orfEnd" 
                                            class="form-control" 
                                            min="0" 
-                                           v-on:change="openReadingFrame" 
-                                           :disabled="genbankLoading"
                                            placeholder="0">
                                     <label asp-for="OpenReadingFrameEnd">
                                         <i class="fas fa-stop me-2"></i>@Html.DisplayNameFor(model => model.OpenReadingFrameEnd)
@@ -222,7 +218,7 @@
                 </div>
 
                 <!-- Target Regions Card -->
-                <div class="card border-0 shadow-sm mb-4" v-show="ORFExists">
+                <div class="card border-0 shadow-sm mb-4" id="targetRegionsCard" style="display: none;">
                     <div class="card-header bg-white border-bottom">
                         <h5 class="card-title mb-1">
                             <i class="fas fa-crosshairs me-2 text-warning"></i>Target Regions
@@ -278,7 +274,6 @@
                                                    asp-for="SelectedTargetEnvironment" 
                                                    type="radio" 
                                                    value="@item.Value" 
-                                                   v-on:change="targetEnvironment" 
                                                    id="targetEnvironment@(item.Value)">
                                             <label class="form-check-label w-100" for="targetEnvironment@(item.Value)">
                                                 <div class="card h-100">
@@ -296,7 +291,7 @@
                         </div>
 
                         <!-- In Vivo Specific Settings -->
-                        <div v-show="inVivoSelected">
+                        <div id="inVivoSettings" style="display: none;">
                             <div class="border-top pt-4 mb-4">
                                 <div class="form-group mb-3">
                                     <label for="environmentSearch" class="form-label">

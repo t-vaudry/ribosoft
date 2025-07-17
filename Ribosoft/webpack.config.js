@@ -2,7 +2,6 @@ const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const { VueLoaderPlugin } = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const bundleOutputDir = './wwwroot/dist';
@@ -22,9 +21,8 @@ module.exports = (env, argv) => {
         },
         context: __dirname,
         resolve: {
-            extensions: ['.js', '.vue', '.ts', '.json'],
+            extensions: ['.js', '.ts', '.json'],
             alias: {
-                'vue$': 'vue/dist/vue.esm-bundler.js',
                 '@': path.resolve(__dirname, 'ClientApp'),
                 '~': path.resolve(__dirname, 'node_modules')
             },
@@ -41,21 +39,6 @@ module.exports = (env, argv) => {
         },
         module: {
             rules: [
-                {
-                    test: /\.vue$/,
-                    loader: 'vue-loader',
-                    include: path.resolve(__dirname, 'ClientApp'),
-                    options: {
-                        compilerOptions: {
-                            isCustomElement: tag => tag.startsWith('fornac-')
-                        }
-                    }
-                },
-                {
-                    test: /\.vue\.html$/,
-                    loader: 'vue-loader',
-                    include: path.resolve(__dirname, 'ClientApp')
-                },
                 {
                     test: /\.css$/,
                     use: [
@@ -173,12 +156,8 @@ module.exports = (env, argv) => {
             chunkIds: 'deterministic'
         },
         plugins: [
-            new VueLoaderPlugin(),
             new webpack.DefinePlugin({
-                'process.env.NODE_ENV': JSON.stringify(isDevBuild ? 'development' : 'production'),
-                '__VUE_OPTIONS_API__': JSON.stringify(true),
-                '__VUE_PROD_DEVTOOLS__': JSON.stringify(isDevBuild),
-                '__VUE_PROD_HYDRATION_MISMATCH_DETAILS__': JSON.stringify(isDevBuild)
+                'process.env.NODE_ENV': JSON.stringify(isDevBuild ? 'development' : 'production')
             }),
             // Only add DllReferencePlugin if vendor-manifest.json exists
             ...((() => {
