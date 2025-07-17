@@ -32,12 +32,10 @@ module.exports = (env, argv) => {
     },
     entry: {
       vendor: [
-        'bootstrap-vue-next',
         'event-source-polyfill',
         'jquery',
         'jquery-validation',
         'jquery-validation-unobtrusive',
-        'vue',
         'qrious',
         'axios',
         '@fortawesome/fontawesome-free/css/all.css'
