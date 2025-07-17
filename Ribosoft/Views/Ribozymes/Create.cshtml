@@ -1,64 +1,288 @@
-﻿@model Ribosoft.Models.RibozymeViewModel.RibozymeCreateViewModel
+@model Ribosoft.Models.RibozymeViewModel.RibozymeCreateViewModel
 
 @{
     ViewData["Title"] = "Create Ribozyme";
 }
 
-<h2 class="my-3">Create a ribozyme</h2>
-
-@using (Html.BeginForm("Create", "Ribozymes", FormMethod.Post))
-{
-    <div class="card my-3 box-shadow">
-        <div class="card-body">        
-            <h5 class="card-title border-bottom border-gray pb-2 mb-3">Basic information</h5>
-
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group mb-0">
-                <label asp-for="Name"></label>
-                <input asp-for="Name" class="form-control"/>
-                <span asp-validation-for="Name" class="text-danger"></span>
+<div class="container-fluid px-3 px-md-4">
+    <div class="ribozymes-content">
+        <!-- Page Header -->
+        <div class="page-header mb-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-plus-circle me-2 text-success"></i>Create New Ribozyme
+                    </h1>
+                    <p class="text-muted mb-0">Define a new ribozyme template with structural configurations</p>
+                </div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Ribozymes" asp-action="Index" class="text-decoration-none">
+                                <i class="fas fa-dna me-1"></i>Ribozymes
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Create</li>
+                    </ol>
+                </nav>
             </div>
         </div>
+
+        @using (Html.BeginForm("Create", "Ribozymes", FormMethod.Post))
+        {
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Please correct the following errors:</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <!-- Basic Information Card -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="card-title mb-1">
+                        <i class="fas fa-info-circle me-2 text-primary"></i>Basic Information
+                    </h5>
+                    <small class="text-muted">Enter the basic details for your new ribozyme</small>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-floating">
+                                <input asp-for="Name" class="form-control @(ViewData.ModelState["Name"]?.Errors.Count > 0 ? "is-invalid" : "")" 
+                                       placeholder="Enter ribozyme name" />
+                                <label asp-for="Name">
+                                    <i class="fas fa-tag me-2"></i>Ribozyme Name
+                                </label>
+                                <span asp-validation-for="Name" class="invalid-feedback"></span>
+                            </div>
+                            <div class="form-text">
+                                <i class="fas fa-lightbulb me-1"></i>
+                                Choose a descriptive name that will help you identify this ribozyme later.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Structures Card -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h5 class="card-title mb-1">
+                                <i class="fas fa-project-diagram me-2 text-primary"></i>Ribozyme Structures
+                            </h5>
+                            <small class="text-muted">Define the structural configurations for this ribozyme</small>
+                        </div>
+                        <div>
+                            <button id="AddStructure" type="button" class="btn btn-success">
+                                <i class="fas fa-plus me-1"></i>Add Structure
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Structure Information:</strong> Each ribozyme can have multiple structures. At least one structure is required for the ribozyme to be functional.
+                    </div>
+                    
+                    <div id="structures-container">
+                        @Html.EditorFor(model => model.RibozymeStructures)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <a class="btn btn-outline-secondary" asp-controller="Ribozymes" asp-action="Index">
+                    <i class="fas fa-arrow-left me-2"></i>Cancel
+                </a>
+                <div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Create Ribozyme
+                    </button>
+                </div>
+            </div>
+        }
     </div>
+</div>
 
-    <div class="card my-3 box-shadow">
-        <div class="card-body">
-            <div class="float-md-right"><button id="AddStructure" type="button" class="btn btn-sm btn-primary">Add <i class="fas fa-plus-circle ml-1"></i></button></div>
-            <h5 class="card-title border-bottom border-gray pb-3 mb-3">Structures</h5>
-            @Html.EditorFor(model => model.RibozymeStructures)
-        </div>
-    </div>
+<style>
+    .ribozymes-content {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
 
-    <div class="clearfix">
-        <a class="btn btn-secondary float-md-left" asp-controller="Ribozymes" asp-action="Index"><i class="fas fa-arrow-left mr-1"></i> Cancel</a>
-        <input type="submit" value="Create" class="btn btn-primary float-md-right" />
-    </div>   
-}
+    .page-header {
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e9ecef;
+    }
 
-@section scripts {
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    /* Mobile responsiveness */
+    @@media (max-width: 768px) {
+        .page-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .page-header nav {
+            margin-top: 0.5rem;
+        }
+
+        .card-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .card-header .btn {
+            margin-top: 0.5rem;
+        }
+    }
+</style>
+
+@section Scripts {
     <script type="text/javascript">
-        $('#AddStructure').click(function () {
-            var structures = $('.ribozyme-structure');
-            var count = structures.length;
-            var clone = structures.first().clone();
-            clone.html($(clone).html().replace(/\[0\]/g, '[' + count + ']'));
-            clone.html($(clone).html().replace(/_0__/g, '_' + count + '__'));
-            structures.last().after(clone);
-            clone.find('input').val('');
-            clone.find('button').removeClass('d-none');
+        // Wait for page to load and then initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Give a moment for all scripts to load
+            setTimeout(function() {
+                if (typeof $ !== 'undefined') {
+                    console.log('jQuery loaded, initializing ribozyme scripts');
+                    initializeRibozymeScripts();
+                } else {
+                    console.error('jQuery is not available. Please check if jQuery is properly loaded.');
+                    // Fallback to vanilla JavaScript if needed
+                    initializeVanillaScripts();
+                }
+            }, 100);
         });
 
+        function initializeRibozymeScripts() {
+            // Add structure functionality
+            $('#AddStructure').click(function () {
+                console.log('Add Structure button clicked');
+                
+                var structures = $('.ribozyme-structure');
+                console.log('Found structures:', structures.length);
+                
+                var count = structures.length;
+                var clone = structures.first().clone();
+                
+                // Update field names and IDs for the new structure
+                clone.html($(clone).html().replace(/\[0\]/g, '[' + count + ']'));
+                clone.html($(clone).html().replace(/_0__/g, '_' + count + '__'));
+                
+                // Add the new structure after the last one
+                structures.last().after(clone);
+                
+                // Clear all input values in the cloned structure
+                clone.find('input, textarea').val('');
+                clone.find('input[type="checkbox"]').prop('checked', false);
+                
+                // Show remove button for cloned structure
+                clone.find('.remove-structure-btn').removeClass('d-none');
+                
+                // Update structure numbers
+                $('.ribozyme-structure').each(function(index) {
+                    $(this).find('.structure-number').text('Structure ' + (index + 1));
+                });
+                
+                console.log('Structure added, new total:', $('.ribozyme-structure').length);
+            });
+        }
+
+        function initializeVanillaScripts() {
+            console.log('Initializing with vanilla JavaScript as fallback');
+            
+            var addButton = document.getElementById('AddStructure');
+            if (addButton) {
+                addButton.addEventListener('click', function() {
+                    console.log('Add Structure button clicked (vanilla JS)');
+                    
+                    var structures = document.querySelectorAll('.ribozyme-structure');
+                    console.log('Found structures:', structures.length);
+                    
+                    if (structures.length > 0) {
+                        var count = structures.length;
+                        var clone = structures[0].cloneNode(true);
+                        
+                        // Update field names and IDs
+                        clone.innerHTML = clone.innerHTML.replace(/\[0\]/g, '[' + count + ']');
+                        clone.innerHTML = clone.innerHTML.replace(/_0__/g, '_' + count + '__');
+                        
+                        // Add after last structure
+                        structures[structures.length - 1].parentNode.insertBefore(clone, structures[structures.length - 1].nextSibling);
+                        
+                        // Clear inputs
+                        var inputs = clone.querySelectorAll('input, textarea');
+                        inputs.forEach(function(input) {
+                            if (input.type === 'checkbox') {
+                                input.checked = false;
+                            } else {
+                                input.value = '';
+                            }
+                        });
+                        
+                        // Show remove button
+                        var removeBtn = clone.querySelector('.remove-structure-btn');
+                        if (removeBtn) {
+                            removeBtn.classList.remove('d-none');
+                        }
+                        
+                        // Update structure numbers
+                        var allStructures = document.querySelectorAll('.ribozyme-structure');
+                        allStructures.forEach(function(structure, index) {
+                            var numberSpan = structure.querySelector('.structure-number');
+                            if (numberSpan) {
+                                numberSpan.textContent = 'Structure ' + (index + 1);
+                            }
+                        });
+                        
+                        console.log('Structure added, new total:', allStructures.length);
+                    }
+                });
+            }
+        }
+
+        // Global function for remove button
         function removeStructure(event, el) {
             event.preventDefault();
-            var index = el.id.slice(1, -2);
-            var structures = $('.ribozyme-structure');
-            var count = structures.length;
-            structures.remove('div.ribozyme-structure:has(button#' + el.id + ')');
-            structures.splice(index, 1);
-            for (var i = index; i < count - 1; i++) {
-                var element = structures[i];
-                $(element).html($(element).html().replace(/\[[0-9]+\]/g, '[' + i + ']'));
-                $(element).html($(element).html().replace(/_[0-9]+__/g, '_' + i + '__'));
+            console.log('Remove structure clicked');
+            
+            var structures = document.querySelectorAll('.ribozyme-structure');
+            if (structures.length > 1) {
+                // Remove the structure
+                el.closest('.ribozyme-structure').remove();
+                
+                // Reindex all remaining structures
+                var remainingStructures = document.querySelectorAll('.ribozyme-structure');
+                remainingStructures.forEach(function(structure, index) {
+                    // Update structure number
+                    var numberSpan = structure.querySelector('.structure-number');
+                    if (numberSpan) {
+                        numberSpan.textContent = 'Structure ' + (index + 1);
+                    }
+                    
+                    // Update all field names and IDs
+                    structure.innerHTML = structure.innerHTML.replace(/\[[0-9]+\]/g, '[' + index + ']');
+                    structure.innerHTML = structure.innerHTML.replace(/_[0-9]+__/g, '_' + index + '__');
+                });
+                
+                console.log('Structure removed, new total:', remainingStructures.length);
+            } else {
+                alert('At least one structure is required');
             }
         }
     </script>

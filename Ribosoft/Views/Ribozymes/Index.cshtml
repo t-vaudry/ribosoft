@@ -1,55 +1,267 @@
-﻿@model IEnumerable<Ribosoft.Models.Ribozyme>
+@model IEnumerable<Ribosoft.Models.Ribozyme>
 
 @{
     ViewData["Title"] = "Ribozymes";
 }
 
-<h1 class="my-3">Ribozyme management</h1>
-
-<div class="card my-3 box-shadow">
-    <div class="card-body">
-        <h5 class="float-md-left card-title">Ribozymes</h5>
-
-        @if (User.IsInRole("Administrator"))
-        {
-            <div class="float-md-right"><a class="btn btn-sm btn-primary" asp-action="Create">Create <i class="fas fa-plus-circle ml-1"></i></a></div>
-        }
-
-        <div class="table-responsive mb-0">
-            <table class="table table-hover mb-0">
-                <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Name)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.CreatedAt)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.UpdatedAt)
-                    </th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var item in Model) {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CreatedAt)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.UpdatedAt)
-                        </td>
-                        <td class="text-right">
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Details <i class="fas fa-info-circle ml-1"></i></a>
-                        </td>
-                    </tr>
+<div class="container-fluid px-3 px-md-4">
+    <div class="ribozymes-content">
+        <!-- Page Header -->
+        <div class="page-header mb-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-dna me-2 text-primary"></i>Ribozyme Management
+                    </h1>
+                    <p class="text-muted mb-0">Manage ribozyme templates and their structural configurations</p>
+                </div>
+                @if (User.IsInRole("Administrator"))
+                {
+                    <div class="admin-badge-container">
+                        <span class="badge bg-warning text-dark">
+                            <i class="fas fa-crown me-1"></i>Admin Only
+                        </span>
+                    </div>
                 }
-                </tbody>
-            </table>
+            </div>
+        </div>
+
+        <!-- Main Content Card -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="card-title mb-1">Available Ribozymes</h5>
+                        <small class="text-muted">@Model.Count() ribozyme@(Model.Count() != 1 ? "s" : "") found</small>
+                    </div>
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <div>
+                            <a class="btn btn-primary" asp-action="Create">
+                                <i class="fas fa-plus me-1"></i>Create New Ribozyme
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                @if (Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="border-0 fw-semibold">
+                                        <i class="fas fa-hashtag me-1 text-muted"></i>
+                                        ID
+                                    </th>
+                                    <th class="border-0 fw-semibold">
+                                        <i class="fas fa-tag me-1 text-muted"></i>
+                                        @Html.DisplayNameFor(model => model.Name)
+                                    </th>
+                                    <th class="border-0 fw-semibold">
+                                        <i class="fas fa-project-diagram me-1 text-muted"></i>
+                                        Structures
+                                    </th>
+                                    <th class="border-0 fw-semibold">
+                                        <i class="fas fa-calendar-plus me-1 text-muted"></i>
+                                        @Html.DisplayNameFor(model => model.CreatedAt)
+                                    </th>
+                                    <th class="border-0 fw-semibold">
+                                        <i class="fas fa-calendar-edit me-1 text-muted"></i>
+                                        @Html.DisplayNameFor(model => model.UpdatedAt)
+                                    </th>
+                                    <th class="border-0 fw-semibold text-center">
+                                        <i class="fas fa-cogs me-1 text-muted"></i>
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="align-middle">
+                                            <span class="badge bg-light text-dark border">
+                                                #@item.Id
+                                            </span>
+                                        </td>
+                                        <td class="align-middle">
+                                            <div class="ribozyme-name">
+                                                <strong>@Html.DisplayFor(modelItem => item.Name)</strong>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">
+                                            <span class="badge bg-primary">
+                                                @item.RibozymeStructures.Count
+                                            </span>
+                                        </td>
+                                        <td class="align-middle">
+                                            <small class="text-muted">
+                                                @Html.DisplayFor(modelItem => item.CreatedAt)
+                                            </small>
+                                        </td>
+                                        <td class="align-middle">
+                                            <small class="text-muted">
+                                                @Html.DisplayFor(modelItem => item.UpdatedAt)
+                                            </small>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <div class="btn-group" role="group">
+                                                <a asp-action="Details" asp-route-id="@item.Id" 
+                                                   class="btn btn-outline-primary btn-sm" 
+                                                   title="View Details">
+                                                    <i class="fas fa-info-circle me-1"></i>Details
+                                                </a>
+                                                @if (User.IsInRole("Administrator"))
+                                                {
+                                                    <a asp-action="Edit" asp-route-id="@item.Id" 
+                                                       class="btn btn-outline-secondary btn-sm" 
+                                                       title="Edit Ribozyme">
+                                                        <i class="fas fa-edit me-1"></i>Edit
+                                                    </a>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-dna fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No Ribozymes Found</h5>
+                        <p class="text-muted mb-3">No ribozymes are currently available in the system.</p>
+                        @if (User.IsInRole("Administrator"))
+                        {
+                            <a class="btn btn-primary" asp-action="Create">
+                                <i class="fas fa-plus me-1"></i>Create First Ribozyme
+                            </a>
+                        }
+                        else
+                        {
+                            <p class="text-muted">Contact your administrator to create ribozymes.</p>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Information Section -->
+        <div class="info-section mt-4">
+            <h6 class="mb-3">
+                <i class="fas fa-info-circle me-2 text-info"></i>Ribozyme Management Information
+            </h6>
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="info-item">
+                        <h6 class="small fw-semibold"><i class="fas fa-dna me-2"></i>Ribozyme Templates</h6>
+                        <p class="small text-muted mb-0">Ribozymes are RNA molecules that can catalyze specific chemical reactions. These templates define the structural and sequence parameters for ribozyme design.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="info-item">
+                        <h6 class="small fw-semibold"><i class="fas fa-project-diagram me-2"></i>Structure Management</h6>
+                        <p class="small text-muted mb-0">Each ribozyme can contain multiple structural configurations. These structures define the sequence, secondary structure, substrate template, and cutting parameters.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="info-item">
+                        <h6 class="small fw-semibold"><i class="fas fa-crown me-2"></i>Administrator Access</h6>
+                        <p class="small text-muted mb-0">Only administrators can create, edit, or delete ribozymes. Regular users can view ribozyme details and use them in job submissions.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+    .ribozymes-content {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .admin-badge-container .badge {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    .table th {
+        font-size: 0.875rem;
+        padding: 1rem 0.75rem;
+        vertical-align: middle;
+    }
+
+    .table td {
+        padding: 0.75rem;
+        vertical-align: middle;
+    }
+
+    .ribozyme-name {
+        font-size: 0.9rem;
+    }
+
+    .info-section {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 0.375rem;
+    }
+
+    .info-item {
+        padding: 1rem;
+        background: white;
+        border-radius: 0.375rem;
+        height: 100%;
+        border: 1px solid #e9ecef;
+    }
+
+    /* Mobile responsiveness */
+    @@media (max-width: 768px) {
+        .page-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .admin-badge-container {
+            margin-top: 0.5rem;
+        }
+
+        .card-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .card-header .btn {
+            margin-top: 0.5rem;
+        }
+
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+
+        .info-item {
+            padding: 0.75rem;
+        }
+    }
+</style>

@@ -1,54 +1,145 @@
-﻿@model Ribosoft.Models.RibozymeStructure
+@model Ribosoft.Models.RibozymeStructure
 
-<div class="ribozyme-structure card px-3 my-3">
-    <div class="form-group row mt-3 mb-2">
-        <h6 class="col-md-11">Ribozyme</h6>
-        <div class="col-md-1 px-0">
-            <button id="_0__" class="btn btn-danger float-right d-none" onclick="removeStructure(event, this)"><i class="fas fa-trash"></i></button>
+<div class="ribozyme-structure card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white border-bottom">
+        <div class="d-flex justify-content-between align-items-center">
+            <h6 class="card-title mb-0">
+                <i class="fas fa-dna text-success me-2"></i>
+                <span class="structure-number">Structure 1</span>
+            </h6>
+            <button type="button" id="_0__" class="btn btn-outline-danger btn-sm remove-structure-btn d-none" 
+                    onclick="removeStructure(event, this)" 
+                    title="Remove this structure">
+                <i class="fas fa-trash-alt me-1"></i>Remove
+            </button>
         </div>
     </div>
+    
+    <div class="card-body">
+        <!-- Ribozyme Section -->
+        <div class="mb-4">
+            <h6 class="text-primary border-bottom pb-2 mb-3">
+                <i class="fas fa-dna me-2"></i>Ribozyme Information
+            </h6>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <textarea asp-for="Sequence" class="form-control @(ViewData.ModelState[Html.NameFor(m => m.Sequence)]?.Errors.Count > 0 ? "is-invalid" : "")" 
+                                  style="height: 80px;" placeholder="Enter ribozyme sequence"></textarea>
+                        <label asp-for="Sequence">
+                            <i class="fas fa-dna me-2"></i>@Html.DisplayNameFor(model => model.Sequence)
+                        </label>
+                        <span asp-validation-for="Sequence" class="invalid-feedback"></span>
+                    </div>
+                    <div class="form-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        RNA sequence using standard nucleotide notation (A, U, G, C)
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <textarea asp-for="Structure" class="form-control @(ViewData.ModelState[Html.NameFor(m => m.Structure)]?.Errors.Count > 0 ? "is-invalid" : "")" 
+                                  style="height: 80px;" placeholder="Enter structure notation"></textarea>
+                        <label asp-for="Structure">
+                            <i class="fas fa-project-diagram me-2"></i>@Html.DisplayNameFor(model => model.Structure)
+                        </label>
+                        <span asp-validation-for="Structure" class="invalid-feedback"></span>
+                    </div>
+                    <div class="form-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Secondary structure in dot-bracket notation with letters/numbers for pseudoknots
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div class="form-group row">
-        <label asp-for="Sequence" class="col-md-2 col-form-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Sequence" class="form-control" />
-            <span asp-validation-for="Sequence" class="text-danger"></span>
+        <!-- Substrate Section -->
+        <div class="mb-4">
+            <h6 class="text-info border-bottom pb-2 mb-3">
+                <i class="fas fa-flask me-2"></i>Substrate Information
+            </h6>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <textarea asp-for="SubstrateTemplate" class="form-control @(ViewData.ModelState[Html.NameFor(m => m.SubstrateTemplate)]?.Errors.Count > 0 ? "is-invalid" : "")" 
+                                  style="height: 80px;" placeholder="Enter substrate template"></textarea>
+                        <label asp-for="SubstrateTemplate">
+                            <i class="fas fa-flask me-2"></i>@Html.DisplayNameFor(model => model.SubstrateTemplate)
+                        </label>
+                        <span asp-validation-for="SubstrateTemplate" class="invalid-feedback"></span>
+                    </div>
+                    <div class="form-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Target substrate sequence template
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <textarea asp-for="SubstrateStructure" class="form-control @(ViewData.ModelState[Html.NameFor(m => m.SubstrateStructure)]?.Errors.Count > 0 ? "is-invalid" : "")" 
+                                  style="height: 80px;" placeholder="Enter substrate structure"></textarea>
+                        <label asp-for="SubstrateStructure">
+                            <i class="fas fa-sitemap me-2"></i>@Html.DisplayNameFor(model => model.SubstrateStructure)
+                        </label>
+                        <span asp-validation-for="SubstrateStructure" class="invalid-feedback"></span>
+                    </div>
+                    <div class="form-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Substrate secondary structure notation
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        <label asp-for="Structure" class="col-md-2 col-form-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Structure" class="form-control" />
-            <span asp-validation-for="Structure" class="text-danger"></span>
-        </div>
-    </div>
 
-    <h6 class="my-3">Substrate</h6>
-    <div class="form-group row">
-        <label asp-for="SubstrateTemplate" class="col-md-2 col-form-label"></label>
-        <div class="col-md-10">
-            <input asp-for="SubstrateTemplate" class="form-control" />
-            <span asp-validation-for="SubstrateTemplate" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label asp-for="SubstrateStructure" class="col-md-2 col-form-label"></label>
-        <div class="col-md-10">
-            <input asp-for="SubstrateStructure" class="form-control" />
-            <span asp-validation-for="SubstrateStructure" class="text-danger"></span>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Cutsite"></label>
-        <input asp-for="Cutsite" class="form-control" />
-        <span asp-validation-for="Cutsite" class="text-danger"></span>
-    </div>
-    <div class="form-group mb-0">
-        <div class="checkbox">
-            <label>
-                <input asp-for="PostProcess" /> @Html.DisplayNameFor(model => model.PostProcess)
-            </label>
+        <!-- Configuration Section -->
+        <div class="mb-0">
+            <h6 class="text-warning border-bottom pb-2 mb-3">
+                <i class="fas fa-cogs me-2"></i>Configuration
+            </h6>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="Cutsite" type="number" min="0" max="30000" 
+                               class="form-control @(ViewData.ModelState[Html.NameFor(m => m.Cutsite)]?.Errors.Count > 0 ? "is-invalid" : "")" 
+                               placeholder="Enter cutsite position" />
+                        <label asp-for="Cutsite">
+                            <i class="fas fa-cut me-2"></i>@Html.DisplayNameFor(model => model.Cutsite)
+                        </label>
+                        <span asp-validation-for="Cutsite" class="invalid-feedback"></span>
+                    </div>
+                    <div class="form-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Position where the ribozyme will cut the substrate (0-30000)
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <div class="form-check form-switch mt-4">
+                        <input asp-for="PostProcess" class="form-check-input" type="checkbox" role="switch" />
+                        <label asp-for="PostProcess" class="form-check-label">
+                            <i class="fas fa-cogs me-2"></i>@Html.DisplayNameFor(model => model.PostProcess)
+                        </label>
+                    </div>
+                    <div class="form-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Enable post-processing for this structure
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+    .ribozyme-structure .card {
+        border-radius: 0.5rem;
+    }
+
+    .ribozyme-structure .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+</style>
