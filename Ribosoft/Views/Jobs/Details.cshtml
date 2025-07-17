@@ -360,6 +360,49 @@
             </div>
         </div>
 
+        <!-- Advanced Settings Card -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom">
+                <div class="d-flex align-items-center">
+                    <input type="checkbox" class="form-check-input me-2" id="advancedSettingsToggle">
+                    <label class="form-check-label" for="advancedSettingsToggle">
+                        <h5 class="card-title mb-1">
+                            <i class="fas fa-cog text-secondary me-2"></i>Advanced Settings
+                        </h5>
+                    </label>
+                </div>
+                <small class="text-muted">Click to show/hide advanced configuration parameters</small>
+            </div>
+            <div class="card-body advanced-settings-content" style="display: none;">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="parameter-item">
+                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.DesiredTempTolerance)</label>
+                            <div class="parameter-value">@Html.DisplayFor(model => model.Job.DesiredTempTolerance)</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="parameter-item">
+                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.SpecificityTolerance)</label>
+                            <div class="parameter-value">@Html.DisplayFor(model => model.Job.SpecificityTolerance)</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="parameter-item">
+                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.AccessibilityTolerance)</label>
+                            <div class="parameter-value">@Html.DisplayFor(model => model.Job.AccessibilityTolerance)</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="parameter-item">
+                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.StructureTolerance)</label>
+                            <div class="parameter-value">@Html.DisplayFor(model => model.Job.StructureTolerance)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @if (Model.Job.JobState == JobState.Completed && Model.Designs.Data.Any())
         {
             <!-- Results Section -->
@@ -628,49 +671,6 @@
     }
 </style>
 
-        <!-- Advanced Settings Card -->
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-white border-bottom">
-                <div class="d-flex align-items-center">
-                    <input type="checkbox" class="form-check-input me-2" id="advancedSettingsToggle">
-                    <label class="form-check-label" for="advancedSettingsToggle">
-                        <h5 class="card-title mb-1">
-                            <i class="fas fa-cog text-secondary me-2"></i>Advanced Settings
-                        </h5>
-                    </label>
-                </div>
-                <small class="text-muted">Click to show/hide advanced configuration parameters</small>
-            </div>
-            <div class="card-body advanced-settings-content" style="display: none;">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="parameter-item">
-                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.DesiredTempTolerance)</label>
-                            <div class="parameter-value">@Html.DisplayFor(model => model.Job.DesiredTempTolerance)</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="parameter-item">
-                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.SpecificityTolerance)</label>
-                            <div class="parameter-value">@Html.DisplayFor(model => model.Job.SpecificityTolerance)</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="parameter-item">
-                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.AccessibilityTolerance)</label>
-                            <div class="parameter-value">@Html.DisplayFor(model => model.Job.AccessibilityTolerance)</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="parameter-item">
-                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.StructureTolerance)</label>
-                            <div class="parameter-value">@Html.DisplayFor(model => model.Job.StructureTolerance)</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         @if (Model.Job.JobState == JobState.Completed && Model.Designs.Data.Any())
         {
             <!-- Results Section -->
@@ -819,157 +819,6 @@
         }
     </div>
 </div>
-
-<style>
-    .job-details-content {
-        max-width: 1400px;
-        margin: 0 auto;
-    }
-
-    .page-header {
-        padding-bottom: 1rem;
-        border-bottom: 1px solid #e9ecef;
-    }
-
-    .card {
-        border-radius: 0.5rem;
-    }
-
-    .card-header {
-        border-radius: 0.5rem 0.5rem 0 0 !important;
-    }
-
-    .info-item {
-        margin-bottom: 0.5rem;
-    }
-
-    .info-item label {
-        margin-bottom: 0.25rem;
-        font-weight: 500;
-    }
-
-    .parameter-section {
-        border-left: 3px solid #e9ecef;
-        padding-left: 1rem;
-    }
-
-    .parameter-item {
-        margin-bottom: 1rem;
-    }
-
-    .parameter-item label {
-        margin-bottom: 0.25rem;
-        font-weight: 500;
-        font-size: 0.875rem;
-    }
-
-    .parameter-value {
-        font-weight: 600;
-        color: #495057;
-    }
-
-    .assembly-info {
-        border: 1px solid #dee2e6;
-    }
-
-    .sequence-container {
-        position: relative;
-    }
-
-    .sequence-textarea {
-        font-family: 'Courier New', monospace;
-        font-size: 0.9rem;
-        line-height: 1.4;
-        background-color: #f8f9fa;
-        border: 1px solid #dee2e6;
-        resize: vertical;
-    }
-
-    .progress-steps {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 1rem;
-    }
-
-    .progress-steps .step {
-        text-align: center;
-        flex: 1;
-        padding: 0.5rem;
-        color: #6c757d;
-        font-size: 0.875rem;
-    }
-
-    .progress-steps .step.completed {
-        color: #198754;
-    }
-
-    .progress-steps .step i {
-        display: block;
-        font-size: 1.2rem;
-        margin-bottom: 0.25rem;
-    }
-
-    .advanced-settings-content {
-        transition: all 0.3s ease;
-    }
-
-    .sortable {
-        cursor: pointer;
-        user-select: none;
-    }
-
-    .sortable:hover {
-        background-color: #f8f9fa;
-    }
-
-    .design-row:hover {
-        background-color: #f8f9fa;
-    }
-
-    .empty-state {
-        padding: 2rem;
-    }
-
-    /* Mobile responsiveness */
-    @@media (max-width: 768px) {
-        .page-header .d-flex {
-            flex-direction: column;
-            align-items: flex-start !important;
-        }
-
-        .page-header nav {
-            margin-top: 0.5rem;
-        }
-
-        .btn-group {
-            flex-direction: column;
-        }
-
-        .btn-group .btn {
-            margin-bottom: 0.25rem;
-        }
-
-        .table-responsive {
-            font-size: 0.875rem;
-        }
-
-        .progress-steps {
-            flex-direction: column;
-        }
-
-        .progress-steps .step {
-            margin-bottom: 0.5rem;
-        }
-
-        .parameter-section {
-            border-left: none;
-            border-top: 3px solid #e9ecef;
-            padding-left: 0;
-            padding-top: 1rem;
-            margin-top: 1rem;
-        }
-    }
-</style>
 
 @section Scripts {
     <script>
