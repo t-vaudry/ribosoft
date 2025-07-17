@@ -360,48 +360,6 @@
             </div>
         </div>
 
-        <!-- Advanced Settings Card -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <div class="d-flex align-items-center">
-                    <input type="checkbox" class="form-check-input me-2" id="advancedSettings">
-                    <label class="form-check-label" for="advancedSettings">
-                        <h5 class="card-title mb-0">
-                            <i class="fas fa-cog text-secondary me-2"></i>Advanced Settings
-                        </h5>
-                    </label>
-                </div>
-                <small class="text-muted">Click to show/hide advanced configuration parameters</small>
-            </div>
-            <div class="card-body advanced-settings-content" style="display: none;">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="info-item">
-                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.DesiredTempTolerance)</label>
-                            <div class="fw-bold">@Html.DisplayFor(model => model.Job.DesiredTempTolerance)</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="info-item">
-                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.SpecificityTolerance)</label>
-                            <div class="fw-bold">@Html.DisplayFor(model => model.Job.SpecificityTolerance)</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="info-item">
-                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.AccessibilityTolerance)</label>
-                            <div class="fw-bold">@Html.DisplayFor(model => model.Job.AccessibilityTolerance)</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="info-item">
-                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.StructureTolerance)</label>
-                            <div class="fw-bold">@Html.DisplayFor(model => model.Job.StructureTolerance)</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         @if (Model.Job.JobState == JobState.Completed && Model.Designs.Data.Any())
         {
             <!-- Results Section -->
@@ -674,8 +632,8 @@
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-white border-bottom">
                 <div class="d-flex align-items-center">
-                    <input type="checkbox" class="form-check-input me-2" id="advancedSettings">
-                    <label class="form-check-label" for="advancedSettings">
+                    <input type="checkbox" class="form-check-input me-2" id="advancedSettingsToggle">
+                    <label class="form-check-label" for="advancedSettingsToggle">
                         <h5 class="card-title mb-1">
                             <i class="fas fa-cog text-secondary me-2"></i>Advanced Settings
                         </h5>
@@ -1023,7 +981,7 @@
             });
 
             // Advanced settings toggle
-            $('#advancedSettings').change(function() {
+            $('#advancedSettingsToggle').change(function() {
                 const content = $('.advanced-settings-content');
                 if (this.checked) {
                     content.slideDown(300);
