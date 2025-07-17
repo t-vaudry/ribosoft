@@ -72,9 +72,18 @@
                             <div class="col-12">
                                 <div class="info-item">
                                     <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.StatusMessage)</label>
-                                    <div class="alert alert-info mb-0">
-                                        <i class="fas fa-info-circle me-2"></i>@Html.DisplayFor(model => model.Job.StatusMessage)
-                                    </div>
+                                    @if (!string.IsNullOrEmpty(Model.Job.StatusMessage))
+                                    {
+                                        <div class="alert alert-info mb-0">
+                                            <i class="fas fa-info-circle me-2"></i>@Html.DisplayFor(model => model.Job.StatusMessage)
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="alert alert-secondary mb-0">
+                                            <i class="fas fa-info-circle me-2"></i>No status message available
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
