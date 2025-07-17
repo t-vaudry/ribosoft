@@ -6,21 +6,27 @@
     var shouldCancel = Model.Job.IsInProgress();
 }
 
-<div class="container-fluid">
+<div class="container-fluid px-3 px-md-4">
     <div class="job-details-content">
         <!-- Page Header -->
         <div class="page-header mb-4">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <h1 class="display-6 mb-1">
-                        <i class="fas fa-clipboard-list me-3 text-primary"></i>Job Details
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-clipboard-list me-2 text-primary"></i>Job Details
                     </h1>
                     <p class="text-muted mb-0">Detailed information and results for job #@Model.Job.Id</p>
                 </div>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li class="breadcrumb-item"><a asp-controller="Jobs" asp-action="Index">Jobs</a></li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Home" asp-action="Index" class="text-decoration-none">
+                                <i class="fas fa-home me-1"></i>Home
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Jobs" asp-action="Index" class="text-decoration-none">Jobs</a>
+                        </li>
                         <li class="breadcrumb-item active" aria-current="page">Details</li>
                     </ol>
                 </nav>
@@ -30,8 +36,8 @@
         <!-- Job Status and Progress Row -->
         <div class="row g-4 mb-4">
             <div class="col-md-8">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-white border-bottom">
+                <div class="card">
+                    <div class="card-header">
                         <div class="d-flex align-items-center">
                             <i class="fas fa-info-circle text-primary me-2"></i>
                             <h5 class="card-title mb-0">Request Information</h5>
@@ -76,8 +82,8 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-white border-bottom">
+                <div class="card">
+                    <div class="card-header">
                         <h5 class="card-title mb-0">
                             <i class="fas fa-chart-line text-success me-2"></i>Progress
                         </h5>
@@ -148,8 +154,8 @@
             </div>
         </div>
         <!-- RNA Input Sequence Card -->
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-white border-bottom">
+        <div class="card mb-4">
+            <div class="card-header">
                 <h5 class="card-title mb-0">
                     <i class="fas fa-dna text-info me-2"></i>@Html.DisplayNameFor(model => model.Job.RNAInput)
                 </h5>
@@ -168,8 +174,8 @@
         </div>
 
         <!-- Parameters Card -->
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-white border-bottom">
+        <div class="card mb-4">
+            <div class="card-header">
                 <h5 class="card-title mb-0">
                     <i class="fas fa-sliders-h text-warning me-2"></i>Design Parameters
                 </h5>
@@ -300,8 +306,8 @@
         </div>
 
         <!-- Advanced Settings Card -->
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-white border-bottom">
+        <div class="card mb-4">
+            <div class="card-header">
                 <div class="d-flex align-items-center">
                     <input type="checkbox" class="form-check-input me-2" id="advancedSettings">
                     <label class="form-check-label" for="advancedSettings">
@@ -344,8 +350,8 @@
         @if (Model.Job.JobState == JobState.Completed && Model.Designs.Data.Any())
         {
             <!-- Results Section -->
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-white border-bottom">
+            <div class="card mb-4">
+                <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h5 class="card-title mb-0">
@@ -400,17 +406,13 @@
                                         Design Temp
                                         <i class="fas fa-sort ms-1" id="destempsort"></i>
                                     </th>
-                                    <th scope="col" class="sortable" data-sort="hitemp">
-                                        Hit Temp
-                                        <i class="fas fa-sort ms-1" id="hitempsort"></i>
+                                    <th scope="col" class="sortable" data-sort="spec">
+                                        Specificity
+                                        <i class="fas fa-sort ms-1" id="specsort"></i>
                                     </th>
                                     <th scope="col" class="sortable" data-sort="access">
                                         Accessibility
                                         <i class="fas fa-sort ms-1" id="accesssort"></i>
-                                    </th>
-                                    <th scope="col" class="sortable" data-sort="spec">
-                                        Specificity
-                                        <i class="fas fa-sort ms-1" id="specsort"></i>
                                     </th>
                                     <th scope="col" class="sortable" data-sort="struct">
                                         Structure
@@ -451,16 +453,6 @@
                                         </td>
                                         <td>
                                             <div class="progress" style="height: 20px;">
-                                                <div class="progress-bar bg-warning" role="progressbar" 
-                                                     style="width: @(design.SpecificityScore * 100)%" 
-                                                     aria-valuenow="@(design.SpecificityScore * 100)" 
-                                                     aria-valuemin="0" aria-valuemax="100">
-                                                    @design.SpecificityScore
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="progress" style="height: 20px;">
                                                 <div class="progress-bar bg-success" role="progressbar" 
                                                      style="width: @(design.StructureScore * 100)%" 
                                                      aria-valuenow="@(design.StructureScore * 100)" 
@@ -491,7 +483,7 @@
         else if (Model.Job.JobState == JobState.Completed)
         {
             <!-- No Results Card -->
-            <div class="card border-0 shadow-sm mb-4">
+            <div class="card mb-4">
                 <div class="card-body text-center py-5">
                     <div class="empty-state">
                         <i class="fas fa-exclamation-triangle text-warning mb-3" style="font-size: 3rem;"></i>
@@ -513,6 +505,14 @@
     .page-header {
         padding-bottom: 1rem;
         border-bottom: 1px solid #e9ecef;
+    }
+
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
     }
 
     .info-item {
