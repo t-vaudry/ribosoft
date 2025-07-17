@@ -38,8 +38,6 @@ module.exports = (env, argv) => {
         'jquery-validation',
         'jquery-validation-unobtrusive',
         'vue',
-        'vue-select',
-        'vue-select/dist/vue-select.css',
         'qrious',
         'axios',
         '@fortawesome/fontawesome-free/css/all.css'

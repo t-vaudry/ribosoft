@@ -80,22 +80,31 @@
                         <small class="text-muted">Choose the ribozyme template for your design</small>
                     </div>
                     <div class="card-body">
-                        <div class="form-floating">
-                            <select asp-for="RibozymeStructure" class="form-select" id="ribozymes" v-on:change="ribozymeId">
-                                <option value="-1">Select a ribozyme...</option>
-                                @foreach (var item in ViewBag.Ribozymes)
-                                {
-                                    <option value="@item.Value">@item.Text</option>
-                                }
-                            </select>
-                            <label asp-for="RibozymeStructure">
+                        <div class="form-group">
+                            <label for="ribozymeSearch" class="form-label">
                                 <i class="fas fa-dna me-2"></i>@Html.DisplayNameFor(model => model.RibozymeStructure)
                             </label>
-                            <span asp-validation-for="RibozymeStructure" class="invalid-feedback"></span>
-                        </div>
-                        <div class="form-text">
-                            <i class="fas fa-info-circle me-1"></i>
-                            Select a ribozyme template that will be used as the basis for your design
+                            <div class="dropdown w-100">
+                                <input type="text" 
+                                       class="form-control dropdown-toggle" 
+                                       id="ribozymeSearch" 
+                                       placeholder="Search ribozymes..."
+                                       data-bs-toggle="dropdown" 
+                                       aria-expanded="false"
+                                       autocomplete="off">
+                                <ul class="dropdown-menu w-100" id="ribozymeDropdown">
+                                    @foreach (var item in ViewBag.Ribozymes)
+                                    {
+                                        <li><a class="dropdown-item" href="#" data-value="@item.Value">@item.Text</a></li>
+                                    }
+                                </ul>
+                                <input asp-for="RibozymeStructure" type="hidden" value="-1" id="ribozymeValue">
+                            </div>
+                            <span asp-validation-for="RibozymeStructure" class="invalid-feedback d-block"></span>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Type to search for a ribozyme template that will be used as the basis for your design
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -289,18 +298,27 @@
                         <!-- In Vivo Specific Settings -->
                         <div v-show="inVivoSelected">
                             <div class="border-top pt-4 mb-4">
-                                <div class="form-floating mb-3">
-                                    <select asp-for="InVivoEnvironment" class="form-select" id="environments" v-on:change="vivoEnvironment">
-                                        <option value="-1">Select an environment...</option>
-                                        @foreach (var item in ViewBag.Assemblies)
-                                        {
-                                            <option value="@item.Value">@item.Text</option>
-                                        }
-                                    </select>
-                                    <label asp-for="InVivoEnvironment">
+                                <div class="form-group mb-3">
+                                    <label for="environmentSearch" class="form-label">
                                         <i class="fas fa-dna me-2"></i>@Html.DisplayNameFor(model => model.InVivoEnvironment)
                                     </label>
-                                    <span asp-validation-for="InVivoEnvironment" class="invalid-feedback"></span>
+                                    <div class="dropdown w-100">
+                                        <input type="text" 
+                                               class="form-control dropdown-toggle" 
+                                               id="environmentSearch" 
+                                               placeholder="Search environments..."
+                                               data-bs-toggle="dropdown" 
+                                               aria-expanded="false"
+                                               autocomplete="off">
+                                        <ul class="dropdown-menu w-100" id="environmentDropdown">
+                                            @foreach (var item in ViewBag.Assemblies)
+                                            {
+                                                <li><a class="dropdown-item" href="#" data-value="@item.Value">@item.Text</a></li>
+                                            }
+                                        </ul>
+                                        <input asp-for="InVivoEnvironment" type="hidden" value="-1" id="environmentValue">
+                                    </div>
+                                    <span asp-validation-for="InVivoEnvironment" class="invalid-feedback d-block"></span>
                                 </div>
 
                                 <div class="mb-3">
@@ -528,43 +546,59 @@
         transition: all 0.3s ease;
     }
 
-    /* Enhanced form styling */
-    .form-floating > .form-select {
-        padding-top: 1.625rem;
-        padding-bottom: 0.625rem;
-        line-height: 1.25;
+    /* Searchable dropdown styling */
+    .dropdown-toggle {
+        position: relative;
+        cursor: pointer;
     }
 
-    .form-floating > .form-select:focus,
-    .form-floating > .form-select:not(:placeholder-shown) {
-        padding-top: 1.625rem;
-        padding-bottom: 0.625rem;
-    }
-
-    .form-floating > label {
-        padding: 1rem 0.75rem;
+    .dropdown-toggle::after {
+        position: absolute;
+        right: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        border-top: 0.3em solid;
+        border-right: 0.3em solid transparent;
+        border-bottom: 0;
+        border-left: 0.3em solid transparent;
         pointer-events: none;
-        border: 1px solid transparent;
-        transform-origin: 0 0;
-        transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
     }
 
-    .form-floating > .form-select:focus ~ label,
-    .form-floating > .form-select:not([value="-1"]) ~ label,
-    .form-floating > .form-select:not(:placeholder-shown) ~ label {
-        opacity: 0.65;
-        transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    .dropdown-menu {
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     }
 
-    /* Custom select styling */
-    .form-select {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: right 0.75rem center;
-        background-size: 16px 12px;
+    .dropdown-item {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        transition: background-color 0.15s ease-in-out;
     }
 
-    .form-select:focus {
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .dropdown-item:active {
+        background-color: #0d6efd;
+        color: white;
+    }
+
+    /* Form styling */
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-label {
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #212529;
+    }
+
+    .form-control:focus {
         border-color: #86b7fe;
         outline: 0;
         box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
@@ -584,6 +618,10 @@
         .card-header .d-flex {
             flex-direction: column;
             align-items: flex-start !important;
+        }
+
+        .dropdown-menu {
+            max-height: 150px;
         }
     }
 </style>
@@ -609,17 +647,56 @@
                 }
             });
 
-            // Handle ribozyme selection change
-            $('#ribozymes').change(function() {
-                // This will trigger the Vue.js ribozymeId method
-                // The Vue app should handle the logic for this change
-            });
+            // Searchable dropdown functionality
+            function initSearchableDropdown(searchInputId, dropdownId, hiddenInputId, onChangeCallback) {
+                const searchInput = $('#' + searchInputId);
+                const dropdown = $('#' + dropdownId);
+                const hiddenInput = $('#' + hiddenInputId);
+                const dropdownItems = dropdown.find('.dropdown-item');
 
-            // Handle environment selection change
-            $('#environments').change(function() {
-                // This will trigger the Vue.js vivoEnvironment method
-                // The Vue app should handle the logic for this change
-            });
+                // Search functionality
+                searchInput.on('input', function() {
+                    const searchTerm = $(this).val().toLowerCase();
+                    
+                    dropdownItems.each(function() {
+                        const text = $(this).text().toLowerCase();
+                        const listItem = $(this).parent();
+                        
+                        if (text.includes(searchTerm)) {
+                            listItem.show();
+                        } else {
+                            listItem.hide();
+                        }
+                    });
+                });
+
+                // Item selection
+                dropdownItems.on('click', function(e) {
+                    e.preventDefault();
+                    const value = $(this).data('value');
+                    const text = $(this).text();
+                    
+                    searchInput.val(text);
+                    hiddenInput.val(value);
+                    
+                    // Trigger change event for Vue.js
+                    if (onChangeCallback && typeof window[onChangeCallback] === 'function') {
+                        window[onChangeCallback]();
+                    }
+                    
+                    // Close dropdown
+                    bootstrap.Dropdown.getInstance(searchInput[0])?.hide();
+                });
+
+                // Clear search when dropdown is shown
+                searchInput.on('shown.bs.dropdown', function() {
+                    dropdownItems.parent().show();
+                });
+            }
+
+            // Initialize searchable dropdowns
+            initSearchableDropdown('ribozymeSearch', 'ribozymeDropdown', 'ribozymeValue', 'ribozymeId');
+            initSearchableDropdown('environmentSearch', 'environmentDropdown', 'environmentValue', 'vivoEnvironment');
 
             // Form validation enhancements
             $('form').on('submit', function(e) {
