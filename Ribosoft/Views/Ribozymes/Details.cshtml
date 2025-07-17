@@ -1,182 +1,514 @@
-﻿@model Ribosoft.Models.Ribozyme
+@model Ribosoft.Models.Ribozyme
 
 @{
     ViewData["Title"] = "Ribozyme Details";
 }
 
-<h2 class="my-3">Ribozyme details</h2>
+<!-- CSRF Token for AJAX calls -->
+@Html.AntiForgeryToken()
 
-<div class="card my-3 box-shadow">
-    <div class="card-body">
-        <div class="clearfix border-bottom border-gray pb-2 mb-3">
-            <h5 class="float-sm-left card-title">Basic information</h5>
-            @if (User.IsInRole("Administrator"))
+<div class="container-fluid px-3 px-md-4">
+    <div class="ribozymes-content">
+        <!-- Page Header -->
+        <div class="page-header mb-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-dna me-2 text-primary"></i>@Model.Name
+                    </h1>
+                    <p class="text-muted mb-0">Detailed view of ribozyme template and structural configurations</p>
+                </div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Ribozymes" asp-action="Index" class="text-decoration-none">
+                                <i class="fas fa-dna me-1"></i>Ribozymes
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Basic Information Card -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="card-title mb-1">
+                            <i class="fas fa-info-circle me-2 text-primary"></i>Basic Information
+                        </h5>
+                        <small class="text-muted">General details about this ribozyme</small>
+                    </div>
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <div class="btn-group" role="group">
+                            <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@Model.Id">
+                                <i class="fas fa-edit me-1"></i>Edit
+                            </a>
+                            <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.Id">
+                                <i class="fas fa-trash me-1"></i>Delete
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <div class="row">
+                                <div class="col-4">
+                                    <span class="text-muted small fw-semibold">
+                                        <i class="fas fa-hashtag me-1"></i>ID:
+                                    </span>
+                                </div>
+                                <div class="col-8">
+                                    <span class="badge bg-light text-dark border">#@Model.Id</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="row">
+                                <div class="col-4">
+                                    <span class="text-muted small fw-semibold">
+                                        <i class="fas fa-tag me-1"></i>Name:
+                                    </span>
+                                </div>
+                                <div class="col-8">
+                                    <strong>@Html.DisplayFor(model => model.Name)</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <div class="row">
+                                <div class="col-4">
+                                    <span class="text-muted small fw-semibold">
+                                        <i class="fas fa-calendar-plus me-1"></i>Created:
+                                    </span>
+                                </div>
+                                <div class="col-8">
+                                    <small class="text-muted">@Html.DisplayFor(model => model.CreatedAt)</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="row">
+                                <div class="col-4">
+                                    <span class="text-muted small fw-semibold">
+                                        <i class="fas fa-calendar-edit me-1"></i>Updated:
+                                    </span>
+                                </div>
+                                <div class="col-8">
+                                    <small class="text-muted">@Html.DisplayFor(model => model.UpdatedAt)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Structures Card -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="card-title mb-1">
+                            <i class="fas fa-project-diagram me-2 text-primary"></i>Ribozyme Structures
+                        </h5>
+                        <small class="text-muted">@Model.RibozymeStructures.Count structure@(Model.RibozymeStructures.Count != 1 ? "s" : "") configured</small>
+                    </div>
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <div>
+                            <a class="btn btn-success" asp-controller="RibozymeStructures" asp-action="Create" asp-route-ribozymeId="@Model.Id">
+                                <i class="fas fa-plus me-1"></i>Add Structure
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+            
+            @if (Model.RibozymeStructures.Any())
             {
-                <div class="float-sm-right"><a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Rename <i class="fas fa-edit ml-1"></i></a></div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="border-0 fw-semibold text-center">
+                                        <i class="fas fa-cut me-1 text-muted"></i>
+                                        @Html.DisplayNameFor(model => model.RibozymeStructures.First().Cutsite)
+                                    </th>
+                                    <th class="border-0 fw-semibold">
+                                        <i class="fas fa-dna me-1 text-muted"></i>
+                                        Ribozyme Sequence & Structure
+                                    </th>
+                                    <th class="border-0 fw-semibold">
+                                        <i class="fas fa-flask me-1 text-muted"></i>
+                                        Substrate Template & Structure
+                                    </th>
+                                    <th class="border-0 fw-semibold text-center">
+                                        <i class="fas fa-cogs me-1 text-muted"></i>
+                                        @Html.DisplayNameFor(model => model.RibozymeStructures.First().PostProcess)
+                                    </th>
+                                    <th class="border-0 fw-semibold text-center">
+                                        <i class="fas fa-tools me-1 text-muted"></i>
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @Html.DisplayFor(model => model.RibozymeStructures)
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card-body">
+                    <div class="text-center py-5">
+                        <i class="fas fa-project-diagram fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No Structures Found</h5>
+                        <p class="text-muted mb-3">This ribozyme doesn't have any structures configured yet.</p>
+                        @if (User.IsInRole("Administrator"))
+                        {
+                            <a class="btn btn-success" asp-controller="RibozymeStructures" asp-action="Create" asp-route-ribozymeId="@Model.Id">
+                                <i class="fas fa-plus me-1"></i>Add First Structure
+                            </a>
+                        }
+                        else
+                        {
+                            <p class="text-muted">Contact your administrator to add structures.</p>
+                        }
+                    </div>
+                </div>
             }
         </div>
-        
-        <dl class="row mb-0">
-            <dt class="col-md-2">
-                @Html.DisplayNameFor(model => model.Name)
-            </dt>
-            <dd class="col-md-10">
-                @Html.DisplayFor(model => model.Name)
-            </dd>
-            <dt class="col-md-2">
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </dt>
-            <dd class="col-md-10">
-                @Html.DisplayFor(model => model.CreatedAt)
-            </dd>
-            <dt class="col-md-2">
-                @Html.DisplayNameFor(model => model.UpdatedAt)
-            </dt>
-            <dd class="col-md-10">
-                @Html.DisplayFor(model => model.UpdatedAt)
-            </dd>
-        </dl>
+
+        <!-- Action Buttons -->
+        <div class="mb-4">
+            <a class="btn btn-outline-secondary" asp-action="Index">
+                <i class="fas fa-arrow-left me-2"></i>Back to Ribozymes
+            </a>
+        </div>
     </div>
 </div>
 
-<div class="card my-3 box-shadow">
-    <div class="card-body">
-        <div class="clearfix pb-2">
-            <h5 class="float-sm-left card-title">Structures</h5>
-            @if (User.IsInRole("Administrator"))
-            {
-                <div class="float-sm-right"><a class="btn btn-sm btn-primary" asp-controller="RibozymeStructures" asp-action="Create" asp-route-ribozymeId="@Model.Id">Add <i class="fas fa-plus-circle ml-1"></i></a></div>
-            }
-        </div>
-
-        <div class="table-responsive mb-2">
-            <table class="table mb-0">
-                <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.RibozymeStructures.First().Cutsite)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.RibozymeStructures.First().Sequence)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.RibozymeStructures.First().SubstrateTemplate)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.RibozymeStructures.First().PostProcess)
-                    </th>
-                    <th class="text-right">
-                        Actions
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                    @Html.DisplayFor(model => model.RibozymeStructures)
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<div class="clearfix">
-    <a class="btn btn-secondary float-md-left" asp-action="Index"><i class="fas fa-arrow-left mr-1"></i> Back to Ribozymes</a>
-    @if (User.IsInRole("Administrator"))
-    {
-        <a asp-controller="Ribozymes" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger float-md-right">Delete <i class="fas fa-trash ml-1"></i></a>
-    }
-</div>
-
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="ribozymeModal" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+<!-- Delete Structure Confirmation Modal -->
+<div class="modal fade" id="deleteStructureModal" tabindex="-1" aria-labelledby="deleteStructureModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Visualization</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteStructureModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Structure Deletion
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div>
-                    <h6>Legend</h6>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <span class="dot dot-orange" />
-                                </td>
-                                <td>
-                                    Ribozyme nucleotide
-                                </td>
-                                <td>
-                                    <span class="line line-red" />
-                                </td>
-                                <td>
-                                    Basepair
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <span class="dot dot-white" />
-                                </td>
-                                <td>
-                                    Substrate nucleotide
-                                </td>
-                                <td>
-                                    <span class="line line-blue" />
-                                </td>
-                                <td>
-                                    Pseudoknot
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <span class="dot dot-red" />
-                                </td>
-                                <td>
-                                    Cutsite
-                                </td>
-                                <td>
-                                    <span class="line line-grey" />
-                                </td>
-                                <td>
-                                    Backbone
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="alert alert-warning" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Warning:</strong> This action cannot be undone.
                 </div>
-                <hr/>
-                <div id="ribContainer"></div>
+                <p>Are you sure you want to delete this ribozyme structure?</p>
+                <div id="structureInfo" class="bg-light p-3 rounded">
+                    <small class="text-muted">Structure information will be loaded here...</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteStructure">
+                    <i class="fas fa-trash me-2"></i>Delete Structure
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-@section scripts {
+<!-- Visualization Modal -->
+<div class="modal fade" id="visualizationModal" tabindex="-1" aria-labelledby="visualizationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="visualizationModalLabel">
+                    <i class="fas fa-eye text-primary me-2"></i>RNA Structure Visualization
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-info-circle me-2"></i>Legend
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-md-2">
+                                        <div class="d-flex align-items-center justify-content-center mb-2">
+                                            <span class="dot dot-orange me-2"></span>
+                                            <small>Ribozyme nucleotide</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="d-flex align-items-center justify-content-center mb-2">
+                                            <span class="dot dot-white me-2"></span>
+                                            <small>Substrate nucleotide</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="d-flex align-items-center justify-content-center mb-2">
+                                            <span class="dot dot-red me-2"></span>
+                                            <small>Cutsite</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="d-flex align-items-center justify-content-center mb-2">
+                                            <span class="line line-red me-2"></span>
+                                            <small>Basepair</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="d-flex align-items-center justify-content-center mb-2">
+                                            <span class="line line-blue me-2"></span>
+                                            <small>Pseudoknot</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="d-flex align-items-center justify-content-center mb-2">
+                                            <span class="line line-grey me-2"></span>
+                                            <small>Backbone</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <div id="ribContainer" class="border rounded p-3 bg-light"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .ribozymes-content {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    .table th {
+        font-size: 0.875rem;
+        padding: 1rem 0.75rem;
+        vertical-align: middle;
+    }
+
+    .table td {
+        padding: 0.75rem;
+        vertical-align: middle;
+    }
+
+    .info-item {
+        margin-bottom: 0.75rem;
+    }
+
+    .info-item:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Mobile responsiveness */
+    @@media (max-width: 768px) {
+        .page-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .page-header nav {
+            margin-top: 0.5rem;
+        }
+
+        .card-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .card-header .btn,
+        .card-header .btn-group {
+            margin-top: 0.5rem;
+        }
+
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+    }
+</style>
+
+@section Scripts {
     <script type="text/javascript">
-        $('button[id^="rna_ss"]').click(function () {
-            var container = new fornac.FornaContainer('#ribContainer', { 'applyForce': true, 'allowPanningAndZooming': false, 'labelInterval': 0 });
-            var options = {
-                'structure': this.getAttribute('structure').replaceAll(/[a-z0-9]/ig, '(') + '&' + this.getAttribute('substructure').replaceAll(/[a-z0-9]/ig, ')'),
-                'sequence': this.getAttribute('sequence') + '&' + this.getAttribute('subsequence')
-            };
-            container.addRNA(options.structure, options);
+        $(document).ready(function() {
+            let currentStructureId = null;
+            let currentRibozymeId = null;
 
-            var seqLen = this.getAttribute('sequence').length;
-            var subLen = this.getAttribute('subsequence').length;
-            var cutsite = parseInt(this.getAttribute('cutsite')) + this.getAttribute('subsequence').match(/[A-Z]/).index;
+            // Handle delete structure button clicks
+            $('.delete-structure-btn').click(function() {
+                currentStructureId = $(this).data('structure-id');
+                currentRibozymeId = $(this).data('ribozyme-id');
+                
+                // Find the structure row to get information
+                const structureRow = $(this).closest('tr');
+                const cutsite = structureRow.find('.badge.bg-danger').text().trim();
+                const sequence = structureRow.find('code.text-primary').text().substring(0, 50) + '...';
+                
+                // Update modal content
+                $('#structureInfo').html(`
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>Structure ID:</strong> #${currentStructureId}
+                        </div>
+                        <div class="col-6">
+                            <strong>Cutsite:</strong> ${cutsite}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <strong>Sequence Preview:</strong><br>
+                            <code class="small">${sequence}</code>
+                        </div>
+                    </div>
+                `);
+            });
 
-            for (var idx = 1; idx <= Math.max(seqLen, subLen); idx++) {
-                if (idx <= Math.min(seqLen, subLen)) {
-                    $('circle[node_num="' + idx + '"]').get(0).style.fill = 'orange';
-                    $('circle[node_num="' + idx + '"]').get(1).style.fill = 'white';
-                } else {
-                    $('circle[node_num="' + idx + '"]').get(0).style.fill = seqLen > subLen ? 'orange' : 'white';
+            // Handle confirm delete button
+            $('#confirmDeleteStructure').click(function() {
+                if (!currentStructureId) return;
+                
+                const button = $(this);
+                const originalText = button.html();
+                
+                // Show loading state
+                button.html('<i class="fas fa-spinner fa-spin me-2"></i>Deleting...').prop('disabled', true);
+                
+                // Make AJAX call to delete structure
+                $.ajax({
+                    url: '/RibozymeStructures/DeleteConfirmed',
+                    type: 'POST',
+                    data: {
+                        id: currentStructureId,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        // Close modal
+                        $('#deleteStructureModal').modal('hide');
+                        
+                        // Show success message
+                        showToast('Structure deleted successfully', 'success');
+                        
+                        // Reload page to refresh structure list
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Delete failed:', error);
+                        showToast('Failed to delete structure. Please try again.', 'error');
+                        
+                        // Reset button
+                        button.html(originalText).prop('disabled', false);
+                    }
+                });
+            });
+
+            // Reset modal when closed
+            $('#deleteStructureModal').on('hidden.bs.modal', function() {
+                currentStructureId = null;
+                currentRibozymeId = null;
+                $('#confirmDeleteStructure').html('<i class="fas fa-trash me-2"></i>Delete Structure').prop('disabled', false);
+            });
+
+            // Handle visualization button clicks
+            $('button[id^="rna_ss"]').click(function () {
+                var container = new fornac.FornaContainer('#ribContainer', { 
+                    'applyForce': true, 
+                    'allowPanningAndZooming': false, 
+                    'labelInterval': 0 
+                });
+                
+                var options = {
+                    'structure': this.getAttribute('structure').replaceAll(/[a-z0-9]/ig, '(') + '&' + this.getAttribute('substructure').replaceAll(/[a-z0-9]/ig, ')'),
+                    'sequence': this.getAttribute('sequence') + '&' + this.getAttribute('subsequence')
+                };
+                
+                container.addRNA(options.structure, options);
+
+                var seqLen = this.getAttribute('sequence').length;
+                var subLen = this.getAttribute('subsequence').length;
+                var cutsite = parseInt(this.getAttribute('cutsite')) + this.getAttribute('subsequence').match(/[A-Z]/).index;
+
+                // Color the nucleotides
+                for (var idx = 1; idx <= Math.max(seqLen, subLen); idx++) {
+                    if (idx <= Math.min(seqLen, subLen)) {
+                        $('circle[node_num="' + idx + '"]').get(0).style.fill = 'orange';
+                        $('circle[node_num="' + idx + '"]').get(1).style.fill = 'white';
+                    } else {
+                        $('circle[node_num="' + idx + '"]').get(0).style.fill = seqLen > subLen ? 'orange' : 'white';
+                    }
+
+                    // Mark cutsite
+                    if (idx == cutsite || idx == cutsite + 1) {
+                        $('circle[node_num="' + idx + '"]').get(seqLen > subLen ? 1 : 0).style.fill = 'red';
+                    }
                 }
+            });
 
-                if (idx == cutsite || idx == cutsite + 1) {
-                    $('circle[node_num="' + idx + '"]').get(seqLen > subLen ? 1 : 0).style.fill = 'red';
-                }
+            // Toast notification function
+            function showToast(message, type) {
+                const alertClass = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-danger' : 'alert-info';
+                const iconClass = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+                
+                const toast = $(`
+                    <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+                         style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+                        <i class="fas ${iconClass} me-2"></i>
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `);
+                
+                $('body').append(toast);
+                
+                setTimeout(function() {
+                    toast.alert('close');
+                }, 4000);
             }
         });
     </script>

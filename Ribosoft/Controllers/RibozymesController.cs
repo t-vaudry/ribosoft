@@ -37,7 +37,9 @@ namespace Ribosoft.Controllers
          */
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Ribozymes.ToListAsync());
+            return View(await _context.Ribozymes
+                .Include(r => r.RibozymeStructures)
+                .ToListAsync());
         }
 
         /*! \fn Details
@@ -131,7 +133,9 @@ namespace Ribosoft.Controllers
                 return NotFound();
             }
 
-            var ribozyme = await _context.Ribozymes.SingleOrDefaultAsync(m => m.Id == id);
+            var ribozyme = await _context.Ribozymes
+                .Include(r => r.RibozymeStructures)
+                .SingleOrDefaultAsync(m => m.Id == id);
             if (ribozyme == null)
             {
                 return NotFound();
@@ -192,6 +196,7 @@ namespace Ribosoft.Controllers
             }
 
             var ribozyme = await _context.Ribozymes
+                .Include(r => r.RibozymeStructures)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (ribozyme == null)
             {

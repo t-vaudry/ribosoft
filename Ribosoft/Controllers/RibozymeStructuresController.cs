@@ -30,39 +30,6 @@ namespace Ribosoft.Controllers
             _context = context;
         }
 
-        /*! \fn Index
-         * \brief HTTP GET request for ribozyme structures page
-         * \return View of ribozyme structures index
-         */
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.RibozymeStructures.Include(r => r.Ribozyme);
-            return View(await applicationDbContext.ToListAsync());
-        }
-
-        /*! \fn Details
-         * \brief HTTP GET request for ribozyme structures details page
-         * \param id RibozymeStructure Id
-         * \return View of ribozyme structures details index
-         */
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ribozymeStructure = await _context.RibozymeStructures
-                .Include(r => r.Ribozyme)
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (ribozymeStructure == null)
-            {
-                return NotFound();
-            }
-
-            return View(ribozymeStructure);
-        }
-
         /*!
          * \brief HTTP GET request for ribozyme structures create page
          * \param ribozymeId Ribozyme Id
@@ -82,7 +49,8 @@ namespace Ribosoft.Controllers
                 return NotFound();
             }
             
-            ViewData["RibozymeId"] = ribozyme.Id;
+            ViewBag.RibozymeId = ribozyme.Id;
+            ViewBag.RibozymeName = ribozyme.Name;
             return View();
         }
 
@@ -133,12 +101,15 @@ namespace Ribosoft.Controllers
                 return NotFound();
             }
 
-            var ribozymeStructure = await _context.RibozymeStructures.SingleOrDefaultAsync(m => m.Id == id);
+            var ribozymeStructure = await _context.RibozymeStructures
+                .Include(rs => rs.Ribozyme)
+                .SingleOrDefaultAsync(m => m.Id == id);
             if (ribozymeStructure == null)
             {
                 return NotFound();
             }
             
+            ViewBag.RibozymeName = ribozymeStructure.Ribozyme?.Name ?? "Unknown";
             return View(ribozymeStructure);
         }
 
@@ -182,34 +153,10 @@ namespace Ribosoft.Controllers
             return View(ribozymeStructure);
         }
 
-        /*! \fn Delete
-         * \brief HTTP GET request for ribozyme structures delete page
-         * \param id Ribozyme Structure Id
-         * \return View of ribozyme structures delete index
-         */
-        [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ribozymeStructure = await _context.RibozymeStructures
-                .Include(r => r.Ribozyme)
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (ribozymeStructure == null)
-            {
-                return NotFound();
-            }
-
-            return View(ribozymeStructure);
-        }
-
         /*! \fn DeleteConfirmed
          * \brief HTTP POST request to delete ribozyme structure
          * \param id Ribozyme Structure Id
-         * \return View of ribozyme structures details index
+         * \return JSON response for AJAX calls or redirect for regular requests
          */
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -219,10 +166,26 @@ namespace Ribosoft.Controllers
             var ribozymeStructure = await _context.RibozymeStructures.SingleOrDefaultAsync(m => m.Id == id);
             if (ribozymeStructure != null)
             {
+                var ribozymeId = ribozymeStructure.RibozymeId;
                 _context.RibozymeStructures.Remove(ribozymeStructure);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "Ribozymes", new { id = ribozymeStructure.RibozymeId });
+                
+                // Check if this is an AJAX request
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = true, message = "Structure deleted successfully" });
+                }
+                
+                // Fallback to redirect for non-AJAX requests
+                return RedirectToAction("Details", "Ribozymes", new { id = ribozymeId });
             }
+            
+            // Check if this is an AJAX request
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return Json(new { success = false, message = "Structure not found" });
+            }
+            
             return NotFound();
         }
 
