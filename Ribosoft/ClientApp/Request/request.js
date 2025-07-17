@@ -130,12 +130,12 @@ class RequestApp {
     if (accessionField) accessionField.disabled = true;
 
     try {
-      const response = await axios.get(`/api/genbank/${accessionField.value.trim()}`);
+      const response = await axios.get(`/Request/GetSequenceFromGenbank?accession=${encodeURIComponent(accessionField.value.trim())}`);
       
-      if (response.data && response.data.sequence) {
+      if (response.data && response.data.result && response.data.result.sequence) {
         const sequenceField = document.getElementById('inputSequence');
         if (sequenceField) {
-          sequenceField.value = response.data.sequence.toUpperCase();
+          sequenceField.value = response.data.result.sequence.toUpperCase();
         }
         this.genbankStatus = '';
       } else {
@@ -143,7 +143,11 @@ class RequestApp {
       }
     } catch (error) {
       console.error('GenBank request failed:', error);
-      this.genbankStatus = 'Failed to retrieve sequence';
+      if (error.response && error.response.status === 404) {
+        this.genbankStatus = 'Sequence not found';
+      } else {
+        this.genbankStatus = 'Failed to retrieve sequence';
+      }
     } finally {
       this.genbankLoading = false;
       
