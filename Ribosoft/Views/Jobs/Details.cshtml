@@ -153,9 +153,28 @@
                         @if (shouldCancel)
                         {
                             <div class="mt-3">
-                                <a class="btn btn-outline-danger w-100" asp-action="Delete" asp-route-id="@Model.Job.Id">
+                                <button type="button" class="btn btn-outline-danger w-100"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#cancelJobModal"
+                                        data-job-id="@Model.Job.Id"
+                                        data-job-name="@Model.Job.Ribozyme.Name"
+                                        data-job-created="@Model.Job.CreatedAt">
                                     <i class="fas fa-stop me-2"></i>Cancel Job
-                                </a>
+                                </button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="mt-3">
+                                <button type="button" class="btn btn-outline-danger w-100"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#deleteJobModal"
+                                        data-job-id="@Model.Job.Id"
+                                        data-job-name="@Model.Job.Ribozyme.Name"
+                                        data-job-created="@Model.Job.CreatedAt"
+                                        data-job-state="@Model.Job.JobState">
+                                    <i class="fas fa-trash me-2"></i>Delete Job
+                                </button>
                             </div>
                         }
                     </div>
@@ -678,6 +697,56 @@
             margin-bottom: 0.5rem;
         }
     }
+
+    /* Modal Enhancements */
+    .modal-content {
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .modal-footer {
+        background-color: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .job-details-card {
+        border: 1px solid #e9ecef;
+    }
+
+    .job-details-card .row {
+        margin-bottom: 0.5rem;
+    }
+
+    .job-details-card .row:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Loading state for cancel button */
+    #confirmCancelJob:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+    /* Alert animations */
+    .alert {
+        animation: slideInDown 0.3s ease-out;
+    }
+
+    @@keyframes slideInDown {
+        from {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
 </style>
 
         @if (Model.Job.JobState == JobState.Completed && Model.Designs.Data.Any())
@@ -829,6 +898,112 @@
     </div>
 </div>
 
+<!-- Delete Job Confirmation Modal -->
+<div class="modal fade" id="deleteJobModal" tabindex="-1" aria-labelledby="deleteJobModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title" id="deleteJobModalLabel">
+                    <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                    Delete Job
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger d-flex align-items-center mb-3" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <div>
+                        <strong>Warning:</strong> This action cannot be undone. The job and all its results will be permanently deleted.
+                    </div>
+                </div>
+                
+                <p class="mb-3">Are you sure you want to delete this job?</p>
+                
+                <div class="job-details-card bg-light p-3 rounded">
+                    <h6 class="mb-2">Job Details:</h6>
+                    <div class="row">
+                        <div class="col-sm-4"><strong>Job ID:</strong></div>
+                        <div class="col-sm-8" id="delete-modal-job-id">-</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4"><strong>Ribozyme:</strong></div>
+                        <div class="col-sm-8" id="delete-modal-job-name">-</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4"><strong>Status:</strong></div>
+                        <div class="col-sm-8" id="delete-modal-job-state">-</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4"><strong>Created:</strong></div>
+                        <div class="col-sm-8" id="delete-modal-job-created">-</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Keep Job
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteJob">
+                    <i class="fas fa-trash me-1"></i>
+                    <span class="button-text">Delete Job</span>
+                    <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Job Confirmation Modal -->
+<div class="modal fade" id="cancelJobModal" tabindex="-1" aria-labelledby="cancelJobModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title" id="cancelJobModalLabel">
+                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                    Cancel Job
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <div>
+                        <strong>Warning:</strong> This action cannot be undone. The job will be stopped and marked as cancelled.
+                    </div>
+                </div>
+                
+                <p class="mb-3">Are you sure you want to cancel this job?</p>
+                
+                <div class="job-details-card bg-light p-3 rounded">
+                    <h6 class="mb-2">Job Details:</h6>
+                    <div class="row">
+                        <div class="col-sm-4"><strong>Job ID:</strong></div>
+                        <div class="col-sm-8" id="modal-job-id">-</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4"><strong>Ribozyme:</strong></div>
+                        <div class="col-sm-8" id="modal-job-name">-</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4"><strong>Started:</strong></div>
+                        <div class="col-sm-8" id="modal-job-created">-</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Keep Running
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmCancelJob">
+                    <i class="fas fa-stop-circle me-1"></i>
+                    <span class="button-text">Cancel Job</span>
+                    <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         $(function() {
@@ -836,6 +1011,188 @@
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Cancel Job Modal Handling
+            let currentJobId = null;
+
+            // When cancel button is clicked, populate modal with job details
+            $('[data-bs-target="#cancelJobModal"]').on('click', function() {
+                currentJobId = $(this).data('job-id');
+                const jobName = $(this).data('job-name');
+                const jobCreated = $(this).data('job-created');
+
+                $('#modal-job-id').text(currentJobId);
+                $('#modal-job-name').text(jobName);
+                $('#modal-job-created').text(new Date(jobCreated).toLocaleString());
+            });
+
+            // Handle the actual cancellation
+            $('#confirmCancelJob').on('click', function() {
+                if (!currentJobId) return;
+
+                const $button = $(this);
+                const $buttonText = $button.find('.button-text');
+                const $spinner = $button.find('.spinner-border');
+
+                // Show loading state
+                $button.prop('disabled', true);
+                $buttonText.text('Cancelling...');
+                $spinner.removeClass('d-none');
+
+                // Make AJAX request to cancel the job
+                $.ajax({
+                    url: '@Url.Action("CancelJob", "Jobs")',
+                    type: 'POST',
+                    data: {
+                        id: currentJobId,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Hide modal
+                            $('#cancelJobModal').modal('hide');
+                            
+                            // Show success message and redirect to jobs index
+                            showAlert('success', 'Job cancelled successfully!', 'The job has been stopped and marked as cancelled.');
+                            
+                            setTimeout(function() {
+                                window.location.href = '@Url.Action("Index", "Jobs")';
+                            }, 1500);
+                        } else {
+                            showAlert('danger', 'Cancellation Failed', response.message || 'An error occurred while cancelling the job.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Cancel job error:', error);
+                        showAlert('danger', 'Cancellation Failed', 'An unexpected error occurred. Please try again.');
+                    },
+                    complete: function() {
+                        // Reset button state
+                        $button.prop('disabled', false);
+                        $buttonText.text('Cancel Job');
+                        $spinner.addClass('d-none');
+                    }
+                });
+            });
+
+            // Reset modal when it's hidden
+            $('#cancelJobModal').on('hidden.bs.modal', function() {
+                currentJobId = null;
+                $('#modal-job-id').text('-');
+                $('#modal-job-name').text('-');
+                $('#modal-job-created').text('-');
+                
+                // Reset button state
+                const $button = $('#confirmCancelJob');
+                $button.prop('disabled', false);
+                $button.find('.button-text').text('Cancel Job');
+                $button.find('.spinner-border').addClass('d-none');
+            });
+
+            // Helper function to show alerts
+            function showAlert(type, title, message) {
+                const iconClass = type === 'success' ? 'check-circle' : 'exclamation-triangle';
+                const alertHtml = `
+                    <div class="alert alert-${type} alert-dismissible fade show shadow-sm mb-4" role="alert">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-${iconClass} me-3 fs-4"></i>
+                            <div>
+                                <h5 class="alert-heading mb-1">${title}</h5>
+                                <p class="mb-0">${message}</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+                
+                // Insert alert at the top of the job details content
+                $('.job-details-content').prepend(alertHtml);
+                
+                // Auto-dismiss after 5 seconds
+                setTimeout(function() {
+                    $('.alert').first().fadeOut('slow');
+                }, 5000);
+            }
+
+            // Delete Job Modal Handling
+            let deleteJobId = null;
+
+            // When delete button is clicked, populate modal with job details
+            $('[data-bs-target="#deleteJobModal"]').on('click', function() {
+                deleteJobId = $(this).data('job-id');
+                const jobName = $(this).data('job-name');
+                const jobCreated = $(this).data('job-created');
+                const jobState = $(this).data('job-state');
+
+                $('#delete-modal-job-id').text(deleteJobId);
+                $('#delete-modal-job-name').text(jobName);
+                $('#delete-modal-job-state').text(jobState);
+                $('#delete-modal-job-created').text(new Date(jobCreated).toLocaleString());
+            });
+
+            // Handle the actual deletion
+            $('#confirmDeleteJob').on('click', function() {
+                if (!deleteJobId) return;
+
+                const $button = $(this);
+                const $buttonText = $button.find('.button-text');
+                const $spinner = $button.find('.spinner-border');
+
+                // Show loading state
+                $button.prop('disabled', true);
+                $buttonText.text('Deleting...');
+                $spinner.removeClass('d-none');
+
+                // Make AJAX request to delete the job
+                $.ajax({
+                    url: '@Url.Action("DeleteJob", "Jobs")',
+                    type: 'POST',
+                    data: {
+                        id: deleteJobId,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Hide modal
+                            $('#deleteJobModal').modal('hide');
+                            
+                            // Show success message and redirect to jobs index
+                            showAlert('success', 'Job deleted successfully!', 'The job and all its results have been permanently deleted.');
+                            
+                            setTimeout(function() {
+                                window.location.href = '@Url.Action("Index", "Jobs")';
+                            }, 1500);
+                        } else {
+                            showAlert('danger', 'Deletion Failed', response.message || 'An error occurred while deleting the job.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Delete job error:', error);
+                        showAlert('danger', 'Deletion Failed', 'An unexpected error occurred. Please try again.');
+                    },
+                    complete: function() {
+                        // Reset button state
+                        $button.prop('disabled', false);
+                        $buttonText.text('Delete Job');
+                        $spinner.addClass('d-none');
+                    }
+                });
+            });
+
+            // Reset delete modal when it's hidden
+            $('#deleteJobModal').on('hidden.bs.modal', function() {
+                deleteJobId = null;
+                $('#delete-modal-job-id').text('-');
+                $('#delete-modal-job-name').text('-');
+                $('#delete-modal-job-state').text('-');
+                $('#delete-modal-job-created').text('-');
+                
+                // Reset button state
+                const $button = $('#confirmDeleteJob');
+                $button.prop('disabled', false);
+                $button.find('.button-text').text('Delete Job');
+                $button.find('.spinner-border').addClass('d-none');
             });
 
             // Advanced settings toggle

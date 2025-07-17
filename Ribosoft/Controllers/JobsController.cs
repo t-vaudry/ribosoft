@@ -342,6 +342,103 @@ namespace Ribosoft.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /*! \fn CancelJob
+         * \brief HTTP POST request to cancel a job via AJAX
+         * \param id Job ID
+         * \return JSON result indicating success or failure
+         */
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CancelJob(int id)
+        {
+            try
+            {
+                var user = await GetUser();
+
+                var job = await _context.Jobs
+                    .Where(j => j.OwnerId == user.Id)
+                    .SingleOrDefaultAsync(m => m.Id == id);
+
+                if (job == null)
+                {
+                    return Json(new { success = false, message = "Job not found or you don't have permission to cancel it." });
+                }
+
+                if (!job.IsInProgress())
+                {
+                    return Json(new { success = false, message = "Job is not in progress and cannot be cancelled." });
+                }
+
+                // Cancel the job
+                job.JobState = JobState.Cancelled;
+
+                if (job.HangfireJobId != null)
+                {
+                    BackgroundJob.Delete(job.HangfireJobId);
+                    job.HangfireJobId = null;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Job cancelled successfully." });
+            }
+            catch (Exception)
+            {
+                // Log the exception (you might want to use your logging framework here)
+                return Json(new { success = false, message = "An error occurred while cancelling the job. Please try again." });
+            }
+        }
+
+        /*! \fn DeleteJob
+         * \brief HTTP POST request to delete a job via AJAX
+         * \param id Job ID
+         * \return JSON result indicating success or failure
+         */
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteJob(int id)
+        {
+            try
+            {
+                var user = await GetUser();
+
+                var job = await _context.Jobs
+                    .Where(j => j.OwnerId == user.Id)
+                    .SingleOrDefaultAsync(m => m.Id == id);
+
+                if (job == null)
+                {
+                    return Json(new { success = false, message = "Job not found or you don't have permission to delete it." });
+                }
+
+                if (job.IsInProgress())
+                {
+                    // Cancel the job first, then mark for deletion
+                    job.JobState = JobState.Cancelled;
+
+                    if (job.HangfireJobId != null)
+                    {
+                        BackgroundJob.Delete(job.HangfireJobId);
+                        job.HangfireJobId = null;
+                    }
+                }
+                else
+                {
+                    // For completed jobs, remove them entirely
+                    _context.Jobs.Remove(job);
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Job deleted successfully." });
+            }
+            catch (Exception)
+            {
+                // Log the exception (you might want to use your logging framework here)
+                return Json(new { success = false, message = "An error occurred while deleting the job. Please try again." });
+            }
+        }
+
         /*! \fn JobExists
          * \brief Helper function to check if job exists
          * \param id Job ID
