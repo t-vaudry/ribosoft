@@ -35,7 +35,8 @@ module.exports = (env, argv) => {
         entry: {
             'main': './ClientApp/boot.js',
             'request': './ClientApp/Request/request.js',
-            'details': './ClientApp/Jobs/details.js'
+            'details': './ClientApp/Jobs/details.js',
+            'jobs-index': './ClientApp/Jobs/index.js'
         },
         module: {
             rules: [
