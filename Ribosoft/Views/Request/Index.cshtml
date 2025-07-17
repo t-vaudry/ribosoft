@@ -81,17 +81,16 @@
                     </div>
                     <div class="card-body">
                         <div class="form-floating">
-                            <v-select label="ribozymeOptions" :options="options" id="ribozymes" :on-change="ribozymeId" class="form-control"></v-select>
+                            <select asp-for="RibozymeStructure" class="form-select" id="ribozymes" v-on:change="ribozymeId">
+                                <option value="-1">Select a ribozyme...</option>
+                                @foreach (var item in ViewBag.Ribozymes)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
                             <label asp-for="RibozymeStructure">
                                 <i class="fas fa-dna me-2"></i>@Html.DisplayNameFor(model => model.RibozymeStructure)
                             </label>
-                            <datalist id="ribozymeList">
-                                @foreach (var item in ViewBag.Ribozymes)
-                                {
-                                    <option value="@item.Text" data-value="@item.Value"></option>
-                                }
-                            </datalist>
-                            <input asp-for="RibozymeStructure" type="hidden" value="-1">
                             <span asp-validation-for="RibozymeStructure" class="invalid-feedback"></span>
                         </div>
                         <div class="form-text">
@@ -291,17 +290,16 @@
                         <div v-show="inVivoSelected">
                             <div class="border-top pt-4 mb-4">
                                 <div class="form-floating mb-3">
-                                    <v-select :options="inVivoOptions" id="environments" :on-change="vivoEnvironment" class="form-control"></v-select>
+                                    <select asp-for="InVivoEnvironment" class="form-select" id="environments" v-on:change="vivoEnvironment">
+                                        <option value="-1">Select an environment...</option>
+                                        @foreach (var item in ViewBag.Assemblies)
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
+                                    </select>
                                     <label asp-for="InVivoEnvironment">
                                         <i class="fas fa-dna me-2"></i>@Html.DisplayNameFor(model => model.InVivoEnvironment)
                                     </label>
-                                    <datalist id="environmentList">
-                                        @foreach (var item in ViewBag.Assemblies)
-                                        {
-                                            <option value="@item.Text" data-value="@item.Value"></option>
-                                        }
-                                    </datalist>
-                                    <input asp-for="InVivoEnvironment" type="hidden" value="-1">
                                     <span asp-validation-for="InVivoEnvironment" class="invalid-feedback"></span>
                                 </div>
 
@@ -530,6 +528,48 @@
         transition: all 0.3s ease;
     }
 
+    /* Enhanced form styling */
+    .form-floating > .form-select {
+        padding-top: 1.625rem;
+        padding-bottom: 0.625rem;
+        line-height: 1.25;
+    }
+
+    .form-floating > .form-select:focus,
+    .form-floating > .form-select:not(:placeholder-shown) {
+        padding-top: 1.625rem;
+        padding-bottom: 0.625rem;
+    }
+
+    .form-floating > label {
+        padding: 1rem 0.75rem;
+        pointer-events: none;
+        border: 1px solid transparent;
+        transform-origin: 0 0;
+        transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
+    }
+
+    .form-floating > .form-select:focus ~ label,
+    .form-floating > .form-select:not([value="-1"]) ~ label,
+    .form-floating > .form-select:not(:placeholder-shown) ~ label {
+        opacity: 0.65;
+        transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    }
+
+    /* Custom select styling */
+    .form-select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 16px 12px;
+    }
+
+    .form-select:focus {
+        border-color: #86b7fe;
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
     /* Mobile responsiveness */
     @@media (max-width: 768px) {
         .page-header .d-flex {
@@ -569,6 +609,18 @@
                 }
             });
 
+            // Handle ribozyme selection change
+            $('#ribozymes').change(function() {
+                // This will trigger the Vue.js ribozymeId method
+                // The Vue app should handle the logic for this change
+            });
+
+            // Handle environment selection change
+            $('#environments').change(function() {
+                // This will trigger the Vue.js vivoEnvironment method
+                // The Vue app should handle the logic for this change
+            });
+
             // Form validation enhancements
             $('form').on('submit', function(e) {
                 const submitBtn = $(this).find('button[type="submit"]');
@@ -580,6 +632,11 @@
                 setTimeout(function() {
                     submitBtn.html(originalText).prop('disabled', false);
                 }, 30000);
+            });
+
+            // Enhanced form field styling
+            $('.form-floating input, .form-floating select, .form-floating textarea').on('focus blur', function() {
+                $(this).closest('.form-floating').toggleClass('focused');
             });
         });
     </script>
