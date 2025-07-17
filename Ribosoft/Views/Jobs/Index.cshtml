@@ -35,7 +35,7 @@
         <div class="row g-3 mb-4">
             <!-- Add Job Card -->
             <div class="col-md-4">
-                <div class="card h-100">
+                <div class="card border-0 shadow-sm h-100">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             <div class="icon-circle bg-primary bg-opacity-10 me-3">
@@ -61,7 +61,7 @@
 
             <!-- Download Jobs Card -->
             <div class="col-md-4">
-                <div class="card h-100">
+                <div class="card border-0 shadow-sm h-100">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             <div class="icon-circle bg-success bg-opacity-10 me-3">
@@ -83,7 +83,7 @@
 
             <!-- Upload Jobs Card -->
             <div class="col-md-4">
-                <div class="card h-100">
+                <div class="card border-0 shadow-sm h-100">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             <div class="icon-circle bg-info bg-opacity-10 me-3">
@@ -149,8 +149,8 @@
         <!-- In Progress Jobs -->
         @if (Model.InProgress.Any())
         {
-            <div class="card mb-4">
-                <div class="card-header">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
                     <div class="d-flex align-items-center">
                         <i class="fas fa-spinner fa-spin text-warning me-2"></i>
                         <h5 class="card-title mb-0">Jobs In Progress</h5>
@@ -202,8 +202,8 @@
         }
 
         <!-- Completed Jobs -->
-        <div class="card">
-            <div class="card-header">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-check-circle text-success me-2"></i>
                     <h5 class="card-title mb-0">Completed Jobs</h5>
