@@ -1,18 +1,42 @@
-﻿@model Ribosoft.Models.JobState
+@model Ribosoft.Models.JobState
 
 @if (Model == JobState.Completed)
 {
-    <span class="badge badge-success">Completed</span>
+    <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Completed</span>
 }
 else if (Model == JobState.Cancelled)
 {
-    <span class="badge badge-secondary">Cancelled</span>
+    <span class="badge bg-secondary"><i class="fas fa-times-circle me-1"></i>Cancelled</span>
 }
 else if (Model == JobState.Errored)
 {
-    <span class="badge badge-danger">Errored</span>
+    <span class="badge bg-danger"><i class="fas fa-exclamation-triangle me-1"></i>Error</span>
 }
 else if (Model == JobState.Warning)
 {
-    <span class="badge badge-warning">Warning</span>
+    <span class="badge bg-warning text-dark"><i class="fas fa-exclamation-triangle me-1"></i>Warning</span>
+}
+else if (Model == JobState.CandidateGenerator)
+{
+    <span class="badge bg-primary"><i class="fas fa-cogs me-1"></i>Generating Candidates</span>
+}
+else if (Model == JobState.Specificity)
+{
+    <span class="badge bg-info text-dark"><i class="fas fa-search me-1"></i>Evaluating Specificity</span>
+}
+else if (Model == JobState.MultiObjectiveOptimization)
+{
+    <span class="badge bg-warning text-dark"><i class="fas fa-sort-amount-down me-1"></i>Optimizing</span>
+}
+else if (Model == JobState.QueuedPhase2 || Model == JobState.QueuedPhase3)
+{
+    <span class="badge bg-secondary"><i class="fas fa-clock me-1"></i>Queued</span>
+}
+else if (Model == JobState.New || Model == JobState.Started)
+{
+    <span class="badge bg-primary"><i class="fas fa-play me-1"></i>Starting</span>
+}
+else
+{
+    <span class="badge bg-secondary"><i class="fas fa-question me-1"></i>@Model.ToString()</span>
 }
