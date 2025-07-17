@@ -7,20 +7,24 @@
     ViewData["Title"] = "Jobs";
 }
 
-<div class="container-fluid">
+<div class="container-fluid px-3 px-md-4">
     <div class="jobs-content">
         <!-- Page Header -->
         <div class="page-header mb-4">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <h1 class="display-6 mb-1">
-                        <i class="fas fa-tasks me-3 text-primary"></i>@ViewData["Title"]
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-tasks me-2 text-primary"></i>@ViewData["Title"]
                     </h1>
                     <p class="text-muted mb-0">Manage and monitor your ribozyme design jobs</p>
                 </div>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Home" asp-action="Index" class="text-decoration-none">
+                                <i class="fas fa-home me-1"></i>Home
+                            </a>
+                        </li>
                         <li class="breadcrumb-item active" aria-current="page">Jobs</li>
                     </ol>
                 </nav>
@@ -31,7 +35,7 @@
         <div class="row g-3 mb-4">
             <!-- Add Job Card -->
             <div class="col-md-4">
-                <div class="card border-0 shadow-sm h-100">
+                <div class="card h-100">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             <div class="icon-circle bg-primary bg-opacity-10 me-3">
@@ -57,7 +61,7 @@
 
             <!-- Download Jobs Card -->
             <div class="col-md-4">
-                <div class="card border-0 shadow-sm h-100">
+                <div class="card h-100">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             <div class="icon-circle bg-success bg-opacity-10 me-3">
@@ -79,7 +83,7 @@
 
             <!-- Upload Jobs Card -->
             <div class="col-md-4">
-                <div class="card border-0 shadow-sm h-100">
+                <div class="card h-100">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             <div class="icon-circle bg-info bg-opacity-10 me-3">
@@ -105,46 +109,48 @@
         <!-- Success Messages -->
         @if (Model.SuccessMessages.Count > 0)
         {
-            <div class="alert alert-success border-0 shadow-sm mb-4" role="alert">
+            <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
                 <div class="d-flex align-items-center mb-2">
-                    <i class="fas fa-check-circle text-success me-2"></i>
-                    <h5 class="alert-heading mb-0">Success!</h5>
-                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <i class="fas fa-check-circle me-3 fs-4"></i>
+                    <div>
+                        <h5 class="alert-heading mb-1">Success!</h5>
+                        <ul class="mb-0">
+                            @foreach (string message in Model.SuccessMessages)
+                            {
+                                <li>@(message)</li>
+                            }
+                        </ul>
+                    </div>
                 </div>
-                <hr class="my-2">
-                <ul class="mb-0">
-                    @foreach (string message in Model.SuccessMessages)
-                    {
-                        <li>@(message)</li>
-                    }
-                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
 
         <!-- Error Messages -->
         @if (Model.ErrorMessages.Count > 0)
         {
-            <div class="alert alert-danger border-0 shadow-sm mb-4" role="alert">
+            <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
                 <div class="d-flex align-items-center mb-2">
-                    <i class="fas fa-exclamation-triangle text-danger me-2"></i>
-                    <h5 class="alert-heading mb-0">Error!</h5>
-                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <i class="fas fa-exclamation-triangle me-3 fs-4"></i>
+                    <div>
+                        <h5 class="alert-heading mb-1">Error!</h5>
+                        <ul class="mb-0">
+                            @foreach (string message in Model.ErrorMessages)
+                            {
+                                <li>@(message)</li>
+                            }
+                        </ul>
+                    </div>
                 </div>
-                <hr class="my-2">
-                <ul class="mb-0">
-                    @foreach (string message in Model.ErrorMessages)
-                    {
-                        <li>@(message)</li>
-                    }
-                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
 
         <!-- In Progress Jobs -->
         @if (Model.InProgress.Any())
         {
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-white border-bottom">
+            <div class="card mb-4">
+                <div class="card-header">
                     <div class="d-flex align-items-center">
                         <i class="fas fa-spinner fa-spin text-warning me-2"></i>
                         <h5 class="card-title mb-0">Jobs In Progress</h5>
@@ -196,8 +202,8 @@
         }
 
         <!-- Completed Jobs -->
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white border-bottom">
+        <div class="card">
+            <div class="card-header">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-check-circle text-success me-2"></i>
                     <h5 class="card-title mb-0">Completed Jobs</h5>
@@ -296,6 +302,14 @@
     .page-header {
         padding-bottom: 1rem;
         border-bottom: 1px solid #e9ecef;
+    }
+
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
     }
 
     .icon-circle {
