@@ -1,4 +1,4 @@
-﻿@model Ribosoft.Models.JobsViewModels.JobIndexViewModel
+@model Ribosoft.Models.JobsViewModels.JobIndexViewModel
 @using Microsoft.AspNetCore.Mvc.Localization
 
 @inject IViewLocalizer Localizer
@@ -7,173 +7,394 @@
     ViewData["Title"] = "Jobs";
 }
 
-<div class="row my-3">
-    <h1 class="col-md-6">@ViewData["Title"]</h1>
-    <div class="col-md-6 align-content-center d-flex">
-        <form asp-action="AddJob" method="post" class="form-inline ml-auto">
-            <span data-toggle="tooltip" data-placement="left" title="@Localizer["AddJobTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
-            <input asp-for="JobId" class="form-control mx-1" placeholder="Job Id">
-            <button type="submit" class="btn btn-primary">Add</button>
-        </form>
-        <form asp-action="DownloadJobs" class="form-inline ml-2">
-            <button type="submit" class="btn btn-primary"><i class="fas fa-download mr-1"></i> Download</button>
-        </form>
-        <form asp-action="UploadJobs" enctype="multipart/form-data" method="post" class="form-inline ml-2">
-            <input type="file" asp-for="UploadFile" style="display:none" />
-            <button type="button" name="attach" id="attach-button" class="btn btn-primary"><i class="fas fa-upload mr-1"></i> Upload</button>
-            <button class="d-none" type="submit" id="attach-submit" />
-        </form>
-    </div>
-</div>
-
-@if (Model.SuccessMessages.Count > 0)
-{
-    <div class="my-3">
-        <div class="alert alert-success" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <h5 class="alert-heading"><i class="fas fa-check-circle mr-1"></i> Success!</h5>
-            <hr>
-            <ul class="mb-0">
-                @foreach (string message in Model.SuccessMessages)
-                {
-                    <li>@(message)</li>
-                }
-            </ul>
-        </div>
-    </div>
-}
-
-@if (Model.ErrorMessages.Count > 0)
-{
-    <div class="my-3">
-        <div class="alert alert-danger" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <h5 class="alert-heading"><i class="fas fa-exclamation-triangle mr-1"></i> Error!</h5>
-            <hr>
-            <ul class="mb-0">
-                @foreach (string message in Model.ErrorMessages)
-                {
-                    <li>@(message)</li>
-                }
-            </ul>
-        </div>
-    </div>
-}
-
-@if (Model.InProgress.Any())
-{
-    <div class="card my-3 box-shadow">
-        <div class="card-body">
-            <h5 class="card-title mb-0">In progress</h5>
+<div class="container-fluid">
+    <div class="jobs-content">
+        <!-- Page Header -->
+        <div class="page-header mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-6 mb-1">
+                        <i class="fas fa-tasks me-3 text-primary"></i>@ViewData["Title"]
+                    </h1>
+                    <p class="text-muted mb-0">Manage and monitor your ribozyme design jobs</p>
+                </div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Jobs</li>
+                    </ol>
+                </nav>
+            </div>
         </div>
 
-        <div class="list-group list-group-flush">
-            @foreach (var item in Model.InProgress)
-            {
-                <div class="list-group-item">
-                    <div class="row my-1">
-                        <div class="col-md-8">
-                            <p class="mb-0">
-                                <span class="d-block">
-                                    <strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong> <span class="text-muted">on @item.CreatedAt</span> <span class="text-muted">[@Html.DisplayNameFor(modelItem => item.Id): @item.Id]</span>
-                                </span>
-                                <code>@(item.RNAInput.Length > 80 ? item.RNAInput.Substring(0, 80) + "..." : item.RNAInput)</code>
-                            </p>
+        <!-- Action Cards -->
+        <div class="row g-3 mb-4">
+            <!-- Add Job Card -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-circle bg-primary bg-opacity-10 me-3">
+                                <i class="fas fa-plus text-primary"></i>
+                            </div>
+                            <h5 class="card-title mb-0">Add Job</h5>
                         </div>
-                        <div class="col-md-4 text-md-right">
-                            <a role="button" class="btn btn-primary" asp-action="Details" asp-route-id="@item.Id">Details</a>
-                            <a role="button" class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Cancel</a>
+                        <form asp-action="AddJob" method="post">
+                            <div class="input-group">
+                                <input asp-for="JobId" class="form-control" placeholder="Enter Job ID">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-plus me-1"></i>Add
+                                </button>
+                            </div>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                @Localizer["AddJobTooltip"]
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Download Jobs Card -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-circle bg-success bg-opacity-10 me-3">
+                                <i class="fas fa-download text-success"></i>
+                            </div>
+                            <h5 class="card-title mb-0">Download Jobs</h5>
+                        </div>
+                        <form asp-action="DownloadJobs">
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fas fa-download me-2"></i>Download All Jobs
+                            </button>
+                        </form>
+                        <div class="form-text">
+                            Export all your jobs data for backup or analysis
                         </div>
                     </div>
                 </div>
-            }
-        </div>
-    </div>
-}
-
-<div class="card my-3 box-shadow">
-    @if (Model.Completed.TotalItems == 0)
-    {
-        <div class="card-body">
-            <div class="row my-1">
-                <div class="col-md-6">
-                    <h5 class="card-title mb-0">Completed</h5>
-                </div>
             </div>
-            <p class="card-text">You have no completed jobs.</p>
-        </div>
-    }
-    else
-    {
-        <div class="card-body">
-            <div class="row my-1">
-                <div class="col-md-6">
-                    <h5 class="card-title mb-0">Completed</h5>
+
+            <!-- Upload Jobs Card -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-circle bg-info bg-opacity-10 me-3">
+                                <i class="fas fa-upload text-info"></i>
+                            </div>
+                            <h5 class="card-title mb-0">Upload Jobs</h5>
+                        </div>
+                        <form asp-action="UploadJobs" enctype="multipart/form-data" method="post">
+                            <input type="file" asp-for="UploadFile" style="display:none" id="uploadFile" />
+                            <button type="button" id="attach-button" class="btn btn-info w-100">
+                                <i class="fas fa-upload me-2"></i>Choose File & Upload
+                            </button>
+                            <button class="d-none" type="submit" id="attach-submit"></button>
+                        </form>
+                        <div class="form-text">
+                            Import jobs from a previously exported file
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="list-group list-group-flush">
-            @foreach (var item in Model.Completed.Data)
+        <!-- Success Messages -->
+        @if (Model.SuccessMessages.Count > 0)
+        {
+            <div class="alert alert-success border-0 shadow-sm mb-4" role="alert">
+                <div class="d-flex align-items-center mb-2">
+                    <i class="fas fa-check-circle text-success me-2"></i>
+                    <h5 class="alert-heading mb-0">Success!</h5>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <hr class="my-2">
+                <ul class="mb-0">
+                    @foreach (string message in Model.SuccessMessages)
+                    {
+                        <li>@(message)</li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <!-- Error Messages -->
+        @if (Model.ErrorMessages.Count > 0)
+        {
+            <div class="alert alert-danger border-0 shadow-sm mb-4" role="alert">
+                <div class="d-flex align-items-center mb-2">
+                    <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                    <h5 class="alert-heading mb-0">Error!</h5>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <hr class="my-2">
+                <ul class="mb-0">
+                    @foreach (string message in Model.ErrorMessages)
+                    {
+                        <li>@(message)</li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <!-- In Progress Jobs -->
+        @if (Model.InProgress.Any())
+        {
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-spinner fa-spin text-warning me-2"></i>
+                        <h5 class="card-title mb-0">Jobs In Progress</h5>
+                        <span class="badge bg-warning text-dark ms-2">@Model.InProgress.Count()</span>
+                    </div>
+                    <small class="text-muted">Currently running ribozyme design jobs</small>
+                </div>
+                <div class="card-body p-0">
+                    @foreach (var item in Model.InProgress)
+                    {
+                        <div class="job-item border-bottom p-3">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <div class="d-flex align-items-start">
+                                        <div class="job-status me-3">
+                                            <div class="spinner-border spinner-border-sm text-warning" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </div>
+                                        <div class="job-details">
+                                            <h6 class="mb-1">
+                                                <strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong>
+                                                <small class="text-muted ms-2">ID: @item.Id</small>
+                                            </h6>
+                                            <p class="text-muted small mb-2">
+                                                <i class="fas fa-clock me-1"></i>Started @item.CreatedAt
+                                            </p>
+                                            <div class="sequence-preview">
+                                                <code class="small">@(item.RNAInput.Length > 80 ? item.RNAInput.Substring(0, 80) + "..." : item.RNAInput)</code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <div class="btn-group" role="group">
+                                        <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@item.Id">
+                                            <i class="fas fa-eye me-1"></i>Details
+                                        </a>
+                                        <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">
+                                            <i class="fas fa-times me-1"></i>Cancel
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- Completed Jobs -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-check-circle text-success me-2"></i>
+                    <h5 class="card-title mb-0">Completed Jobs</h5>
+                    @if (Model.Completed.TotalItems > 0)
+                    {
+                        <span class="badge bg-success ms-2">@Model.Completed.TotalItems</span>
+                    }
+                </div>
+                <small class="text-muted">Finished ribozyme design jobs with results</small>
+            </div>
+
+            @if (Model.Completed.TotalItems == 0)
             {
-                <div class="list-group-item">
-                    <div class="row my-1">
-                        <div class="col-md-8">
-                            <p class="mb-0">
-                                <span class="d-block">
-                                    @await Html.PartialAsync("JobStateBadge", item.JobState)
-                                    <strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong> <span class="text-muted">on @item.CreatedAt</span> <span class="text-muted">[@Html.DisplayNameFor(modelItem => item.Id): @item.Id]</span>
-                                </span>
-                                <code>@(item.RNAInput.Length > 80 ? item.RNAInput.Substring(0, 80) + "..." : item.RNAInput)</code>
-                            </p>
-                        </div>
-                        <div class="col-md-4 text-md-right">
-                            <a role="button" class="btn btn-primary" asp-action="Details" asp-route-id="@item.Id">Details</a>
-                            <a role="button" class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                        </div>
+                <div class="card-body text-center py-5">
+                    <div class="empty-state">
+                        <i class="fas fa-inbox text-muted mb-3" style="font-size: 3rem;"></i>
+                        <h5 class="text-muted">No completed jobs yet</h5>
+                        <p class="text-muted">Your completed ribozyme design jobs will appear here.</p>
+                        <a asp-controller="Request" asp-action="Index" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Create New Job
+                        </a>
                     </div>
                 </div>
             }
-        </div>
+            else
+            {
+                <div class="card-body p-0">
+                    @foreach (var item in Model.Completed.Data)
+                    {
+                        <div class="job-item border-bottom p-3">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <div class="d-flex align-items-start">
+                                        <div class="job-status me-3">
+                                            @await Html.PartialAsync("JobStateBadge", item.JobState)
+                                        </div>
+                                        <div class="job-details">
+                                            <h6 class="mb-1">
+                                                <strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong>
+                                                <small class="text-muted ms-2">ID: @item.Id</small>
+                                            </h6>
+                                            <p class="text-muted small mb-2">
+                                                <i class="fas fa-calendar me-1"></i>Completed @item.CreatedAt
+                                            </p>
+                                            <div class="sequence-preview">
+                                                <code class="small">@(item.RNAInput.Length > 80 ? item.RNAInput.Substring(0, 80) + "..." : item.RNAInput)</code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <div class="btn-group" role="group">
+                                        <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@item.Id">
+                                            <i class="fas fa-eye me-1"></i>Details
+                                        </a>
+                                        <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">
+                                            <i class="fas fa-trash me-1"></i>Delete
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
 
-        <div class="card-body">
-            <cs-pager cs-paging-pagesize="@Model.Completed.PageSize"
-                      cs-paging-pagenumber="@Model.Completed.PageNumber"
-                      cs-paging-totalitems="@Model.Completed.TotalItems"
-                      asp-action="Index"
-                      asp-controller="Jobs"
-                      cs-pagenumber-param="pageNumber"
-                      cs-pager-ul-class="pagination mb-0"
-                      cs-pager-li-current-class="page-item active"
-                      cs-pager-li-other-class="page-item"
-                      cs-pager-li-non-active-class="page-item disabled"
-                      cs-pager-link-current-class="page-link"
-                      cs-pager-link-other-class="page-link"></cs-pager>
+                <!-- Pagination -->
+                @if (Model.Completed.TotalItems > Model.Completed.PageSize)
+                {
+                    <div class="card-footer bg-white border-top">
+                        <cs-pager cs-paging-pagesize="@Model.Completed.PageSize"
+                                  cs-paging-pagenumber="@Model.Completed.PageNumber"
+                                  cs-paging-totalitems="@Model.Completed.TotalItems"
+                                  asp-action="Index"
+                                  asp-controller="Jobs"
+                                  cs-pagenumber-param="pageNumber"
+                                  cs-pager-ul-class="pagination justify-content-center mb-0"
+                                  cs-pager-li-current-class="page-item active"
+                                  cs-pager-li-other-class="page-item"
+                                  cs-pager-li-non-active-class="page-item disabled"
+                                  cs-pager-link-current-class="page-link"
+                                  cs-pager-link-other-class="page-link">
+                        </cs-pager>
+                    </div>
+                }
+            }
         </div>
-    }
+    </div>
 </div>
 
-@section scripts 
-{
+<style>
+    .jobs-content {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .icon-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    .job-item {
+        transition: background-color 0.2s ease;
+    }
+
+    .job-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .job-item:last-child {
+        border-bottom: none !important;
+    }
+
+    .sequence-preview code {
+        background-color: #f8f9fa;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-family: 'Courier New', monospace;
+        font-size: 0.85rem;
+        word-break: break-all;
+    }
+
+    .empty-state {
+        padding: 2rem;
+    }
+
+    .btn-group .btn {
+        border-radius: 0.375rem;
+    }
+
+    .btn-group .btn:not(:last-child) {
+        margin-right: 0.5rem;
+    }
+
+    /* Mobile responsiveness */
+    @@media (max-width: 768px) {
+        .page-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .page-header nav {
+            margin-top: 0.5rem;
+        }
+
+        .job-item .row {
+            flex-direction: column;
+        }
+
+        .job-item .col-md-4 {
+            margin-top: 1rem;
+            text-align: left !important;
+        }
+
+        .btn-group {
+            width: 100%;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+        }
+    }
+</style>
+
+@section Scripts {
     <script>
         $(function() {
-            $('[data-toggle="tooltip"]').tooltip();
-        });
+            // Initialize Bootstrap tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
 
-        var button = $('#attach-button');
-        var input = $('#UploadFile');
-        var submit = $('#attach-submit');
+            // File upload handling
+            $('#attach-button').click(function() {
+                $('#uploadFile').click();
+            });
 
-        button.on('click', function (e) {
-            input.click();
-        });
+            $('#uploadFile').change(function() {
+                if (this.files && this.files.length > 0) {
+                    $('#attach-submit').click();
+                }
+            });
 
-        input.on('change', function (e) {
-            submit.click();
+            // Auto-dismiss alerts after 5 seconds
+            setTimeout(function() {
+                $('.alert').fadeOut('slow');
+            }, 5000);
         });
     </script>
 }
