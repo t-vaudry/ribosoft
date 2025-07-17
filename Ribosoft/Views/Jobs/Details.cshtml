@@ -36,8 +36,8 @@
         <!-- Job Status and Progress Row -->
         <div class="row g-4 mb-4">
             <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom">
                         <div class="d-flex align-items-center">
                             <i class="fas fa-info-circle text-primary me-2"></i>
                             <h5 class="card-title mb-0">Request Information</h5>
@@ -82,8 +82,8 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom">
                         <h5 class="card-title mb-0">
                             <i class="fas fa-chart-line text-success me-2"></i>Progress
                         </h5>
@@ -154,11 +154,12 @@
             </div>
         </div>
         <!-- RNA Input Sequence Card -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="card-title mb-1">
                     <i class="fas fa-dna text-info me-2"></i>@Html.DisplayNameFor(model => model.Job.RNAInput)
                 </h5>
+                <small class="text-muted">Input RNA sequence for ribozyme design</small>
             </div>
             <div class="card-body">
                 <div class="sequence-container">
@@ -173,132 +174,186 @@
             </div>
         </div>
 
-        <!-- Parameters Card -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
+        <!-- Design Parameters Card -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="card-title mb-1">
                     <i class="fas fa-sliders-h text-warning me-2"></i>Design Parameters
                 </h5>
+                <small class="text-muted">Configuration parameters used for ribozyme design</small>
             </div>
             <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <div class="info-item">
-                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.OpenReadingFrameStart)</label>
-                            <div class="fw-bold">@Html.DisplayFor(model => model.Job.OpenReadingFrameStart)</div>
+                <!-- Target Region Parameters -->
+                <div class="parameter-section mb-4">
+                    <h6 class="text-muted mb-3">
+                        <i class="fas fa-crosshairs me-2"></i>Target Region
+                    </h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="parameter-item">
+                                <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.OpenReadingFrameStart)</label>
+                                <div class="parameter-value">@Html.DisplayFor(model => model.Job.OpenReadingFrameStart)</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="info-item">
-                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.OpenReadingFrameEnd)</label>
-                            <div class="fw-bold">@Html.DisplayFor(model => model.Job.OpenReadingFrameEnd)</div>
+                        <div class="col-md-4">
+                            <div class="parameter-item">
+                                <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.OpenReadingFrameEnd)</label>
+                                <div class="parameter-value">@Html.DisplayFor(model => model.Job.OpenReadingFrameEnd)</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="info-item">
-                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.TargetTemperature)</label>
-                            <div class="fw-bold">@Html.DisplayFor(model => model.Job.TargetTemperature)°C</div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="info-item">
-                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.FivePrime)</label>
-                            <div class="text-center">
-                                @if (Model.Job.FivePrime)
-                                {
-                                    <i class="fas fa-check-circle text-success"></i>
-                                }
-                                else
-                                {
-                                    <i class="fas fa-times-circle text-danger"></i>
-                                }
+                        <div class="col-md-4">
+                            <div class="parameter-item">
+                                <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.TargetTemperature)</label>
+                                <div class="parameter-value">@Html.DisplayFor(model => model.Job.TargetTemperature)°C</div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="info-item">
-                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.OpenReadingFrame)</label>
-                            <div class="text-center">
-                                @if (Model.Job.OpenReadingFrame)
-                                {
-                                    <i class="fas fa-check-circle text-success"></i>
-                                }
-                                else
-                                {
-                                    <i class="fas fa-times-circle text-danger"></i>
-                                }
+                </div>
+
+                <!-- Target Regions Selection -->
+                <div class="parameter-section mb-4">
+                    <h6 class="text-muted mb-3">
+                        <i class="fas fa-map-marker-alt me-2"></i>Target Regions Selection
+                    </h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="parameter-item">
+                                <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.FivePrime)</label>
+                                <div class="parameter-value">
+                                    @if (Model.Job.FivePrime)
+                                    {
+                                        <span class="badge bg-success"><i class="fas fa-check me-1"></i>Enabled</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary"><i class="fas fa-times me-1"></i>Disabled</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="parameter-item">
+                                <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.OpenReadingFrame)</label>
+                                <div class="parameter-value">
+                                    @if (Model.Job.OpenReadingFrame)
+                                    {
+                                        <span class="badge bg-success"><i class="fas fa-check me-1"></i>Enabled</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary"><i class="fas fa-times me-1"></i>Disabled</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="parameter-item">
+                                <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.ThreePrime)</label>
+                                <div class="parameter-value">
+                                    @if (Model.Job.ThreePrime)
+                                    {
+                                        <span class="badge bg-success"><i class="fas fa-check me-1"></i>Enabled</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary"><i class="fas fa-times me-1"></i>Disabled</span>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="info-item">
-                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.ThreePrime)</label>
-                            <div class="text-center">
-                                @if (Model.Job.ThreePrime)
-                                {
-                                    <i class="fas fa-check-circle text-success"></i>
-                                }
-                                else
-                                {
-                                    <i class="fas fa-times-circle text-danger"></i>
-                                }
+                </div>
+
+                <!-- Environment Settings -->
+                <div class="parameter-section mb-4">
+                    <h6 class="text-muted mb-3">
+                        <i class="fas fa-flask me-2"></i>Environment Settings
+                    </h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="parameter-item">
+                                <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.TargetEnvironment)</label>
+                                <div class="parameter-value">
+                                    <span class="badge bg-info">@Html.DisplayFor(model => model.Job.TargetEnvironment)</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="info-item">
-                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.TargetEnvironment)</label>
-                            <div class="fw-bold">@Html.DisplayFor(model => model.Job.TargetEnvironment)</div>
+                        <div class="col-md-6">
+                            <div class="parameter-item">
+                                <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.Temperature)</label>
+                                <div class="parameter-value">@Html.DisplayFor(model => model.Job.Temperature)°C</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 @if (Model.Job.TargetEnvironment == TargetEnvironment.InVivo && Model.Job.AssemblyId.HasValue)
                 {
-                    <hr class="my-3">
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <div class="info-item">
-                                <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.Assembly)</label>
-                                <div>
-                                    <strong>@Html.DisplayFor(model => model.Job.Assembly.OrganismName)</strong>
-                                    <br>
-                                    <small class="text-muted">
-                                        Taxonomy: <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=@(Model.Job.Assembly.TaxonomyId)" target="_blank">@Html.DisplayFor(model => model.Job.Assembly.TaxonomyId)</a>,
-                                        Species: <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=@(Model.Job.Assembly.SpeciesId)" target="_blank">@Html.DisplayFor(model => model.Job.Assembly.SpeciesId)</a>
-                                        <br>
-                                        Assembly: <a href="https://www.ncbi.nlm.nih.gov/assembly/@(Model.Job.Assembly.AccessionId)" target="_blank">@Html.DisplayFor(model => model.Job.Assembly.AssemblyName)</a>
-                                    </small>
+                    <!-- In Vivo Specific Settings -->
+                    <div class="parameter-section mb-4">
+                        <h6 class="text-muted mb-3">
+                            <i class="fas fa-dna me-2"></i>In Vivo Assembly Information
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="parameter-item">
+                                    <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.Assembly)</label>
+                                    <div class="parameter-value">
+                                        <div class="assembly-info p-3 bg-light rounded">
+                                            <h6 class="mb-2">@Html.DisplayFor(model => model.Job.Assembly.OrganismName)</h6>
+                                            <div class="row g-2 small text-muted">
+                                                <div class="col-md-4">
+                                                    <strong>Taxonomy:</strong> 
+                                                    <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=@(Model.Job.Assembly.TaxonomyId)" target="_blank" class="text-decoration-none">
+                                                        @Html.DisplayFor(model => model.Job.Assembly.TaxonomyId)
+                                                    </a>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <strong>Species:</strong> 
+                                                    <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=@(Model.Job.Assembly.SpeciesId)" target="_blank" class="text-decoration-none">
+                                                        @Html.DisplayFor(model => model.Job.Assembly.SpeciesId)
+                                                    </a>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <strong>Assembly:</strong> 
+                                                    <a href="https://www.ncbi.nlm.nih.gov/assembly/@(Model.Job.Assembly.AccessionId)" target="_blank" class="text-decoration-none">
+                                                        @Html.DisplayFor(model => model.Job.Assembly.AssemblyName)
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="info-item">
-                                <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.SpecificityMethod)</label>
-                                <div class="fw-bold">@Html.DisplayFor(model => model.Job.SpecificityMethod)</div>
+                            <div class="col-md-6">
+                                <div class="parameter-item">
+                                    <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.SpecificityMethod)</label>
+                                    <div class="parameter-value">
+                                        <span class="badge bg-primary">@Html.DisplayFor(model => model.Job.SpecificityMethod)</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 }
 
-                <hr class="my-3">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <div class="info-item">
-                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.Temperature)</label>
-                            <div class="fw-bold">@Html.DisplayFor(model => model.Job.Temperature)°C</div>
+                <!-- Chemical Parameters -->
+                <div class="parameter-section">
+                    <h6 class="text-muted mb-3">
+                        <i class="fas fa-vial me-2"></i>Chemical Parameters
+                    </h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="parameter-item">
+                                <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.Na)</label>
+                                <div class="parameter-value">@Html.DisplayFor(model => model.Job.Na) M</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="info-item">
-                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.Na)</label>
-                            <div class="fw-bold">@Html.DisplayFor(model => model.Job.Na) M</div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="info-item">
-                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.Probe)</label>
-                            <div class="fw-bold">@Html.DisplayFor(model => model.Job.Probe) M</div>
+                        <div class="col-md-4">
+                            <div class="parameter-item">
+                                <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.Probe)</label>
+                                <div class="parameter-value">@Html.DisplayFor(model => model.Job.Probe) M</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -611,6 +666,429 @@
 
         .progress-steps .step {
             margin-bottom: 0.5rem;
+        }
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $(function() {
+            // Initialize Bootstrap tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Advanced settings toggle
+            $('#advancedSettings').change(function() {
+                const content = $('.advanced-settings-content');
+                if (this.checked) {
+                    content.slideDown(300);
+                } else {
+                    content.slideUp(300);
+                }
+            });
+
+            // Select all checkbox functionality
+            $('#selectAll').change(function() {
+                $('.design-checkbox').prop('checked', this.checked);
+            });
+
+            // Individual checkbox change
+            $('.design-checkbox').change(function() {
+                const totalCheckboxes = $('.design-checkbox').length;
+                const checkedCheckboxes = $('.design-checkbox:checked').length;
+                $('#selectAll').prop('checked', totalCheckboxes === checkedCheckboxes);
+            });
+
+            // Sortable columns
+            $('.sortable').click(function() {
+                const sortType = $(this).data('sort');
+                // Add sorting logic here
+                console.log('Sorting by:', sortType);
+            });
+        });
+
+        // Global functions for export functionality
+        function refineResults() {
+            const filterOptions = $('#filterOptions');
+            filterOptions.toggle();
+        }
+
+        function downloadDesign(designId, format) {
+            // Add download logic here
+            console.log('Downloading design:', designId, 'in format:', format);
+        }
+
+        // Export functions - using original logic
+        function clickFuncAll(type) {
+            var form = document.createElement("form");
+            form.setAttribute("method", "post");
+            form.setAttribute("action", "/Designs/ExportAll");
+
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", "jobId");
+            hiddenField.setAttribute("value", @Model.Job.Id);
+
+            var hiddenField2 = document.createElement("input");
+            hiddenField2.setAttribute("type", "hidden");
+            hiddenField2.setAttribute("name", "type");
+            hiddenField2.setAttribute("value", type);
+
+            form.appendChild(hiddenField);
+            form.appendChild(hiddenField2);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        // Export event handlers
+        $('#csvAll').click(function() { return clickFuncAll("csv"); });
+        $('#fastaAll').click(function() { return clickFuncAll("fasta"); });
+        $('#zipAll').click(function() { return clickFuncAll("zip"); });
+    </script>
+    <script src="~/dist/details.js"></script>
+}
+        <!-- Advanced Settings Card -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom">
+                <div class="d-flex align-items-center">
+                    <input type="checkbox" class="form-check-input me-2" id="advancedSettings">
+                    <label class="form-check-label" for="advancedSettings">
+                        <h5 class="card-title mb-1">
+                            <i class="fas fa-cog text-secondary me-2"></i>Advanced Settings
+                        </h5>
+                    </label>
+                </div>
+                <small class="text-muted">Click to show/hide advanced configuration parameters</small>
+            </div>
+            <div class="card-body advanced-settings-content" style="display: none;">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="parameter-item">
+                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.DesiredTempTolerance)</label>
+                            <div class="parameter-value">@Html.DisplayFor(model => model.Job.DesiredTempTolerance)</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="parameter-item">
+                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.SpecificityTolerance)</label>
+                            <div class="parameter-value">@Html.DisplayFor(model => model.Job.SpecificityTolerance)</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="parameter-item">
+                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.AccessibilityTolerance)</label>
+                            <div class="parameter-value">@Html.DisplayFor(model => model.Job.AccessibilityTolerance)</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="parameter-item">
+                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.StructureTolerance)</label>
+                            <div class="parameter-value">@Html.DisplayFor(model => model.Job.StructureTolerance)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.Job.JobState == JobState.Completed && Model.Designs.Data.Any())
+        {
+            <!-- Results Section -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title mb-1">
+                                <i class="fas fa-chart-bar text-success me-2"></i>Design Results
+                            </h5>
+                            <small class="text-muted">@Model.Designs.Data.Count() ribozyme designs generated</small>
+                        </div>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="refineResults()">
+                                <i class="fas fa-filter me-1"></i>Filter Results
+                            </button>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-success btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="fas fa-download me-1"></i>Export
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" id="csvAll"><i class="fas fa-file-csv me-2"></i>CSV Format</a></li>
+                                    <li><a class="dropdown-item" href="#" id="fastaAll"><i class="fas fa-file-alt me-2"></i>FASTA Format</a></li>
+                                    <li><a class="dropdown-item" href="#" id="zipAll"><i class="fas fa-file-archive me-2"></i>ZIP Archive</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <!-- Filter Options (Initially Hidden) -->
+                    <div id="filterOptions" class="border-bottom p-3" style="display: none;">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <div id="structured-filter"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">
+                                        <div class="d-flex align-items-center">
+                                            <input type="checkbox" class="form-check-input me-2" id="selectAll">
+                                            <span>Select</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col">Rank</th>
+                                    <th scope="col" class="sortable" data-sort="cutsite">
+                                        Cut Site
+                                        <i class="fas fa-sort ms-1" id="cutsitesort"></i>
+                                    </th>
+                                    <th scope="col" class="sortable" data-sort="destemp">
+                                        Design Temp
+                                        <i class="fas fa-sort ms-1" id="destempsort"></i>
+                                    </th>
+                                    <th scope="col" class="sortable" data-sort="spec">
+                                        Specificity
+                                        <i class="fas fa-sort ms-1" id="specsort"></i>
+                                    </th>
+                                    <th scope="col" class="sortable" data-sort="access">
+                                        Accessibility
+                                        <i class="fas fa-sort ms-1" id="accesssort"></i>
+                                    </th>
+                                    <th scope="col" class="sortable" data-sort="struct">
+                                        Structure
+                                        <i class="fas fa-sort ms-1" id="structsort"></i>
+                                    </th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{int rank = 1;}
+                                @foreach (var design in Model.Designs.Data)
+                                {
+                                    <tr class="design-row" data-design-id="@design.Id">
+                                        <td>
+                                            <input type="checkbox" class="form-check-input design-checkbox" value="@design.Id">
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-primary">#@rank</span>
+                                        </td>
+                                        <td>
+                                            <code class="small">@design.CutsiteIndex</code>
+                                        </td>
+                                        <td>
+                                            <span class="fw-bold">@design.DesiredTemperatureScore</span>
+                                        </td>
+                                        <td>
+                                            <span class="fw-bold">@design.SpecificityScore</span>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 20px;">
+                                                <div class="progress-bar bg-info" role="progressbar" 
+                                                     style="width: @(design.AccessibilityScore * 100)%" 
+                                                     aria-valuenow="@(design.AccessibilityScore * 100)" 
+                                                     aria-valuemin="0" aria-valuemax="100">
+                                                    @design.AccessibilityScore
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 20px;">
+                                                <div class="progress-bar bg-success" role="progressbar" 
+                                                     style="width: @(design.StructureScore * 100)%" 
+                                                     aria-valuenow="@(design.StructureScore * 100)" 
+                                                     aria-valuemin="0" aria-valuemax="100">
+                                                    @design.StructureScore
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a class="btn btn-outline-primary" asp-controller="Designs" asp-action="Details" asp-route-id="@design.Id">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-outline-success" onclick="downloadDesign(@design.Id, 'fasta')">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    rank++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        else if (Model.Job.JobState == JobState.Completed)
+        {
+            <!-- No Results Card -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body text-center py-5">
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle text-warning mb-3" style="font-size: 3rem;"></i>
+                        <h5 class="text-muted">No designs generated</h5>
+                        <p class="text-muted">This job completed but did not generate any ribozyme designs. This may be due to very restrictive parameters or unsuitable input sequence.</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .job-details-content {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    .info-item {
+        margin-bottom: 0.5rem;
+    }
+
+    .info-item label {
+        margin-bottom: 0.25rem;
+        font-weight: 500;
+    }
+
+    .parameter-section {
+        border-left: 3px solid #e9ecef;
+        padding-left: 1rem;
+    }
+
+    .parameter-item {
+        margin-bottom: 1rem;
+    }
+
+    .parameter-item label {
+        margin-bottom: 0.25rem;
+        font-weight: 500;
+        font-size: 0.875rem;
+    }
+
+    .parameter-value {
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .assembly-info {
+        border: 1px solid #dee2e6;
+    }
+
+    .sequence-container {
+        position: relative;
+    }
+
+    .sequence-textarea {
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        resize: vertical;
+    }
+
+    .progress-steps {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1rem;
+    }
+
+    .progress-steps .step {
+        text-align: center;
+        flex: 1;
+        padding: 0.5rem;
+        color: #6c757d;
+        font-size: 0.875rem;
+    }
+
+    .progress-steps .step.completed {
+        color: #198754;
+    }
+
+    .progress-steps .step i {
+        display: block;
+        font-size: 1.2rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .advanced-settings-content {
+        transition: all 0.3s ease;
+    }
+
+    .sortable {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .sortable:hover {
+        background-color: #f8f9fa;
+    }
+
+    .design-row:hover {
+        background-color: #f8f9fa;
+    }
+
+    .empty-state {
+        padding: 2rem;
+    }
+
+    /* Mobile responsiveness */
+    @@media (max-width: 768px) {
+        .page-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .page-header nav {
+            margin-top: 0.5rem;
+        }
+
+        .btn-group {
+            flex-direction: column;
+        }
+
+        .btn-group .btn {
+            margin-bottom: 0.25rem;
+        }
+
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+
+        .progress-steps {
+            flex-direction: column;
+        }
+
+        .progress-steps .step {
+            margin-bottom: 0.5rem;
+        }
+
+        .parameter-section {
+            border-left: none;
+            border-top: 3px solid #e9ecef;
+            padding-left: 0;
+            padding-top: 1rem;
+            margin-top: 1rem;
         }
     }
 </style>
