@@ -218,7 +218,7 @@ namespace Ribosoft.Jobs
             return _db.Jobs
                 .Include(j => j.Owner)
                 .Include(j => j.Assembly)
-                .Include(j => j.Ribozyme)
+                .Include(j => j.Ribozyme!)
                     .ThenInclude(r => r.RibozymeStructures)
                 .Single(j => j.Id == jobId);
         }
@@ -250,7 +250,7 @@ namespace Ribosoft.Jobs
             {
                 RNAStructure = _ribosoftAlgo.MFEFold(rnaInput);
 
-                foreach (var ribozymeStructure in job.Ribozyme.RibozymeStructures)
+                foreach (var ribozymeStructure in job.Ribozyme?.RibozymeStructures ?? new List<RibozymeStructure>())
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     IEnumerable<Candidate> candidates;
@@ -494,7 +494,7 @@ namespace Ribosoft.Jobs
                 }
 
                 // calculate the substrate specificity score, which is common to all designs in this group
-                var substrateSpecificityScore = CalculateSpecificity(substrateSequence, job.Assembly.Path);
+                var substrateSpecificityScore = CalculateSpecificity(substrateSequence, job.Assembly?.Path ?? "");
 
                 foreach (var d in designGroup)
                 {
@@ -595,7 +595,10 @@ namespace Ribosoft.Jobs
          */
         private async Task CompleteJob(Job job, IJobCancellationToken cancellationToken)
         {
-            await SendJobCompletionEmail(job.Owner);
+            if (job.Owner != null)
+            {
+                await SendJobCompletionEmail(job.Owner);
+            }
         }
 
         /*! \fn SendJobCompletionEmail

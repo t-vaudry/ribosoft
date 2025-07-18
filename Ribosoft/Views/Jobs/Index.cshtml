@@ -172,7 +172,7 @@
                                         </div>
                                         <div class="job-details">
                                             <h6 class="mb-1">
-                                                <strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong>
+                                                <strong>@(item.Ribozyme?.Name ?? "Unknown")</strong>
                                                 <small class="text-muted ms-2">ID: @item.Id</small>
                                             </h6>
                                             <p class="text-muted small mb-2">
@@ -193,7 +193,7 @@
                                                 data-bs-toggle="modal" 
                                                 data-bs-target="#cancelJobModal"
                                                 data-job-id="@item.Id"
-                                                data-job-name="@item.Ribozyme.Name"
+                                                data-job-name="@(item.Ribozyme?.Name ?? "Unknown")"
                                                 data-job-created="@item.CreatedAt">
                                             <i class="fas fa-times me-1"></i>Cancel
                                         </button>
@@ -247,7 +247,7 @@
                                         </div>
                                         <div class="job-details">
                                             <h6 class="mb-1">
-                                                <strong>@Html.DisplayFor(modelItem => item.Ribozyme.Name)</strong>
+                                                <strong>@(item.Ribozyme?.Name ?? "Unknown")</strong>
                                                 <small class="text-muted ms-2">ID: @item.Id</small>
                                             </h6>
                                             <p class="text-muted small mb-2">
@@ -268,7 +268,7 @@
                                                 data-bs-toggle="modal" 
                                                 data-bs-target="#deleteJobModal"
                                                 data-job-id="@item.Id"
-                                                data-job-name="@item.Ribozyme.Name"
+                                                data-job-name="@(item.Ribozyme?.Name ?? "Unknown")"
                                                 data-job-created="@item.CreatedAt"
                                                 data-job-state="@item.JobState">
                                             <i class="fas fa-trash me-1"></i>Delete

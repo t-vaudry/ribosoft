@@ -60,7 +60,7 @@
                             <div class="col-md-6">
                                 <div class="info-item">
                                     <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.Ribozyme)</label>
-                                    <div class="fw-bold">@Html.DisplayFor(model => model.Job.Ribozyme.Name)</div>
+                                    <div class="fw-bold">@(Model.Job.Ribozyme?.Name ?? "Unknown")</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -157,7 +157,7 @@
                                         data-bs-toggle="modal" 
                                         data-bs-target="#cancelJobModal"
                                         data-job-id="@Model.Job.Id"
-                                        data-job-name="@Model.Job.Ribozyme.Name"
+                                        data-job-name="@(Model.Job.Ribozyme?.Name ?? "Unknown")"
                                         data-job-created="@Model.Job.CreatedAt">
                                     <i class="fas fa-stop me-2"></i>Cancel Job
                                 </button>
@@ -170,7 +170,7 @@
                                         data-bs-toggle="modal" 
                                         data-bs-target="#deleteJobModal"
                                         data-job-id="@Model.Job.Id"
-                                        data-job-name="@Model.Job.Ribozyme.Name"
+                                        data-job-name="@(Model.Job.Ribozyme?.Name ?? "Unknown")"
                                         data-job-created="@Model.Job.CreatedAt"
                                         data-job-state="@Model.Job.JobState">
                                     <i class="fas fa-trash me-2"></i>Delete Job
@@ -213,7 +213,7 @@
                         <small class="text-muted">Configuration parameters used for ribozyme design</small>
                     </div>
                     <span class="badge bg-primary">
-                        <i class="fas fa-dna me-1"></i>@Html.DisplayFor(model => model.Job.Ribozyme.Name)
+                        <i class="fas fa-dna me-1"></i>@(Model.Job.Ribozyme?.Name ?? "Unknown")
                     </span>
                 </div>
             </div>
@@ -362,24 +362,38 @@
                                 </h6>
                                 <div class="assembly-info bg-light p-3 rounded">
                                     <div class="d-flex align-items-center justify-content-between mb-2">
-                                        <h6 class="mb-0">@Html.DisplayFor(model => model.Job.Assembly.OrganismName)</h6>
-                                        <span class="badge bg-success">@Html.DisplayFor(model => model.Job.Assembly.Type)</span>
+                                        <h6 class="mb-0">@(Model.Job.Assembly?.OrganismName ?? "Unknown")</h6>
+                                        <span class="badge bg-success">@(Model.Job.Assembly?.Type ?? "Unknown")</span>
                                     </div>
                                     <div class="row g-2 small text-muted">
                                         <div class="col-md-3">
                                             <strong>Taxonomy:</strong> 
-                                            <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=@(Model.Job.Assembly.TaxonomyId)" target="_blank" class="text-decoration-none">
-                                                @Html.DisplayFor(model => model.Job.Assembly.TaxonomyId) <i class="fas fa-external-link-alt"></i>
-                                            </a>
+                                            @if (Model.Job.Assembly?.TaxonomyId != null)
+                                            {
+                                                <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=@(Model.Job.Assembly.TaxonomyId)" target="_blank" class="text-decoration-none">
+                                                    @Model.Job.Assembly.TaxonomyId <i class="fas fa-external-link-alt"></i>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span>Unknown</span>
+                                            }
                                         </div>
                                         <div class="col-md-3">
                                             <strong>Species:</strong> 
-                                            <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=@(Model.Job.Assembly.SpeciesId)" target="_blank" class="text-decoration-none">
-                                                @Html.DisplayFor(model => model.Job.Assembly.SpeciesId) <i class="fas fa-external-link-alt"></i>
-                                            </a>
+                                            @if (Model.Job.Assembly?.SpeciesId != null)
+                                            {
+                                                <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=@(Model.Job.Assembly.SpeciesId)" target="_blank" class="text-decoration-none">
+                                                    @Model.Job.Assembly.SpeciesId <i class="fas fa-external-link-alt"></i>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span>Unknown</span>
+                                            }
                                         </div>
                                         <div class="col-md-3">
-                                            <strong>Accession:</strong> @Html.DisplayFor(model => model.Job.Assembly.AccessionId)
+                                            <strong>Accession:</strong> @(Model.Job.Assembly?.AccessionId ?? "Unknown")
                                         </div>
                                         <div class="col-md-3">
                                             <strong>Method:</strong> 
@@ -388,9 +402,16 @@
                                     </div>
                                     <div class="mt-2">
                                         <strong>Assembly:</strong> 
-                                        <a href="https://www.ncbi.nlm.nih.gov/assembly/@(Model.Job.Assembly.AccessionId)" target="_blank" class="text-decoration-none">
-                                            @Html.DisplayFor(model => model.Job.Assembly.AssemblyName) <i class="fas fa-external-link-alt"></i>
-                                        </a>
+                                        @if (Model.Job.Assembly?.AccessionId != null && Model.Job.Assembly?.AssemblyName != null)
+                                        {
+                                            <a href="https://www.ncbi.nlm.nih.gov/assembly/@(Model.Job.Assembly.AccessionId)" target="_blank" class="text-decoration-none">
+                                                @Model.Job.Assembly.AssemblyName <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span>Unknown</span>
+                                        }
                                     </div>
                                 </div>
                             </div>
