@@ -64,9 +64,8 @@ namespace Ribosoft.Models
         public Job()
         {
             this.Designs = new HashSet<Design>();
-            this.Owner = new ApplicationUser();
-            this.Ribozyme = new Ribozyme();
-            this.Assembly = new Assembly();
+            // Do not initialize navigation properties to prevent EF from tracking new entities
+            // Navigation properties will be loaded by EF when needed
         }
 
         /*! \property Id
@@ -210,17 +209,17 @@ namespace Ribosoft.Models
         /*! \property Owner
          * \brief Application owner
          */
-        public virtual ApplicationUser Owner { get; set; }
+        public virtual ApplicationUser? Owner { get; set; }
 
         /*! \property Ribozyme
          * \brief Ribozyme object
          */
-        public virtual Ribozyme Ribozyme { get; set; }
+        public virtual Ribozyme? Ribozyme { get; set; }
 
         /*! \property Assembly
          * \brief Assembly object
          */
-        public virtual Assembly Assembly { get; set; }
+        public virtual Assembly? Assembly { get; set; }
 
         /*! \property Designs
          * \brief Collection of designs
