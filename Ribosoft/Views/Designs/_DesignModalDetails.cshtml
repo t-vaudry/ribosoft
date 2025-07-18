@@ -1,0 +1,173 @@
+@model Ribosoft.Models.Design
+
+<div class="design-details-modal">
+    <!-- Design Header -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card border-0 bg-light">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-primary mb-1">Rank #@Model.Rank</h5>
+                    <p class="text-muted small mb-0">Design Ranking</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 bg-light">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-info mb-1">@Model.CutsiteIndex</h5>
+                    <p class="text-muted small mb-0">Cutsite Index</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sequences Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h6 class="mb-0"><i class="fas fa-dna me-2"></i>Sequences</h6>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Ribozyme Sequence</label>
+                <div class="sequence-display p-3 bg-light rounded border">
+                    <code class="text-break">@Model.Sequence</code>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Substrate Target Sequence</label>
+                <div class="sequence-display p-3 bg-light rounded border">
+                    <code class="text-break">@Model.SubstrateTargetSequence</code>
+                </div>
+            </div>
+            @if (!string.IsNullOrEmpty(Model.IdealStructure))
+            {
+                <div class="mb-0">
+                    <label class="form-label fw-bold">Ideal Structure</label>
+                    <div class="sequence-display p-3 bg-light rounded border">
+                        <code class="text-break">@Model.IdealStructure</code>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Scores Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Performance Scores</h6>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="score-item">
+                        <label class="form-label text-muted small">Desired Temperature Score</label>
+                        <div class="d-flex align-items-center">
+                            <div class="progress flex-grow-1 me-3" style="height: 25px;">
+                                <div class="progress-bar bg-primary" role="progressbar" 
+                                     style="width: @(Math.Min(Model.DesiredTemperatureScore ?? 0, 1) * 100)%" 
+                                     aria-valuenow="@(Model.DesiredTemperatureScore ?? 0)" 
+                                     aria-valuemin="0" aria-valuemax="1">
+                                </div>
+                            </div>
+                            <span class="fw-bold">@(Model.DesiredTemperatureScore?.ToString("F3") ?? "N/A")</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="score-item">
+                        <label class="form-label text-muted small">Specificity Score</label>
+                        <div class="d-flex align-items-center">
+                            <div class="progress flex-grow-1 me-3" style="height: 25px;">
+                                <div class="progress-bar bg-warning" role="progressbar" 
+                                     style="width: @(Math.Min(Model.SpecificityScore ?? 0, 1) * 100)%" 
+                                     aria-valuenow="@(Model.SpecificityScore ?? 0)" 
+                                     aria-valuemin="0" aria-valuemax="1">
+                                </div>
+                            </div>
+                            <span class="fw-bold">@(Model.SpecificityScore?.ToString("F3") ?? "N/A")</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="score-item">
+                        <label class="form-label text-muted small">Accessibility Score</label>
+                        <div class="d-flex align-items-center">
+                            <div class="progress flex-grow-1 me-3" style="height: 25px;">
+                                <div class="progress-bar bg-info" role="progressbar" 
+                                     style="width: @(Math.Min(Model.AccessibilityScore ?? 0, 1) * 100)%" 
+                                     aria-valuenow="@(Model.AccessibilityScore ?? 0)" 
+                                     aria-valuemin="0" aria-valuemax="1">
+                                </div>
+                            </div>
+                            <span class="fw-bold">@(Model.AccessibilityScore?.ToString("F3") ?? "N/A")</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="score-item">
+                        <label class="form-label text-muted small">Structure Score</label>
+                        <div class="d-flex align-items-center">
+                            <div class="progress flex-grow-1 me-3" style="height: 25px;">
+                                <div class="progress-bar bg-danger" role="progressbar" 
+                                     style="width: @(Math.Min(Model.StructureScore ?? 0, 1) * 100)%" 
+                                     aria-valuenow="@(Model.StructureScore ?? 0)" 
+                                     aria-valuemin="0" aria-valuemax="1">
+                                </div>
+                            </div>
+                            <span class="fw-bold">@(Model.StructureScore?.ToString("F3") ?? "N/A")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Information -->
+    <div class="card">
+        <div class="card-header bg-secondary text-white">
+            <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Additional Information</h6>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <small class="text-muted">Created</small>
+                    <div class="fw-bold">@(Model.CreatedAt?.ToString("MMM dd, yyyy HH:mm") ?? "N/A")</div>
+                </div>
+                <div class="col-md-6">
+                    <small class="text-muted">Last Updated</small>
+                    <div class="fw-bold">@(Model.UpdatedAt?.ToString("MMM dd, yyyy HH:mm") ?? "N/A")</div>
+                </div>
+                @if (Model.Job != null)
+                {
+                    <div class="col-md-12">
+                        <small class="text-muted">Job ID</small>
+                        <div class="fw-bold">#@Model.JobId</div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.sequence-display {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    word-break: break-all;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.score-item {
+    margin-bottom: 1rem;
+}
+
+.progress {
+    background-color: #e9ecef;
+}
+
+.design-details-modal .card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+</style>

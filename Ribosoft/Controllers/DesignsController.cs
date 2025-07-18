@@ -55,6 +55,62 @@ namespace Ribosoft.Controllers
             return View(design);
         }
 
+        /*! \fn ModalDetails
+         * \brief HTTP GET to get design details for modal display
+         * \param id Design ID
+         * \return Partial view with design details for modal
+         */
+        public async Task<IActionResult> ModalDetails(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var design = await _context.Designs
+                .Include(d => d.Job)
+                .SingleOrDefaultAsync(m => m.Id == id);
+            if (design == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_DesignModalDetails", design);
+        }
+
+        /*! \fn Export
+         * \brief HTTP POST to export individual design
+         * \param designId Design ID
+         * \param format Export format (fasta, csv, etc.)
+         * \return File download
+         */
+        [HttpPost]
+        public async Task<IActionResult> Export(int designId, string format = "fasta")
+        {
+            var design = await _context.Designs
+                .Include(d => d.Job)
+                .SingleOrDefaultAsync(d => d.Id == designId);
+                
+            if (design == null)
+            {
+                return NotFound();
+            }
+
+            if (format.ToLower() == "fasta")
+            {
+                var payload = String.Format(">Rank {0} | CutsiteIndex {1} | DesiredTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}", 
+                    design.Rank, design.CutsiteIndex, design.DesiredTemperatureScore, design.SpecificityScore, 
+                    design.AccessibilityScore, design.StructureScore, design.CreatedAt, design.UpdatedAt, design.Sequence);
+
+                var byteArray = Encoding.ASCII.GetBytes(payload);
+                var stream = new MemoryStream(byteArray);
+
+                return File(stream, "text/plain", String.Format("job{0}_rank{1}.fasta", design.JobId, design.Rank));
+            }
+
+            return BadRequest("Unsupported format");
+        }
+
         /*! \fn DownloadDesign
          * \brief HTTP GET to download FASTA file of current design
          * \param jobID Job ID, used for filename

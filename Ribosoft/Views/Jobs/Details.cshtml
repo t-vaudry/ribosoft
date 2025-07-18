@@ -467,64 +467,90 @@
         @if (Model.Job.JobState == JobState.Completed && Model.Designs.Data.Any())
         {
             <!-- Results Section -->
-            <div class="card mb-4">
-                <div class="card-header">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
                     <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h5 class="card-title mb-0">
-                                <i class="fas fa-chart-bar text-success me-2"></i>Design Results
-                            </h5>
-                            <small class="text-muted">@Model.Designs.Data.Count() ribozyme designs generated</small>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-chart-bar text-success me-2"></i>
+                            <h5 class="card-title mb-0">Design Results</h5>
                         </div>
                         <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="refineResults()">
+                            <button type="button" class="btn btn-outline-primary btn-sm @(Context.Request.Query["minDesiredTemp"].Any() || Context.Request.Query["maxSpecificity"].Any() || Context.Request.Query["minAccessibility"].Any() || Context.Request.Query["minStructure"].Any() ? "active" : "")" onclick="refineResults()">
                                 <i class="fas fa-filter me-1"></i>Filter Results
+                                @if (Context.Request.Query["minDesiredTemp"].Any() || Context.Request.Query["maxSpecificity"].Any() || 
+                                     Context.Request.Query["minAccessibility"].Any() || Context.Request.Query["minStructure"].Any())
+                                {
+                                    <span class="badge bg-white text-primary ms-1">ON</span>
+                                }
                             </button>
                             <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-outline-success btn-sm dropdown-toggle" data-bs-toggle="dropdown">
-                                    <i class="fas fa-download me-1"></i>Export
+                                    <i class="fas fa-download me-1"></i>Export Selected
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#" id="csvAll"><i class="fas fa-file-csv me-2"></i>CSV Format</a></li>
-                                    <li><a class="dropdown-item" href="#" id="fastaAll"><i class="fas fa-file-alt me-2"></i>FASTA Format</a></li>
-                                    <li><a class="dropdown-item" href="#" id="zipAll"><i class="fas fa-file-archive me-2"></i>ZIP Archive</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="clickFuncAll('csv')"><i class="fas fa-file-csv me-2"></i>CSV Format</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="clickFuncAll('fasta')"><i class="fas fa-file-alt me-2"></i>FASTA Format</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="clickFuncAll('zip')"><i class="fas fa-file-archive me-2"></i>ZIP Archive</a></li>
                                 </ul>
                             </div>
                         </div>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-muted">@Model.Designs.TotalItems ribozyme designs generated</small>
                     </div>
                 </div>
                 <div class="card-body p-0">
                     <!-- Filter Options (Initially Hidden) -->
                     <div id="filterOptions" class="border-bottom bg-light p-3" style="display: none;">
-                        <div class="row g-3">
-                            <div class="col-md-3">
-                                <label class="form-label small fw-bold">Min Desired Temp Score</label>
-                                <input type="number" class="form-control form-control-sm" id="minDesiredTemp" step="0.01" placeholder="e.g., 0.5">
+                        <form method="get" asp-action="Details" asp-route-id="@Model.Job.Id">
+                            <input type="hidden" name="sortOrder" value="@Model.SortOrder" />
+                            <input type="hidden" name="pageNumber" value="1" />
+                            
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Min Desired Temp Score</label>
+                                    <input type="number" class="form-control form-control-sm" name="minDesiredTemp" 
+                                           step="0.01" placeholder="e.g., 0.5" 
+                                           value="@Context.Request.Query["minDesiredTemp"]">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Max Specificity Score</label>
+                                    <input type="number" class="form-control form-control-sm" name="maxSpecificity" 
+                                           step="0.01" placeholder="e.g., 1.0"
+                                           value="@Context.Request.Query["maxSpecificity"]">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Min Accessibility Score</label>
+                                    <input type="number" class="form-control form-control-sm" name="minAccessibility" 
+                                           step="0.01" placeholder="e.g., 0.3"
+                                           value="@Context.Request.Query["minAccessibility"]">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Min Structure Score</label>
+                                    <input type="number" class="form-control form-control-sm" name="minStructure" 
+                                           step="0.01" placeholder="e.g., 0.4"
+                                           value="@Context.Request.Query["minStructure"]">
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label small fw-bold">Max Specificity Score</label>
-                                <input type="number" class="form-control form-control-sm" id="maxSpecificity" step="0.01" placeholder="e.g., 1.0">
+                            <div class="mt-3 d-flex gap-2 align-items-center">
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-check me-1"></i>Apply Filters
+                                </button>
+                                <a href="@Url.Action("Details", new { id = Model.Job.Id, sortOrder = Model.SortOrder, pageNumber = 1 })" class="btn btn-outline-secondary btn-sm">
+                                    <i class="fas fa-times me-1"></i>Clear Filters
+                                </a>
+                                @if (Context.Request.Query["minDesiredTemp"].Any() || Context.Request.Query["maxSpecificity"].Any() || 
+                                     Context.Request.Query["minAccessibility"].Any() || Context.Request.Query["minStructure"].Any())
+                                {
+                                    <div class="ms-auto">
+                                        <small class="text-success">
+                                            <i class="fas fa-filter me-1"></i>
+                                            Filters active - showing @Model.Designs.TotalItems of @Model.Designs.TotalItems results
+                                        </small>
+                                    </div>
+                                }
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label small fw-bold">Min Accessibility Score</label>
-                                <input type="number" class="form-control form-control-sm" id="minAccessibility" step="0.01" placeholder="e.g., 0.3">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label small fw-bold">Min Structure Score</label>
-                                <input type="number" class="form-control form-control-sm" id="minStructure" step="0.01" placeholder="e.g., 0.4">
-                            </div>
-                        </div>
-                        <div class="mt-3 d-flex gap-2">
-                            <button type="button" class="btn btn-primary btn-sm" onclick="applyFilters()">
-                                <i class="fas fa-check me-1"></i>Apply Filters
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearFilters()">
-                                <i class="fas fa-times me-1"></i>Clear Filters
-                            </button>
-                            <div class="ms-auto">
-                                <small class="text-muted results-count"></small>
-                            </div>
-                        </div>
+                        </form>
                     </div>
 
                     <!-- Results Table -->
@@ -532,73 +558,198 @@
                         <table class="table table-hover mb-0" id="designsTable">
                             <thead class="table-light">
                                 <tr>
+                                    <th scope="col" class="ps-3" style="width: 50px;">
+                                        <input type="checkbox" class="form-check-input" id="selectAll">
+                                    </th>
+                                    <th scope="col" style="width: 80px;">
+                                        <a href="@Url.Action("Details", new { 
+                                            id = Model.Job.Id, 
+                                            sortOrder = ViewBag.RankSortParm, 
+                                            pageNumber = 1,
+                                            minDesiredTemp = Context.Request.Query["minDesiredTemp"],
+                                            maxSpecificity = Context.Request.Query["maxSpecificity"],
+                                            minAccessibility = Context.Request.Query["minAccessibility"],
+                                            minStructure = Context.Request.Query["minStructure"]
+                                        })" class="text-decoration-none text-dark">
+                                            Rank
+                                            @if (Model.SortOrder == "rank_asc")
+                                            {
+                                                <i class="fas fa-sort-up ms-1"></i>
+                                            }
+                                            else if (Model.SortOrder == "rank_desc")
+                                            {
+                                                <i class="fas fa-sort-down ms-1"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-sort ms-1 text-muted"></i>
+                                            }
+                                        </a>
+                                    </th>
+                                    <th scope="col" style="width: 100px;">
+                                        <a href="@Url.Action("Details", new { 
+                                            id = Model.Job.Id, 
+                                            sortOrder = ViewBag.CutsiteSortParm, 
+                                            pageNumber = 1,
+                                            minDesiredTemp = Context.Request.Query["minDesiredTemp"],
+                                            maxSpecificity = Context.Request.Query["maxSpecificity"],
+                                            minAccessibility = Context.Request.Query["minAccessibility"],
+                                            minStructure = Context.Request.Query["minStructure"]
+                                        })" class="text-decoration-none text-dark">
+                                            Cutsite
+                                            @if (Model.SortOrder == "cutsite_asc")
+                                            {
+                                                <i class="fas fa-sort-up ms-1"></i>
+                                            }
+                                            else if (Model.SortOrder == "cutsite_desc")
+                                            {
+                                                <i class="fas fa-sort-down ms-1"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-sort ms-1 text-muted"></i>
+                                            }
+                                        </a>
+                                    </th>
                                     <th scope="col">
-                                        <div class="d-flex align-items-center">
-                                            <input type="checkbox" class="form-check-input me-2" id="selectAll">
-                                            <span>Select</span>
-                                        </div>
+                                        <a href="@Url.Action("Details", new { 
+                                            id = Model.Job.Id, 
+                                            sortOrder = ViewBag.DesTempSortParm, 
+                                            pageNumber = 1,
+                                            minDesiredTemp = Context.Request.Query["minDesiredTemp"],
+                                            maxSpecificity = Context.Request.Query["maxSpecificity"],
+                                            minAccessibility = Context.Request.Query["minAccessibility"],
+                                            minStructure = Context.Request.Query["minStructure"]
+                                        })" class="text-decoration-none text-dark">
+                                            Design Temp
+                                            @if (Model.SortOrder == "destemp_asc")
+                                            {
+                                                <i class="fas fa-sort-up ms-1"></i>
+                                            }
+                                            else if (Model.SortOrder == "destemp_desc")
+                                            {
+                                                <i class="fas fa-sort-down ms-1"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-sort ms-1 text-muted"></i>
+                                            }
+                                        </a>
                                     </th>
-                                    <th scope="col">Rank</th>
-                                    <th scope="col" class="sortable" data-sort="cutsite">
-                                        Cut Site
-                                        <i class="fas fa-sort ms-1" id="cutsitesort"></i>
+                                    <th scope="col">
+                                        <a href="@Url.Action("Details", new { 
+                                            id = Model.Job.Id, 
+                                            sortOrder = ViewBag.SpecSortParm, 
+                                            pageNumber = 1,
+                                            minDesiredTemp = Context.Request.Query["minDesiredTemp"],
+                                            maxSpecificity = Context.Request.Query["maxSpecificity"],
+                                            minAccessibility = Context.Request.Query["minAccessibility"],
+                                            minStructure = Context.Request.Query["minStructure"]
+                                        })" class="text-decoration-none text-dark">
+                                            Specificity
+                                            @if (Model.SortOrder == "spec_asc")
+                                            {
+                                                <i class="fas fa-sort-up ms-1"></i>
+                                            }
+                                            else if (Model.SortOrder == "spec_desc")
+                                            {
+                                                <i class="fas fa-sort-down ms-1"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-sort ms-1 text-muted"></i>
+                                            }
+                                        </a>
                                     </th>
-                                    <th scope="col" class="sortable" data-sort="desired-temp">
-                                        Design Temp
-                                        <i class="fas fa-sort ms-1"></i>
+                                    <th scope="col">
+                                        <a href="@Url.Action("Details", new { 
+                                            id = Model.Job.Id, 
+                                            sortOrder = ViewBag.AccessSortParm, 
+                                            pageNumber = 1,
+                                            minDesiredTemp = Context.Request.Query["minDesiredTemp"],
+                                            maxSpecificity = Context.Request.Query["maxSpecificity"],
+                                            minAccessibility = Context.Request.Query["minAccessibility"],
+                                            minStructure = Context.Request.Query["minStructure"]
+                                        })" class="text-decoration-none text-dark">
+                                            Accessibility
+                                            @if (Model.SortOrder == "access_asc")
+                                            {
+                                                <i class="fas fa-sort-up ms-1"></i>
+                                            }
+                                            else if (Model.SortOrder == "access_desc")
+                                            {
+                                                <i class="fas fa-sort-down ms-1"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-sort ms-1 text-muted"></i>
+                                            }
+                                        </a>
                                     </th>
-                                    <th scope="col" class="sortable" data-sort="specificity">
-                                        Specificity
-                                        <i class="fas fa-sort ms-1"></i>
+                                    <th scope="col">
+                                        <a href="@Url.Action("Details", new { 
+                                            id = Model.Job.Id, 
+                                            sortOrder = ViewBag.StructSortParm, 
+                                            pageNumber = 1,
+                                            minDesiredTemp = Context.Request.Query["minDesiredTemp"],
+                                            maxSpecificity = Context.Request.Query["maxSpecificity"],
+                                            minAccessibility = Context.Request.Query["minAccessibility"],
+                                            minStructure = Context.Request.Query["minStructure"]
+                                        })" class="text-decoration-none text-dark">
+                                            Structure
+                                            @if (Model.SortOrder == "struct_asc")
+                                            {
+                                                <i class="fas fa-sort-up ms-1"></i>
+                                            }
+                                            else if (Model.SortOrder == "struct_desc")
+                                            {
+                                                <i class="fas fa-sort-down ms-1"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-sort ms-1 text-muted"></i>
+                                            }
+                                        </a>
                                     </th>
-                                    <th scope="col" class="sortable" data-sort="accessibility">
-                                        Accessibility
-                                        <i class="fas fa-sort ms-1"></i>
-                                    </th>
-                                    <th scope="col" class="sortable" data-sort="structure">
-                                        Structure
-                                        <i class="fas fa-sort ms-1"></i>
-                                    </th>
-                                    <th scope="col">Actions</th>
+                                    <th scope="col" style="width: 140px;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @{int rank = 1;}
                                 @foreach (var design in Model.Designs.Data)
                                 {
                                     <tr class="design-row" data-design-id="@design.Id">
-                                        <td>
+                                        <td class="ps-3">
                                             <input type="checkbox" class="form-check-input design-checkbox" value="@design.Id">
                                         </td>
                                         <td>
-                                            <span class="badge bg-primary">#@rank</span>
+                                            <span class="badge bg-primary">@design.Rank</span>
                                         </td>
                                         <td>
                                             <code class="small">@design.CutsiteIndex</code>
                                         </td>
                                         <td>
-                                            <span class="fw-bold">@design.DesiredTemperatureScore</span>
+                                            <span class="fw-bold">@(design.DesiredTemperatureScore?.ToString("F3") ?? "N/A")</span>
                                         </td>
                                         <td>
-                                            <span class="fw-bold">@design.SpecificityScore</span>
+                                            <span class="fw-bold">@(design.SpecificityScore?.ToString("F3") ?? "N/A")</span>
                                         </td>
                                         <td>
                                             <div class="progress" style="height: 20px;">
                                                 <div class="progress-bar bg-info" role="progressbar" 
-                                                     style="width: @(design.AccessibilityScore * 100)%" 
-                                                     aria-valuenow="@(design.AccessibilityScore * 100)" 
+                                                     style="width: @((design.AccessibilityScore ?? 0) * 100)%" 
+                                                     aria-valuenow="@((design.AccessibilityScore ?? 0) * 100)" 
                                                      aria-valuemin="0" aria-valuemax="100">
-                                                    @design.AccessibilityScore
+                                                    <small class="text-white">@(design.AccessibilityScore?.ToString("F3") ?? "N/A")</small>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="progress" style="height: 20px;">
-                                                <div class="progress-bar bg-success" role="progressbar" 
-                                                     style="width: @(design.StructureScore * 100)%" 
-                                                     aria-valuenow="@(design.StructureScore * 100)" 
+                                                <div class="progress-bar bg-warning" role="progressbar" 
+                                                     style="width: @((design.StructureScore ?? 0) * 100)%" 
+                                                     aria-valuenow="@((design.StructureScore ?? 0) * 100)" 
                                                      aria-valuemin="0" aria-valuemax="100">
-                                                    @design.StructureScore
+                                                    <small class="text-dark">@(design.StructureScore?.ToString("F3") ?? "N/A")</small>
                                                 </div>
                                             </div>
                                         </td>
@@ -613,11 +764,102 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    rank++;
                                 }
                             </tbody>
                         </table>
                     </div>
+                    
+                    <!-- Pagination -->
+                    @if (Model.Designs.TotalItems > Model.Designs.PageSize)
+                    {
+                        var totalPages = (int)Math.Ceiling((double)Model.Designs.TotalItems / Model.Designs.PageSize);
+                        <div class="card-footer bg-white border-top">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <small class="text-muted">
+                                        Showing @((Model.Designs.PageNumber - 1) * Model.Designs.PageSize + 1) to 
+                                        @(Math.Min(Model.Designs.PageNumber * Model.Designs.PageSize, (int)Model.Designs.TotalItems)) 
+                                        of @Model.Designs.TotalItems designs
+                                    </small>
+                                </div>
+                                <nav aria-label="Design results pagination">
+                                    <ul class="pagination pagination-sm mb-0">
+                                        @if (Model.Designs.PageNumber > 1)
+                                        {
+                                            <li class="page-item">
+                                                <a class="page-link" href="@Url.Action("Details", new { 
+                                                    id = Model.Job.Id, 
+                                                    sortOrder = Model.SortOrder, 
+                                                    pageNumber = 1,
+                                                    minDesiredTemp = Context.Request.Query["minDesiredTemp"],
+                                                    maxSpecificity = Context.Request.Query["maxSpecificity"],
+                                                    minAccessibility = Context.Request.Query["minAccessibility"],
+                                                    minStructure = Context.Request.Query["minStructure"]
+                                                })">First</a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="@Url.Action("Details", new { 
+                                                    id = Model.Job.Id, 
+                                                    sortOrder = Model.SortOrder, 
+                                                    pageNumber = Model.Designs.PageNumber - 1,
+                                                    minDesiredTemp = Context.Request.Query["minDesiredTemp"],
+                                                    maxSpecificity = Context.Request.Query["maxSpecificity"],
+                                                    minAccessibility = Context.Request.Query["minAccessibility"],
+                                                    minStructure = Context.Request.Query["minStructure"]
+                                                })">Previous</a>
+                                            </li>
+                                        }
+                                        
+                                        @{
+                                            int startPage = Math.Max(1, (int)Model.Designs.PageNumber - 2);
+                                            int endPage = Math.Min(totalPages, (int)Model.Designs.PageNumber + 2);
+                                        }
+                                        
+                                        @for (int i = startPage; i <= endPage; i++)
+                                        {
+                                            <li class="page-item @(i == Model.Designs.PageNumber ? "active" : "")">
+                                                <a class="page-link" href="@Url.Action("Details", new { 
+                                                    id = Model.Job.Id, 
+                                                    sortOrder = Model.SortOrder, 
+                                                    pageNumber = i,
+                                                    minDesiredTemp = Context.Request.Query["minDesiredTemp"],
+                                                    maxSpecificity = Context.Request.Query["maxSpecificity"],
+                                                    minAccessibility = Context.Request.Query["minAccessibility"],
+                                                    minStructure = Context.Request.Query["minStructure"]
+                                                })">@i</a>
+                                            </li>
+                                        }
+                                        
+                                        @if (Model.Designs.PageNumber < totalPages)
+                                        {
+                                            <li class="page-item">
+                                                <a class="page-link" href="@Url.Action("Details", new { 
+                                                    id = Model.Job.Id, 
+                                                    sortOrder = Model.SortOrder, 
+                                                    pageNumber = Model.Designs.PageNumber + 1,
+                                                    minDesiredTemp = Context.Request.Query["minDesiredTemp"],
+                                                    maxSpecificity = Context.Request.Query["maxSpecificity"],
+                                                    minAccessibility = Context.Request.Query["minAccessibility"],
+                                                    minStructure = Context.Request.Query["minStructure"]
+                                                })">Next</a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="@Url.Action("Details", new { 
+                                                    id = Model.Job.Id, 
+                                                    sortOrder = Model.SortOrder, 
+                                                    pageNumber = totalPages,
+                                                    minDesiredTemp = Context.Request.Query["minDesiredTemp"],
+                                                    maxSpecificity = Context.Request.Query["maxSpecificity"],
+                                                    minAccessibility = Context.Request.Query["minAccessibility"],
+                                                    minStructure = Context.Request.Query["minStructure"]
+                                                })">Last</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         }
@@ -1018,6 +1260,15 @@
                 </text>
             }
 
+            // Auto-show filter options if filters are active
+            @if (Context.Request.Query["minDesiredTemp"].Any() || Context.Request.Query["maxSpecificity"].Any() || 
+                 Context.Request.Query["minAccessibility"].Any() || Context.Request.Query["minStructure"].Any())
+            {
+                <text>
+                $('#filterOptions').show();
+                </text>
+            }
+
             // Select all checkbox functionality
             $('#selectAll').change(function() {
                 $('.design-checkbox').prop('checked', this.checked);
@@ -1126,16 +1377,28 @@
             $('#designDetailsModal').modal('show');
             $('#downloadDesignFromModal').data('design-id', designId);
             
-            // Load design details via AJAX
-            $.get(`/Designs/Details/${designId}`)
+            // Reset modal content to loading state
+            $('#designDetailsContent').html(`
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Loading design details...</p>
+                </div>
+            `);
+            
+            // Load modal content via AJAX using the correct endpoint
+            $.get(`/Designs/ModalDetails/${designId}`)
                 .done(function(data) {
                     $('#designDetailsContent').html(data);
                 })
-                .fail(function() {
+                .fail(function(xhr, status, error) {
+                    console.error('Failed to load design details:', xhr.responseText, status, error);
                     $('#designDetailsContent').html(`
                         <div class="alert alert-danger">
                             <i class="fas fa-exclamation-triangle me-2"></i>
-                            Failed to load design details. Please try again.
+                            <strong>Failed to load design details.</strong><br>
+                            ${xhr.responseJSON?.message || error || 'Please try again or contact support if the problem persists.'}
                         </div>
                     `);
                 });
@@ -1175,31 +1438,129 @@
                 return;
             }
             
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/Designs/ExportAll';
+            // Get the clicked dropdown item to show progress
+            const clickedItem = event.target.closest('a');
+            const originalText = clickedItem.innerHTML;
             
-            const jobIdField = document.createElement('input');
-            jobIdField.type = 'hidden';
-            jobIdField.name = 'jobId';
-            jobIdField.value = @Model.Job.Id;
+            // Show progress indicator on the export button
+            const exportButton = document.querySelector('.btn-outline-success.dropdown-toggle');
+            const originalButtonText = exportButton.innerHTML;
+            exportButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Preparing Export...';
+            exportButton.disabled = true;
             
-            const typeField = document.createElement('input');
-            typeField.type = 'hidden';
-            typeField.name = 'type';
-            typeField.value = type;
+            // Also update the clicked dropdown item
+            clickedItem.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Preparing...';
+            clickedItem.style.pointerEvents = 'none';
             
-            const designIdsField = document.createElement('input');
-            designIdsField.type = 'hidden';
-            designIdsField.name = 'designIds';
-            designIdsField.value = selectedDesigns.join(',');
+            // Prepare the data in the format the controller expects: "{jobId}-{designId}": true
+            const selectedDesignsObj = {};
+            const jobId = @Model.Job.Id;
+            selectedDesigns.forEach(designId => {
+                const key = jobId + '-' + designId;
+                selectedDesignsObj[key] = true;
+            });
             
-            form.appendChild(jobIdField);
-            form.appendChild(typeField);
-            form.appendChild(designIdsField);
-            document.body.appendChild(form);
-            form.submit();
-            document.body.removeChild(form);
+            const selectedDesignsJson = JSON.stringify(selectedDesignsObj);
+            console.log('Sending selectedDesigns:', selectedDesignsJson);
+            
+            // Make AJAX request to the correct endpoint
+            $.ajax({
+                url: '/Jobs/DownloadSelectedDesigns',
+                type: 'POST',
+                data: {
+                    jobID: jobId,
+                    selectedDesigns: selectedDesignsJson,
+                    format: type,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    console.log('Export response:', response);
+                    
+                    if (response.fileGuid || response.FileGuid) {
+                        // Handle both cases for compatibility
+                        const fileGuid = response.fileGuid || response.FileGuid;
+                        const fileName = response.fileName || response.FileName;
+                        const fileType = response.fileType || response.FileType;
+                        
+                        // Update progress indicator
+                        exportButton.innerHTML = '<i class="fas fa-download me-1"></i>Downloading...';
+                        clickedItem.innerHTML = '<i class="fas fa-download me-2"></i>Downloading...';
+                        
+                        // Trigger download using hidden iframe (prevents page redirect)
+                        const downloadUrl = '/Jobs/Download?fileGuid=' + encodeURIComponent(fileGuid) + 
+                                          '&fileName=' + encodeURIComponent(fileName) + 
+                                          '&fileType=' + encodeURIComponent(fileType);
+                        
+                        console.log('Download URL:', downloadUrl);
+                        
+                        // Create hidden iframe for seamless download
+                        const iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.src = downloadUrl;
+                        document.body.appendChild(iframe);
+                        
+                        // Show success message briefly
+                        setTimeout(() => {
+                            exportButton.innerHTML = '<i class="fas fa-check me-1"></i>Downloaded!';
+                            clickedItem.innerHTML = '<i class="fas fa-check me-2"></i>Downloaded!';
+                        }, 1000);
+                        
+                        // Clean up and restore original state
+                        setTimeout(() => {
+                            if (document.body.contains(iframe)) {
+                                document.body.removeChild(iframe);
+                            }
+                            exportButton.innerHTML = originalButtonText;
+                            exportButton.disabled = false;
+                            clickedItem.innerHTML = originalText;
+                            clickedItem.style.pointerEvents = 'auto';
+                        }, 3000);
+                        
+                    } else {
+                        console.error('No fileGuid in response:', response);
+                        exportButton.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i>Export Failed';
+                        clickedItem.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Failed';
+                        
+                        setTimeout(() => {
+                            exportButton.innerHTML = originalButtonText;
+                            exportButton.disabled = false;
+                            clickedItem.innerHTML = originalText;
+                            clickedItem.style.pointerEvents = 'auto';
+                        }, 3000);
+                        
+                        alert('Export failed: No file generated. Please try again.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Export failed:', xhr.responseText, status, error);
+                    
+                    exportButton.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i>Export Failed';
+                    clickedItem.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Failed';
+                    
+                    setTimeout(() => {
+                        exportButton.innerHTML = originalButtonText;
+                        exportButton.disabled = false;
+                        clickedItem.innerHTML = originalText;
+                        clickedItem.style.pointerEvents = 'auto';
+                    }, 3000);
+                    
+                    let errorMessage = 'Export failed. Please try again.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = 'Export failed: ' + xhr.responseJSON.message;
+                    } else if (xhr.responseText) {
+                        try {
+                            const errorData = JSON.parse(xhr.responseText);
+                            if (errorData.message) {
+                                errorMessage = 'Export failed: ' + errorData.message;
+                            }
+                        } catch (e) {
+                            // Use default message if parsing fails
+                        }
+                    }
+                    
+                    alert(errorMessage);
+                }
+            });
         }
 
         function updateExportButtons() {
@@ -1215,5 +1576,4 @@
             }
         });
     </script>
-    <script src="~/dist/details.js"></script>
 }

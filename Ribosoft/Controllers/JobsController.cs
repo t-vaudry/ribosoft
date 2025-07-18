@@ -178,7 +178,8 @@ namespace Ribosoft.Controllers
          * \param filterData Base64 encoded string of JSON filter data
          * \return View of the details index
          */
-        public async Task<IActionResult> Details(int? id, string sortOrder, int pageNumber, string filterData)
+        public async Task<IActionResult> Details(int? id, string sortOrder, int pageNumber, string filterData, 
+            float? minDesiredTemp, float? maxSpecificity, float? minAccessibility, float? minStructure)
         {
             if (id == null)
             {
@@ -214,6 +215,24 @@ namespace Ribosoft.Controllers
                 {
                     FilterDesigns(ref designs, filter.param, filter.condition, float.Parse(filter.value));
                 }
+            }
+
+            // Handle simple filter parameters from form
+            if (minDesiredTemp.HasValue)
+            {
+                designs = designs.Where(d => d.DesiredTemperatureScore >= minDesiredTemp.Value);
+            }
+            if (maxSpecificity.HasValue)
+            {
+                designs = designs.Where(d => d.SpecificityScore <= maxSpecificity.Value);
+            }
+            if (minAccessibility.HasValue)
+            {
+                designs = designs.Where(d => d.AccessibilityScore >= minAccessibility.Value);
+            }
+            if (minStructure.HasValue)
+            {
+                designs = designs.Where(d => d.StructureScore >= minStructure.Value);
             }
 
             int pageSize = 20;
