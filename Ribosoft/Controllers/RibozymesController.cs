@@ -217,12 +217,29 @@ namespace Ribosoft.Controllers
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ribozyme = await _context.Ribozymes.SingleOrDefaultAsync(m => m.Id == id);
-            if (ribozyme != null)
+            try
             {
-                _context.Ribozymes.Remove(ribozyme);
-                await _context.SaveChangesAsync();
+                var ribozyme = await _context.Ribozymes.SingleOrDefaultAsync(m => m.Id == id);
+                if (ribozyme != null)
+                {
+                    string ribozymeName = ribozyme.Name;
+                    _context.Ribozymes.Remove(ribozyme);
+                    await _context.SaveChangesAsync();
+                    
+                    TempData["SuccessMessage"] = $"Ribozyme '{ribozymeName}' has been successfully deleted.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Ribozyme not found or has already been deleted.";
+                }
             }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occurred while deleting the ribozyme. Please try again.";
+                // Log the exception if you have logging configured
+                // _logger.LogError(ex, "Error deleting ribozyme with ID {Id}", id);
+            }
+            
             return RedirectToAction(nameof(Index));
         }
 
