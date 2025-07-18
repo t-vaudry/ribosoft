@@ -89,7 +89,7 @@ namespace Ribosoft.Models
         /*! \property Job
          * \brief Job object
          */
-        public virtual Job Job { get; set; } = new Job();
+        public virtual Job? Job { get; set; }
 
         /*! \property Comparables
          * \brief List of optimize item comparables
@@ -97,10 +97,10 @@ namespace Ribosoft.Models
         [NotMapped]
         public virtual IEnumerable<OptimizeItem<float>> Comparables => new []
         {
-            new OptimizeItem<float>(DesiredTemperatureScore.GetValueOrDefault(), OptimizeType.MIN, Job.DesiredTempTolerance.GetValueOrDefault()),
-            new OptimizeItem<float>(SpecificityScore.GetValueOrDefault(), OptimizeType.MIN, Job.SpecificityTolerance.GetValueOrDefault()),
-            new OptimizeItem<float>(AccessibilityScore.GetValueOrDefault(), OptimizeType.MIN, Job.AccessibilityTolerance.GetValueOrDefault()),
-            new OptimizeItem<float>(StructureScore.GetValueOrDefault(), OptimizeType.MIN, Job.StructureTolerance.GetValueOrDefault())
+            new OptimizeItem<float>(DesiredTemperatureScore.GetValueOrDefault(), OptimizeType.MIN, Job?.DesiredTempTolerance.GetValueOrDefault() ?? 0),
+            new OptimizeItem<float>(SpecificityScore.GetValueOrDefault(), OptimizeType.MIN, Job?.SpecificityTolerance.GetValueOrDefault() ?? 0),
+            new OptimizeItem<float>(AccessibilityScore.GetValueOrDefault(), OptimizeType.MIN, Job?.AccessibilityTolerance.GetValueOrDefault() ?? 0),
+            new OptimizeItem<float>(StructureScore.GetValueOrDefault(), OptimizeType.MIN, Job?.StructureTolerance.GetValueOrDefault() ?? 0)
         };
 
         /*! \property SubstrateTargetSequence
@@ -112,7 +112,11 @@ namespace Ribosoft.Models
         {
             get
             {
-                return Job.RNAInput.Substring(CutsiteIndex, SubstrateSequenceLength);
+                if (Job?.RNAInput != null && CutsiteIndex >= 0 && CutsiteIndex + SubstrateSequenceLength <= Job.RNAInput.Length)
+                {
+                    return Job.RNAInput.Substring(CutsiteIndex, SubstrateSequenceLength);
+                }
+                return string.Empty;
             }
         }
     }
