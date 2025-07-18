@@ -186,8 +186,9 @@
                     </div>
                 </div>
                 
-                @using (Html.BeginForm("DeleteConfirmed", "Ribozymes", FormMethod.Post))
+                @using (Html.BeginForm("Delete", "Ribozymes", FormMethod.Post))
                 {
+                    @Html.AntiForgeryToken()
                     @Html.HiddenFor(model => model.Id)
                     
                     <div class="d-flex justify-content-between align-items-center">

@@ -26,6 +26,35 @@
             </div>
         </div>
 
+        <!-- Success/Error Messages -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-check-circle me-3 fs-4"></i>
+                    <div>
+                        <h5 class="alert-heading mb-1">Success!</h5>
+                        <p class="mb-0">@TempData["SuccessMessage"]</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-exclamation-triangle me-3 fs-4"></i>
+                    <div>
+                        <h5 class="alert-heading mb-1">Error!</h5>
+                        <p class="mb-0">@TempData["ErrorMessage"]</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
         <!-- Main Content Card -->
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white border-bottom">
@@ -265,3 +294,14 @@
         }
     }
 </style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Auto-dismiss success and error alerts after 5 seconds
+            setTimeout(function() {
+                $('.alert-success, .alert-danger').fadeOut('slow');
+            }, 5000);
+        });
+    </script>
+}
