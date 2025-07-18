@@ -37,10 +37,7 @@
     <PackageReference Include="RestSharp" Version="112.1.0" />
     
     <!-- Our cutting-edge C++23 library -->
-    <!-- Use project reference in Debug mode for local development -->
-    <ProjectReference Include="..\RibosoftAlgo\RibosoftAlgo.csproj" Condition="'$(Configuration)' == 'Debug'" />
-    
-    <!-- Use NuGet packages in Release mode for production builds -->
+    <!-- Use local NuGet package for both Debug and Release modes -->
     <PackageReference Include="RibosoftAlgo" Version="2.2.0"/>
     
     <!-- Modern Hangfire and communication -->
