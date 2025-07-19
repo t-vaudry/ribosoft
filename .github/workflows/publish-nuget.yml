@@ -103,6 +103,12 @@ jobs:
         cd RibosoftAlgo
         echo "🔨 Building RibosoftAlgo with native library integration..."
         
+        # First, verify that C++ dependencies are available
+        echo "Checking C++ dependencies..."
+        ls -la ../.deps/ || echo "No .deps directory found"
+        ls -la ../.deps/viennarna/ || echo "No ViennaRNA found"
+        ls -la ../.deps/melting/ || echo "No Melting found"
+        
         # Build with Release configuration and enhanced logging
         dotnet build RibosoftAlgo.csproj \
           --configuration Release \
@@ -111,6 +117,10 @@ jobs:
           -p:TreatWarningsAsErrors=false \
           -p:WarningLevel=1
           
+        # Verify that native library was built
+        echo "Checking native library output..."
+        ls -la bin/Release/net8.0/runtimes/linux-x64/native/ || echo "No native library found"
+        
         echo "✅ Build completed successfully"
         
     - name: Build and test RibosoftAlgo.Tests before packaging
@@ -138,6 +148,10 @@ jobs:
         cd RibosoftAlgo
         echo "📦 Creating NuGet package..."
         
+        # Verify native library exists before packing
+        echo "Checking for native library before packing..."
+        ls -la bin/Release/net8.0/runtimes/linux-x64/native/ || echo "⚠️ No native library found"
+        
         # Create package with enhanced metadata (rebuild if needed)
         dotnet pack RibosoftAlgo.csproj \
           --configuration Release \
@@ -151,13 +165,9 @@ jobs:
         echo "📋 Created packages:"
         ls -la ./nupkg/
         
-    - name: Validate NuGet package
-      run: |
-        cd RibosoftAlgo/nupkg
-        echo "🔍 Validating NuGet package contents..."
-        
-        # Extract and examine package contents
-        for pkg in *.nupkg; do
+        # Examine package contents
+        echo "📋 Package contents:"
+        for pkg in ./nupkg/*.nupkg; do
           echo "Examining package: $pkg"
           unzip -l "$pkg" | head -20
           echo "---"
