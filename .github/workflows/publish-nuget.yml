@@ -172,21 +172,36 @@ jobs:
         done
         
     - name: Publish to NuGet.org
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       run: |
         cd RibosoftAlgo
         echo "🚀 Publishing to NuGet.org..."
+        
+        # Verify API key is available (without exposing it)
+        if [ -z "$NUGET_API_KEY" ]; then
+          echo "❌ NUGET_API_KEY secret is not set in repository secrets"
+          echo "Please add the NuGet API key as a repository secret named 'NUGET_API_KEY'"
+          exit 1
+        else
+          echo "✅ NUGET_API_KEY secret is available"
+        fi
+        
+        # Set the API key globally for the NuGet source
+        echo "🔑 Setting API key for NuGet.org..."
+        dotnet nuget setapikey "$NUGET_API_KEY" --source "https://api.nuget.org/v3/index.json"
         
         # List packages to be published
         echo "📦 Packages to publish:"
         ls -la ./nupkg/*.nupkg
         
-        # Publish main package with explicit source URL
+        # Publish main package (API key is now set globally)
         for pkg in ./nupkg/*.nupkg; do
           echo "Publishing package: $pkg"
           dotnet nuget push "$pkg" \
-            --api-key "${{ secrets.NUGET_API_KEY }}" \
             --source "https://api.nuget.org/v3/index.json" \
-            --skip-duplicate
+            --skip-duplicate \
+            --verbosity normal
         done
           
         echo "✅ Package published successfully"
