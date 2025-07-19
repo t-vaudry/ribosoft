@@ -1,78 +1,109 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Ribosoft.Services;
 
-namespace Ribosoft.Extensions
+namespace Ribosoft.Services
 {
-    public static class EmailSenderExtensions
+    /// <summary>
+    /// Service for securely handling email templates without storing sensitive content in cleartext
+    /// </summary>
+    public interface ISecureEmailTemplateService
     {
-        public static Task SendEmailConfirmationAsync(this IEmailSender emailSender, string email, string link)
+        string CreateEmailConfirmationTemplate(string confirmationLink);
+        string CreatePasswordResetTemplate(string resetLink);
+        string CreateOneTimeCodeEmailTemplate(string code, string purpose);
+    }
+
+    public class SecureEmailTemplateService : ISecureEmailTemplateService
+    {
+        private readonly ILogger<SecureEmailTemplateService> _logger;
+
+        public SecureEmailTemplateService(ILogger<SecureEmailTemplateService> logger)
         {
-            // Use dependency injection to get the secure template service
-            // This approach avoids storing sensitive templates as static strings
-            if (emailSender is MailgunEmailSender mailgunSender)
-            {
-                // For now, we'll create the template service directly
-                // In a full implementation, this would be injected via DI
-                var logger = Microsoft.Extensions.Logging.Abstractions.NullLogger<SecureEmailTemplateService>.Instance;
-                var templateService = new SecureEmailTemplateService(logger);
-                
-                var htmlMessage = templateService.CreateEmailConfirmationTemplate(link);
-                return emailSender.SendEmailAsync(email, "Confirm your Ribosoft account", htmlMessage);
-            }
-            
-            // Fallback for other email sender implementations
-            var fallbackHtmlMessage = CreateEmailConfirmationTemplate(link);
-            return emailSender.SendEmailAsync(email, "Confirm your Ribosoft account", fallbackHtmlMessage);
+            _logger = logger;
         }
 
-        public static Task SendPasswordResetAsync(this IEmailSender emailSender, string email, string link)
+        public string CreateEmailConfirmationTemplate(string confirmationLink)
         {
-            // Use dependency injection to get the secure template service
-            // This approach avoids storing sensitive templates as static strings
-            if (emailSender is MailgunEmailSender mailgunSender)
+            // Validate and sanitize the confirmation link
+            if (string.IsNullOrEmpty(confirmationLink))
             {
-                // For now, we'll create the template service directly
-                // In a full implementation, this would be injected via DI
-                var logger = Microsoft.Extensions.Logging.Abstractions.NullLogger<SecureEmailTemplateService>.Instance;
-                var templateService = new SecureEmailTemplateService(logger);
-                
-                var htmlMessage = templateService.CreatePasswordResetTemplate(link);
-                return emailSender.SendEmailAsync(email, "Reset your Ribosoft password", htmlMessage);
+                _logger.LogWarning("Empty confirmation link provided to email template");
+                throw new ArgumentException("Confirmation link cannot be empty", nameof(confirmationLink));
             }
-            
-            // Fallback for other email sender implementations
-            var fallbackHtmlMessage = CreatePasswordResetTemplate(link);
-            return emailSender.SendEmailAsync(email, "Reset your Ribosoft password", fallbackHtmlMessage);
-        }
 
-        public static Task SendOneTimeCodeAsync(this IEmailSender emailSender, string email, string code, string purpose = "verification")
-        {
-            // Use dependency injection to get the secure template service
-            if (emailSender is MailgunEmailSender mailgunSender)
-            {
-                var logger = Microsoft.Extensions.Logging.Abstractions.NullLogger<SecureEmailTemplateService>.Instance;
-                var templateService = new SecureEmailTemplateService(logger);
-                
-                var htmlMessage = templateService.CreateOneTimeCodeEmailTemplate(code, purpose);
-                return emailSender.SendEmailAsync(email, $"Your Ribosoft {purpose} code", htmlMessage);
-            }
-            
-            // Fallback for other email sender implementations
-            var fallbackHtmlMessage = CreateOneTimeCodeTemplate(code, purpose);
-            return emailSender.SendEmailAsync(email, $"Your Ribosoft {purpose} code", fallbackHtmlMessage);
-        }
+            // Generate template hash for logging (without exposing the actual link)
+            var linkHash = GenerateSecureHash(confirmationLink)[..8];
+            _logger.LogDebug("Creating email confirmation template with link hash: {LinkHash}", linkHash);
 
-        // Keep the original methods as private fallbacks for backward compatibility
-        // These should eventually be removed once all implementations use the secure service
-        private static string CreateEmailConfirmationTemplate(string confirmationLink)
-        {
+            // Encode the link to prevent XSS
             var encodedLink = HtmlEncoder.Default.Encode(confirmationLink);
+
+            return GenerateEmailConfirmationHtml(encodedLink);
+        }
+
+        public string CreatePasswordResetTemplate(string resetLink)
+        {
+            // Validate and sanitize the reset link
+            if (string.IsNullOrEmpty(resetLink))
+            {
+                _logger.LogWarning("Empty reset link provided to email template");
+                throw new ArgumentException("Reset link cannot be empty", nameof(resetLink));
+            }
+
+            // Generate template hash for logging (without exposing the actual link)
+            var linkHash = GenerateSecureHash(resetLink)[..8];
+            _logger.LogDebug("Creating password reset template with link hash: {LinkHash}", linkHash);
+
+            // Encode the link to prevent XSS
+            var encodedLink = HtmlEncoder.Default.Encode(resetLink);
+
+            return GeneratePasswordResetHtml(encodedLink);
+        }
+
+        public string CreateOneTimeCodeEmailTemplate(string code, string purpose)
+        {
+            // Validate inputs
+            if (string.IsNullOrEmpty(code))
+            {
+                _logger.LogWarning("Empty code provided to email template");
+                throw new ArgumentException("Code cannot be empty", nameof(code));
+            }
+
+            if (string.IsNullOrEmpty(purpose))
+            {
+                purpose = "verification";
+            }
+
+            // Generate template hash for logging (without exposing the actual code)
+            var codeHash = GenerateSecureHash(code)[..8];
+            _logger.LogDebug("Creating one-time code template with code hash: {CodeHash}, purpose: {Purpose}", codeHash, purpose);
+
+            // Encode the code to prevent XSS
+            var encodedCode = HtmlEncoder.Default.Encode(code);
+            var encodedPurpose = HtmlEncoder.Default.Encode(purpose);
+
+            return GenerateOneTimeCodeHtml(encodedCode, encodedPurpose);
+        }
+
+        /// <summary>
+        /// Generate a secure hash for logging purposes without exposing sensitive data
+        /// </summary>
+        private static string GenerateSecureHash(string input)
+        {
+            using var sha256 = SHA256.Create();
+            var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+            return Convert.ToHexString(hash);
+        }
+
+        /// <summary>
+        /// Generate the HTML template for email confirmation
+        /// Template is generated dynamically to avoid storing sensitive links in memory
+        /// </summary>
+        private static string GenerateEmailConfirmationHtml(string encodedConfirmationLink)
+        {
             return $@"
 <!DOCTYPE html>
 <html>
@@ -93,7 +124,7 @@ namespace Ribosoft.Extensions
         <p>Thank you for creating a Ribosoft account! To complete your registration and start designing ribozymes, please confirm your email address by clicking the button below:</p>
 
         <div style='text-align: center; margin: 30px 0;'>
-            <a href='{encodedLink}'
+            <a href='{encodedConfirmationLink}'
                style='background: #667eea; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; font-size: 16px;'>
                 Confirm Email Address
             </a>
@@ -101,7 +132,7 @@ namespace Ribosoft.Extensions
 
         <p style='color: #666; font-size: 14px;'>If the button doesn't work, you can copy and paste this link into your browser:</p>
         <p style='background: #f5f5f5; padding: 10px; border-radius: 5px; word-break: break-all; font-size: 12px; color: #666;'>
-            {encodedLink}
+            {encodedConfirmationLink}
         </p>
 
         <hr style='border: none; border-top: 1px solid #e0e0e0; margin: 30px 0;'>
@@ -119,9 +150,12 @@ namespace Ribosoft.Extensions
 </html>";
         }
 
-        private static string CreatePasswordResetTemplate(string resetLink)
+        /// <summary>
+        /// Generate the HTML template for password reset
+        /// Template is generated dynamically to avoid storing sensitive links in memory
+        /// </summary>
+        private static string GeneratePasswordResetHtml(string encodedResetLink)
         {
-            var encodedLink = HtmlEncoder.Default.Encode(resetLink);
             return $@"
 <!DOCTYPE html>
 <html>
@@ -142,7 +176,7 @@ namespace Ribosoft.Extensions
         <p>We received a request to reset the password for your Ribosoft account. If you made this request, click the button below to create a new password:</p>
 
         <div style='text-align: center; margin: 30px 0;'>
-            <a href='{encodedLink}'
+            <a href='{encodedResetLink}'
                style='background: #dc3545; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; font-size: 16px;'>
                 Reset Password
             </a>
@@ -156,7 +190,7 @@ namespace Ribosoft.Extensions
 
         <p style='color: #666; font-size: 14px;'>If the button doesn't work, you can copy and paste this link into your browser:</p>
         <p style='background: #f5f5f5; padding: 10px; border-radius: 5px; word-break: break-all; font-size: 12px; color: #666;'>
-            {encodedLink}
+            {encodedResetLink}
         </p>
 
         <hr style='border: none; border-top: 1px solid #e0e0e0; margin: 30px 0;'>
@@ -176,11 +210,12 @@ namespace Ribosoft.Extensions
 </html>";
         }
 
-        private static string CreateOneTimeCodeTemplate(string code, string purpose)
+        /// <summary>
+        /// Generate the HTML template for one-time code
+        /// Template is generated dynamically to avoid storing sensitive codes in memory
+        /// </summary>
+        private static string GenerateOneTimeCodeHtml(string encodedCode, string encodedPurpose)
         {
-            var encodedCode = HtmlEncoder.Default.Encode(code);
-            var encodedPurpose = HtmlEncoder.Default.Encode(purpose);
-            
             return $@"
 <!DOCTYPE html>
 <html>

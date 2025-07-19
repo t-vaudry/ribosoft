@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using RestSharp;
 using RestSharp.Authenticators;
+using System.Security.Cryptography;
 
 namespace Ribosoft.Services
 {
@@ -59,22 +60,43 @@ namespace Ribosoft.Services
 
             _client = new RestClient(options);
 
-            _logger.LogInformation("MailgunEmailSender configured successfully. Domain: {Domain}, Sender: {SenderName} <{SenderEmail}>",
-                _domain, _senderName, _senderEmail);
+            _logger.LogInformation("MailgunEmailSender configured successfully. Domain: {Domain}, Sender: {SenderName}",
+                _domain, _senderName);
+        }
+
+        /// <summary>
+        /// Generate a secure hash of the email content for logging/debugging purposes
+        /// </summary>
+        private static string GenerateContentHash(string content)
+        {
+            if (string.IsNullOrEmpty(content))
+                return "[EMPTY_CONTENT]";
+
+            using var sha256 = SHA256.Create();
+            var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(content));
+            return Convert.ToHexString(hash)[..8]; // First 8 characters for brevity
         }
 
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            _logger.LogInformation("Attempting to send email to {Email} with subject: {Subject}", email, subject);
+            // Generate a unique operation ID for this email send operation (not derived from sensitive data)
+            var operationId = Guid.NewGuid().ToString("N")[..8];
+            var contentHash = GenerateContentHash(htmlMessage);
+
+            _logger.LogInformation("Attempting to send email operation {OperationId} (ContentHash: {ContentHash})", 
+                operationId, contentHash);
 
             if (!_isConfigured || _client == null)
             {
-                _logger.LogWarning("Email sending skipped - Mailgun not configured. To: {Email}, Subject: {Subject}", email, subject);
-                _logger.LogDebug("Email content that would have been sent: {EmailContent}", htmlMessage);
+                _logger.LogWarning("Email sending skipped - Mailgun not configured. Operation: {OperationId}", 
+                    operationId);
+                
+                // Log content hash instead of full content for debugging
+                _logger.LogDebug("Email content hash that would have been sent: {ContentHash}", contentHash);
 
-                // Also log to console for immediate visibility during development
-                Console.WriteLine($"[EMAIL SKIPPED] To: {email}, Subject: {subject}");
-                Console.WriteLine($"[EMAIL CONTENT] {htmlMessage}");
+                // Also log to console for immediate visibility during development (no sensitive data)
+                Console.WriteLine($"[EMAIL SKIPPED] Operation: {operationId}");
+                Console.WriteLine($"[EMAIL CONTENT HASH] {contentHash}");
                 return;
             }
 
@@ -93,44 +115,54 @@ namespace Ribosoft.Services
                 request.AddParameter("text", plainTextMessage);
 
                 // Optional: Add tags for tracking
-                request.AddParameter("o:tag", "password-reset");
-                request.AddParameter("o:tag", "ribosoft");
+                request.AddParameter("o:tag", "ribosoft-email");
+                
+                // Add specific tags based on subject content
+                if (subject.Contains("password", StringComparison.OrdinalIgnoreCase))
+                    request.AddParameter("o:tag", "password-reset");
+                else if (subject.Contains("confirm", StringComparison.OrdinalIgnoreCase))
+                    request.AddParameter("o:tag", "account-confirmation");
+                else if (subject.Contains("code", StringComparison.OrdinalIgnoreCase))
+                    request.AddParameter("o:tag", "verification-code");
 
-                _logger.LogDebug("Sending email via Mailgun API. From: {From}, To: {To}, Tags: password-reset,ribosoft",
-                    $"{_senderName} <{_senderEmail}>", email);
+                _logger.LogDebug("Sending email via Mailgun API. Operation: {OperationId}, ContentHash: {ContentHash}",
+                    operationId, contentHash);
 
                 var response = await _client.ExecuteAsync(request);
 
                 if (response.IsSuccessful)
                 {
-                    _logger.LogInformation("Email sent successfully to {Email} via Mailgun. Response: {StatusCode}",
-                        email, response.StatusCode);
+                    _logger.LogInformation("Email sent successfully for operation {OperationId} via Mailgun. Response: {StatusCode}",
+                        operationId, response.StatusCode);
 
-                    // Parse Mailgun response for message ID if available
+                    // Parse Mailgun response for message ID if available (don't log full response as it may contain sensitive data)
                     if (!string.IsNullOrEmpty(response.Content))
                     {
-                        _logger.LogDebug("Mailgun response: {Response}", response.Content);
+                        // Only log the response hash for debugging, not the full content
+                        var responseHash = GenerateContentHash(response.Content);
+                        _logger.LogDebug("Mailgun response hash: {ResponseHash}", responseHash);
                     }
 
-                    // Also log to console for immediate visibility
-                    Console.WriteLine($"[EMAIL SENT] Successfully sent email to {email} via Mailgun");
+                    // Also log to console for immediate visibility (no sensitive data)
+                    Console.WriteLine($"[EMAIL SENT] Successfully sent email for operation {operationId} via Mailgun");
                 }
                 else
                 {
-                    _logger.LogError("Failed to send email to {Email} via Mailgun. Status: {StatusCode}, Response: {Response}",
-                        email, response.StatusCode, response.Content);
+                    // Log error without exposing sensitive response content
+                    _logger.LogError("Failed to send email for operation {OperationId} via Mailgun. Status: {StatusCode}",
+                        operationId, response.StatusCode);
 
-                    Console.WriteLine($"[EMAIL ERROR] Failed to send email to {email}: {response.StatusCode} - {response.Content}");
+                    Console.WriteLine($"[EMAIL ERROR] Failed to send email for operation {operationId}: {response.StatusCode}");
 
-                    throw new Exception($"Failed to send email via Mailgun: {response.StatusCode} - {response.Content}");
+                    throw new Exception($"Failed to send email via Mailgun: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Exception occurred while sending email to {Email}", email);
+                _logger.LogError(ex, "Exception occurred while sending email for operation {OperationId}", operationId);
 
-                // Also log to console for immediate visibility
-                Console.WriteLine($"[EMAIL ERROR] Failed to send email to {email}: {ex.Message}");
+                // Also log to console for immediate visibility (no sensitive data)
+                Console.WriteLine($"[EMAIL ERROR] Failed to send email for operation {operationId}: {ex.Message}");
 
                 // Optionally, you could throw the exception if you want the forgot password flow to fail
                 // For now, we'll just log it to avoid breaking the user experience

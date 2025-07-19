@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Text;
 using cloudscribe.Pagination.Models;
 using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,7 @@ namespace Ribosoft.Controllers
     /*! \class JobsController
      * \brief Controller class for the jobs
      */
+    [Authorize]
     public class JobsController : Controller
     {
         /*! \property _context

@@ -20,6 +20,7 @@ namespace Ribosoft.Controllers
     /*! \class ManageController
      * \brief Controller class for the management of accounts
      */
+    [Authorize]
     [Route("[controller]/[action]")]
     public class ManageController : Controller
     {

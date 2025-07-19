@@ -106,6 +106,7 @@ public class Program
 
         // Application services
         services.AddTransient<IEmailSender, MailgunEmailSender>();
+        services.AddTransient<ISecureEmailTemplateService, SecureEmailTemplateService>();
         services.AddScoped<IOneTimeCodeService, OneTimeCodeService>();
 
         // Localization
