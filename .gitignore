@@ -291,3 +291,7 @@ __pycache__/
 # Amazon Q Developer files
 AmazonQ.md
 UI_MODERNIZATION_STATUS.md
+
+# CodeQL files
+codeql-*/
+*.sarif
