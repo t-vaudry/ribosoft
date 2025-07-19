@@ -1,6 +1,7 @@
 #include "dll.h"
 
 #include <cstring>
+#include <limits>
 #include <regex>
 #include <stack>
 
@@ -58,12 +59,19 @@ R_STATUS validate_structure(const char* structure)
     std::stack<idx_t> pseudoKnots;
 
     size_t len = strlen(structure);
-    for (idx_t i = 0; i < len; ++i) {
+    
+    // Security check: Ensure structure length doesn't exceed idx_t capacity
+    // This prevents potential overflow issues when storing indices in stacks
+    if (len > std::numeric_limits<idx_t>::max()) {
+        return R_APPLICATION_ERROR::R_INVALID_STRUCT_ELEMENT;
+    }
+
+    for (size_t i = 0; i < len; ++i) {
         char element = structure[i];
         if (element == '(') {
-            dblBonds.push(i);
+            dblBonds.push(static_cast<idx_t>(i));
         } else if (element == '{') {
-            pseudoKnots.push(i);
+            pseudoKnots.push(static_cast<idx_t>(i));
         } else if (element == ')') {
             if (dblBonds.empty()) {
                 return R_APPLICATION_ERROR::R_BAD_PAIR_MATCH;
