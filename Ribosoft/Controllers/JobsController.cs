@@ -178,8 +178,8 @@ namespace Ribosoft.Controllers
          * \param filterData Base64 encoded string of JSON filter data
          * \return View of the details index
          */
-        public async Task<IActionResult> Details(int? id, string sortOrder, int pageNumber, string filterData, 
-            float? minDesiredTemp, float? maxSpecificity, float? minAccessibility, float? minStructure)
+        public async Task<IActionResult> Details(int? id, string sortOrder = "", int pageNumber = 1, string filterData = "", 
+            float? minDesiredTemp = null, float? maxSpecificity = null, float? minAccessibility = null, float? minStructure = null)
         {
             if (id == null)
             {
@@ -202,22 +202,58 @@ namespace Ribosoft.Controllers
 
             var designs = from d in _context.Designs where d.JobId == job.Id select d;
 
-            List<Filter> filterList = new List<Filter>();
-            if (!string.IsNullOrEmpty(filterData))
+            // For initial page load, ignore URL parameters and use defaults
+            // All filtering, sorting, and pagination will be handled via AJAX
+            int pageSize = 20;
+            pageNumber = 1; // Always start at page 1
+            sortOrder = ""; // Default sort order
+
+            SetSortParams(sortOrder);
+            SortDesigns(ref designs, sortOrder);
+
+            var vm = new JobDetailsViewModel();
+
+            vm.Job = job;
+            vm.SortOrder = sortOrder;
+            vm.FilterList = new List<Filter>(); // No initial filters
+            vm.Designs.Data = await designs.Take(pageSize).AsNoTracking().ToListAsync();
+            vm.Designs.TotalItems = await designs.CountAsync();
+            vm.Designs.PageNumber = pageNumber;
+            vm.Designs.PageSize = pageSize;
+
+            return View(vm);
+        }
+
+        /*!
+         * \brief AJAX endpoint for job details table updates (pagination, sorting, filtering)
+         * \param id Job ID
+         * \param sortOrder String of current sort order
+         * \param pageNumber Page number of the details
+         * \param minDesiredTemp Minimum desired temperature filter
+         * \param maxSpecificity Maximum specificity filter
+         * \param minAccessibility Minimum accessibility filter
+         * \param minStructure Minimum structure filter
+         * \return JSON response with table HTML and pagination info
+         */
+        [HttpGet]
+        public async Task<IActionResult> GetDesignsTable(int id, string sortOrder = "", int pageNumber = 1, 
+            float? minDesiredTemp = null, float? maxSpecificity = null, float? minAccessibility = null, float? minStructure = null)
+        {
+            var user = await GetUser();
+
+            var job = await _context.Jobs
+                .Include(j => j.Ribozyme)
+                .Include(j => j.Owner)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (job == null || (job.Owner?.Id != user.Id && !User.IsInRole("Administrator")))
             {
-                filterData = Encoding.UTF8.GetString(Convert.FromBase64String(filterData));
-                var deserializedFilters = JsonConvert.DeserializeObject<List<Filter>>(filterData);
-                if (deserializedFilters != null)
-                {
-                    filterList = deserializedFilters;
-                }
-                foreach (var filter in filterList)
-                {
-                    FilterDesigns(ref designs, filter.param, filter.condition, float.Parse(filter.value));
-                }
+                return Json(new { success = false, message = "Job not found or access denied" });
             }
 
-            // Handle simple filter parameters from form
+            var designs = _context.Designs.Where(d => d.JobId == id).AsQueryable();
+
+            // Apply filters
             if (minDesiredTemp.HasValue)
             {
                 designs = designs.Where(d => d.DesiredTemperatureScore >= minDesiredTemp.Value);
@@ -239,20 +275,42 @@ namespace Ribosoft.Controllers
             pageNumber = Math.Max(pageNumber, 1);
             int offset = (pageSize * pageNumber) - pageSize;
 
-            SetSortParams(sortOrder);
+            // Just sort the data, don't calculate next sort parameters
             SortDesigns(ref designs, sortOrder);
 
-            var vm = new JobDetailsViewModel();
+            var totalItems = await designs.CountAsync();
+            var designsData = await designs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
 
-            vm.Job = job;
-            vm.SortOrder = sortOrder;
-            vm.FilterList = filterList;
-            vm.Designs.Data = await designs.Skip(offset).Take(pageSize).AsNoTracking().ToListAsync();
-            vm.Designs.TotalItems = await designs.CountAsync();
-            vm.Designs.PageNumber = pageNumber;
-            vm.Designs.PageSize = pageSize;
+            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
-            return View(vm);
+            return Json(new
+            {
+                success = true,
+                designs = designsData.Select(d => new
+                {
+                    id = d.Id,
+                    rank = d.Rank,
+                    cutsiteIndex = d.CutsiteIndex,
+                    desiredTempScore = d.DesiredTemperatureScore ?? 0,
+                    specificityScore = d.SpecificityScore ?? 0,
+                    accessibilityScore = d.AccessibilityScore ?? 0,
+                    structureScore = d.StructureScore ?? 0,
+                    sequence = d.Sequence,
+                    structure = d.IdealStructure
+                }),
+                pagination = new
+                {
+                    totalItems = totalItems,
+                    currentPage = pageNumber,
+                    totalPages = totalPages,
+                    pageSize = pageSize,
+                    showingFrom = totalItems > 0 ? (pageNumber - 1) * pageSize + 1 : 0,
+                    showingTo = Math.Min(pageNumber * pageSize, totalItems),
+                    hasNextPage = pageNumber < totalPages,
+                    hasPreviousPage = pageNumber > 1
+                },
+                sortOrder = sortOrder
+            });
         }
 
         /*!
@@ -595,12 +653,13 @@ namespace Ribosoft.Controllers
          */
         private void SetSortParams(string sortOrder)
         {
-            ViewBag.CutsiteSortParm = sortOrder == "cutsite_asc" ? "cutsite_desc" : "cutsite_asc";
-            ViewBag.DesTempSortParm = sortOrder == "destemp_asc" ? "destemp_desc" : "destemp_asc";
-            ViewBag.SpecSortParm = sortOrder == "spec_asc" ? "spec_desc" : "spec_asc";
-            ViewBag.AccessSortParm = sortOrder == "access_asc" ? "access_desc" : "access_asc";
-            ViewBag.StructSortParm = sortOrder == "struct_asc" ? "struct_desc" : "struct_asc";
-            ViewBag.RankSortParm = sortOrder == "rank_asc" ? "rank_desc" : "rank_asc";
+            // Set the opposite direction for next click (toggle logic)
+            ViewBag.CutsiteSortParm = (sortOrder == "cutsite_asc") ? "cutsite_desc" : "cutsite_asc";
+            ViewBag.DesTempSortParm = (sortOrder == "destemp_asc") ? "destemp_desc" : "destemp_asc";
+            ViewBag.SpecSortParm = (sortOrder == "spec_asc") ? "spec_desc" : "spec_asc";
+            ViewBag.AccessSortParm = (sortOrder == "access_asc") ? "access_desc" : "access_asc";
+            ViewBag.StructSortParm = (sortOrder == "struct_asc") ? "struct_desc" : "struct_asc";
+            ViewBag.RankSortParm = (sortOrder == "rank_asc") ? "rank_desc" : "rank_asc";
         }
 
         /*! \fn SortDesigns
@@ -644,6 +703,9 @@ namespace Ribosoft.Controllers
                     break;
                 case "rank_desc":
                     designs = designs.OrderByDescending(d => d.Rank);
+                    break;
+                case "rank_asc":
+                    designs = designs.OrderBy(d => d.Rank);
                     break;
                 default:
                     designs = designs.OrderBy(d => d.Rank);
