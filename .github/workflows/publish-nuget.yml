@@ -176,11 +176,18 @@ jobs:
         cd RibosoftAlgo
         echo "🚀 Publishing to NuGet.org..."
         
-        # Publish main package
-        dotnet nuget push ./nupkg/*.nupkg \
-          --api-key ${{ secrets.NUGET_API_KEY }} \
-          --source https://api.nuget.org/v3/index.json \
-          --skip-duplicate
+        # List packages to be published
+        echo "📦 Packages to publish:"
+        ls -la ./nupkg/*.nupkg
+        
+        # Publish main package with explicit source URL
+        for pkg in ./nupkg/*.nupkg; do
+          echo "Publishing package: $pkg"
+          dotnet nuget push "$pkg" \
+            --api-key "${{ secrets.NUGET_API_KEY }}" \
+            --source "https://api.nuget.org/v3/index.json" \
+            --skip-duplicate
+        done
           
         echo "✅ Package published successfully"
         
