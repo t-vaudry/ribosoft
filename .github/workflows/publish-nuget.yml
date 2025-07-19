@@ -113,14 +113,24 @@ jobs:
           
         echo "✅ Build completed successfully"
         
-    - name: Run tests before packaging
+    - name: Build and test RibosoftAlgo.Tests before packaging
       run: |
-        echo "🧪 Running tests to ensure package quality..."
+        echo "🧪 Building and running tests to ensure package quality..."
+        
+        # Build the test project (this will also build C++ tests via MSBuild target)
+        echo "Building RibosoftAlgo.Tests..."
+        dotnet build RibosoftAlgo.Tests/RibosoftAlgo.Tests.csproj \
+          --configuration Release \
+          --verbosity normal
+        
+        # Run the tests
+        echo "Running RibosoftAlgo.Tests..."
         dotnet test RibosoftAlgo.Tests/RibosoftAlgo.Tests.csproj \
           --configuration Release \
           --no-build \
           --verbosity normal \
           --logger "console;verbosity=normal"
+        
         echo "✅ All tests passed"
         
     - name: Create NuGet package
@@ -128,10 +138,9 @@ jobs:
         cd RibosoftAlgo
         echo "📦 Creating NuGet package..."
         
-        # Create package with enhanced metadata
+        # Create package with enhanced metadata (rebuild if needed)
         dotnet pack RibosoftAlgo.csproj \
           --configuration Release \
-          --no-build \
           --output ./nupkg \
           --verbosity normal \
           -p:IncludeSymbols=true \
