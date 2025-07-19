@@ -103,6 +103,12 @@ jobs:
         cd RibosoftAlgo
         echo "🔨 Building RibosoftAlgo with native library integration..."
         
+        # First, verify that C++ dependencies are available
+        echo "Checking C++ dependencies..."
+        ls -la ../.deps/ || echo "No .deps directory found"
+        ls -la ../.deps/viennarna/ || echo "No ViennaRNA found"
+        ls -la ../.deps/melting/ || echo "No Melting found"
+        
         # Build with Release configuration and enhanced logging
         dotnet build RibosoftAlgo.csproj \
           --configuration Release \
@@ -111,16 +117,30 @@ jobs:
           -p:TreatWarningsAsErrors=false \
           -p:WarningLevel=1
           
+        # Verify that native library was built
+        echo "Checking native library output..."
+        ls -la bin/Release/net8.0/runtimes/linux-x64/native/ || echo "No native library found"
+        
         echo "✅ Build completed successfully"
         
-    - name: Run tests before packaging
+    - name: Build and test RibosoftAlgo.Tests before packaging
       run: |
-        echo "🧪 Running tests to ensure package quality..."
+        echo "🧪 Building and running tests to ensure package quality..."
+        
+        # Build the test project (this will also build C++ tests via MSBuild target)
+        echo "Building RibosoftAlgo.Tests..."
+        dotnet build RibosoftAlgo.Tests/RibosoftAlgo.Tests.csproj \
+          --configuration Release \
+          --verbosity normal
+        
+        # Run the tests
+        echo "Running RibosoftAlgo.Tests..."
         dotnet test RibosoftAlgo.Tests/RibosoftAlgo.Tests.csproj \
           --configuration Release \
           --no-build \
           --verbosity normal \
           --logger "console;verbosity=normal"
+        
         echo "✅ All tests passed"
         
     - name: Create NuGet package
@@ -128,53 +148,58 @@ jobs:
         cd RibosoftAlgo
         echo "📦 Creating NuGet package..."
         
-        # Create package with enhanced metadata
+        # Verify native library exists before packing
+        echo "Checking for native library before packing..."
+        ls -la bin/Release/net8.0/runtimes/linux-x64/native/ || echo "⚠️ No native library found"
+        
+        # Create package without symbols (native library package doesn't need .NET symbols)
         dotnet pack RibosoftAlgo.csproj \
           --configuration Release \
-          --no-build \
           --output ./nupkg \
           --verbosity normal \
-          -p:IncludeSymbols=true \
-          -p:SymbolPackageFormat=snupkg \
           -p:PackageReleaseNotes="Automated build from commit ${{ github.sha }}"
           
         # List created packages
         echo "📋 Created packages:"
         ls -la ./nupkg/
         
-    - name: Validate NuGet package
-      run: |
-        cd RibosoftAlgo/nupkg
-        echo "🔍 Validating NuGet package contents..."
-        
-        # Extract and examine package contents
-        for pkg in *.nupkg; do
+        # Examine package contents
+        echo "📋 Package contents:"
+        for pkg in ./nupkg/*.nupkg; do
           echo "Examining package: $pkg"
           unzip -l "$pkg" | head -20
           echo "---"
         done
         
     - name: Publish to NuGet.org
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       run: |
         cd RibosoftAlgo
         echo "🚀 Publishing to NuGet.org..."
         
-        # Publish main package
-        dotnet nuget push ./nupkg/*.nupkg \
-          --api-key ${{ secrets.NUGET_API_KEY }} \
-          --source https://api.nuget.org/v3/index.json \
-          --skip-duplicate \
-          --no-symbols
-          
-        # Publish symbols package if it exists
-        if ls ./nupkg/*.snupkg 1> /dev/null 2>&1; then
-          echo "📊 Publishing symbols package..."
-          dotnet nuget push ./nupkg/*.snupkg \
-            --api-key ${{ secrets.NUGET_API_KEY }} \
-            --source https://api.nuget.org/v3/index.json \
-            --skip-duplicate
+        # Verify API key is available (without exposing it)
+        if [ -z "$NUGET_API_KEY" ]; then
+          echo "❌ NUGET_API_KEY secret is not set in repository secrets"
+          echo "Please add the NuGet API key as a repository secret named 'NUGET_API_KEY'"
+          exit 1
+        else
+          echo "✅ NUGET_API_KEY secret is available"
         fi
         
+        # List packages to be published
+        echo "📦 Packages to publish:"
+        ls -la ./nupkg/*.nupkg
+        
+        # Publish main package using the correct API key parameter format
+        for pkg in ./nupkg/*.nupkg; do
+          echo "Publishing package: $pkg"
+          dotnet nuget push "$pkg" \
+            -k "$NUGET_API_KEY" \
+            -s "https://api.nuget.org/v3/index.json" \
+            --skip-duplicate
+        done
+          
         echo "✅ Package published successfully"
         
     - name: Create GitHub release (for tags)
