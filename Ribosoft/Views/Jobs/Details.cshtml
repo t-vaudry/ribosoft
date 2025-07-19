@@ -502,7 +502,8 @@
                 <div class="card-body p-0">
                     <!-- Filter Options (Initially Hidden) -->
                     <div id="filterOptions" class="border-bottom bg-light p-3" style="display: none;">
-                        <form method="get" asp-action="Details" asp-route-id="@Model.Job.Id" class="smooth-form" data-redirect="true">
+                        <form id="filterForm" class="ajax-form">
+                            <input type="hidden" name="id" value="@Model.Job.Id" />
                             <input type="hidden" name="sortOrder" value="@Model.SortOrder" />
                             <input type="hidden" name="pageNumber" value="1" />
                             
@@ -536,9 +537,9 @@
                                 <button type="submit" class="btn btn-primary btn-sm">
                                     <i class="fas fa-check me-1"></i>Apply Filters
                                 </button>
-                                <a href="@Url.Action("Details", new { id = Model.Job.Id, sortOrder = Model.SortOrder, pageNumber = 1 })" class="btn btn-outline-secondary btn-sm smooth-link">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearFilters()">
                                     <i class="fas fa-times me-1"></i>Clear Filters
-                                </a>
+                                </button>
                                 @if (Context.Request.Query["minDesiredTemp"].Any() || Context.Request.Query["maxSpecificity"].Any() || 
                                      Context.Request.Query["minAccessibility"].Any() || Context.Request.Query["minStructure"].Any())
                                 {
@@ -553,24 +554,28 @@
                         </form>
                     </div>
 
-                    <!-- Results Table -->
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0" id="designsTable">
-                            <thead class="table-light">
-                                <tr>
-                                    <th scope="col" class="ps-3" style="width: 50px;">
-                                        <input type="checkbox" class="form-check-input" id="selectAll">
-                                    </th>
-                                    <th scope="col" style="width: 80px;">
-                                        <a href="@Url.Action("Details", new { 
-                                            id = Model.Job.Id, 
-                                            sortOrder = ViewBag.RankSortParm, 
-                                            pageNumber = 1,
-                                            minDesiredTemp = Context.Request.Query["minDesiredTemp"],
-                                            maxSpecificity = Context.Request.Query["maxSpecificity"],
-                                            minAccessibility = Context.Request.Query["minAccessibility"],
-                                            minStructure = Context.Request.Query["minStructure"]
-                                        })" class="text-decoration-none text-dark smooth-link">
+                    <!-- AJAX Content Container -->
+                    <div id="designsContainer" class="position-relative">
+                        <!-- Loading Overlay -->
+                        <div id="tableLoadingOverlay" class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75 d-none" style="z-index: 10;">
+                            <div class="text-center">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <div class="mt-2 text-muted small">Updating results...</div>
+                            </div>
+                        </div>
+
+                        <!-- Results Table -->
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0" id="designsTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col" class="ps-3" style="width: 50px;">
+                                            <input type="checkbox" class="form-check-input" id="selectAll">
+                                        </th>
+                                        <th scope="col" style="width: 80px;">
+                                        <a href="#" class="text-decoration-none text-dark ajax-sort" data-sort="@ViewBag.RankSortParm">
                                             Rank
                                             @if (Model.SortOrder == "rank_asc")
                                             {
@@ -587,15 +592,7 @@
                                         </a>
                                     </th>
                                     <th scope="col" style="width: 100px;">
-                                        <a href="@Url.Action("Details", new { 
-                                            id = Model.Job.Id, 
-                                            sortOrder = ViewBag.CutsiteSortParm, 
-                                            pageNumber = 1,
-                                            minDesiredTemp = Context.Request.Query["minDesiredTemp"],
-                                            maxSpecificity = Context.Request.Query["maxSpecificity"],
-                                            minAccessibility = Context.Request.Query["minAccessibility"],
-                                            minStructure = Context.Request.Query["minStructure"]
-                                        })" class="text-decoration-none text-dark smooth-link">
+                                        <a href="#" class="text-decoration-none text-dark ajax-sort" data-sort="@ViewBag.CutsiteSortParm">
                                             Cutsite
                                             @if (Model.SortOrder == "cutsite_asc")
                                             {
@@ -612,15 +609,7 @@
                                         </a>
                                     </th>
                                     <th scope="col">
-                                        <a href="@Url.Action("Details", new { 
-                                            id = Model.Job.Id, 
-                                            sortOrder = ViewBag.DesTempSortParm, 
-                                            pageNumber = 1,
-                                            minDesiredTemp = Context.Request.Query["minDesiredTemp"],
-                                            maxSpecificity = Context.Request.Query["maxSpecificity"],
-                                            minAccessibility = Context.Request.Query["minAccessibility"],
-                                            minStructure = Context.Request.Query["minStructure"]
-                                        })" class="text-decoration-none text-dark smooth-link">
+                                        <a href="#" class="text-decoration-none text-dark ajax-sort" data-sort="@ViewBag.DesTempSortParm">
                                             Design Temp
                                             @if (Model.SortOrder == "destemp_asc")
                                             {
@@ -637,15 +626,7 @@
                                         </a>
                                     </th>
                                     <th scope="col">
-                                        <a href="@Url.Action("Details", new { 
-                                            id = Model.Job.Id, 
-                                            sortOrder = ViewBag.SpecSortParm, 
-                                            pageNumber = 1,
-                                            minDesiredTemp = Context.Request.Query["minDesiredTemp"],
-                                            maxSpecificity = Context.Request.Query["maxSpecificity"],
-                                            minAccessibility = Context.Request.Query["minAccessibility"],
-                                            minStructure = Context.Request.Query["minStructure"]
-                                        })" class="text-decoration-none text-dark smooth-link">
+                                        <a href="#" class="text-decoration-none text-dark ajax-sort" data-sort="@ViewBag.SpecSortParm">
                                             Specificity
                                             @if (Model.SortOrder == "spec_asc")
                                             {
@@ -662,15 +643,7 @@
                                         </a>
                                     </th>
                                     <th scope="col">
-                                        <a href="@Url.Action("Details", new { 
-                                            id = Model.Job.Id, 
-                                            sortOrder = ViewBag.AccessSortParm, 
-                                            pageNumber = 1,
-                                            minDesiredTemp = Context.Request.Query["minDesiredTemp"],
-                                            maxSpecificity = Context.Request.Query["maxSpecificity"],
-                                            minAccessibility = Context.Request.Query["minAccessibility"],
-                                            minStructure = Context.Request.Query["minStructure"]
-                                        })" class="text-decoration-none text-dark smooth-link">
+                                        <a href="#" class="text-decoration-none text-dark ajax-sort" data-sort="@ViewBag.AccessSortParm">
                                             Accessibility
                                             @if (Model.SortOrder == "access_asc")
                                             {
@@ -687,15 +660,7 @@
                                         </a>
                                     </th>
                                     <th scope="col">
-                                        <a href="@Url.Action("Details", new { 
-                                            id = Model.Job.Id, 
-                                            sortOrder = ViewBag.StructSortParm, 
-                                            pageNumber = 1,
-                                            minDesiredTemp = Context.Request.Query["minDesiredTemp"],
-                                            maxSpecificity = Context.Request.Query["maxSpecificity"],
-                                            minAccessibility = Context.Request.Query["minAccessibility"],
-                                            minStructure = Context.Request.Query["minStructure"]
-                                        })" class="text-decoration-none text-dark smooth-link">
+                                        <a href="#" class="text-decoration-none text-dark ajax-sort" data-sort="@ViewBag.StructSortParm">
                                             Structure
                                             @if (Model.SortOrder == "struct_asc")
                                             {
@@ -798,15 +763,7 @@
                                                 })">First</a>
                                             </li>
                                             <li class="page-item">
-                                                <a class="page-link smooth-link" href="@Url.Action("Details", new { 
-                                                    id = Model.Job.Id, 
-                                                    sortOrder = Model.SortOrder, 
-                                                    pageNumber = Model.Designs.PageNumber - 1,
-                                                    minDesiredTemp = Context.Request.Query["minDesiredTemp"],
-                                                    maxSpecificity = Context.Request.Query["maxSpecificity"],
-                                                    minAccessibility = Context.Request.Query["minAccessibility"],
-                                                    minStructure = Context.Request.Query["minStructure"]
-                                                })">Previous</a>
+                                                <a class="page-link ajax-page" href="#" data-page="@(Model.Designs.PageNumber - 1)">Previous</a>
                                             </li>
                                         }
                                         
@@ -860,6 +817,7 @@
                             </div>
                         </div>
                     }
+                    </div> <!-- End AJAX Container -->
                 </div>
             </div>
         }
@@ -1248,6 +1206,326 @@
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // AJAX functionality for seamless table updates
+            let currentFilters = {
+                minDesiredTemp: '@Context.Request.Query["minDesiredTemp"]',
+                maxSpecificity: '@Context.Request.Query["maxSpecificity"]',
+                minAccessibility: '@Context.Request.Query["minAccessibility"]',
+                minStructure: '@Context.Request.Query["minStructure"]'
+            };
+            let currentSortOrder = '@Model.SortOrder';
+            let currentPage = @Model.Designs.PageNumber;
+
+            // Function to update table via AJAX
+            function updateTable(page = 1, sortOrder = currentSortOrder, filters = currentFilters) {
+                // Show loading overlay
+                $('#tableLoadingOverlay').removeClass('d-none').addClass('d-flex');
+                
+                // Prepare parameters
+                const params = {
+                    id: @Model.Job.Id,
+                    pageNumber: page,
+                    sortOrder: sortOrder
+                };
+                
+                // Add filters if they have values
+                if (filters.minDesiredTemp && filters.minDesiredTemp !== '') {
+                    params.minDesiredTemp = filters.minDesiredTemp;
+                }
+                if (filters.maxSpecificity && filters.maxSpecificity !== '') {
+                    params.maxSpecificity = filters.maxSpecificity;
+                }
+                if (filters.minAccessibility && filters.minAccessibility !== '') {
+                    params.minAccessibility = filters.minAccessibility;
+                }
+                if (filters.minStructure && filters.minStructure !== '') {
+                    params.minStructure = filters.minStructure;
+                }
+
+                // Make AJAX request
+                $.get('@Url.Action("GetDesignsTable", "Jobs")', params)
+                    .done(function(response) {
+                        if (response.success) {
+                            // Update table content
+                            updateTableContent(response);
+                            
+                            // Update sort parameters for table headers
+                            updateSortHeaders(null, response.sortOrder);
+                            
+                            // Update current state
+                            currentPage = response.pagination.currentPage;
+                            currentSortOrder = response.sortOrder;
+                            
+                            // Update filter form hidden fields
+                            $('#filterForm input[name="sortOrder"]').val(currentSortOrder);
+                            $('#filterForm input[name="pageNumber"]').val(1);
+                            
+                            // Re-bind only the table content event handlers (checkboxes, etc.)
+                            bindTableContentEvents();
+                            
+                            // Update export buttons
+                            updateExportButtons();
+                        } else {
+                            alert('Failed to update table. Please refresh the page.');
+                        }
+                    })
+                    .fail(function(xhr, status, error) {
+                        console.error('AJAX request failed:', error);
+                        alert('Failed to update table. Please check your connection and try again.');
+                    })
+                    .always(function() {
+                        // Hide loading overlay
+                        $('#tableLoadingOverlay').removeClass('d-flex').addClass('d-none');
+                    });
+            }
+
+            // Function to update table content with response data
+            function updateTableContent(response) {
+                const tbody = $('#designsTable tbody');
+                tbody.empty();
+                
+                // Add new rows
+                response.designs.forEach(function(design, index) {
+                    const row = `
+                        <tr>
+                            <td class="ps-3">
+                                <input type="checkbox" class="form-check-input design-checkbox" value="${design.id}">
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">${design.rank}</span>
+                            </td>
+                            <td>
+                                <code class="small">${design.cutsiteIndex}</code>
+                            </td>
+                            <td>
+                                <span class="fw-bold">${design.desiredTempScore.toFixed(3)}</span>
+                            </td>
+                            <td>
+                                <span class="fw-bold">${design.specificityScore.toFixed(3)}</span>
+                            </td>
+                            <td>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-info" role="progressbar" 
+                                         style="width: ${(design.accessibilityScore * 100)}%" 
+                                         aria-valuenow="${(design.accessibilityScore * 100)}" 
+                                         aria-valuemin="0" aria-valuemax="100">
+                                        <span class="fw-bold text-white">${design.accessibilityScore.toFixed(3)}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-success" role="progressbar" 
+                                         style="width: ${(design.structureScore * 100)}%" 
+                                         aria-valuenow="${(design.structureScore * 100)}" 
+                                         aria-valuemin="0" aria-valuemax="100">
+                                        <span class="fw-bold text-white">${design.structureScore.toFixed(3)}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="viewDesignDetails(${design.id})">
+                                        <i class="fas fa-eye me-1"></i>View
+                                    </button>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-outline-success btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                            <i class="fas fa-download me-1"></i>FASTA
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#" onclick="downloadDesign(${design.id}, 'fasta')">
+                                                <i class="fas fa-file-alt me-2"></i>FASTA Format
+                                            </a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.append(row);
+                });
+                
+                // Update pagination info
+                updatePaginationInfo(response.pagination);
+            }
+
+            // Function to update sort headers with new sort parameters
+            function updateSortHeaders(sortParams, currentSort) {
+                $('.ajax-sort').each(function() {
+                    const $header = $(this);
+                    const headerText = $header.text().trim();
+                    
+                    // Map header text to sort parameter base
+                    let sortBase = '';
+                    switch(headerText) {
+                        case 'Rank': sortBase = 'rank'; break;
+                        case 'Cutsite': sortBase = 'cutsite'; break;
+                        case 'Design Temp': sortBase = 'destemp'; break;
+                        case 'Specificity': sortBase = 'spec'; break;
+                        case 'Accessibility': sortBase = 'access'; break;
+                        case 'Structure': sortBase = 'struct'; break;
+                    }
+                    
+                    // Calculate next sort direction for toggle behavior
+                    let nextSort = '';
+                    if (currentSort === sortBase + '_asc') {
+                        nextSort = sortBase + '_desc';
+                    } else if (currentSort === sortBase + '_desc') {
+                        nextSort = sortBase + '_asc';
+                    } else {
+                        nextSort = sortBase + '_asc';
+                    }
+                    
+                    // Update data-sort attribute for next click
+                    $header.attr('data-sort', nextSort);
+                    
+                    // Update sort icons based on current sort state
+                    const $icon = $header.find('i');
+                    $icon.removeClass('fa-sort fa-sort-up fa-sort-down text-muted');
+                    
+                    if (currentSort === sortBase + '_asc') {
+                        $icon.addClass('fa-sort-up');
+                    } else if (currentSort === sortBase + '_desc') {
+                        $icon.addClass('fa-sort-down');
+                    } else {
+                        $icon.addClass('fa-sort text-muted');
+                    }
+                });
+            }
+
+            // Function to update pagination info and controls
+            function updatePaginationInfo(pagination) {
+                // Update showing text
+                const showingText = pagination.totalItems > 0 
+                    ? `Showing ${pagination.showingFrom} to ${pagination.showingTo} of ${pagination.totalItems} designs`
+                    : 'No designs found';
+                $('.card-footer .text-muted').text(showingText);
+                
+                // Update pagination controls
+                const paginationContainer = $('.pagination').parent();
+                paginationContainer.empty();
+                
+                if (pagination.totalPages > 1) {
+                    let paginationHtml = '<ul class="pagination pagination-sm mb-0">';
+                    
+                    // First and Previous buttons
+                    if (pagination.hasPreviousPage) {
+                        paginationHtml += `
+                            <li class="page-item">
+                                <a class="page-link ajax-page" href="#" data-page="1">First</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link ajax-page" href="#" data-page="${pagination.currentPage - 1}">Previous</a>
+                            </li>
+                        `;
+                    }
+                    
+                    // Page numbers (show current page and a few around it)
+                    const startPage = Math.max(1, pagination.currentPage - 2);
+                    const endPage = Math.min(pagination.totalPages, pagination.currentPage + 2);
+                    
+                    for (let i = startPage; i <= endPage; i++) {
+                        const activeClass = i === pagination.currentPage ? 'active' : '';
+                        paginationHtml += `
+                            <li class="page-item ${activeClass}">
+                                <a class="page-link ajax-page" href="#" data-page="${i}">${i}</a>
+                            </li>
+                        `;
+                    }
+                    
+                    // Next and Last buttons
+                    if (pagination.hasNextPage) {
+                        paginationHtml += `
+                            <li class="page-item">
+                                <a class="page-link ajax-page" href="#" data-page="${pagination.currentPage + 1}">Next</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link ajax-page" href="#" data-page="${pagination.totalPages}">Last</a>
+                            </li>
+                        `;
+                    }
+                    
+                    paginationHtml += '</ul>';
+                    paginationContainer.html(paginationHtml);
+                }
+            }
+
+            // Function to bind table event handlers
+            function bindTableEvents() {
+                // Pagination click handlers
+                $(document).off('click', '.ajax-page').on('click', '.ajax-page', function(e) {
+                    e.preventDefault();
+                    const page = parseInt($(this).data('page'));
+                    updateTable(page, currentSortOrder, currentFilters);
+                });
+                
+                // Checkbox handlers
+                bindTableContentEvents();
+            }
+            
+            // Function to bind only table content events (checkboxes, etc.)
+            function bindTableContentEvents() {
+                $('#selectAll').off('change').on('change', function() {
+                    $('.design-checkbox').prop('checked', this.checked);
+                    updateExportButtons();
+                });
+
+                $('.design-checkbox').off('change').on('change', function() {
+                    const totalCheckboxes = $('.design-checkbox').length;
+                    const checkedCheckboxes = $('.design-checkbox:checked').length;
+                    
+                    $('#selectAll').prop('indeterminate', checkedCheckboxes > 0 && checkedCheckboxes < totalCheckboxes);
+                    $('#selectAll').prop('checked', checkedCheckboxes === totalCheckboxes);
+                    updateExportButtons();
+                });
+            }
+
+            // Filter form submission
+            $('#filterForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                // Get filter values
+                const filters = {
+                    minDesiredTemp: $('input[name="minDesiredTemp"]').val(),
+                    maxSpecificity: $('input[name="maxSpecificity"]').val(),
+                    minAccessibility: $('input[name="minAccessibility"]').val(),
+                    minStructure: $('input[name="minStructure"]').val()
+                };
+                
+                currentFilters = filters;
+                updateTable(1, currentSortOrder, filters);
+            });
+
+            // Clear filters function
+            window.clearFilters = function() {
+                // Clear form inputs
+                $('#filterForm input[type="number"]').val('');
+                
+                // Reset filters
+                currentFilters = {
+                    minDesiredTemp: '',
+                    maxSpecificity: '',
+                    minAccessibility: '',
+                    minStructure: ''
+                };
+                
+                // Update table
+                updateTable(1, currentSortOrder, currentFilters);
+            };
+
+            // Initialize event handlers
+            bindTableEvents();
+            
+            // Initialize sort headers
+            updateSortHeaders(null, '@Model.SortOrder');
+            
+            // Bind sort click handlers (bound once, never re-bound)
+            $(document).on('click', '.ajax-sort', function(e) {
+                e.preventDefault();
+                const sortOrder = $(this).attr('data-sort');
+                updateTable(1, sortOrder, currentFilters);
             });
 
             // Auto-refresh for in-progress jobs
