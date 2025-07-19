@@ -197,8 +197,7 @@ jobs:
           dotnet nuget push "$pkg" \
             -k "$NUGET_API_KEY" \
             -s "https://api.nuget.org/v3/index.json" \
-            --skip-duplicate \
-            --verbosity normal
+            --skip-duplicate
         done
           
         echo "✅ Package published successfully"
