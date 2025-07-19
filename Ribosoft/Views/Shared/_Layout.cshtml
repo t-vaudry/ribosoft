@@ -116,6 +116,23 @@
             z-index: 1050 !important;
         }
         
+        /* Simple modal enhancements */
+        .modal-dialog {
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-body {
+            overflow-y: auto;
+            flex: 1 1 auto;
+        }
+        
         /* Fix dropdown z-index */
         .dropdown-menu {
             z-index: 1040 !important;
@@ -336,7 +353,7 @@
                 
                 setupModalHandling() {
                     // Prevent transitions when modals are open
-                    document.addEventListener('show.bs.modal', () => {
+                    document.addEventListener('show.bs.modal', (e) => {
                         this.hideTransition();
                     });
                     
@@ -435,12 +452,30 @@
         })();
     </script>
     
-    <!-- Modal Backdrop Relocation Script -->
+    <!-- Modal Backdrop Relocation and Scroll Prevention Script -->
     <script>
         (function() {
             'use strict';
             
             document.addEventListener('DOMContentLoaded', function() {
+                // Simple modal scroll prevention - just disable main scrolling
+                const mainElement = document.getElementById('mainContent') || document.querySelector('main');
+                
+                if (!mainElement) {
+                    console.warn('Main content element not found');
+                    return;
+                }
+                
+                // When modal opens - disable main scrolling
+                document.addEventListener('show.bs.modal', function() {
+                    mainElement.style.overflow = 'hidden';
+                });
+                
+                // When modal closes - enable main scrolling
+                document.addEventListener('hidden.bs.modal', function() {
+                    mainElement.style.overflow = '';
+                });
+                
                 // Function to move backdrop from body to main
                 function moveBackdropToMain() {
                     const backdrop = document.querySelector('body > .modal-backdrop');

@@ -272,3 +272,32 @@ rect.background {
     width: 750px !important;
     height: 500px !important;
 }
+
+/* Simple modal enhancements */
+.modal-dialog {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-content {
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-body {
+    overflow-y: auto;
+    flex: 1 1 auto;
+}
+
+/* Fix for mobile devices */
+@media (max-width: 768px) {
+    .modal-dialog {
+        max-height: 95vh;
+        margin: 0.5rem;
+    }
+    
+    .modal-content {
+        max-height: 90vh;
+    }
+}
