@@ -10,7 +10,120 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>@ViewData["Title"] - Ribosoft</title>
 
+    <!-- Critical CSS for immediate rendering -->
+    <style>
+        /* Critical styles to prevent FOUC */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+        }
+        
+        /* Prevent layout shifts */
+        body {
+            position: relative;
+        }
+        
+        /* Page transition overlay - only covers main content */
+        .page-transition-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(248, 249, 250, 0.95);
+            backdrop-filter: blur(2px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .page-transition-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .page-transition-spinner {
+            width: 32px;
+            height: 32px;
+            border: 2px solid #dee2e6;
+            border-top: 2px solid #007bff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        /* Keyframes for spinner animation */
+        @@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Main content fade transitions */
+        .main-content {
+            position: relative;
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: calc(100vh - 200px);
+            overflow: hidden;
+        }
+        
+        .main-content.page-entering {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+        
+        .main-content.transitioning {
+            opacity: 0.7;
+            transform: translateY(10px);
+        }
+        
+        /* Prevent footer jumping */
+        .footer {
+            position: relative;
+            margin-top: auto;
+        }
+        
+        /* Ensure consistent layout */
+        .main-wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Ensure proper z-index hierarchy */
+        .navbar {
+            z-index: 1030;
+        }
+        
+        .footer {
+            z-index: 1020;
+        }
+        
+        /* Fix modal z-index conflicts */
+        .modal-backdrop {
+            z-index: 1040 !important;
+        }
+        
+        .modal {
+            z-index: 1050 !important;
+        }
+        
+        /* Fix dropdown z-index */
+        .dropdown-menu {
+            z-index: 1040 !important;
+        }
+    </style>
+
     <link rel="stylesheet" href="~/dist/vendor.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/page-transitions.css" asp-append-version="true" />
     <environment exclude="Development">
         <link rel="stylesheet" href="~/dist/main.css" asp-append-version="true" />
     </environment>
@@ -19,10 +132,10 @@
     </environment>
 </head>
 <body class="bg-light">
-    <div class="main-wrapper">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="main-wrapper" id="mainWrapper">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary" id="mainNavbar">
             <div class="container">
-                <a asp-controller="Home" asp-action="Index" class="navbar-brand">
+                <a asp-controller="Home" asp-action="Index" class="navbar-brand smooth-link">
                     <img src="/img/logo.svg" height="30" alt="Ribosoft">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,24 +147,24 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item" is-active-route asp-controller="Request" asp-action="Index">
-                                <a asp-controller="Request" asp-action="Index" class="nav-link">
+                                <a asp-controller="Request" asp-action="Index" class="nav-link smooth-link">
                                     <i class="fas fa-plus me-2"></i>New Request
                                 </a>
                             </li>
                             <li class="nav-item" is-active-route asp-controller="Jobs">
-                                <a asp-controller="Jobs" asp-action="Index" class="nav-link">
+                                <a asp-controller="Jobs" asp-action="Index" class="nav-link smooth-link">
                                     <i class="fas fa-list me-2"></i>Jobs
                                 </a>
                             </li>
                             <li class="nav-item" is-active-route asp-controller="Ribozymes">
-                                <a asp-controller="Ribozymes" asp-action="Index" class="nav-link">
+                                <a asp-controller="Ribozymes" asp-action="Index" class="nav-link smooth-link">
                                     <i class="fas fa-dna me-2"></i>Ribozymes
                                 </a>
                             </li>
                             @if (User.IsInRole("Administrator"))
                             {
                                 <li class="nav-item" is-active-route asp-controller="Assemblies">
-                                    <a asp-controller="Assemblies" asp-action="Index" class="nav-link admin-link">
+                                    <a asp-controller="Assemblies" asp-action="Index" class="nav-link admin-link smooth-link">
                                         <i class="fas fa-database me-2"></i>Assemblies
                                         <span class="admin-badge">Admin</span>
                                     </a>
@@ -64,11 +177,16 @@
             </div>
         </nav>
 
-        <main class="@(ViewData["FullWidth"] != null ? "full-width-content" : "container body-content") main-content" role="main">
+        <main class="@(ViewData["FullWidth"] != null ? "full-width-content" : "container body-content") main-content" role="main" id="mainContent">
+            <!-- Page Transition Overlay - positioned within main content -->
+            <div class="page-transition-overlay" id="pageTransition">
+                <div class="page-transition-spinner"></div>
+            </div>
+            
             @RenderBody()
         </main>
 
-        <footer class="footer bg-dark text-light py-2">
+        <footer class="footer bg-dark text-light py-2" id="mainFooter">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-12 text-center">
@@ -85,12 +203,11 @@
     <script src="~/dist/main.js" asp-append-version="true"></script>
     
     <style>
-        /* Clean Navigation Styling */
+        /* Essential Navigation Styling */
         .navbar-nav .nav-link {
             padding: 0.5rem 1rem;
             margin: 0 0.25rem;
             border-radius: 0.25rem;
-            transition: background-color 0.2s ease;
             font-weight: 500;
         }
         
@@ -100,6 +217,7 @@
         
         .navbar-nav .nav-link.active {
             background-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         
         .navbar-nav .nav-link i {
@@ -107,13 +225,13 @@
             font-size: 0.9rem;
         }
         
-        /* Admin link styling */
-        .admin-link {
-            position: relative;
+        .navbar-nav .nav-link:hover i {
+            opacity: 1;
         }
         
+        /* Admin badge styling */
         .admin-badge {
-            background-color: #ffc107;
+            background: linear-gradient(45deg, #ffc107, #ffcd39);
             color: #000;
             font-size: 0.65rem;
             padding: 0.15rem 0.4rem;
@@ -122,20 +240,265 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-        }
-        
-        /* Mobile responsiveness */
-        @@media (max-width: 991.98px) {
-            .navbar-nav .nav-link {
-                margin: 0.25rem 0;
-                padding: 0.75rem 1rem;
-            }
-            
-            .admin-badge {
-                margin-left: 0.75rem;
-            }
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3);
         }
     </style>
+    
+    <!-- Smooth Page Transitions Script -->
+    <script>
+        (function() {
+            'use strict';
+            
+            // Page transition manager
+            const PageTransitions = {
+                overlay: null,
+                mainContent: null,
+                isTransitioning: false,
+                
+                init() {
+                    this.overlay = document.getElementById('pageTransition');
+                    this.mainContent = document.getElementById('mainContent');
+                    
+                    // Initialize page entrance animation
+                    this.initPageEntrance();
+                    
+                    // Setup smooth navigation
+                    this.setupSmoothNavigation();
+                    
+                    // Setup form transitions
+                    this.setupFormTransitions();
+                    
+                    // Setup modal conflict prevention
+                    this.setupModalHandling();
+                },
+                
+                initPageEntrance() {
+                    // Only animate entrance if we're not in a transition state
+                    if (this.mainContent && !this.isTransitioning) {
+                        // Start with entrance state
+                        this.mainContent.classList.add('page-entering');
+                        
+                        // Animate to normal state after a brief delay
+                        requestAnimationFrame(() => {
+                            setTimeout(() => {
+                                if (this.mainContent) {
+                                    this.mainContent.classList.remove('page-entering');
+                                }
+                            }, 100);
+                        });
+                    }
+                },
+                
+                setupSmoothNavigation() {
+                    // Add smooth transitions to all navigation links
+                    document.addEventListener('click', (e) => {
+                        const link = e.target.closest('a.smooth-link');
+                        if (link && link.href && !link.href.startsWith('#') && !link.hasAttribute('download')) {
+                            // Skip if modal is open
+                            if (document.body.classList.contains('modal-open')) {
+                                return;
+                            }
+                            
+                            // Only apply to same-origin links
+                            try {
+                                const linkUrl = new URL(link.href);
+                                const currentUrl = new URL(window.location.href);
+                                
+                                if (linkUrl.origin === currentUrl.origin && !this.isTransitioning) {
+                                    e.preventDefault();
+                                    this.navigateWithTransition(link.href);
+                                }
+                            } catch (err) {
+                                // Invalid URL, let default behavior handle it
+                            }
+                        }
+                    });
+                },
+                
+                setupFormTransitions() {
+                    // Add smooth transitions to form submissions
+                    document.addEventListener('submit', (e) => {
+                        const form = e.target;
+                        if (form.classList.contains('smooth-form') && !this.isTransitioning) {
+                            // Skip if modal is open
+                            if (document.body.classList.contains('modal-open')) {
+                                return;
+                            }
+                            
+                            // Only for GET forms or forms that redirect
+                            if (form.method.toLowerCase() === 'get' || form.hasAttribute('data-redirect')) {
+                                e.preventDefault();
+                                this.submitFormWithTransition(form);
+                            }
+                        }
+                    });
+                },
+                
+                setupModalHandling() {
+                    // Prevent transitions when modals are open
+                    document.addEventListener('show.bs.modal', () => {
+                        this.hideTransition();
+                    });
+                    
+                    // Hide transition overlay when modal opens
+                    const observer = new MutationObserver((mutations) => {
+                        mutations.forEach((mutation) => {
+                            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                                if (document.body.classList.contains('modal-open')) {
+                                    this.hideTransition();
+                                }
+                            }
+                        });
+                    });
+                    
+                    observer.observe(document.body, {
+                        attributes: true,
+                        attributeFilter: ['class']
+                    });
+                },
+                
+                navigateWithTransition(url) {
+                    if (this.isTransitioning) return;
+                    
+                    this.isTransitioning = true;
+                    this.showTransition();
+                    
+                    // Balanced timing for smooth feel without flickering
+                    setTimeout(() => {
+                        window.location.href = url;
+                    }, 250);
+                },
+                
+                submitFormWithTransition(form) {
+                    if (this.isTransitioning) return;
+                    
+                    this.isTransitioning = true;
+                    this.showTransition();
+                    
+                    setTimeout(() => {
+                        form.submit();
+                    }, 250);
+                },
+                
+                showTransition() {
+                    if (this.overlay && !document.body.classList.contains('modal-open')) {
+                        // Add transitioning class to main content
+                        if (this.mainContent) {
+                            this.mainContent.classList.add('transitioning');
+                            this.mainContent.classList.remove('page-entering');
+                        }
+                        
+                        // Show overlay with slight delay to ensure content transition starts first
+                        requestAnimationFrame(() => {
+                            this.overlay.classList.add('active');
+                        });
+                    }
+                },
+                
+                hideTransition() {
+                    if (this.overlay) {
+                        this.overlay.classList.remove('active');
+                    }
+                    
+                    if (this.mainContent) {
+                        this.mainContent.classList.remove('transitioning');
+                        this.mainContent.classList.remove('page-entering');
+                    }
+                    
+                    this.isTransitioning = false;
+                }
+            };
+            
+            // Initialize when DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => PageTransitions.init());
+            } else {
+                PageTransitions.init();
+            }
+            
+            // Handle browser back/forward buttons
+            window.addEventListener('pageshow', (e) => {
+                PageTransitions.hideTransition();
+                // Re-initialize entrance animation for back/forward navigation
+                if (e.persisted) {
+                    setTimeout(() => PageTransitions.initPageEntrance(), 50);
+                }
+            });
+            
+            // Clean up on page unload
+            window.addEventListener('beforeunload', () => {
+                PageTransitions.hideTransition();
+            });
+            
+            // Expose for external use
+            window.PageTransitions = PageTransitions;
+        })();
+    </script>
+    
+    <!-- Modal Backdrop Relocation Script -->
+    <script>
+        (function() {
+            'use strict';
+            
+            document.addEventListener('DOMContentLoaded', function() {
+                // Function to move backdrop from body to main
+                function moveBackdropToMain() {
+                    const backdrop = document.querySelector('body > .modal-backdrop');
+                    const mainContent = document.getElementById('mainContent');
+                    
+                    if (backdrop && mainContent) {
+                        // Remove from body
+                        backdrop.remove();
+                        
+                        // Add to main content with proper positioning
+                        mainContent.appendChild(backdrop);
+                        
+                        // Ensure proper styling
+                        backdrop.style.position = 'absolute';
+                        backdrop.style.top = '0';
+                        backdrop.style.left = '0';
+                        backdrop.style.width = '100%';
+                        backdrop.style.height = '100%';
+                        backdrop.style.zIndex = '1040';
+                        
+                        console.log('Modal backdrop moved to main content');
+                    }
+                }
+                
+                // Watch for modal backdrop creation
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        mutation.addedNodes.forEach(function(node) {
+                            if (node.nodeType === 1 && node.classList && node.classList.contains('modal-backdrop')) {
+                                // Backdrop was added to body, move it to main
+                                setTimeout(moveBackdropToMain, 10);
+                            }
+                        });
+                    });
+                });
+                
+                // Start observing body for backdrop additions
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: false
+                });
+                
+                // Also handle existing modals
+                document.addEventListener('show.bs.modal', function() {
+                    setTimeout(moveBackdropToMain, 50);
+                });
+                
+                // Clean up when modal closes
+                document.addEventListener('hidden.bs.modal', function() {
+                    const mainContent = document.getElementById('mainContent');
+                    const backdrop = mainContent?.querySelector('.modal-backdrop');
+                    if (backdrop) {
+                        backdrop.remove();
+                    }
+                });
+            });
+        })();
+    </script>
     
     @RenderSection("scripts", required: false)
 </body>

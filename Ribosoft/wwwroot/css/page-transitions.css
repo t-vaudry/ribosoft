@@ -1,0 +1,205 @@
+/* Smooth Page Transitions for Ribosoft - No Card Movement */
+
+/* Z-index hierarchy to prevent modal conflicts */
+:root {
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Subtle button hover effects */
+.btn {
+    transition: box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.btn:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Subtle form control effects */
+.form-control, .form-select {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Card hover effects - ONLY shadow, NO movement */
+.card {
+    transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Subtle table row hover */
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Enhanced pagination with subtle hover */
+.pagination .page-link {
+    transition: all 0.2s ease;
+}
+
+.pagination .page-link:hover {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+}
+
+/* Fix modal z-index conflicts - CRITICAL */
+.modal-backdrop {
+    z-index: 1040 !important;
+}
+
+/* When backdrop is in main content */
+.main-content .modal-backdrop {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 1040 !important;
+}
+
+.modal {
+    z-index: 1050 !important;
+}
+
+/* Ensure modal dialog is properly positioned */
+.modal-dialog {
+    z-index: 1055 !important;
+    position: relative;
+}
+
+/* Fix dropdown z-index - CRITICAL */
+.dropdown-menu {
+    z-index: 1040 !important;
+}
+
+.nav-item .dropdown-menu {
+    z-index: 1050 !important;
+}
+
+.navbar .dropdown-menu {
+    z-index: 1050 !important;
+}
+
+/* Subtle dropdown hover */
+.dropdown-item {
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Enhanced navbar link effects */
+.navbar-nav .nav-link {
+    position: relative;
+    transition: background-color 0.2s ease;
+}
+
+.navbar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.navbar-nav .nav-link:hover::after,
+.navbar-nav .nav-link.active::after {
+    width: 80%;
+}
+
+/* Fix tooltip and popover z-index */
+.tooltip {
+    z-index: 1070 !important;
+}
+
+.popover {
+    z-index: 1060 !important;
+}
+
+/* Mobile navbar responsiveness */
+@media (max-width: 991.98px) {
+    .navbar-nav .nav-link {
+        margin: 0.25rem 0;
+        padding: 0.75rem 1rem;
+    }
+    
+    .admin-badge {
+        margin-left: 0.75rem;
+    }
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .page-transition-overlay {
+        display: none !important;
+    }
+}
+
+/* Focus indicators for accessibility */
+.btn:focus,
+.form-control:focus,
+.form-select:focus,
+.page-link:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .card {
+        border: 2px solid #000;
+    }
+    
+    .table tbody tr:hover {
+        background: #000;
+        color: #fff;
+    }
+    
+    .btn {
+        border: 2px solid currentColor;
+    }
+}

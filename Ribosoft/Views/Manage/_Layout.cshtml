@@ -16,21 +16,21 @@
         <!-- Tab Navigation -->
         <ul class="nav nav-tabs manage-tabs" id="manageTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")" 
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "") smooth-link" 
                    asp-action="Index" role="tab">
                     <i class="fas fa-user me-2"></i>
                     <span class="d-none d-sm-inline">Profile</span>
                 </a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "ChangePassword" ? "active" : "")" 
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "ChangePassword" ? "active" : "") smooth-link" 
                    asp-action="ChangePassword" role="tab">
                     <i class="fas fa-key me-2"></i>
                     <span class="d-none d-sm-inline">Password</span>
                 </a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "TwoFactorAuthentication" ? "active" : "")" 
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "TwoFactorAuthentication" ? "active" : "") smooth-link" 
                    asp-action="TwoFactorAuthentication" role="tab">
                     <i class="fas fa-shield-alt me-2"></i>
                     <span class="d-none d-sm-inline">Security</span>
@@ -42,7 +42,7 @@
             @if (hasExternalLogins)
             {
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "ExternalLogins" ? "active" : "")" 
+                    <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "ExternalLogins" ? "active" : "") smooth-link" 
                        asp-action="ExternalLogins" role="tab">
                         <i class="fas fa-link me-2"></i>
                         <span class="d-none d-sm-inline">External</span>
