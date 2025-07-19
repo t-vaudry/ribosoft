@@ -152,13 +152,11 @@ jobs:
         echo "Checking for native library before packing..."
         ls -la bin/Release/net8.0/runtimes/linux-x64/native/ || echo "⚠️ No native library found"
         
-        # Create package with enhanced metadata (rebuild if needed)
+        # Create package without symbols (native library package doesn't need .NET symbols)
         dotnet pack RibosoftAlgo.csproj \
           --configuration Release \
           --output ./nupkg \
           --verbosity normal \
-          -p:IncludeSymbols=true \
-          -p:SymbolPackageFormat=snupkg \
           -p:PackageReleaseNotes="Automated build from commit ${{ github.sha }}"
           
         # List created packages
@@ -182,18 +180,8 @@ jobs:
         dotnet nuget push ./nupkg/*.nupkg \
           --api-key ${{ secrets.NUGET_API_KEY }} \
           --source https://api.nuget.org/v3/index.json \
-          --skip-duplicate \
-          --no-symbols
+          --skip-duplicate
           
-        # Publish symbols package if it exists
-        if ls ./nupkg/*.snupkg 1> /dev/null 2>&1; then
-          echo "📊 Publishing symbols package..."
-          dotnet nuget push ./nupkg/*.snupkg \
-            --api-key ${{ secrets.NUGET_API_KEY }} \
-            --source https://api.nuget.org/v3/index.json \
-            --skip-duplicate
-        fi
-        
         echo "✅ Package published successfully"
         
     - name: Create GitHub release (for tags)
