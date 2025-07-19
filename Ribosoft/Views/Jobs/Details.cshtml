@@ -502,7 +502,7 @@
                 <div class="card-body p-0">
                     <!-- Filter Options (Initially Hidden) -->
                     <div id="filterOptions" class="border-bottom bg-light p-3" style="display: none;">
-                        <form method="get" asp-action="Details" asp-route-id="@Model.Job.Id">
+                        <form method="get" asp-action="Details" asp-route-id="@Model.Job.Id" class="smooth-form" data-redirect="true">
                             <input type="hidden" name="sortOrder" value="@Model.SortOrder" />
                             <input type="hidden" name="pageNumber" value="1" />
                             
@@ -536,7 +536,7 @@
                                 <button type="submit" class="btn btn-primary btn-sm">
                                     <i class="fas fa-check me-1"></i>Apply Filters
                                 </button>
-                                <a href="@Url.Action("Details", new { id = Model.Job.Id, sortOrder = Model.SortOrder, pageNumber = 1 })" class="btn btn-outline-secondary btn-sm">
+                                <a href="@Url.Action("Details", new { id = Model.Job.Id, sortOrder = Model.SortOrder, pageNumber = 1 })" class="btn btn-outline-secondary btn-sm smooth-link">
                                     <i class="fas fa-times me-1"></i>Clear Filters
                                 </a>
                                 @if (Context.Request.Query["minDesiredTemp"].Any() || Context.Request.Query["maxSpecificity"].Any() || 
@@ -570,7 +570,7 @@
                                             maxSpecificity = Context.Request.Query["maxSpecificity"],
                                             minAccessibility = Context.Request.Query["minAccessibility"],
                                             minStructure = Context.Request.Query["minStructure"]
-                                        })" class="text-decoration-none text-dark">
+                                        })" class="text-decoration-none text-dark smooth-link">
                                             Rank
                                             @if (Model.SortOrder == "rank_asc")
                                             {
@@ -595,7 +595,7 @@
                                             maxSpecificity = Context.Request.Query["maxSpecificity"],
                                             minAccessibility = Context.Request.Query["minAccessibility"],
                                             minStructure = Context.Request.Query["minStructure"]
-                                        })" class="text-decoration-none text-dark">
+                                        })" class="text-decoration-none text-dark smooth-link">
                                             Cutsite
                                             @if (Model.SortOrder == "cutsite_asc")
                                             {
@@ -620,7 +620,7 @@
                                             maxSpecificity = Context.Request.Query["maxSpecificity"],
                                             minAccessibility = Context.Request.Query["minAccessibility"],
                                             minStructure = Context.Request.Query["minStructure"]
-                                        })" class="text-decoration-none text-dark">
+                                        })" class="text-decoration-none text-dark smooth-link">
                                             Design Temp
                                             @if (Model.SortOrder == "destemp_asc")
                                             {
@@ -645,7 +645,7 @@
                                             maxSpecificity = Context.Request.Query["maxSpecificity"],
                                             minAccessibility = Context.Request.Query["minAccessibility"],
                                             minStructure = Context.Request.Query["minStructure"]
-                                        })" class="text-decoration-none text-dark">
+                                        })" class="text-decoration-none text-dark smooth-link">
                                             Specificity
                                             @if (Model.SortOrder == "spec_asc")
                                             {
@@ -670,7 +670,7 @@
                                             maxSpecificity = Context.Request.Query["maxSpecificity"],
                                             minAccessibility = Context.Request.Query["minAccessibility"],
                                             minStructure = Context.Request.Query["minStructure"]
-                                        })" class="text-decoration-none text-dark">
+                                        })" class="text-decoration-none text-dark smooth-link">
                                             Accessibility
                                             @if (Model.SortOrder == "access_asc")
                                             {
@@ -695,7 +695,7 @@
                                             maxSpecificity = Context.Request.Query["maxSpecificity"],
                                             minAccessibility = Context.Request.Query["minAccessibility"],
                                             minStructure = Context.Request.Query["minStructure"]
-                                        })" class="text-decoration-none text-dark">
+                                        })" class="text-decoration-none text-dark smooth-link">
                                             Structure
                                             @if (Model.SortOrder == "struct_asc")
                                             {
@@ -787,7 +787,7 @@
                                         @if (Model.Designs.PageNumber > 1)
                                         {
                                             <li class="page-item">
-                                                <a class="page-link" href="@Url.Action("Details", new { 
+                                                <a class="page-link smooth-link" href="@Url.Action("Details", new { 
                                                     id = Model.Job.Id, 
                                                     sortOrder = Model.SortOrder, 
                                                     pageNumber = 1,
@@ -798,7 +798,7 @@
                                                 })">First</a>
                                             </li>
                                             <li class="page-item">
-                                                <a class="page-link" href="@Url.Action("Details", new { 
+                                                <a class="page-link smooth-link" href="@Url.Action("Details", new { 
                                                     id = Model.Job.Id, 
                                                     sortOrder = Model.SortOrder, 
                                                     pageNumber = Model.Designs.PageNumber - 1,
@@ -818,7 +818,7 @@
                                         @for (int i = startPage; i <= endPage; i++)
                                         {
                                             <li class="page-item @(i == Model.Designs.PageNumber ? "active" : "")">
-                                                <a class="page-link" href="@Url.Action("Details", new { 
+                                                <a class="page-link smooth-link" href="@Url.Action("Details", new { 
                                                     id = Model.Job.Id, 
                                                     sortOrder = Model.SortOrder, 
                                                     pageNumber = i,
@@ -833,7 +833,7 @@
                                         @if (Model.Designs.PageNumber < totalPages)
                                         {
                                             <li class="page-item">
-                                                <a class="page-link" href="@Url.Action("Details", new { 
+                                                <a class="page-link smooth-link" href="@Url.Action("Details", new { 
                                                     id = Model.Job.Id, 
                                                     sortOrder = Model.SortOrder, 
                                                     pageNumber = Model.Designs.PageNumber + 1,
@@ -844,7 +844,7 @@
                                                 })">Next</a>
                                             </li>
                                             <li class="page-item">
-                                                <a class="page-link" href="@Url.Action("Details", new { 
+                                                <a class="page-link smooth-link" href="@Url.Action("Details", new { 
                                                     id = Model.Job.Id, 
                                                     sortOrder = Model.SortOrder, 
                                                     pageNumber = totalPages,
