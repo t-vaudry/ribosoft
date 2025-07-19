@@ -1853,5 +1853,119 @@
                 downloadDesign(designId, 'fasta');
             }
         });
+
+        // Delete job modal population
+        $('#deleteJobModal').on('show.bs.modal', function (event) {
+            const button = $(event.relatedTarget); // Button that triggered the modal
+            const jobId = button.data('job-id');
+            const jobName = button.data('job-name');
+            const jobCreated = button.data('job-created');
+            const jobState = button.data('job-state');
+            
+            // Update modal content
+            $('#delete-modal-job-id').text('#' + jobId);
+            $('#delete-modal-job-name').text(jobName);
+            $('#delete-modal-job-created').text(jobCreated);
+            $('#delete-modal-job-state').text(jobState);
+            
+            // Store job ID for deletion
+            $('#confirmDeleteJob').data('job-id', jobId);
+        });
+
+        // Cancel job modal population
+        $('#cancelJobModal').on('show.bs.modal', function (event) {
+            const button = $(event.relatedTarget); // Button that triggered the modal
+            const jobId = button.data('job-id');
+            const jobName = button.data('job-name');
+            const jobCreated = button.data('job-created');
+            
+            // Update modal content
+            $('#modal-job-id').text('#' + jobId);
+            $('#modal-job-name').text(jobName);
+            $('#modal-job-created').text(jobCreated);
+            
+            // Store job ID for cancellation
+            $('#confirmCancelJob').data('job-id', jobId);
+        });
+
+        // Delete job confirmation handler
+        $('#confirmDeleteJob').click(function() {
+            const jobId = $(this).data('job-id');
+            const button = $(this);
+            const buttonText = button.find('.button-text');
+            const spinner = button.find('.spinner-border');
+            
+            // Show loading state
+            button.prop('disabled', true);
+            buttonText.text('Deleting...');
+            spinner.removeClass('d-none');
+            
+            // Make AJAX request to delete job
+            $.ajax({
+                url: '/Jobs/Delete/' + jobId,
+                type: 'POST',
+                data: {
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    // Hide modal and redirect to jobs list
+                    $('#deleteJobModal').modal('hide');
+                    window.location.href = '/Jobs';
+                },
+                error: function(xhr, status, error) {
+                    // Reset button state
+                    button.prop('disabled', false);
+                    buttonText.text('Delete Job');
+                    spinner.addClass('d-none');
+                    
+                    // Show error message
+                    let errorMessage = 'Failed to delete job. Please try again.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    alert(errorMessage);
+                }
+            });
+        });
+
+        // Cancel job confirmation handler
+        $('#confirmCancelJob').click(function() {
+            const jobId = $(this).data('job-id');
+            const button = $(this);
+            const buttonText = button.find('.button-text');
+            const spinner = button.find('.spinner-border');
+            
+            // Show loading state
+            button.prop('disabled', true);
+            buttonText.text('Cancelling...');
+            spinner.removeClass('d-none');
+            
+            // Make AJAX request to cancel job
+            $.ajax({
+                url: '/Jobs/Cancel/' + jobId,
+                type: 'POST',
+                data: {
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    // Hide modal and reload page to show updated status
+                    $('#cancelJobModal').modal('hide');
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    // Reset button state
+                    button.prop('disabled', false);
+                    buttonText.text('Cancel Job');
+                    spinner.addClass('d-none');
+                    
+                    // Show error message
+                    let errorMessage = 'Failed to cancel job. Please try again.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    alert(errorMessage);
+                }
+            });
+        });
     </script>
 }
