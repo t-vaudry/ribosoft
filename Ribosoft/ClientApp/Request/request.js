@@ -1,214 +1,166 @@
-import { createApp, ref, onMounted, defineComponent } from 'vue';
 import axios from 'axios';
-import vSelect from 'vue-select';
-import 'vue-select/dist/vue-select.css';
 
-const RequestApp = defineComponent({
-  components: {
-    'v-select': vSelect
-  },
-  setup() {
-    // Reactive data
-    const options = ref([]);
-    const inVivoOptions = ref([]);
-    const inVivoSelected = ref(false);
-    const ORFExists = ref(false);
-    const cutSites = ref([]);
-    const genbankLoading = ref(false);
-    const genbankStatus = ref('');
-
-    // Initialize data from DOM
-    const initializeData = () => {
-      // Initialize ribozyme options
-      const ribozymeDataList = document.getElementById('ribozymeList');
-      if (ribozymeDataList) {
-        const ribozymeOptionsList = ribozymeDataList.children;
-        const ribozymeOptionsArr = Array.from(ribozymeOptionsList).map(option => option.value);
-        options.value = ribozymeOptionsArr;
-      }
-
-      // Initialize environment options
-      const environmentDataList = document.getElementById('environmentList');
-      if (environmentDataList) {
-        const environmentOptionsList = environmentDataList.children;
-        const vivoArr = Array.from(environmentOptionsList).map(option => option.value);
-        inVivoOptions.value = vivoArr;
-      }
-    };
-
-    // Methods
-    const expand = (title, body) => {
-      const panelTitle = document.getElementById(title);
-      const panelBody = document.getElementById(body);
-
-      if (panelTitle && panelBody) {
-        panelTitle.classList.toggle('collapsed');
-        panelBody.classList.toggle('collapse');
-      }
-    };
-
-    const ribozymeId = value => {
-      const dataList = document.getElementById('ribozymeList');
-      const hiddenInput = document.getElementById('RibozymeStructure');
-
-      if (!dataList || !hiddenInput) return;
-
-      const optionsList = dataList.children;
-
-      for (let i = 0; i < optionsList.length; i++) {
-        if (optionsList[i].value === value) {
-          hiddenInput.value = optionsList[i].getAttribute('data-value');
-          return;
-        }
-      }
-
-      if (value == null) {
-        hiddenInput.value = -1;
-      }
-    };
-
-    const vivoEnvironment = value => {
-      const dataList = document.getElementById('environmentList');
-      const hiddenInput = document.getElementById('InVivoEnvironment');
-
-      if (!dataList || !hiddenInput) return;
-
-      const optionsList = dataList.children;
-
-      for (let i = 0; i < optionsList.length; i++) {
-        if (optionsList[i].value === value) {
-          hiddenInput.value = optionsList[i].getAttribute('data-value');
-          return;
-        }
-      }
-
-      if (value == null) {
-        hiddenInput.value = -1;
-      }
-    };
-
-    const targetEnvironment = () => {
-      const targetTempField = document.getElementById('TargetTemperature');
-      const radios = document.getElementsByName('SelectedTargetEnvironment');
-
-      if (!targetTempField || !radios) return;
-
-      for (let i = 0; i < radios.length; i++) {
-        if (radios[i].checked && radios[i].value === 'InVivo') {
-          inVivoSelected.value = true;
-          targetTempField.value = 37;
-        } else if (radios[i].checked) {
-          inVivoSelected.value = false;
-          targetTempField.value = 22;
-        }
-      }
-    };
-
-    const openReadingFrame = () => {
-      const orfStart = document.getElementById('orfStart')?.value || 0;
-      const orfEnd = document.getElementById('orfEnd')?.value || 0;
-      ORFExists.value = orfEnd - orfStart > 0;
-    };
-
-    const processFASTAfile = () => {
-      const inputField = document.getElementById('inputSequence');
-      const fileInput = document.getElementById('FASTAfileInput');
-
-      if (!inputField || !fileInput || !fileInput.files[0]) return;
-
-      const file = fileInput.files[0];
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        let firstSequence = false;
-        const text = reader.result;
-        const lines = text.split('\n');
-        let output = '';
-
-        for (let i = 0; i < lines.length; i++) {
-          const line = lines[i];
-
-          // Check if line starts with > (start of a new sequence)
-          if (line.match(/^>/) && !firstSequence) {
-            firstSequence = true;
-          } else if (line.match(/^>/) && firstSequence) {
-            // Start of 2nd sequence, stop processing
-            break;
-          } else if (!line.match(/^\n/)) {
-            // Ignore blank lines
-            output += line;
-          }
-        }
-
-        inputField.value = output.replace(/T/g, 'U');
-      };
-
-      reader.readAsText(file);
-    };
-
-    const getFromGenbank = async () => {
-      const accessionField = document.getElementById('accesionNumber');
-      const sequenceInputField = document.getElementById('inputSequence');
-      const startIndexField = document.getElementById('OpenReadingFrameStart');
-      const endIndexField = document.getElementById('OpenReadingFrameEnd');
-
-      if (!accessionField?.value) {
-        return;
-      }
-
-      const seqRoute = `/Request/GetSequenceFromGenbank?accession=${accessionField.value}`;
-
-      genbankLoading.value = true;
-      genbankStatus.value = '';
-
-      try {
-        const response = await axios.get(seqRoute);
-        genbankLoading.value = false;
-
-        if (response.data.error) {
-          genbankStatus.value = response.data.error;
-        } else if (response.data.result) {
-          if (sequenceInputField) sequenceInputField.value = response.data.result.sequence;
-          if (startIndexField) startIndexField.value = response.data.result.openReadingFrameStart;
-          if (endIndexField) endIndexField.value = response.data.result.openReadingFrameEnd;
-          if (accessionField) accessionField.value = '';
-          genbankStatus.value = '';
-        } else {
-          genbankStatus.value = 'An error occurred making the request.';
-        }
-      } catch (error) {
-        genbankLoading.value = false;
-        genbankStatus.value = 'An error occurred making the request.';
-        console.error('Genbank request error:', error);
-      }
-    };
-
-    // Lifecycle
-    onMounted(() => {
-      initializeData();
-      targetEnvironment();
-    });
-
-    // Return reactive data and methods for template
-    return {
-      options,
-      inVivoOptions,
-      inVivoSelected,
-      ORFExists,
-      cutSites,
-      genbankLoading,
-      genbankStatus,
-      expand,
-      ribozymeId,
-      vivoEnvironment,
-      targetEnvironment,
-      openReadingFrame,
-      processFASTAfile,
-      getFromGenbank
-    };
+// Request functionality without Vue.js
+class RequestApp {
+  constructor() {
+    this.inVivoSelected = false;
+    this.ORFExists = false;
+    this.genbankLoading = false;
+    this.genbankStatus = '';
+    
+    this.init();
   }
-});
 
-// Create and mount the Vue 3 app
-const app = createApp(RequestApp);
-app.mount('#app');
+  init() {
+    this.bindEvents();
+    this.initializeFormState();
+  }
+
+  bindEvents() {
+    // FASTA file processing
+    const fastaInput = document.getElementById('FASTAfileInput');
+    if (fastaInput) {
+      fastaInput.addEventListener('change', (e) => this.processFASTAfile(e));
+    }
+
+    // GenBank search
+    const genbankBtn = document.getElementById('genbankSearchBtn');
+    if (genbankBtn) {
+      genbankBtn.addEventListener('click', () => this.getFromGenbank());
+    }
+
+    // ORF change handlers
+    const orfStart = document.getElementById('orfStart');
+    const orfEnd = document.getElementById('orfEnd');
+    if (orfStart) orfStart.addEventListener('change', () => this.openReadingFrame());
+    if (orfEnd) orfEnd.addEventListener('change', () => this.openReadingFrame());
+
+    // Target environment change
+    const targetEnvRadios = document.querySelectorAll('input[name="SelectedTargetEnvironment"]');
+    targetEnvRadios.forEach(radio => {
+      radio.addEventListener('change', () => this.targetEnvironment());
+    });
+  }
+
+  initializeFormState() {
+    // Initialize form state
+    this.targetEnvironment();
+    this.openReadingFrame();
+  }
+
+  targetEnvironment() {
+    const targetTempField = document.getElementById('TargetTemperature');
+    const radios = document.getElementsByName('SelectedTargetEnvironment');
+    const inVivoSettings = document.getElementById('inVivoSettings');
+
+    if (!targetTempField || !radios || !inVivoSettings) return;
+
+    for (let i = 0; i < radios.length; i++) {
+      if (radios[i].checked && radios[i].value === 'InVivo') {
+        this.inVivoSelected = true;
+        targetTempField.value = 37;
+        inVivoSettings.style.display = 'block';
+      } else if (radios[i].checked) {
+        this.inVivoSelected = false;
+        targetTempField.value = 25;
+        inVivoSettings.style.display = 'none';
+      }
+    }
+  }
+
+  openReadingFrame() {
+    const orfStartField = document.getElementById('orfStart');
+    const orfEndField = document.getElementById('orfEnd');
+    const targetRegionsCard = document.getElementById('targetRegionsCard');
+
+    if (!orfStartField || !orfEndField || !targetRegionsCard) return;
+
+    const orfStart = parseInt(orfStartField.value) || 0;
+    const orfEnd = parseInt(orfEndField.value) || 0;
+
+    this.ORFExists = orfStart > 0 && orfEnd > 0 && orfEnd > orfStart;
+    
+    if (this.ORFExists) {
+      targetRegionsCard.style.display = 'block';
+    } else {
+      targetRegionsCard.style.display = 'none';
+    }
+  }
+
+  processFASTAfile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const content = e.target.result;
+      const lines = content.split('\n');
+      let sequence = '';
+
+      // Skip header lines (starting with >)
+      for (let line of lines) {
+        if (!line.startsWith('>') && line.trim()) {
+          sequence += line.trim().toUpperCase();
+        }
+      }
+
+      const sequenceField = document.getElementById('inputSequence');
+      if (sequenceField) {
+        sequenceField.value = sequence;
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  async getFromGenbank() {
+    const accessionField = document.getElementById('accesionNumber');
+    const loadingSpan = document.getElementById('genbankLoading');
+    const statusSpan = document.getElementById('genbankStatus');
+    const genbankBtn = document.getElementById('genbankSearchBtn');
+    
+    if (!accessionField || !accessionField.value.trim()) return;
+
+    this.genbankLoading = true;
+    this.genbankStatus = '';
+    
+    // Update UI
+    if (loadingSpan) loadingSpan.style.display = 'inline';
+    if (statusSpan) statusSpan.textContent = '';
+    if (genbankBtn) genbankBtn.disabled = true;
+    if (accessionField) accessionField.disabled = true;
+
+    try {
+      const response = await axios.get(`/Request/GetSequenceFromGenbank?accession=${encodeURIComponent(accessionField.value.trim())}`);
+      
+      if (response.data && response.data.result && response.data.result.sequence) {
+        const sequenceField = document.getElementById('inputSequence');
+        if (sequenceField) {
+          sequenceField.value = response.data.result.sequence.toUpperCase();
+        }
+        this.genbankStatus = '';
+      } else {
+        this.genbankStatus = 'Sequence not found';
+      }
+    } catch (error) {
+      console.error('GenBank request failed:', error);
+      if (error.response && error.response.status === 404) {
+        this.genbankStatus = 'Sequence not found';
+      } else {
+        this.genbankStatus = 'Failed to retrieve sequence';
+      }
+    } finally {
+      this.genbankLoading = false;
+      
+      // Update UI
+      if (loadingSpan) loadingSpan.style.display = 'none';
+      if (statusSpan) statusSpan.textContent = this.genbankStatus;
+      if (genbankBtn) genbankBtn.disabled = false;
+      if (accessionField) accessionField.disabled = false;
+    }
+  }
+}
+
+// Initialize the app when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  new RequestApp();
+});

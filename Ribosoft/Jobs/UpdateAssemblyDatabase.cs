@@ -50,45 +50,39 @@ namespace Ribosoft.Jobs
             
             cancellationToken.ThrowIfCancellationRequested();
 
-            // set all current assemblies as unavailable, we'll assume they were deleted and will reset them as enabled as we discover them
-            foreach (var assembly in currentAssemblies)
+            // Set all current assemblies as unavailable initially
+            // We'll re-enable them as we discover them in the scan
+            foreach (var assembly in currentAssemblies.Values)
             {
-                assembly.Value.IsEnabled = false;
-                assembly.Value.Type = string.Empty;
-                assembly.Value.Path = string.Empty;
+                assembly.IsEnabled = false;
+                assembly.Type = string.Empty;
+                assembly.Path = string.Empty;
             }
 
             foreach (var database in availableDatabases)
             {
                 if (currentAssemblies.ContainsKey(database.TaxonomyId))
                 {
-                    // update the assembly we already have for the taxid
+                    // Update the existing assembly with the same TaxonomyId
                     var assembly = currentAssemblies[database.TaxonomyId];
+                    assembly.AccessionId = database.AccessionId;
                     assembly.AssemblyName = database.AssemblyName;
                     assembly.OrganismName = database.OrganismName;
                     assembly.SpeciesId = database.SpeciesTaxonomyId;
-                    assembly.AccessionId = database.AccessionId;
+                    assembly.Type = database.Type;
+                    assembly.Path = database.RelativePath;
                     assembly.IsEnabled = true;
-                    
-                    if (!string.IsNullOrEmpty(assembly.Type))
-                    {
-                        assembly.Type += ',';
-                        assembly.Path += ' ';
-                    }
-
-                    assembly.Type += database.Type;
-                    assembly.Path += database.RelativePath;
                 }
                 else
                 {
-                    // create a new assembly for the taxid
+                    // Create a new assembly for this TaxonomyId
                     var assembly = new Assembly
                     {
                         TaxonomyId = database.TaxonomyId,
+                        AccessionId = database.AccessionId,
                         AssemblyName = database.AssemblyName,
                         OrganismName = database.OrganismName,
                         SpeciesId = database.SpeciesTaxonomyId,
-                        AccessionId = database.AccessionId,
                         Type = database.Type,
                         Path = database.RelativePath,
                         IsEnabled = true

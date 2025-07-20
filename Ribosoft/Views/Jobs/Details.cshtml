@@ -1,4 +1,4 @@
-﻿@using Ribosoft.Extensions
+@using Ribosoft.Extensions
 @model Ribosoft.Models.JobsViewModels.JobDetailsViewModel
 
 @{
@@ -6,617 +6,1966 @@
     var shouldCancel = Model.Job.IsInProgress();
 }
 
-<h1 class="my-3">Job details</h1>
-
-<div id="app">
-    <div class="card my-3 box-shadow">
-        <div class="card-body">
-            <h5 class="card-title border-bottom border-gray pb-2">Request information</h5>
-            <dl class="row mb-0">
-                <dt class="col-md-2">
-                    @Html.DisplayNameFor(model => model.Job.Id)
-                </dt>
-                <dd class="col-md-10">
-                    @Html.DisplayFor(model => model.Job.Id)
-                </dd>
-                <dt class="col-md-2">
-                    @Html.DisplayNameFor(model => model.Job.StatusMessage)
-                </dt>
-                <dd class="col-md-10">
-                    @Html.DisplayFor(model => model.Job.StatusMessage)
-                </dd>
-                <dt class="col-md-2">
-                    @Html.DisplayNameFor(model => model.Job.Ribozyme)
-                </dt>
-                <dd class="col-md-10">
-                    @Html.DisplayFor(model => model.Job.Ribozyme.Name)
-                </dd>
-                <dt class="col-md-2">
-                    @Html.DisplayNameFor(model => model.Job.RNAInput)
-                </dt>
-                <dd class="col-md-10">
-                    <textarea class="form-control" rows="4" cols="80" readonly="readonly">@Model.Job.RNAInput</textarea>
-                </dd>
-                <dt class="col-md-4">
-                    @Html.DisplayNameFor(model => model.Job.OpenReadingFrameStart)
-                </dt>
-                <dd class="col-md-2">
-                    @Html.DisplayFor(model => model.Job.OpenReadingFrameStart)
-                </dd>
-                <dt class="col-md-4">
-                    @Html.DisplayNameFor(model => model.Job.OpenReadingFrameEnd)
-                </dt>
-                <dd class="col-md-2">
-                    @Html.DisplayFor(model => model.Job.OpenReadingFrameEnd)
-                </dd>
-                <dt class="col-md-3">
-                    @Html.DisplayNameFor(model => model.Job.FivePrime)
-                </dt>
-                <dd class="col-md-1">
-                    @Html.DisplayFor(model => model.Job.FivePrime)
-                </dd>
-                <dt class="col-md-3">
-                    @Html.DisplayNameFor(model => model.Job.OpenReadingFrame)
-                </dt>
-                <dd class="col-md-1">
-                    @Html.DisplayFor(model => model.Job.OpenReadingFrame)
-                </dd>
-                <dt class="col-md-3">
-                    @Html.DisplayNameFor(model => model.Job.ThreePrime)
-                </dt>
-                <dd class="col-md-1">
-                    @Html.DisplayFor(model => model.Job.ThreePrime)
-                </dd>
-                <dt class="col-md-2">
-                    @Html.DisplayNameFor(model => model.Job.TargetEnvironment)
-                </dt>
-                <dd class="col-md-10">
-                    @Html.DisplayFor(model => model.Job.TargetEnvironment)
-                </dd>
-                @if (Model.Job.TargetEnvironment == TargetEnvironment.InVivo && Model.Job.AssemblyId.HasValue)
-                {
-                    <dt class="col-md-2">
-                        @Html.DisplayNameFor(model => model.Job.Assembly)
-                    </dt>
-                    <dd class="col-md-10">
-                        @Html.DisplayFor(model => model.Job.Assembly.OrganismName)
-                        (taxonomy <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=@(Model.Job.Assembly.TaxonomyId)">@Html.DisplayFor(model => model.Job.Assembly.TaxonomyId)</a>,
-                        species <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=@(Model.Job.Assembly.SpeciesId)">@Html.DisplayFor(model => model.Job.Assembly.SpeciesId)</a>)
-                        using assembly <a href="https://www.ncbi.nlm.nih.gov/assembly/@(Model.Job.Assembly.AccessionId)">@Html.DisplayFor(model => model.Job.Assembly.AssemblyName)</a>
-                    </dd>
-                    <dt class="col-md-2">
-                        @Html.DisplayNameFor(model => model.Job.SpecificityMethod)
-                    </dt>
-                    <dd class="col-md-10">
-                        @Html.DisplayFor(model => model.Job.SpecificityMethod)
-                    </dd>
-                }
-                <dt class="col-md-2">
-                    @Html.DisplayNameFor(model => model.Job.TargetTemperature)
-                </dt>
-                <dd class="col-md-10">
-                    @Html.DisplayFor(model => model.Job.TargetTemperature)
-                </dd>
-                <dt class="col-md-2">
-                    @Html.DisplayNameFor(model => model.Job.Temperature)
-                </dt>
-                <dd class="col-md-10">
-                    @Html.DisplayFor(model => model.Job.Temperature)
-                </dd>
-                <dt class="col-md-2">
-                    @Html.DisplayNameFor(model => model.Job.Na)
-                </dt>
-                <dd class="col-md-10">
-                    @Html.DisplayFor(model => model.Job.Na)
-                </dd>
-                <dt class="col-md-2">
-                    @Html.DisplayNameFor(model => model.Job.Probe)
-                </dt>
-                <dd class="col-md-10">
-                    @Html.DisplayFor(model => model.Job.Probe)
-                </dd>
-                <dt class="col-md-2">
-                    @Html.DisplayNameFor(model => model.Job.CreatedAt)
-                </dt>
-                <dd class="col-md-10">
-                    @Html.DisplayFor(model => model.Job.CreatedAt)
-                </dd>
-            </dl>
-        </div>
-    </div>
-
-    <div class="card my-3 box-shadow">
-        <div class="card-body">
-            <label class="showMore card-title border-bottom border-gray pb-2" for="advancedSettings">Advanced settings</label>
-            <input id="advancedSettings" type="checkbox">
-            <div>
-                <dl class="row mb-0">
-                    <dt class="col-md-4">
-                        @Html.DisplayNameFor(model => model.Job.DesiredTempTolerance)
-                    </dt>
-                    <dd class="col-md-8">
-                        @Html.DisplayFor(model => model.Job.DesiredTempTolerance)
-                    </dd>
-                    <dt class="col-md-4">
-                        @Html.DisplayNameFor(model => model.Job.SpecificityTolerance)
-                    </dt>
-                    <dd class="col-md-8">
-                        @Html.DisplayFor(model => model.Job.SpecificityTolerance)
-                    </dd>
-                    <dt class="col-md-4">
-                        @Html.DisplayNameFor(model => model.Job.AccessibilityTolerance)
-                    </dt>
-                    <dd class="col-md-8">
-                        @Html.DisplayFor(model => model.Job.AccessibilityTolerance)
-                    </dd>
-                    <dt class="col-md-4">
-                        @Html.DisplayNameFor(model => model.Job.StructureTolerance)
-                    </dt>
-                    <dd class="col-md-8">
-                        @Html.DisplayFor(model => model.Job.StructureTolerance)
-                    </dd>
-                </dl>
+<div class="container-fluid px-3 px-md-4">
+    <div class="job-details-content">
+        <!-- Page Header -->
+        <div class="page-header mb-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-clipboard-list me-2 text-primary"></i>Job Details
+                    </h1>
+                    <p class="text-muted mb-0">Detailed information and results for job #@Model.Job.Id</p>
+                </div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Home" asp-action="Index" class="text-decoration-none">
+                                <i class="fas fa-home me-1"></i>Home
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Jobs" asp-action="Index" class="text-decoration-none">Jobs</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Details</li>
+                    </ol>
+                </nav>
             </div>
         </div>
-    </div>
 
-    <div class="card my-3 box-shadow">
-        <div class="card-body">
-            <h5 class="card-title">Progress</h5>
-            <div class="progress" style="height: 30px;">
-                @if (Model.Job.JobState == JobState.New || Model.Job.JobState == JobState.Started)
-                {
-                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>
-                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
-                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
-                }
-                else if (Model.Job.JobState == JobState.CandidateGenerator)
-                {
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>
-                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
-                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
-                }
-                else if (Model.Job.JobState == JobState.QueuedPhase2)
-                {
-                    <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>
-                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
-                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
-                }
-                else if (Model.Job.JobState == JobState.Specificity)
-                {
-                    <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 34%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
-                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
-                }
-                else if (Model.Job.JobState == JobState.QueuedPhase3)
-                {
-                    <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>
-                    <div class="progress-bar bg-success" role="progressbar" style="width: 34%" aria-valuenow="34" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
-                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
-                }
-                else if (Model.Job.JobState == JobState.MultiObjectiveOptimization)
-                {
-                    <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="33">Generating candidates</div>
-                    <div class="progress-bar bg-success" role="progressbar" style="width: 34%" aria-valuenow="34" aria-valuemin="0" aria-valuemax="34">Evaluating specificity</div>
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 33%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="33">Ranking</div>
-                }
-                else if (Model.Job.JobState == JobState.Warning)
-                {
-                    <div class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Warning</div>
-                }
-                else if (Model.Job.JobState == JobState.Errored)
-                {
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Errored</div>
-                }
-                else if (Model.Job.JobState == JobState.Completed)
-                {
-                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Completed</div>
-                }
+        <!-- Job Status and Progress Row -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-info-circle text-primary me-2"></i>
+                            <h5 class="card-title mb-0">Request Information</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.Id)</label>
+                                    <div class="fw-bold">#@Html.DisplayFor(model => model.Job.Id)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <label class="form-label text-muted small">Status</label>
+                                    <div>@await Html.PartialAsync("JobStateBadge", Model.Job.JobState)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.Ribozyme)</label>
+                                    <div class="fw-bold">@(Model.Job.Ribozyme?.Name ?? "Unknown")</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.CreatedAt)</label>
+                                    <div>@Model.Job.CreatedAt</div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="info-item">
+                                    <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.StatusMessage)</label>
+                                    @if (!string.IsNullOrEmpty(Model.Job.StatusMessage))
+                                    {
+                                        <div class="alert alert-info mb-0">
+                                            <i class="fas fa-info-circle me-2"></i>@Html.DisplayFor(model => model.Job.StatusMessage)
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="alert alert-secondary mb-0">
+                                            <i class="fas fa-info-circle me-2"></i>No status message available
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="card my-3 box-shadow">
-        <div class="card-body">
-            <div class="clearfix">
-                <h5 class="card-title float-md-left">Designs</h5>
-                <div class="float-md-right mb-2" id="showFilterOptions">
-                    <button class="btn btn-sm btn-primary" v-on:click="refineResults" id="refineResults"><i class="fas fa-filter"></i> Refine Results</button>
-                </div>
-                <div class="float-md-right mb-2">
-                    <b-dropdown id="ddown-right" size="sm" right variant="primary">
-                        <template slot="button-content">
-                            <i class="fas fa-download"></i> Download
-                        </template>
-                        <input type="button" id="zipAll" class="dropdown-item" role="menuitem" value="Download all to .zip" />
-                        <input type="button" id="fastaAll" class="dropdown-item" role="menuitem" value="Download all to .fasta" />
-                        <input type="button" id="csvAll" class="dropdown-item" role="menuitem" value="Download all to .csv" />
-                        <b-dropdown-divider></b-dropdown-divider>
-                        <input type="button" id="zip" class="dropdown-item disabled" role="menuitem" value="Download selected to .zip" />
-                        <input type="button" id="fasta" class="dropdown-item disabled" role="menuitem" value="Download selected to .fasta" />
-                        <input type="button" id="csv" class="dropdown-item disabled" role="menuitem" value="Download selected to .csv" />
-                    </b-dropdown>
-                </div>
-                <div class="float-md-right mb-2">
-                    <button class="btn btn-sm btn-primary" id="infoPopup" data-toggle="modal" data-target="#infoModal"><i class="fas fa-info-circle"></i> Information</button>
-                </div>
-
-                <div class="table-responsive mb-2">
-                    <div id="filterOptions" class="mb-2"></div>
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <!-- Removing Rank -->
-                                @*<th>
-                                    <div class="d-flex align-items-center sortable">
-                                        @Html.DisplayNameFor(model => model.Designs.Data.First().Rank)
-                                        <i id="ranksort" class="fas fa-sort"></i>
-                                    </div>
-                                </th>*@
-                                <th>
-                                    <div class="d-flex align-items-center">
-                                        @Html.DisplayNameFor(model => model.Designs.Data.First().Sequence)
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="d-flex align-items-center sortable">
-                                        @Html.DisplayNameFor(model => model.Designs.Data.First().CutsiteIndex)
-                                        <i id="cutsitesort" class="fas fa-sort"></i>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="d-flex align-items-center sortable">
-                                        @Html.DisplayNameFor(model => model.Designs.Data.First().DesiredTemperatureScore)
-                                        <i id="destempsort" class="fas fa-sort"></i>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="d-flex align-items-center sortable">
-                                        @Html.DisplayNameFor(model => model.Designs.Data.First().SpecificityScore)
-                                        <i id="specsort" class="fas fa-sort"></i>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="d-flex align-items-center sortable">
-                                        @Html.DisplayNameFor(model => model.Designs.Data.First().AccessibilityScore)
-                                        <i id="accesssort" class="fas fa-sort"></i>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="d-flex align-items-center sortable">
-                                        @Html.DisplayNameFor(model => model.Designs.Data.First().StructureScore)
-                                        <i id="structsort" class="fas fa-sort"></i>
-                                    </div>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.Designs.Data)
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-line text-success me-2"></i>Progress
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="progress mb-3" style="height: 8px;">
+                            @if (Model.Job.JobState == JobState.New || Model.Job.JobState == JobState.Started)
                             {
-                                <tr id="@item.JobId-@item.Id" class="clickable-row">
-                                    <!-- Removing Rank -->
-                                    @*<td>
-                                        @Html.DisplayFor(modelItem => item.Rank)
-                                    </td>*@
-                                    <td>
-                                        <code style="word-break: break-all;">@Html.DisplayFor(modelItem => item.Sequence)</code>
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.CutsiteIndex)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.DesiredTemperatureScore)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.SpecificityScore)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.AccessibilityScore)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.StructureScore)
-                                    </td>
-                                </tr>
+                                <div class="progress-bar bg-secondary" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
                             }
-                        </tbody>
-                    </table>
-                </div>
+                            else if (Model.Job.JobState == JobState.CandidateGenerator)
+                            {
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
+                            }
+                            else if (Model.Job.JobState == JobState.QueuedPhase2)
+                            {
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
+                            }
+                            else if (Model.Job.JobState == JobState.Specificity)
+                            {
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" style="width: 34%" aria-valuenow="34" aria-valuemin="0" aria-valuemax="100"></div>
+                            }
+                            else if (Model.Job.JobState == JobState.QueuedPhase3)
+                            {
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 67%" aria-valuenow="67" aria-valuemin="0" aria-valuemax="100"></div>
+                            }
+                            else if (Model.Job.JobState == JobState.MultiObjectiveOptimization)
+                            {
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 67%" aria-valuenow="67" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
+                            }
+                            else if (Model.Job.JobState == JobState.Completed)
+                            {
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            }
+                            else
+                            {
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            }
+                        </div>
+                        
+                        <div class="progress-steps">
+                            <div class="step @(Model.Job.JobState >= JobState.CandidateGenerator ? "completed" : "")">
+                                <i class="fas fa-cogs"></i>
+                                <span>Generating</span>
+                            </div>
+                            <div class="step @(Model.Job.JobState >= JobState.Specificity ? "completed" : "")">
+                                <i class="fas fa-search"></i>
+                                <span>Evaluating</span>
+                            </div>
+                            <div class="step @(Model.Job.JobState >= JobState.MultiObjectiveOptimization ? "completed" : "")">
+                                <i class="fas fa-sort-amount-down"></i>
+                                <span>Ranking</span>
+                            </div>
+                        </div>
 
-                <cs-pager cs-paging-pagesize="@Model.Designs.PageSize"
-                          cs-paging-pagenumber="@Model.Designs.PageNumber"
-                          cs-paging-totalitems="@Model.Designs.TotalItems"
-                          asp-action="Details"
-                          asp-controller="Jobs"
-                          asp-route-id="@Model.Job.Id"
-                          asp-route-sortOrder="@Model.SortOrder"
-                          cs-pagenumber-param="pageNumber"
-                          cs-pager-ul-class="pagination mb-0"
-                          cs-pager-li-current-class="page-item active"
-                          cs-pager-li-other-class="page-item"
-                          cs-pager-li-non-active-class="page-item disabled"
-                          cs-pager-link-current-class="page-link"
-                          cs-pager-link-other-class="page-link"></cs-pager>
+                        @if (shouldCancel)
+                        {
+                            <div class="mt-3">
+                                <button type="button" class="btn btn-outline-danger w-100"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#cancelJobModal"
+                                        data-job-id="@Model.Job.Id"
+                                        data-job-name="@(Model.Job.Ribozyme?.Name ?? "Unknown")"
+                                        data-job-created="@Model.Job.CreatedAt">
+                                    <i class="fas fa-stop me-2"></i>Cancel Job
+                                </button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="mt-3">
+                                <button type="button" class="btn btn-outline-danger w-100"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#deleteJobModal"
+                                        data-job-id="@Model.Job.Id"
+                                        data-job-name="@(Model.Job.Ribozyme?.Name ?? "Unknown")"
+                                        data-job-created="@Model.Job.CreatedAt"
+                                        data-job-state="@Model.Job.JobState">
+                                    <i class="fas fa-trash me-2"></i>Delete Job
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+        <!-- RNA Input Sequence Card -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="card-title mb-1">
+                    <i class="fas fa-dna text-info me-2"></i>@Html.DisplayNameFor(model => model.Job.RNAInput)
+                </h5>
+                <small class="text-muted">Input RNA sequence for ribozyme design</small>
+            </div>
+            <div class="card-body">
+                <div class="sequence-container">
+                    <textarea class="form-control sequence-textarea" rows="6" readonly>@Model.Job.RNAInput</textarea>
+                    <div class="sequence-info mt-2">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Length: @Model.Job.RNAInput.Length nucleotides
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div class="clearfix">
-        <a asp-action="Index" class="btn btn-primary float-sm-left"><i class="fas fa-arrow-left ml-1"></i> Back to jobs</a>
+        <!-- Design Parameters Card -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="card-title mb-1">
+                            <i class="fas fa-sliders-h text-primary me-2"></i>Design Parameters
+                        </h5>
+                        <small class="text-muted">Configuration parameters used for ribozyme design</small>
+                    </div>
+                    <span class="badge bg-primary">
+                        <i class="fas fa-dna me-1"></i>@(Model.Job.Ribozyme?.Name ?? "Unknown")
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <!-- Target Region -->
+                    <div class="col-md-6">
+                        <div class="param-group">
+                            <h6 class="param-group-title">
+                                <i class="fas fa-crosshairs text-primary me-2"></i>Target Region
+                            </h6>
+                            <div class="row g-2">
+                                <div class="col-sm-6">
+                                    <div class="param-item">
+                                        <label class="param-label">@Html.DisplayNameFor(model => model.Job.OpenReadingFrameStart)</label>
+                                        <div class="param-value">@Html.DisplayFor(model => model.Job.OpenReadingFrameStart)</div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="param-item">
+                                        <label class="param-label">@Html.DisplayNameFor(model => model.Job.OpenReadingFrameEnd)</label>
+                                        <div class="param-value">@Html.DisplayFor(model => model.Job.OpenReadingFrameEnd)</div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="param-item">
+                                        <label class="param-label">@Html.DisplayNameFor(model => model.Job.TargetTemperature)</label>
+                                        <div class="param-value">@Html.DisplayFor(model => model.Job.TargetTemperature)°C</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        @if (Model.Job.JobState == JobState.New || Model.Job.JobState == JobState.Started)
+                    <!-- Target Regions Selection -->
+                    <div class="col-md-6">
+                        <div class="param-group">
+                            <h6 class="param-group-title">
+                                <i class="fas fa-map-marker-alt text-info me-2"></i>Target Regions
+                            </h6>
+                            <div class="row g-2">
+                                <div class="col-sm-4">
+                                    <div class="param-item">
+                                        <label class="param-label">@Html.DisplayNameFor(model => model.Job.FivePrime)</label>
+                                        <div class="param-value">
+                                            @if (Model.Job.FivePrime)
+                                            {
+                                                <span class="badge bg-success"><i class="fas fa-check me-1"></i>Yes</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary"><i class="fas fa-times me-1"></i>No</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="param-item">
+                                        <label class="param-label">@Html.DisplayNameFor(model => model.Job.OpenReadingFrame)</label>
+                                        <div class="param-value">
+                                            @if (Model.Job.OpenReadingFrame)
+                                            {
+                                                <span class="badge bg-success"><i class="fas fa-check me-1"></i>Yes</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary"><i class="fas fa-times me-1"></i>No</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="param-item">
+                                        <label class="param-label">@Html.DisplayNameFor(model => model.Job.ThreePrime)</label>
+                                        <div class="param-value">
+                                            @if (Model.Job.ThreePrime)
+                                            {
+                                                <span class="badge bg-success"><i class="fas fa-check me-1"></i>Yes</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary"><i class="fas fa-times me-1"></i>No</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Environment & Chemical -->
+                    <div class="col-md-6">
+                        <div class="param-group">
+                            <h6 class="param-group-title">
+                                <i class="fas fa-flask text-secondary me-2"></i>Environment
+                            </h6>
+                            <div class="row g-2">
+                                <div class="col-sm-6">
+                                    <div class="param-item">
+                                        <label class="param-label">@Html.DisplayNameFor(model => model.Job.TargetEnvironment)</label>
+                                        <div class="param-value">
+                                            <span class="badge bg-info">@Html.DisplayFor(model => model.Job.TargetEnvironment)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="param-item">
+                                        <label class="param-label">@Html.DisplayNameFor(model => model.Job.Temperature)</label>
+                                        <div class="param-value">@Html.DisplayFor(model => model.Job.Temperature)°C</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chemical Parameters -->
+                    <div class="col-md-6">
+                        <div class="param-group">
+                            <h6 class="param-group-title">
+                                <i class="fas fa-vial text-purple me-2"></i>Chemical
+                            </h6>
+                            <div class="row g-2">
+                                <div class="col-sm-6">
+                                    <div class="param-item">
+                                        <label class="param-label">@Html.DisplayNameFor(model => model.Job.Na)</label>
+                                        <div class="param-value">@Html.DisplayFor(model => model.Job.Na)</div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="param-item">
+                                        <label class="param-label">@Html.DisplayNameFor(model => model.Job.Probe)</label>
+                                        <div class="param-value">@Html.DisplayFor(model => model.Job.Probe)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (Model.Job.TargetEnvironment == TargetEnvironment.InVivo && Model.Job.AssemblyId.HasValue)
+                    {
+                        <!-- Assembly Information -->
+                        <div class="col-12">
+                            <div class="param-group">
+                                <h6 class="param-group-title">
+                                    <i class="fas fa-dna text-success me-2"></i>Assembly Information
+                                </h6>
+                                <div class="assembly-info bg-light p-3 rounded">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <h6 class="mb-0">@(Model.Job.Assembly?.OrganismName ?? "Unknown")</h6>
+                                        <span class="badge bg-success">@(Model.Job.Assembly?.Type ?? "Unknown")</span>
+                                    </div>
+                                    <div class="row g-2 small text-muted">
+                                        <div class="col-md-3">
+                                            <strong>Taxonomy:</strong> 
+                                            @if (Model.Job.Assembly?.TaxonomyId != null)
+                                            {
+                                                <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=@(Model.Job.Assembly.TaxonomyId)" target="_blank" class="text-decoration-none">
+                                                    @Model.Job.Assembly.TaxonomyId <i class="fas fa-external-link-alt"></i>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span>Unknown</span>
+                                            }
+                                        </div>
+                                        <div class="col-md-3">
+                                            <strong>Species:</strong> 
+                                            @if (Model.Job.Assembly?.SpeciesId != null)
+                                            {
+                                                <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=@(Model.Job.Assembly.SpeciesId)" target="_blank" class="text-decoration-none">
+                                                    @Model.Job.Assembly.SpeciesId <i class="fas fa-external-link-alt"></i>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span>Unknown</span>
+                                            }
+                                        </div>
+                                        <div class="col-md-3">
+                                            <strong>Accession:</strong> @(Model.Job.Assembly?.AccessionId ?? "Unknown")
+                                        </div>
+                                        <div class="col-md-3">
+                                            <strong>Method:</strong> 
+                                            <span class="badge bg-primary">@Html.DisplayFor(model => model.Job.SpecificityMethod)</span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <strong>Assembly:</strong> 
+                                        @if (Model.Job.Assembly?.AccessionId != null && Model.Job.Assembly?.AssemblyName != null)
+                                        {
+                                            <a href="https://www.ncbi.nlm.nih.gov/assembly/@(Model.Job.Assembly.AccessionId)" target="_blank" class="text-decoration-none">
+                                                @Model.Job.Assembly.AssemblyName <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span>Unknown</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Settings Card -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom">
+                <div class="d-flex align-items-center">
+                    <input type="checkbox" class="form-check-input me-2" id="advancedSettingsToggle">
+                    <label class="form-check-label" for="advancedSettingsToggle">
+                        <h5 class="card-title mb-1">
+                            <i class="fas fa-cog text-secondary me-2"></i>Advanced Settings
+                        </h5>
+                    </label>
+                </div>
+                <small class="text-muted">Click to show/hide advanced configuration parameters</small>
+            </div>
+            <div class="card-body advanced-settings-content" style="display: none;">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="parameter-item">
+                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.DesiredTempTolerance)</label>
+                            <div class="parameter-value">@Html.DisplayFor(model => model.Job.DesiredTempTolerance)</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="parameter-item">
+                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.SpecificityTolerance)</label>
+                            <div class="parameter-value">@Html.DisplayFor(model => model.Job.SpecificityTolerance)</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="parameter-item">
+                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.AccessibilityTolerance)</label>
+                            <div class="parameter-value">@Html.DisplayFor(model => model.Job.AccessibilityTolerance)</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="parameter-item">
+                            <label class="form-label text-muted small">@Html.DisplayNameFor(model => model.Job.StructureTolerance)</label>
+                            <div class="parameter-value">@Html.DisplayFor(model => model.Job.StructureTolerance)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.Job.JobState == JobState.Completed && Model.Designs.Data.Any())
         {
-            <a asp-action="Delete" asp-route-id="@Model.Job.Id" class="btn btn-danger float-sm-right">Cancel <i class="fas fa-trash ml-1"></i></a>
+            <!-- Results Section -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-chart-bar text-success me-2"></i>
+                            <h5 class="card-title mb-0">Design Results</h5>
+                        </div>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-primary btn-sm @(Context.Request.Query["minDesiredTemp"].Any() || Context.Request.Query["maxSpecificity"].Any() || Context.Request.Query["minAccessibility"].Any() || Context.Request.Query["minStructure"].Any() ? "active" : "")" onclick="refineResults()">
+                                <i class="fas fa-filter me-1"></i>Filter Results
+                                @if (Context.Request.Query["minDesiredTemp"].Any() || Context.Request.Query["maxSpecificity"].Any() || 
+                                     Context.Request.Query["minAccessibility"].Any() || Context.Request.Query["minStructure"].Any())
+                                {
+                                    <span class="badge bg-white text-primary ms-1">ON</span>
+                                }
+                            </button>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-success btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="fas fa-download me-1"></i>Export Selected
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" onclick="clickFuncAll('csv')"><i class="fas fa-file-csv me-2"></i>CSV Format</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="clickFuncAll('fasta')"><i class="fas fa-file-alt me-2"></i>FASTA Format</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="clickFuncAll('zip')"><i class="fas fa-file-archive me-2"></i>ZIP Archive</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-muted">@Model.Designs.TotalItems ribozyme designs generated</small>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <!-- Filter Options (Initially Hidden) -->
+                    <div id="filterOptions" class="border-bottom bg-light p-3" style="display: none;">
+                        <form id="filterForm" class="ajax-form">
+                            <input type="hidden" name="id" value="@Model.Job.Id" />
+                            <input type="hidden" name="sortOrder" value="@Model.SortOrder" />
+                            <input type="hidden" name="pageNumber" value="1" />
+                            
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Min Desired Temp Score</label>
+                                    <input type="number" class="form-control form-control-sm" name="minDesiredTemp" 
+                                           step="0.01" placeholder="e.g., 0.5" 
+                                           value="@Context.Request.Query["minDesiredTemp"]">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Max Specificity Score</label>
+                                    <input type="number" class="form-control form-control-sm" name="maxSpecificity" 
+                                           step="0.01" placeholder="e.g., 1.0"
+                                           value="@Context.Request.Query["maxSpecificity"]">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Min Accessibility Score</label>
+                                    <input type="number" class="form-control form-control-sm" name="minAccessibility" 
+                                           step="0.01" placeholder="e.g., 0.3"
+                                           value="@Context.Request.Query["minAccessibility"]">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold">Min Structure Score</label>
+                                    <input type="number" class="form-control form-control-sm" name="minStructure" 
+                                           step="0.01" placeholder="e.g., 0.4"
+                                           value="@Context.Request.Query["minStructure"]">
+                                </div>
+                            </div>
+                            <div class="mt-3 d-flex gap-2 align-items-center">
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-check me-1"></i>Apply Filters
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearFilters()">
+                                    <i class="fas fa-times me-1"></i>Clear Filters
+                                </button>
+                                @if (Context.Request.Query["minDesiredTemp"].Any() || Context.Request.Query["maxSpecificity"].Any() || 
+                                     Context.Request.Query["minAccessibility"].Any() || Context.Request.Query["minStructure"].Any())
+                                {
+                                    <div class="ms-auto">
+                                        <small class="text-success">
+                                            <i class="fas fa-filter me-1"></i>
+                                            Filters active - showing @Model.Designs.TotalItems of @Model.Designs.TotalItems results
+                                        </small>
+                                    </div>
+                                }
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- AJAX Content Container -->
+                    <div id="designsContainer" class="position-relative">
+                        <!-- Loading Overlay -->
+                        <div id="tableLoadingOverlay" class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75 d-none" style="z-index: 10;">
+                            <div class="text-center">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <div class="mt-2 text-muted small">Updating results...</div>
+                            </div>
+                        </div>
+
+                        <!-- Results Table -->
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0" id="designsTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col" class="ps-3" style="width: 50px;">
+                                            <input type="checkbox" class="form-check-input" id="selectAll">
+                                        </th>
+                                        <th scope="col" style="width: 80px;">
+                                        <a href="#" class="text-decoration-none text-dark ajax-sort" data-sort="@ViewBag.RankSortParm">
+                                            Rank
+                                            @if (Model.SortOrder == "rank_asc")
+                                            {
+                                                <i class="fas fa-sort-up ms-1"></i>
+                                            }
+                                            else if (Model.SortOrder == "rank_desc")
+                                            {
+                                                <i class="fas fa-sort-down ms-1"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-sort ms-1 text-muted"></i>
+                                            }
+                                        </a>
+                                    </th>
+                                    <th scope="col" style="width: 100px;">
+                                        <a href="#" class="text-decoration-none text-dark ajax-sort" data-sort="@ViewBag.CutsiteSortParm">
+                                            Cutsite
+                                            @if (Model.SortOrder == "cutsite_asc")
+                                            {
+                                                <i class="fas fa-sort-up ms-1"></i>
+                                            }
+                                            else if (Model.SortOrder == "cutsite_desc")
+                                            {
+                                                <i class="fas fa-sort-down ms-1"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-sort ms-1 text-muted"></i>
+                                            }
+                                        </a>
+                                    </th>
+                                    <th scope="col">
+                                        <a href="#" class="text-decoration-none text-dark ajax-sort" data-sort="@ViewBag.DesTempSortParm">
+                                            Design Temp
+                                            @if (Model.SortOrder == "destemp_asc")
+                                            {
+                                                <i class="fas fa-sort-up ms-1"></i>
+                                            }
+                                            else if (Model.SortOrder == "destemp_desc")
+                                            {
+                                                <i class="fas fa-sort-down ms-1"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-sort ms-1 text-muted"></i>
+                                            }
+                                        </a>
+                                    </th>
+                                    <th scope="col">
+                                        <a href="#" class="text-decoration-none text-dark ajax-sort" data-sort="@ViewBag.SpecSortParm">
+                                            Specificity
+                                            @if (Model.SortOrder == "spec_asc")
+                                            {
+                                                <i class="fas fa-sort-up ms-1"></i>
+                                            }
+                                            else if (Model.SortOrder == "spec_desc")
+                                            {
+                                                <i class="fas fa-sort-down ms-1"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-sort ms-1 text-muted"></i>
+                                            }
+                                        </a>
+                                    </th>
+                                    <th scope="col">
+                                        <a href="#" class="text-decoration-none text-dark ajax-sort" data-sort="@ViewBag.AccessSortParm">
+                                            Accessibility
+                                            @if (Model.SortOrder == "access_asc")
+                                            {
+                                                <i class="fas fa-sort-up ms-1"></i>
+                                            }
+                                            else if (Model.SortOrder == "access_desc")
+                                            {
+                                                <i class="fas fa-sort-down ms-1"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-sort ms-1 text-muted"></i>
+                                            }
+                                        </a>
+                                    </th>
+                                    <th scope="col">
+                                        <a href="#" class="text-decoration-none text-dark ajax-sort" data-sort="@ViewBag.StructSortParm">
+                                            Structure
+                                            @if (Model.SortOrder == "struct_asc")
+                                            {
+                                                <i class="fas fa-sort-up ms-1"></i>
+                                            }
+                                            else if (Model.SortOrder == "struct_desc")
+                                            {
+                                                <i class="fas fa-sort-down ms-1"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-sort ms-1 text-muted"></i>
+                                            }
+                                        </a>
+                                    </th>
+                                    <th scope="col" style="width: 140px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var design in Model.Designs.Data)
+                                {
+                                    <tr class="design-row" data-design-id="@design.Id">
+                                        <td class="ps-3">
+                                            <input type="checkbox" class="form-check-input design-checkbox" value="@design.Id">
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-primary">@design.Rank</span>
+                                        </td>
+                                        <td>
+                                            <code class="small">@design.CutsiteIndex</code>
+                                        </td>
+                                        <td>
+                                            <span class="fw-bold">@(design.DesiredTemperatureScore?.ToString("F3") ?? "N/A")</span>
+                                        </td>
+                                        <td>
+                                            <span class="fw-bold">@(design.SpecificityScore?.ToString("F3") ?? "N/A")</span>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 20px;">
+                                                <div class="progress-bar bg-info" role="progressbar" 
+                                                     style="width: @((design.AccessibilityScore ?? 0) * 100)%" 
+                                                     aria-valuenow="@((design.AccessibilityScore ?? 0) * 100)" 
+                                                     aria-valuemin="0" aria-valuemax="100">
+                                                    <small class="text-white">@(design.AccessibilityScore?.ToString("F3") ?? "N/A")</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 20px;">
+                                                <div class="progress-bar bg-warning" role="progressbar" 
+                                                     style="width: @((design.StructureScore ?? 0) * 100)%" 
+                                                     aria-valuenow="@((design.StructureScore ?? 0) * 100)" 
+                                                     aria-valuemin="0" aria-valuemax="100">
+                                                    <small class="text-dark">@(design.StructureScore?.ToString("F3") ?? "N/A")</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <button type="button" class="btn btn-outline-primary" onclick="viewDesignDetails(@design.Id)">
+                                                    <i class="fas fa-eye me-1"></i>View
+                                                </button>
+                                                <button type="button" class="btn btn-outline-success" onclick="downloadDesign(@design.Id, 'fasta')">
+                                                    <i class="fas fa-download me-1"></i>FASTA
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    @if (Model.Designs.TotalItems > Model.Designs.PageSize)
+                    {
+                        var totalPages = (int)Math.Ceiling((double)Model.Designs.TotalItems / Model.Designs.PageSize);
+                        <div class="card-footer bg-white border-top">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <small class="text-muted">
+                                        Showing @((Model.Designs.PageNumber - 1) * Model.Designs.PageSize + 1) to 
+                                        @(Math.Min(Model.Designs.PageNumber * Model.Designs.PageSize, (int)Model.Designs.TotalItems)) 
+                                        of @Model.Designs.TotalItems designs
+                                    </small>
+                                </div>
+                                <nav aria-label="Design results pagination">
+                                    <ul class="pagination pagination-sm mb-0">
+                                        @if (Model.Designs.PageNumber > 1)
+                                        {
+                                            <li class="page-item">
+                                                <a class="page-link smooth-link" href="@Url.Action("Details", new { 
+                                                    id = Model.Job.Id, 
+                                                    sortOrder = Model.SortOrder, 
+                                                    pageNumber = 1,
+                                                    minDesiredTemp = Context.Request.Query["minDesiredTemp"],
+                                                    maxSpecificity = Context.Request.Query["maxSpecificity"],
+                                                    minAccessibility = Context.Request.Query["minAccessibility"],
+                                                    minStructure = Context.Request.Query["minStructure"]
+                                                })">First</a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link ajax-page" href="#" data-page="@(Model.Designs.PageNumber - 1)">Previous</a>
+                                            </li>
+                                        }
+                                        
+                                        @{
+                                            int startPage = Math.Max(1, (int)Model.Designs.PageNumber - 2);
+                                            int endPage = Math.Min(totalPages, (int)Model.Designs.PageNumber + 2);
+                                        }
+                                        
+                                        @for (int i = startPage; i <= endPage; i++)
+                                        {
+                                            <li class="page-item @(i == Model.Designs.PageNumber ? "active" : "")">
+                                                <a class="page-link smooth-link" href="@Url.Action("Details", new { 
+                                                    id = Model.Job.Id, 
+                                                    sortOrder = Model.SortOrder, 
+                                                    pageNumber = i,
+                                                    minDesiredTemp = Context.Request.Query["minDesiredTemp"],
+                                                    maxSpecificity = Context.Request.Query["maxSpecificity"],
+                                                    minAccessibility = Context.Request.Query["minAccessibility"],
+                                                    minStructure = Context.Request.Query["minStructure"]
+                                                })">@i</a>
+                                            </li>
+                                        }
+                                        
+                                        @if (Model.Designs.PageNumber < totalPages)
+                                        {
+                                            <li class="page-item">
+                                                <a class="page-link smooth-link" href="@Url.Action("Details", new { 
+                                                    id = Model.Job.Id, 
+                                                    sortOrder = Model.SortOrder, 
+                                                    pageNumber = Model.Designs.PageNumber + 1,
+                                                    minDesiredTemp = Context.Request.Query["minDesiredTemp"],
+                                                    maxSpecificity = Context.Request.Query["maxSpecificity"],
+                                                    minAccessibility = Context.Request.Query["minAccessibility"],
+                                                    minStructure = Context.Request.Query["minStructure"]
+                                                })">Next</a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link smooth-link" href="@Url.Action("Details", new { 
+                                                    id = Model.Job.Id, 
+                                                    sortOrder = Model.SortOrder, 
+                                                    pageNumber = totalPages,
+                                                    minDesiredTemp = Context.Request.Query["minDesiredTemp"],
+                                                    maxSpecificity = Context.Request.Query["maxSpecificity"],
+                                                    minAccessibility = Context.Request.Query["minAccessibility"],
+                                                    minStructure = Context.Request.Query["minStructure"]
+                                                })">Last</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    }
+                    </div> <!-- End AJAX Container -->
+                </div>
+            </div>
         }
-        else
+        else if (Model.Job.JobState == JobState.Completed)
         {
-            <a asp-action="Delete" asp-route-id="@Model.Job.Id" class="btn btn-danger float-sm-right">@(shouldCancel ? "Cancel" : "Delete") <i class="fas fa-trash ml-1"></i></a>
+            <!-- No Results Card -->
+            <div class="card mb-4">
+                <div class="card-body text-center py-5">
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle text-warning mb-3" style="font-size: 3rem;"></i>
+                        <h5 class="text-muted">No designs generated</h5>
+                        <p class="text-muted">This job completed but did not generate any ribozyme designs. This may be due to very restrictive parameters or unsuitable input sequence.</p>
+                    </div>
+                </div>
+            </div>
         }
     </div>
 </div>
 
-<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+<style>
+    .job-details-content {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    .info-item {
+        margin-bottom: 0.5rem;
+    }
+
+    .info-item label {
+        margin-bottom: 0.25rem;
+        font-weight: 500;
+    }
+
+    .sequence-container {
+        position: relative;
+    }
+
+    .sequence-textarea {
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        resize: vertical;
+    }
+
+    .progress-steps {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1rem;
+    }
+
+    .progress-steps .step {
+        text-align: center;
+        flex: 1;
+        padding: 0.5rem;
+        color: #6c757d;
+        font-size: 0.875rem;
+    }
+
+    .progress-steps .step.completed {
+        color: #198754;
+    }
+
+    .progress-steps .step i {
+        display: block;
+        font-size: 1.2rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .advanced-settings-content {
+        transition: all 0.3s ease;
+    }
+
+    .sortable {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .sortable:hover {
+        background-color: #f8f9fa;
+    }
+
+    .design-row:hover {
+        background-color: #f8f9fa;
+    }
+
+    .empty-state {
+        padding: 2rem;
+    }
+
+    /* Mobile responsiveness */
+    @@media (max-width: 768px) {
+        .page-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .page-header nav {
+            margin-top: 0.5rem;
+        }
+
+        .btn-group {
+            flex-direction: column;
+        }
+
+        .btn-group .btn {
+            margin-bottom: 0.25rem;
+        }
+
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+
+        .progress-steps {
+            flex-direction: column;
+        }
+
+        .progress-steps .step {
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    /* Condensed Parameter Section Styling */
+    .param-group {
+        background: #f8f9fa;
+        border-radius: 0.375rem;
+        padding: 1rem;
+        height: 100%;
+        border: 1px solid #e9ecef;
+    }
+
+    .param-group-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .param-item {
+        margin-bottom: 0.5rem;
+    }
+
+    .param-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .param-label {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin-bottom: 0.25rem;
+        display: block;
+        font-weight: 500;
+    }
+
+    .param-value {
+        font-size: 0.875rem;
+        color: #212529;
+        font-weight: 500;
+    }
+
+    .text-purple {
+        color: #6f42c1 !important;
+    }
+
+    /* Assembly info styling */
+    .assembly-info {
+        border: 1px solid #dee2e6;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .param-group {
+            margin-bottom: 1rem;
+        }
+    }
+
+    /* Modal Enhancements */
+    .modal-content {
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .modal-footer {
+        background-color: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .job-details-card {
+        border: 1px solid #e9ecef;
+    }
+
+    .job-details-card .row {
+        margin-bottom: 0.5rem;
+    }
+
+    .job-details-card .row:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Loading state for cancel button */
+    #confirmCancelJob:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+    /* Alert animations */
+    .alert {
+        animation: slideInDown 0.3s ease-out;
+    }
+
+    @@keyframes slideInDown {
+        from {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+</style>
+
+<!-- Design Details Modal -->
+<div class="modal fade" id="designDetailsModal" tabindex="-1" aria-labelledby="designDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="infoModalLabel">Evaluation Score Information</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title" id="designDetailsModalLabel">
+                    <i class="fas fa-dna text-primary me-2"></i>
+                    Design Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="designDetailsContent">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Loading design details...</p>
+                </div>
+            </div>
+            <div class="modal-footer border-top">
+                <button type="button" class="btn btn-outline-success" id="downloadDesignFromModal">
+                    <i class="fas fa-download me-1"></i>Download FASTA
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Close
                 </button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Job Confirmation Modal -->
+<div class="modal fade" id="deleteJobModal" tabindex="-1" aria-labelledby="deleteJobModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title" id="deleteJobModalLabel">
+                    <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                    Delete Job
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
             <div class="modal-body">
-                <table class="table">
-                    <thead class="thead-light">
-                        <tr>
-                            <th scope="col">Score</th>
-                            <th scope="col">Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">@Html.DisplayNameFor(model => model.Designs.Data.First().DesiredTemperatureScore)</th>
-                            <td>Desired temperature corresponds to the annealing temperature of the binding arms of the designed ribozyme to the input substrate, and how close it is to the desired temperature of the experiment.</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">@Html.DisplayNameFor(model => model.Designs.Data.First().SpecificityScore)</th>
-                            <td>Ribozyme specificity evaluates the number of cut-site matches that occur in an in-vivo experiment. In other words, will the ribozyme be cleaving many other sequences in an in-vivo experiment, or has it been designed specifically enough to only focus on the targeted sequence.</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">@Html.DisplayNameFor(model => model.Designs.Data.First().AccessibilityScore)</th>
-                            <td>Ribozyme accessibility evaluates the probability that the cut-site will be accessible after being folded. In other words, are the necessary nucleotides exposed for the ribozyme to attach to, and subsequently cleave the substrate.</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">@Html.DisplayNameFor(model => model.Designs.Data.First().StructureScore)</th>
-                            <td>Ribozyme structure evaluates the difference between the generated and the ideal secondary structure of the designed ribozyme. In other words, how close is the designed ribozyme's shape to the shape of the ideal case.</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="alert alert-danger d-flex align-items-center mb-3" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <div>
+                        <strong>Warning:</strong> This action cannot be undone. The job and all its results will be permanently deleted.
+                    </div>
+                </div>
+                
+                <p class="mb-3">Are you sure you want to delete this job?</p>
+                
+                <div class="job-details-card bg-light p-3 rounded">
+                    <h6 class="mb-2">Job Details:</h6>
+                    <div class="row">
+                        <div class="col-sm-4"><strong>Job ID:</strong></div>
+                        <div class="col-sm-8" id="delete-modal-job-id">-</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4"><strong>Ribozyme:</strong></div>
+                        <div class="col-sm-8" id="delete-modal-job-name">-</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4"><strong>Status:</strong></div>
+                        <div class="col-sm-8" id="delete-modal-job-state">-</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4"><strong>Created:</strong></div>
+                        <div class="col-sm-8" id="delete-modal-job-created">-</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Keep Job
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteJob">
+                    <i class="fas fa-trash me-1"></i>
+                    <span class="button-text">Delete Job</span>
+                    <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-@section scripts
-{
-    <script type="text/javascript">
-        jQuery(document).ready(function ($) {
-            var selectedDesigns = JSON.parse(localStorage.getItem("selectedDesigns")) || {};
-            $.each(selectedDesigns, function (key, value) {
-                $('#' + key).addClass("selected");
-            });
-            if (!jQuery.isEmptyObject(selectedDesigns)) {
-                $('#zip').removeClass("disabled");
-                $('#fasta').removeClass("disabled");
-                $('#csv').removeClass("disabled");
-            }
+<!-- Cancel Job Confirmation Modal -->
+<div class="modal fade" id="cancelJobModal" tabindex="-1" aria-labelledby="cancelJobModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title" id="cancelJobModalLabel">
+                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                    Cancel Job
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <div>
+                        <strong>Warning:</strong> This action cannot be undone. The job will be stopped and marked as cancelled.
+                    </div>
+                </div>
+                
+                <p class="mb-3">Are you sure you want to cancel this job?</p>
+                
+                <div class="job-details-card bg-light p-3 rounded">
+                    <h6 class="mb-2">Job Details:</h6>
+                    <div class="row">
+                        <div class="col-sm-4"><strong>Job ID:</strong></div>
+                        <div class="col-sm-8" id="modal-job-id">-</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4"><strong>Ribozyme:</strong></div>
+                        <div class="col-sm-8" id="modal-job-name">-</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4"><strong>Started:</strong></div>
+                        <div class="col-sm-8" id="modal-job-created">-</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Keep Running
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmCancelJob">
+                    <i class="fas fa-stop-circle me-1"></i>
+                    <span class="button-text">Cancel Job</span>
+                    <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
-            $(".clickable-row").click(function () {
-                if ($(this).hasClass("selected")) {
-                    $(this).removeClass("selected");
-                    delete selectedDesigns[this.id];
-                    if (jQuery.isEmptyObject(selectedDesigns)) {
-                        $('#zip').addClass("disabled");
-                        $('#fasta').addClass("disabled");
-                        $('#csv').addClass("disabled");
-                    }
-                } else {
-                    $(this).addClass("selected");
-                    selectedDesigns[this.id] = true;
-                    $('#zip').removeClass("disabled");
-                    $('#fasta').removeClass("disabled");
-                    $('#csv').removeClass("disabled");
-                }
-                localStorage.setItem("selectedDesigns", JSON.stringify(selectedDesigns));
-            });
-
-            $("#filterOptions").structFilter({
-                fields: [
-                    //{ id: "Rank", type: "number", label: "Rank" },
-                    { id: "CutsiteIndex", type: "number", label: "Cutsite Index" },
-                    { id: "DesiredTemperatureScore", type: "number", label: "Desired Temperature Score" },
-                    { id: "SpecificityScore", type: "number", label: "Specificity Score" },
-                    { id: "AccessibilityScore", type: "number", label: "Accessibility Score" },
-                    { id: "StructureScore", type: "number", label: "Structure Score" }
-                ]
-            });
-
-            @foreach( var filter in Model.FilterList )
-            {
-                @Html.Raw("$('#filterOptions').structFilter('addCondition', " + filter.GetJson() + ");");
-            }
-
-            var newFilter = document.getElementsByClassName('evo-bNew')[0];
-            newFilter.classList.toggle('d-none');
-
-            var filterOptions = document.getElementById('filterOptions');
-            filterOptions.classList.toggle('border-0');
-            filterOptions.classList.toggle('no-height');
-
-            var editFilter = document.getElementsByClassName('evo-editFilter')[0];
-            editFilter.classList.toggle('d-none');
-
-            var addFilter = document.getElementsByClassName('evo-bAdd')[0];
-            addFilter.classList.toggle('d-none');
-
-            var delFilter = document.getElementsByClassName('evo-bDel')[0];
-            delFilter.classList.toggle('d-none');
-
-            var searchFilters = document.getElementsByClassName('evo-searchFilters')[0];
-            Array.from(searchFilters.children).forEach(function (el) {
-                el.lastChild.classList.toggle('d-none');
-                el.classList.toggle('disabled-link');
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
             });
 
-            $("#filterOptions").on("change.search", function (event) {
-                var filters = $("#filterOptions").structFilter("val");
-                $.each(filters,
-                    function (index, obj) {
-                        obj['param'] = obj['field']['value'];
-                        obj['condition'] = obj['operator']['value'];
-                        obj['value'] = obj['value']['value'];
-                        delete obj['operator'];
-                        delete obj['field'];
-                    }
-                );
+            // AJAX functionality for seamless table updates
+            let currentFilters = {
+                minDesiredTemp: '@Context.Request.Query["minDesiredTemp"]',
+                maxSpecificity: '@Context.Request.Query["maxSpecificity"]',
+                minAccessibility: '@Context.Request.Query["minAccessibility"]',
+                minStructure: '@Context.Request.Query["minStructure"]'
+            };
+            let currentSortOrder = '@Model.SortOrder';
+            let currentPage = @Model.Designs.PageNumber;
 
-                var data = {
-                    sortOrder: '@Model.SortOrder',
-                    pageNumber: @Model.Designs.PageNumber,
-                    filterData: btoa(JSON.stringify(filters))
+            // Function to update table via AJAX
+            function updateTable(page = 1, sortOrder = currentSortOrder, filters = currentFilters) {
+                // Show loading overlay
+                $('#tableLoadingOverlay').removeClass('d-none').addClass('d-flex');
+                
+                // Prepare parameters
+                const params = {
+                    id: @Model.Job.Id,
+                    pageNumber: page,
+                    sortOrder: sortOrder
                 };
+                
+                // Add filters if they have values
+                if (filters.minDesiredTemp && filters.minDesiredTemp !== '') {
+                    params.minDesiredTemp = filters.minDesiredTemp;
+                }
+                if (filters.maxSpecificity && filters.maxSpecificity !== '') {
+                    params.maxSpecificity = filters.maxSpecificity;
+                }
+                if (filters.minAccessibility && filters.minAccessibility !== '') {
+                    params.minAccessibility = filters.minAccessibility;
+                }
+                if (filters.minStructure && filters.minStructure !== '') {
+                    params.minStructure = filters.minStructure;
+                }
 
-                var encoded = $.param(data);
-                window.location.href = "/Jobs/Details/@Model.Job.Id?" + encoded;
-            });
+                // Make AJAX request
+                $.get('@Url.Action("GetDesignsTable", "Jobs")', params)
+                    .done(function(response) {
+                        if (response.success) {
+                            // Update table content
+                            updateTableContent(response);
+                            
+                            // Update sort parameters for table headers
+                            updateSortHeaders(null, response.sortOrder);
+                            
+                            // Update current state
+                            currentPage = response.pagination.currentPage;
+                            currentSortOrder = response.sortOrder;
+                            
+                            // Update filter form hidden fields
+                            $('#filterForm input[name="sortOrder"]').val(currentSortOrder);
+                            $('#filterForm input[name="pageNumber"]').val(1);
+                            
+                            // Re-bind only the table content event handlers (checkboxes, etc.)
+                            bindTableContentEvents();
+                            
+                            // Update export buttons
+                            updateExportButtons();
+                        } else {
+                            alert('Failed to update table. Please refresh the page.');
+                        }
+                    })
+                    .fail(function(xhr, status, error) {
+                        console.error('AJAX request failed:', error);
+                        alert('Failed to update table. Please check your connection and try again.');
+                    })
+                    .always(function() {
+                        // Hide loading overlay
+                        $('#tableLoadingOverlay').removeClass('d-flex').addClass('d-none');
+                    });
+            }
 
-            function sortFunc(el) {
-                if (el[0].id.slice(0, -4) == '@Model.SortOrder'.split('_')[0]) {
-                    el[0].classList.remove(['fa-sort', 'fa-sort-up', 'fa-sort-down']);
-                    el[0].classList.add('@Model.SortOrder'.split('_')[1] == 'asc' ? 'fa-sort-up' : 'fa-sort-down');
-                } else {
-                    el[0].classList.remove(['fa-sort', 'fa-sort-up', 'fa-sort-down']);
-                    el[0].classList.add('fa-sort');
+            // Function to update table content with response data
+            function updateTableContent(response) {
+                const tbody = $('#designsTable tbody');
+                tbody.empty();
+                
+                // Add new rows
+                response.designs.forEach(function(design, index) {
+                    const row = `
+                        <tr>
+                            <td class="ps-3">
+                                <input type="checkbox" class="form-check-input design-checkbox" value="${design.id}">
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">${design.rank}</span>
+                            </td>
+                            <td>
+                                <code class="small">${design.cutsiteIndex}</code>
+                            </td>
+                            <td>
+                                <span class="fw-bold">${design.desiredTempScore.toFixed(3)}</span>
+                            </td>
+                            <td>
+                                <span class="fw-bold">${design.specificityScore.toFixed(3)}</span>
+                            </td>
+                            <td>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-info" role="progressbar" 
+                                         style="width: ${(design.accessibilityScore * 100)}%" 
+                                         aria-valuenow="${(design.accessibilityScore * 100)}" 
+                                         aria-valuemin="0" aria-valuemax="100">
+                                        <span class="fw-bold text-white">${design.accessibilityScore.toFixed(3)}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-success" role="progressbar" 
+                                         style="width: ${(design.structureScore * 100)}%" 
+                                         aria-valuenow="${(design.structureScore * 100)}" 
+                                         aria-valuemin="0" aria-valuemax="100">
+                                        <span class="fw-bold text-white">${design.structureScore.toFixed(3)}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="viewDesignDetails(${design.id})">
+                                        <i class="fas fa-eye me-1"></i>View
+                                    </button>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-outline-success btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                            <i class="fas fa-download me-1"></i>FASTA
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#" onclick="downloadDesign(${design.id}, 'fasta')">
+                                                <i class="fas fa-file-alt me-2"></i>FASTA Format
+                                            </a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.append(row);
+                });
+                
+                // Update pagination info
+                updatePaginationInfo(response.pagination);
+            }
+
+            // Function to update sort headers with new sort parameters
+            function updateSortHeaders(sortParams, currentSort) {
+                $('.ajax-sort').each(function() {
+                    const $header = $(this);
+                    const headerText = $header.text().trim();
+                    
+                    // Map header text to sort parameter base
+                    let sortBase = '';
+                    switch(headerText) {
+                        case 'Rank': sortBase = 'rank'; break;
+                        case 'Cutsite': sortBase = 'cutsite'; break;
+                        case 'Design Temp': sortBase = 'destemp'; break;
+                        case 'Specificity': sortBase = 'spec'; break;
+                        case 'Accessibility': sortBase = 'access'; break;
+                        case 'Structure': sortBase = 'struct'; break;
+                    }
+                    
+                    // Calculate next sort direction for toggle behavior
+                    let nextSort = '';
+                    if (currentSort === sortBase + '_asc') {
+                        nextSort = sortBase + '_desc';
+                    } else if (currentSort === sortBase + '_desc') {
+                        nextSort = sortBase + '_asc';
+                    } else {
+                        nextSort = sortBase + '_asc';
+                    }
+                    
+                    // Update data-sort attribute for next click
+                    $header.attr('data-sort', nextSort);
+                    
+                    // Update sort icons based on current sort state
+                    const $icon = $header.find('i');
+                    $icon.removeClass('fa-sort fa-sort-up fa-sort-down text-muted');
+                    
+                    if (currentSort === sortBase + '_asc') {
+                        $icon.addClass('fa-sort-up');
+                    } else if (currentSort === sortBase + '_desc') {
+                        $icon.addClass('fa-sort-down');
+                    } else {
+                        $icon.addClass('fa-sort text-muted');
+                    }
+                });
+            }
+
+            // Function to update pagination info and controls
+            function updatePaginationInfo(pagination) {
+                // Update showing text
+                const showingText = pagination.totalItems > 0 
+                    ? `Showing ${pagination.showingFrom} to ${pagination.showingTo} of ${pagination.totalItems} designs`
+                    : 'No designs found';
+                $('.card-footer .text-muted').text(showingText);
+                
+                // Update pagination controls
+                const paginationContainer = $('.pagination').parent();
+                paginationContainer.empty();
+                
+                if (pagination.totalPages > 1) {
+                    let paginationHtml = '<ul class="pagination pagination-sm mb-0">';
+                    
+                    // First and Previous buttons
+                    if (pagination.hasPreviousPage) {
+                        paginationHtml += `
+                            <li class="page-item">
+                                <a class="page-link ajax-page" href="#" data-page="1">First</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link ajax-page" href="#" data-page="${pagination.currentPage - 1}">Previous</a>
+                            </li>
+                        `;
+                    }
+                    
+                    // Page numbers (show current page and a few around it)
+                    const startPage = Math.max(1, pagination.currentPage - 2);
+                    const endPage = Math.min(pagination.totalPages, pagination.currentPage + 2);
+                    
+                    for (let i = startPage; i <= endPage; i++) {
+                        const activeClass = i === pagination.currentPage ? 'active' : '';
+                        paginationHtml += `
+                            <li class="page-item ${activeClass}">
+                                <a class="page-link ajax-page" href="#" data-page="${i}">${i}</a>
+                            </li>
+                        `;
+                    }
+                    
+                    // Next and Last buttons
+                    if (pagination.hasNextPage) {
+                        paginationHtml += `
+                            <li class="page-item">
+                                <a class="page-link ajax-page" href="#" data-page="${pagination.currentPage + 1}">Next</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link ajax-page" href="#" data-page="${pagination.totalPages}">Last</a>
+                            </li>
+                        `;
+                    }
+                    
+                    paginationHtml += '</ul>';
+                    paginationContainer.html(paginationHtml);
                 }
             }
 
-            function sortClick(el) {
-                var type = el[0].id.slice(0, -4);
-                var sortOrder = '';
-                switch (type) {
-                    //case 'rank':
-                        //sortOrder = '@ViewBag.RankSortParm';
-                        //break;
-                    case 'cutsite':
-                        sortOrder = '@ViewBag.CutsiteSortParm';
+            // Function to bind table event handlers
+            function bindTableEvents() {
+                // Pagination click handlers
+                $(document).off('click', '.ajax-page').on('click', '.ajax-page', function(e) {
+                    e.preventDefault();
+                    const page = parseInt($(this).data('page'));
+                    updateTable(page, currentSortOrder, currentFilters);
+                });
+                
+                // Checkbox handlers
+                bindTableContentEvents();
+            }
+            
+            // Function to bind only table content events (checkboxes, etc.)
+            function bindTableContentEvents() {
+                $('#selectAll').off('change').on('change', function() {
+                    $('.design-checkbox').prop('checked', this.checked);
+                    updateExportButtons();
+                });
+
+                $('.design-checkbox').off('change').on('change', function() {
+                    const totalCheckboxes = $('.design-checkbox').length;
+                    const checkedCheckboxes = $('.design-checkbox:checked').length;
+                    
+                    $('#selectAll').prop('indeterminate', checkedCheckboxes > 0 && checkedCheckboxes < totalCheckboxes);
+                    $('#selectAll').prop('checked', checkedCheckboxes === totalCheckboxes);
+                    updateExportButtons();
+                });
+            }
+
+            // Filter form submission
+            $('#filterForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                // Get filter values
+                const filters = {
+                    minDesiredTemp: $('input[name="minDesiredTemp"]').val(),
+                    maxSpecificity: $('input[name="maxSpecificity"]').val(),
+                    minAccessibility: $('input[name="minAccessibility"]').val(),
+                    minStructure: $('input[name="minStructure"]').val()
+                };
+                
+                currentFilters = filters;
+                updateTable(1, currentSortOrder, filters);
+            });
+
+            // Clear filters function
+            window.clearFilters = function() {
+                // Clear form inputs
+                $('#filterForm input[type="number"]').val('');
+                
+                // Reset filters
+                currentFilters = {
+                    minDesiredTemp: '',
+                    maxSpecificity: '',
+                    minAccessibility: '',
+                    minStructure: ''
+                };
+                
+                // Update table
+                updateTable(1, currentSortOrder, currentFilters);
+            };
+
+            // Initialize event handlers
+            bindTableEvents();
+            
+            // Initialize sort headers
+            updateSortHeaders(null, '@Model.SortOrder');
+            
+            // Bind sort click handlers (bound once, never re-bound)
+            $(document).on('click', '.ajax-sort', function(e) {
+                e.preventDefault();
+                const sortOrder = $(this).attr('data-sort');
+                updateTable(1, sortOrder, currentFilters);
+            });
+
+            // Auto-refresh for in-progress jobs
+            @if (Model.Job.IsInProgress())
+            {
+                <text>
+                setInterval(function() {
+                    location.reload();
+                }, 30000); // Refresh every 30 seconds
+                </text>
+            }
+
+            // Auto-show filter options if filters are active
+            @if (Context.Request.Query["minDesiredTemp"].Any() || Context.Request.Query["maxSpecificity"].Any() || 
+                 Context.Request.Query["minAccessibility"].Any() || Context.Request.Query["minStructure"].Any())
+            {
+                <text>
+                $('#filterOptions').show();
+                </text>
+            }
+
+            // Select all checkbox functionality
+            $('#selectAll').change(function() {
+                $('.design-checkbox').prop('checked', this.checked);
+                updateExportButtons();
+            });
+
+            $('.design-checkbox').change(function() {
+                const totalCheckboxes = $('.design-checkbox').length;
+                const checkedCheckboxes = $('.design-checkbox:checked').length;
+                
+                $('#selectAll').prop('indeterminate', checkedCheckboxes > 0 && checkedCheckboxes < totalCheckboxes);
+                $('#selectAll').prop('checked', checkedCheckboxes === totalCheckboxes);
+                updateExportButtons();
+            });
+
+            // Table sorting functionality
+            $('.sortable').click(function() {
+                const sortType = $(this).data('sort');
+                const isAscending = !$(this).hasClass('sort-asc');
+                
+                // Remove sort classes from all headers
+                $('.sortable').removeClass('sort-asc sort-desc');
+                $('.sortable i').removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
+                
+                // Add sort class to current header
+                $(this).addClass(isAscending ? 'sort-asc' : 'sort-desc');
+                $(this).find('i').removeClass('fa-sort').addClass(isAscending ? 'fa-sort-up' : 'fa-sort-down');
+                
+                sortTable(sortType, isAscending);
+            });
+        });
+
+        // Table sorting function
+        function sortTable(sortType, ascending) {
+            const tbody = $('#designsTable tbody');
+            const rows = tbody.find('tr').toArray();
+            
+            rows.sort(function(a, b) {
+                let aVal, bVal;
+                
+                switch(sortType) {
+                    case 'desired-temp':
+                        aVal = parseFloat($(a).find('td[data-value]').eq(0).data('value')) || 0;
+                        bVal = parseFloat($(b).find('td[data-value]').eq(0).data('value')) || 0;
                         break;
-                    case 'destemp':
-                        sortOrder = '@ViewBag.DesTempSortParm';
+                    case 'specificity':
+                        aVal = parseFloat($(a).find('td[data-value]').eq(1).data('value')) || 0;
+                        bVal = parseFloat($(b).find('td[data-value]').eq(1).data('value')) || 0;
                         break;
-                    case 'access':
-                        sortOrder = '@ViewBag.AccessSortParm';
+                    case 'accessibility':
+                        aVal = parseFloat($(a).find('td[data-value]').eq(2).data('value')) || 0;
+                        bVal = parseFloat($(b).find('td[data-value]').eq(2).data('value')) || 0;
                         break;
-                    case 'spec':
-                        sortOrder = '@ViewBag.SpecSortParm';
-                        break;
-                    case 'struct':
-                        sortOrder = '@ViewBag.StructSortParm';
+                    case 'structure':
+                        aVal = parseFloat($(a).find('td[data-value]').eq(3).data('value')) || 0;
+                        bVal = parseFloat($(b).find('td[data-value]').eq(3).data('value')) || 0;
                         break;
                     default:
-                        break;
+                        return 0;
                 }
+                
+                if (ascending) {
+                    return aVal - bVal;
+                } else {
+                    return bVal - aVal;
+                }
+            });
+            
+            tbody.empty().append(rows);
+        }
 
-                var filters = $("#filterOptions").structFilter("val");
-                $.each(filters,
-                    function (index, obj) {
-                        obj['param'] = obj['field']['value'];
-                        obj['condition'] = obj['operator']['value'];
-                        obj['value'] = obj['value']['value'];
-                        delete obj['operator'];
-                        delete obj['field'];
-                    }
-                );
+        // Filter functionality
+        function refineResults() {
+            $('#filterOptions').toggle();
+        }
 
-                var data = {
-                    sortOrder: sortOrder,
-                    pageNumber: @Model.Designs.PageNumber,
-                    filterData: btoa(JSON.stringify(filters))
-                };
+        function applyFilters() {
+            const minDesiredTemp = parseFloat($('#minDesiredTemp').val()) || -Infinity;
+            const maxSpecificity = parseFloat($('#maxSpecificity').val()) || Infinity;
+            const minAccessibility = parseFloat($('#minAccessibility').val()) || -Infinity;
+            const minStructure = parseFloat($('#minStructure').val()) || -Infinity;
+            
+            $('#designsTable tbody tr').each(function() {
+                const row = $(this);
+                const desiredTemp = parseFloat(row.find('td[data-value]').eq(0).data('value')) || 0;
+                const specificity = parseFloat(row.find('td[data-value]').eq(1).data('value')) || 0;
+                const accessibility = parseFloat(row.find('td[data-value]').eq(2).data('value')) || 0;
+                const structure = parseFloat(row.find('td[data-value]').eq(3).data('value')) || 0;
+                
+                const visible = desiredTemp >= minDesiredTemp && 
+                               specificity <= maxSpecificity && 
+                               accessibility >= minAccessibility && 
+                               structure >= minStructure;
+                
+                row.toggle(visible);
+            });
+        }
 
-                var encoded = $.param(data);
-                window.location.href = "/Jobs/Details/@Model.Job.Id?" + encoded;
-            }
+        function clearFilters() {
+            $('#minDesiredTemp, #maxSpecificity, #minAccessibility, #minStructure').val('');
+            $('#designsTable tbody tr').show();
+        }
 
-            function clickFunc(format) {
-                $.ajax({
-                    type: "POST",
-                    url: "/Jobs/DownloadSelectedDesigns",
-                    data: {
-                        jobID: @Model.Job.Id,
-                        selectedDesigns: JSON.stringify(selectedDesigns),
-                        format: format
-                    },
-                    success: function (data) {
-                        window.location = '/Jobs/Download?fileGuid=' + data.fileGuid + '&fileName=' + data.fileName + '&fileType=' + data.fileType;
-                        $(".clickable-row.selected").each(function(i, obj) {
-                            $(this).removeClass("selected");
-                            delete selectedDesigns;
-                            localStorage.setItem("selectedDesigns", JSON.stringify({}));
-                            $('#zip').addClass("disabled");
-                            $('#fasta').addClass("disabled");
-                            $('#csv').addClass("disabled");
-                        })
-                    }
+        // Design details modal
+        function viewDesignDetails(designId) {
+            $('#designDetailsModal').modal('show');
+            $('#downloadDesignFromModal').data('design-id', designId);
+            
+            // Reset modal content to loading state
+            $('#designDetailsContent').html(`
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Loading design details...</p>
+                </div>
+            `);
+            
+            // Load modal content via AJAX using the correct endpoint
+            $.get(`/Designs/ModalDetails/${designId}`)
+                .done(function(data) {
+                    $('#designDetailsContent').html(data);
+                })
+                .fail(function(xhr, status, error) {
+                    console.error('Failed to load design details:', xhr.responseText, status, error);
+                    $('#designDetailsContent').html(`
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Failed to load design details.</strong><br>
+                            ${xhr.responseJSON?.message || error || 'Please try again or contact support if the problem persists.'}
+                        </div>
+                    `);
                 });
+        }
+
+        // Download functionality
+        function downloadDesign(designId, format) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/Designs/Export';
+            
+            const designIdField = document.createElement('input');
+            designIdField.type = 'hidden';
+            designIdField.name = 'designId';
+            designIdField.value = designId;
+            
+            const formatField = document.createElement('input');
+            formatField.type = 'hidden';
+            formatField.name = 'format';
+            formatField.value = format;
+            
+            form.appendChild(designIdField);
+            form.appendChild(formatField);
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+        }
+
+        // Export all functionality
+        function clickFuncAll(type) {
+            const selectedDesigns = $('.design-checkbox:checked').map(function() {
+                return this.value;
+            }).get();
+            
+            if (selectedDesigns.length === 0) {
+                alert('Please select at least one design to export.');
+                return;
             }
-
-            function clickFuncAll(format) {
-                var filters = $("#filterOptions").structFilter("val");
-                $.each(filters,
-                    function (index, obj) {
-                        obj['param'] = obj['field']['value'];
-                        obj['condition'] = obj['operator']['value'];
-                        obj['value'] = obj['value']['value'];
-                        delete obj['operator'];
-                        delete obj['field'];
+            
+            // Get the clicked dropdown item to show progress
+            const clickedItem = event.target.closest('a');
+            const originalText = clickedItem.innerHTML;
+            
+            // Show progress indicator on the export button
+            const exportButton = document.querySelector('.btn-outline-success.dropdown-toggle');
+            const originalButtonText = exportButton.innerHTML;
+            exportButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Preparing Export...';
+            exportButton.disabled = true;
+            
+            // Also update the clicked dropdown item
+            clickedItem.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Preparing...';
+            clickedItem.style.pointerEvents = 'none';
+            
+            // Prepare the data in the format the controller expects: "{jobId}-{designId}": true
+            const selectedDesignsObj = {};
+            const jobId = @Model.Job.Id;
+            selectedDesigns.forEach(designId => {
+                const key = jobId + '-' + designId;
+                selectedDesignsObj[key] = true;
+            });
+            
+            const selectedDesignsJson = JSON.stringify(selectedDesignsObj);
+            console.log('Sending selectedDesigns:', selectedDesignsJson);
+            
+            // Make AJAX request to the correct endpoint
+            $.ajax({
+                url: '/Jobs/DownloadSelectedDesigns',
+                type: 'POST',
+                data: {
+                    jobID: jobId,
+                    selectedDesigns: selectedDesignsJson,
+                    format: type,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    console.log('Export response:', response);
+                    
+                    if (response.fileGuid || response.FileGuid) {
+                        // Handle both cases for compatibility
+                        const fileGuid = response.fileGuid || response.FileGuid;
+                        const fileName = response.fileName || response.FileName;
+                        const fileType = response.fileType || response.FileType;
+                        
+                        // Update progress indicator
+                        exportButton.innerHTML = '<i class="fas fa-download me-1"></i>Downloading...';
+                        clickedItem.innerHTML = '<i class="fas fa-download me-2"></i>Downloading...';
+                        
+                        // Trigger download using hidden iframe (prevents page redirect)
+                        const downloadUrl = '/Jobs/Download?fileGuid=' + encodeURIComponent(fileGuid) + 
+                                          '&fileName=' + encodeURIComponent(fileName) + 
+                                          '&fileType=' + encodeURIComponent(fileType);
+                        
+                        console.log('Download URL:', downloadUrl);
+                        
+                        // Create hidden iframe for seamless download
+                        const iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.src = downloadUrl;
+                        document.body.appendChild(iframe);
+                        
+                        // Show success message briefly
+                        setTimeout(() => {
+                            exportButton.innerHTML = '<i class="fas fa-check me-1"></i>Downloaded!';
+                            clickedItem.innerHTML = '<i class="fas fa-check me-2"></i>Downloaded!';
+                        }, 1000);
+                        
+                        // Clean up and restore original state
+                        setTimeout(() => {
+                            if (document.body.contains(iframe)) {
+                                document.body.removeChild(iframe);
+                            }
+                            exportButton.innerHTML = originalButtonText;
+                            exportButton.disabled = false;
+                            clickedItem.innerHTML = originalText;
+                            clickedItem.style.pointerEvents = 'auto';
+                        }, 3000);
+                        
+                    } else {
+                        console.error('No fileGuid in response:', response);
+                        exportButton.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i>Export Failed';
+                        clickedItem.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Failed';
+                        
+                        setTimeout(() => {
+                            exportButton.innerHTML = originalButtonText;
+                            exportButton.disabled = false;
+                            clickedItem.innerHTML = originalText;
+                            clickedItem.style.pointerEvents = 'auto';
+                        }, 3000);
+                        
+                        alert('Export failed: No file generated. Please try again.');
                     }
-                );
-
-                $.ajax({
-                    type: "POST",
-                    url: "/Jobs/DownloadDesigns",
-                    data: {
-                        jobID: @Model.Job.Id,
-                        filterData: btoa(JSON.stringify(filters)),
-                        format: format
-                    },
-                    success: function (data) {
-                        window.location = '/Jobs/Download?fileGuid=' + data.fileGuid + '&fileName=' + data.fileName + '&fileType=' + data.fileType;
+                },
+                error: function(xhr, status, error) {
+                    console.error('Export failed:', xhr.responseText, status, error);
+                    
+                    exportButton.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i>Export Failed';
+                    clickedItem.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Failed';
+                    
+                    setTimeout(() => {
+                        exportButton.innerHTML = originalButtonText;
+                        exportButton.disabled = false;
+                        clickedItem.innerHTML = originalText;
+                        clickedItem.style.pointerEvents = 'auto';
+                    }, 3000);
+                    
+                    let errorMessage = 'Export failed. Please try again.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = 'Export failed: ' + xhr.responseJSON.message;
+                    } else if (xhr.responseText) {
+                        try {
+                            const errorData = JSON.parse(xhr.responseText);
+                            if (errorData.message) {
+                                errorMessage = 'Export failed: ' + errorData.message;
+                            }
+                        } catch (e) {
+                            // Use default message if parsing fails
+                        }
                     }
-                });
+                    
+                    alert(errorMessage);
+                }
+            });
+        }
+
+        function updateExportButtons() {
+            const hasSelected = $('.design-checkbox:checked').length > 0;
+            $('.export-btn').prop('disabled', !hasSelected);
+        }
+
+        // Modal download button
+        $('#downloadDesignFromModal').click(function() {
+            const designId = $(this).data('design-id');
+            if (designId) {
+                downloadDesign(designId, 'fasta');
             }
+        });
 
-            $('#zip').click(function () { return clickFunc("zip"); });
-            $('#fasta').click(function () { return clickFunc("fasta"); });
-            $('#csv').click(function () { return clickFunc("csv"); });
-            $('#zipAll').click(function () { return clickFuncAll("zip"); });
-            $('#fastaAll').click(function () { return clickFuncAll("fasta"); });
-            $('#csvAll').click(function () { return clickFuncAll("csv"); });
+        // Delete job modal population
+        $('#deleteJobModal').on('show.bs.modal', function (event) {
+            const button = $(event.relatedTarget); // Button that triggered the modal
+            const jobId = button.data('job-id');
+            const jobName = button.data('job-name');
+            const jobCreated = button.data('job-created');
+            const jobState = button.data('job-state');
+            
+            // Update modal content
+            $('#delete-modal-job-id').text('#' + jobId);
+            $('#delete-modal-job-name').text(jobName);
+            $('#delete-modal-job-created').text(jobCreated);
+            $('#delete-modal-job-state').text(jobState);
+            
+            // Store job ID for deletion
+            $('#confirmDeleteJob').data('job-id', jobId);
+        });
 
-            //$('#ranksort').ready(function () { return sortFunc($('#ranksort')); })
-            $('#cutsitesort').ready(function () { return sortFunc($('#cutsitesort')); })
-            $('#destempsort').ready(function () { return sortFunc($('#destempsort')); })
-            $('#hitempsort').ready(function () { return sortFunc($('#hitempsort')); })
-            $('#accesssort').ready(function () { return sortFunc($('#accesssort')); })
-            $('#specsort').ready(function () { return sortFunc($('#specsort')); })
-            $('#structsort').ready(function () { return sortFunc($('#structsort')); })
+        // Cancel job modal population
+        $('#cancelJobModal').on('show.bs.modal', function (event) {
+            const button = $(event.relatedTarget); // Button that triggered the modal
+            const jobId = button.data('job-id');
+            const jobName = button.data('job-name');
+            const jobCreated = button.data('job-created');
+            
+            // Update modal content
+            $('#modal-job-id').text('#' + jobId);
+            $('#modal-job-name').text(jobName);
+            $('#modal-job-created').text(jobCreated);
+            
+            // Store job ID for cancellation
+            $('#confirmCancelJob').data('job-id', jobId);
+        });
 
-            //$('#ranksort').parent().click(function () { return sortClick($('#ranksort')); })
-            $('#cutsitesort').parent().click(function () { return sortClick($('#cutsitesort')); })
-            $('#destempsort').parent().click(function () { return sortClick($('#destempsort')); })
-            $('#hitempsort').parent().click(function () { return sortClick($('#hitempsort')); })
-            $('#accesssort').parent().click(function () { return sortClick($('#accesssort')); })
-            $('#specsort').parent().click(function () { return sortClick($('#specsort')); })
-            $('#structsort').parent().click(function () { return sortClick($('#structsort')); })
+        // Delete job confirmation handler
+        $('#confirmDeleteJob').click(function() {
+            const jobId = $(this).data('job-id');
+            const button = $(this);
+            const buttonText = button.find('.button-text');
+            const spinner = button.find('.spinner-border');
+            
+            // Show loading state
+            button.prop('disabled', true);
+            buttonText.text('Deleting...');
+            spinner.removeClass('d-none');
+            
+            // Make AJAX request to delete job
+            $.ajax({
+                url: '/Jobs/Delete/' + jobId,
+                type: 'POST',
+                data: {
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    // Hide modal and redirect to jobs list
+                    $('#deleteJobModal').modal('hide');
+                    window.location.href = '/Jobs';
+                },
+                error: function(xhr, status, error) {
+                    // Reset button state
+                    button.prop('disabled', false);
+                    buttonText.text('Delete Job');
+                    spinner.addClass('d-none');
+                    
+                    // Show error message
+                    let errorMessage = 'Failed to delete job. Please try again.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    alert(errorMessage);
+                }
+            });
+        });
+
+        // Cancel job confirmation handler
+        $('#confirmCancelJob').click(function() {
+            const jobId = $(this).data('job-id');
+            const button = $(this);
+            const buttonText = button.find('.button-text');
+            const spinner = button.find('.spinner-border');
+            
+            // Show loading state
+            button.prop('disabled', true);
+            buttonText.text('Cancelling...');
+            spinner.removeClass('d-none');
+            
+            // Make AJAX request to cancel job
+            $.ajax({
+                url: '/Jobs/Cancel/' + jobId,
+                type: 'POST',
+                data: {
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    // Hide modal and reload page to show updated status
+                    $('#cancelJobModal').modal('hide');
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    // Reset button state
+                    button.prop('disabled', false);
+                    buttonText.text('Cancel Job');
+                    spinner.addClass('d-none');
+                    
+                    // Show error message
+                    let errorMessage = 'Failed to cancel job. Please try again.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    alert(errorMessage);
+                }
+            });
         });
     </script>
-    <script src="~/dist/details.js"></script>
 }

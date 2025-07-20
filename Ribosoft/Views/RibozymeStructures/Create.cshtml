@@ -1,25 +1,118 @@
-﻿@model Ribosoft.Models.RibozymeStructure
+@model Ribosoft.Models.RibozymeStructure
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Structure";
 }
 
-<h2 class="my-3">Create a ribozyme structure</h2>
-
-<form asp-action="Create" asp-route-ribozymeId="@ViewBag.RibozymeId">
-    <div class="card my-3 box-shadow">
-        <div class="card-body">        
-            <h5 class="card-title border-bottom border-gray pb-2 mb-3">Structure</h5>
-            @Html.EditorForModel()
+<div class="container-fluid px-3 px-md-4">
+    <div class="ribozymes-content">
+        <!-- Page Header -->
+        <div class="page-header mb-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-plus-circle me-2 text-success"></i>Create New Structure
+                    </h1>
+                    <p class="text-muted mb-0">Add a new structural configuration to the ribozyme</p>
+                </div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Ribozymes" asp-action="Index" class="text-decoration-none">
+                                <i class="fas fa-dna me-1"></i>Ribozymes
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Ribozymes" asp-action="Details" asp-route-id="@ViewBag.RibozymeId" class="text-decoration-none">
+                                @ViewBag.RibozymeName
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Create Structure</li>
+                    </ol>
+                </nav>
+            </div>
         </div>
-    </div>
-    
-    <div class="clearfix">
-        <a class="btn btn-secondary float-md-left" asp-controller="Ribozymes" asp-action="Details" asp-route-id="@ViewBag.RibozymeId"><i class="fas fa-arrow-left mr-1"></i> Cancel</a>
-        <input type="submit" value="Create" class="btn btn-primary float-md-right" />
-    </div>
-</form>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+        <form asp-action="Create" asp-route-ribozymeId="@ViewBag.RibozymeId">
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Please correct the following errors:</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <!-- Structure Configuration Card -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="card-title mb-1">
+                        <i class="fas fa-project-diagram me-2 text-primary"></i>Structure Configuration
+                    </h5>
+                    <small class="text-muted">Define the ribozyme and substrate structural parameters</small>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Structure Information:</strong> Configure the ribozyme sequence, structure, substrate template, and cutting parameters for this structural variant.
+                    </div>
+                    
+                    @Html.EditorForModel()
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <a class="btn btn-outline-secondary" asp-controller="Ribozymes" asp-action="Details" asp-route-id="@ViewBag.RibozymeId">
+                    <i class="fas fa-arrow-left me-2"></i>Cancel
+                </a>
+                <div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Create Structure
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .ribozymes-content {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    /* Mobile responsiveness */
+    @@media (max-width: 768px) {
+        .page-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .page-header nav {
+            margin-top: 0.5rem;
+        }
+
+        .card-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .card-header .btn {
+            margin-top: 0.5rem;
+        }
+    }
+</style>

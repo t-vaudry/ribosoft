@@ -6,28 +6,291 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <ul class="navbar-nav">
-        <li class="nav-item" is-active-route asp-controller="Manage">
-            @if (User.IsInRole("Guest"))
-            {
-                <span class="nav-link">Hello Guest!</span>
-            }
-            else
-            {
-                <a asp-controller="Manage" asp-action="Index" title="Manage" class="nav-link">Hello @UserManager.GetUserName(User)!</a>
-            }
-        </li>
-        <li class="nav-item" is-active-route asp-controller="Account" asp-action="Logout">
-            <form asp-controller="Account" asp-action="Logout" method="post" class="form-inline">
-                <button type="submit" class="btn btn-link nav-link border-0">Log out</button>
-            </form>
+    <ul class="navbar-nav ms-auto">
+        <!-- Clean User Avatar Dropdown -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle p-1" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="user-avatar">
+                    @if (User.IsInRole("Guest"))
+                    {
+                        <div class="avatar-circle bg-secondary">
+                            <i class="fas fa-user text-white"></i>
+                        </div>
+                    }
+                    else if (User.IsInRole("Administrator"))
+                    {
+                        <div class="avatar-circle bg-warning">
+                            <i class="fas fa-crown text-white"></i>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="avatar-circle bg-primary">
+                            <i class="fas fa-user text-white"></i>
+                        </div>
+                    }
+                </div>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu" aria-labelledby="userDropdown">
+                <!-- User Info Header -->
+                <li class="dropdown-header">
+                    <div class="user-info-header">
+                        <div class="user-name">@UserManager.GetUserName(User)</div>
+                        @if (!User.IsInRole("Guest"))
+                        {
+                            <div class="user-role">
+                                @if (User.IsInRole("Administrator"))
+                                {
+                                    <i class="fas fa-crown me-1 text-warning"></i><span>Administrator</span>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-user me-1 text-primary"></i><span>User</span>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="user-role">
+                                <i class="fas fa-user me-1 text-muted"></i><span>Guest User</span>
+                            </div>
+                        }
+                    </div>
+                </li>
+                
+                @if (!User.IsInRole("Guest"))
+                {
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item smooth-link" asp-controller="Manage" asp-action="Index">
+                            <i class="fas fa-user-cog me-2 text-primary"></i>
+                            Profile Settings
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item smooth-link" asp-controller="Manage" asp-action="TwoFactorAuthentication">
+                            <i class="fas fa-shield-alt me-2 text-success"></i>
+                            Security & 2FA
+                        </a>
+                    </li>
+                }
+                
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline w-100">
+                        <button type="submit" class="dropdown-item text-danger" onclick="return confirmLogout()">
+                            <i class="fas fa-sign-out-alt me-2"></i>
+                            Sign Out
+                        </button>
+                    </form>
+                </li>
+            </ul>
         </li>
     </ul>
 }
 else
 {
-    <ul class="navbar-nav">
-        <li class="nav-item"><a asp-area="" asp-controller="Account" asp-action="Register" class="nav-link">Register</a></li>
-        <li class="nav-item"><a asp-area="" asp-controller="Account" asp-action="Login" class="nav-link">Log in</a></li>
+    <ul class="navbar-nav ms-auto">
+        <li class="nav-item me-2">
+            <a asp-controller="Account" asp-action="Register" class="nav-link btn btn-outline-primary btn-sm px-3 rounded-pill smooth-link">
+                <i class="fas fa-user-plus me-1"></i>
+                <span class="d-none d-sm-inline">Sign Up</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a asp-controller="Account" asp-action="Login" class="nav-link btn btn-primary btn-sm px-3 rounded-pill text-white smooth-link">
+                <i class="fas fa-sign-in-alt me-1"></i>
+                <span class="d-none d-sm-inline">Sign In</span>
+            </a>
+        </li>
     </ul>
 }
+
+<style>
+    /* Avatar styling */
+    .user-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .avatar-circle {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        border: 2px solid rgba(255,255,255,0.2);
+    }
+    
+    .nav-link:hover .avatar-circle {
+        transform: scale(1.05);
+        border-color: rgba(255,255,255,0.4);
+    }
+    
+    /* Dropdown positioning and styling */
+    .user-dropdown-menu {
+        border: none;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        padding: 0;
+        min-width: 250px;
+        margin-top: 0.5rem;
+        overflow: hidden;
+    }
+    
+    /* User info header */
+    .dropdown-header {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 1rem;
+        border-bottom: 1px solid #dee2e6;
+        margin-bottom: 0;
+    }
+    
+    .user-info-header {
+        text-align: center;
+    }
+    
+    .user-name {
+        font-weight: 600;
+        font-size: 1rem;
+        color: #212529;
+        margin-bottom: 0.25rem;
+    }
+    
+    .user-role {
+        font-size: 0.875rem;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .user-role span {
+        margin-left: 0.25rem;
+    }
+    
+    /* Dropdown items */
+    .dropdown-item {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        display: flex;
+        align-items: center;
+    }
+    
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+        transform: translateX(4px);
+        padding-left: 1.25rem;
+    }
+    
+    .dropdown-item.text-danger:hover {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: #dc3545 !important;
+    }
+    
+    .dropdown-item i {
+        width: 16px;
+        text-align: center;
+    }
+    
+    /* Divider styling */
+    .dropdown-divider {
+        margin: 0;
+        border-color: #e9ecef;
+    }
+    
+    /* Button styling for logged out state */
+    .nav-item .btn {
+        border-width: 1px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+    
+    .nav-item .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .nav-item .btn-outline-primary:hover {
+        background-color: var(--bs-primary);
+        border-color: var(--bs-primary);
+        color: white;
+    }
+    
+    /* Mobile responsiveness */
+    @@media (max-width: 767.98px) {
+        .user-dropdown-menu {
+            position: static !important;
+            transform: none !important;
+            border: none;
+            box-shadow: none;
+            background: transparent;
+            padding: 0;
+            margin-top: 0;
+        }
+        
+        .dropdown-header {
+            background: transparent;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 0.75rem 0;
+        }
+        
+        .user-info-header {
+            text-align: left;
+        }
+        
+        .user-name {
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .user-role {
+            justify-content: flex-start;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .dropdown-item {
+            color: rgba(255,255,255,0.75);
+            padding: 0.5rem 0;
+        }
+        
+        .dropdown-item:hover {
+            background: transparent;
+            color: white;
+            transform: none;
+            padding-left: 0;
+        }
+        
+        .nav-item .btn {
+            margin: 0.25rem 0;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .avatar-circle {
+            width: 28px;
+            height: 28px;
+            font-size: 12px;
+        }
+    }
+    
+    /* Dropdown arrow styling */
+    .dropdown-toggle::after {
+        display: none;
+    }
+</style>
+
+<script>
+    function confirmLogout() {
+        return confirm('Are you sure you want to sign out?');
+    }
+</script>

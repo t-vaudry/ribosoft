@@ -1,34 +1,411 @@
 ﻿@model LoginWithRecoveryCodeViewModel
 @{
-    ViewData["Title"] = "Recovery code verification";
+    ViewData["Title"] = "Email Verification";
 }
 
-<h2 class="my-3">@ViewData["Title"]</h2>
-
-<form method="post">
-    <div class="card box-shadow my-3">
-        <div class="card-body">
-            <h5 class="card-title border-bottom border-gray pb-2 mb-3">@ViewData["Title"]</h5>
-            <p>
-                You have requested to login with a recovery code. This login will not be remembered until you provide
-                an authenticator app code at login or disable 2FA and login again.
-            </p>
-            <div class="row">
-                <div class="col-md-4">
-                    <div asp-validation-summary="All" class="text-danger"></div>
-                    <div class="form-group">
-                        <label asp-for="RecoveryCode"></label>
-                        <input asp-for="RecoveryCode" class="form-control" autocomplete="off" />
-                        <span asp-validation-for="RecoveryCode" class="text-danger"></span>
-                    </div>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+            <div class="text-center mb-4">
+                <div class="mb-3">
+                    <i class="fas fa-envelope-open-text fa-3x text-primary mb-3"></i>
                 </div>
+                <h1 class="h3 mb-2 font-weight-normal">Check Your Email</h1>
+                <p class="text-muted">We've sent a verification code to complete your sign in</p>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form method="post" novalidate>
+                        <!-- Error Summary -->
+                        <div asp-validation-summary="All" class="alert alert-danger validation-summary" role="alert" style="display: none;">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-exclamation-circle fa-lg text-danger"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="alert-heading mb-2">Please correct the following errors:</h6>
+                                    <ul class="mb-0 small"></ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Success Message -->
+                        @if (Model.CodeSent)
+                        {
+                            <div class="alert alert-success border-0 mb-4" role="alert">
+                                <div class="d-flex align-items-start">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-paper-plane fa-lg text-success"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="alert-heading mb-2">Code Sent!</h6>
+                                        <p class="mb-0 small">
+                                            A 6-digit verification code has been sent to <strong>@Model.Email</strong>. 
+                                            The code will expire in 10 minutes.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Info Message -->
+                        <div class="alert alert-info border-0 mb-4" role="alert">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-shield-alt fa-lg text-info"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="alert-heading mb-2">Secure Alternative</h6>
+                                    <p class="mb-0 small">
+                                        Since you don't have access to your authenticator app, we've sent a one-time verification code to your registered email address as a secure alternative.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Email Display -->
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">
+                                <i class="fas fa-envelope me-2"></i>Verification code sent to:
+                            </label>
+                            <div class="form-control-plaintext fw-bold">@Model.Email</div>
+                        </div>
+
+                        <!-- Verification Code Field -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="OneTimeCode" 
+                                   type="text"
+                                   class="form-control text-center" 
+                                   id="oneTimeCode" 
+                                   placeholder="000000"
+                                   autocomplete="one-time-code"
+                                   inputmode="numeric"
+                                   pattern="[0-9]{6}"
+                                   maxlength="6"
+                                   style="font-size: 1.5rem; letter-spacing: 0.5rem; font-family: 'Courier New', monospace;"
+                                   required />
+                            <label for="oneTimeCode">
+                                <i class="fas fa-key me-2 text-muted"></i>Verification Code
+                            </label>
+                            <span asp-validation-for="OneTimeCode" class="invalid-feedback"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg py-3" id="submitBtn">
+                                <span class="btn-text">
+                                    <i class="fas fa-sign-in-alt me-2"></i>
+                                    Verify & Sign In
+                                </span>
+                                <span class="btn-loading" style="display: none;">
+                                    <i class="fas fa-spinner fa-spin me-2"></i>
+                                    Verifying...
+                                </span>
+                            </button>
+                        </div>
+
+                        <!-- Resend Code Section -->
+                        <div class="text-center">
+                            <div class="border-top pt-3">
+                                <p class="text-muted small mb-2">
+                                    <i class="fas fa-clock me-1"></i>
+                                    Didn't receive the code?
+                                </p>
+                                <button type="button" class="btn btn-link text-decoration-none p-0" id="resendBtn">
+                                    <i class="fas fa-redo me-1"></i>Send a new code
+                                </button>
+                                <div id="resendCooldown" class="text-muted small mt-2" style="display: none;">
+                                    Please wait <span id="cooldownTimer">60</span> seconds before requesting a new code.
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Security Info -->
+            <div class="text-center mt-4">
+                <small class="text-muted">
+                    <i class="fas fa-shield-alt me-1"></i>
+                    This code is valid for 10 minutes and can only be used once
+                </small>
             </div>
         </div>
     </div>
-    
-    <button type="submit" class="btn btn-primary">Log in <i class="fas fa-check ml-1"></i></button>
-</form>
+</div>
 
 @section Scripts {
-    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <style>
+        /* Enhanced form validation styles */
+        .form-control.is-valid {
+            border-color: #198754;
+            box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.15);
+        }
+        
+        .form-control.is-invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
+        }
+        
+        /* Subtle glow effect for focused fields */
+        .form-floating > .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15), 0 0 10px rgba(13, 110, 253, 0.1);
+        }
+        
+        /* Button hover effects */
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+            transition: all 0.2s ease;
+        }
+        
+        /* Verification code input styling */
+        #oneTimeCode {
+            font-weight: 600;
+        }
+        
+        #oneTimeCode:focus {
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15), 0 0 15px rgba(13, 110, 253, 0.2);
+        }
+        
+        /* Pulse animation for the envelope icon */
+        .fa-envelope-open-text {
+            animation: pulse 2s infinite;
+        }
+        
+        @@keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        /* Resend button styling */
+        .btn-link:hover {
+            text-decoration: underline !important;
+        }
+    </style>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const codeInput = document.getElementById('oneTimeCode');
+            const form = document.querySelector('form');
+            const submitBtn = document.getElementById('submitBtn');
+            const resendBtn = document.getElementById('resendBtn');
+            const resendCooldown = document.getElementById('resendCooldown');
+            const cooldownTimer = document.getElementById('cooldownTimer');
+            const validationSummary = document.querySelector('.validation-summary');
+            
+            let cooldownActive = false;
+            let cooldownSeconds = 0;
+            
+            // Auto-focus the code input
+            codeInput.focus();
+            
+            // Form submission handling
+            form.addEventListener('submit', function(e) {
+                showLoadingState(submitBtn);
+            });
+            
+            // Enhanced validation summary display
+            function updateValidationSummary() {
+                if (!validationSummary) return;
+                
+                const existingErrors = validationSummary.querySelectorAll('li');
+                const hasServerErrors = existingErrors.length > 0 && 
+                    Array.from(existingErrors).some(li => li.textContent.trim().length > 0);
+                
+                if (hasServerErrors) {
+                    validationSummary.style.display = 'block';
+                } else {
+                    validationSummary.style.display = 'none';
+                }
+            }
+            
+            // Call validation summary update on page load
+            updateValidationSummary();
+            
+            function showLoadingState(button) {
+                const btnText = button.querySelector('.btn-text');
+                const btnLoading = button.querySelector('.btn-loading');
+                
+                if (btnText && btnLoading) {
+                    btnText.style.display = 'none';
+                    btnLoading.style.display = 'inline';
+                    button.disabled = true;
+                }
+            }
+            
+            // Verification code input handling
+            codeInput.addEventListener('input', function(e) {
+                // Only allow numeric input
+                this.value = this.value.replace(/[^0-9]/g, '');
+                
+                // Auto-submit when 6 digits are entered
+                if (this.value.length === 6) {
+                    // Add a small delay to allow user to see the complete code
+                    setTimeout(() => {
+                        validateCode.call(this);
+                        if (this.classList.contains('is-valid')) {
+                            form.submit();
+                        }
+                    }, 300);
+                } else {
+                    // Reset validation state for incomplete codes
+                    this.classList.remove('is-valid', 'is-invalid');
+                }
+            });
+            
+            // Code validation
+            codeInput.addEventListener('blur', validateCode);
+            
+            function validateCode() {
+                const code = this.value;
+                
+                if (code.length === 0) {
+                    this.classList.remove('is-valid', 'is-invalid');
+                    return;
+                }
+                
+                // Validate 6-digit numeric code
+                const isValid = /^[0-9]{6}$/.test(code);
+                
+                if (isValid) {
+                    this.classList.add('is-valid');
+                    this.classList.remove('is-invalid');
+                } else {
+                    this.classList.add('is-invalid');
+                    this.classList.remove('is-valid');
+                }
+            }
+            
+            // Handle paste events for codes
+            codeInput.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const paste = (e.clipboardData || window.clipboardData).getData('text');
+                const numericPaste = paste.replace(/[^0-9]/g, '').substring(0, 6);
+                this.value = numericPaste;
+                
+                // Trigger input event to handle validation and auto-submit
+                this.dispatchEvent(new Event('input'));
+            });
+            
+            // Resend code functionality
+            resendBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (cooldownActive) {
+                    return;
+                }
+                
+                // Show loading state
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Sending...';
+                this.disabled = true;
+                
+                // Make AJAX request to resend code
+                fetch('@Url.Action("ResendOneTimeCode", "Account")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: 'returnUrl=@ViewData["ReturnUrl"]'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success message
+                        showTemporaryMessage('success', data.message);
+                        
+                        // Start cooldown
+                        startResendCooldown(60);
+                        
+                        // Clear and focus input
+                        codeInput.value = '';
+                        codeInput.classList.remove('is-valid', 'is-invalid');
+                        codeInput.focus();
+                    } else {
+                        showTemporaryMessage('error', data.message);
+                        resetResendButton();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showTemporaryMessage('error', 'Failed to send verification code. Please try again.');
+                    resetResendButton();
+                });
+            });
+            
+            function startResendCooldown(seconds) {
+                cooldownActive = true;
+                cooldownSeconds = seconds;
+                
+                resendBtn.style.display = 'none';
+                resendCooldown.style.display = 'block';
+                
+                const interval = setInterval(() => {
+                    cooldownSeconds--;
+                    cooldownTimer.textContent = cooldownSeconds;
+                    
+                    if (cooldownSeconds <= 0) {
+                        clearInterval(interval);
+                        cooldownActive = false;
+                        resendBtn.style.display = 'inline';
+                        resendCooldown.style.display = 'none';
+                        resetResendButton();
+                    }
+                }, 1000);
+            }
+            
+            function resetResendButton() {
+                resendBtn.innerHTML = '<i class="fas fa-redo me-1"></i>Send a new code';
+                resendBtn.disabled = false;
+            }
+            
+            function showTemporaryMessage(type, message) {
+                // Create temporary alert
+                const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+                const iconClass = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+                
+                const alertHtml = `
+                    <div class="alert ${alertClass} alert-dismissible fade show mt-3" role="alert">
+                        <i class="fas ${iconClass} me-2"></i>
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                
+                // Insert after the form
+                form.insertAdjacentHTML('afterend', alertHtml);
+                
+                // Auto-dismiss after 5 seconds
+                setTimeout(() => {
+                    const alert = document.querySelector('.alert-dismissible');
+                    if (alert) {
+                        alert.remove();
+                    }
+                }, 5000);
+            }
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Focus code input when user starts typing numbers
+                if (/^[0-9]$/.test(e.key) && document.activeElement !== codeInput) {
+                    codeInput.focus();
+                }
+                
+                // Clear code input with Escape key
+                if (e.key === 'Escape' && document.activeElement === codeInput) {
+                    codeInput.value = '';
+                    codeInput.classList.remove('is-valid', 'is-invalid');
+                }
+            });
+        });
+    </script>
 }

@@ -1,37 +1,428 @@
-﻿@model RegisterViewModel
+@model RegisterViewModel
 @{
     ViewData["Title"] = "Register";
 }
 
-<h2 class="my-3">@ViewData["Title"]</h2>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+            <div class="text-center mb-4">
+                <h1 class="h3 mb-2 font-weight-normal">Create Account</h1>
+                <p class="text-muted">Join Ribosoft to start designing ribozymes</p>
+            </div>
 
-<form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
-    <div class="card box-shadow my-3">
-        <div class="card-body">
-            <h5 class="card-title border-bottom border-gray pb-2 mb-3">Create a new account</h5>
-        
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Email"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ConfirmPassword"></label>
-                <input asp-for="ConfirmPassword" class="form-control" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            <!-- Success Message -->
+            @if (ViewData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <div class="d-flex align-items-start">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-envelope-check fa-lg text-success"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="alert-heading mb-2">Registration Successful!</h6>
+                            <p class="mb-2">@ViewData["SuccessMessage"]</p>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <small class="text-success">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Check your email inbox (and spam folder) for the confirmation link.
+                                </small>
+                            </div>
+                            <div class="mt-3">
+                                <a asp-action="Login" class="btn btn-sm btn-outline-success me-2 smooth-link">
+                                    <i class="fas fa-sign-in-alt me-1"></i>
+                                    Go to Login
+                                </a>
+                                <small class="text-muted">
+                                    (Sign in after confirming your email)
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" novalidate>
+                        <!-- Error Summary -->
+                        <div asp-validation-summary="All" class="alert alert-danger validation-summary" role="alert" style="display: none;">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-exclamation-circle fa-lg text-danger"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="alert-heading mb-2">Please correct the following errors:</h6>
+                                    <ul class="mb-0 small"></ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Email Field -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="Email" 
+                                   type="email"
+                                   class="form-control" 
+                                   id="email" 
+                                   placeholder="name@example.com"
+                                   autocomplete="email"
+                                   required />
+                            <label for="email">
+                                <i class="fas fa-envelope me-2 text-muted"></i>Email Address
+                            </label>
+                            <span asp-validation-for="Email" class="invalid-feedback"></span>
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="form-floating mb-3">
+                            <div class="input-group">
+                                <div class="form-floating flex-grow-1">
+                                    <input asp-for="Password" 
+                                           class="form-control" 
+                                           id="password" 
+                                           placeholder="Password"
+                                           type="password"
+                                           autocomplete="new-password"
+                                           required />
+                                    <label for="password">
+                                        <i class="fas fa-lock me-2 text-muted"></i>Password
+                                    </label>
+                                </div>
+                                <button type="button" class="btn btn-outline-secondary password-toggle" data-target="Password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Password" class="invalid-feedback"></span>
+                            
+                            <!-- Password Strength Indicator -->
+                            <div class="password-strength mt-2" id="passwordStrength" style="display: none;">
+                                <div class="strength-bar">
+                                    <div class="strength-fill" id="strengthFill"></div>
+                                </div>
+                                <div class="strength-text mt-1">
+                                    <small id="strengthText" class="text-muted">Password strength: <span id="strengthLevel">Weak</span></small>
+                                </div>
+                            </div>
+
+                            <!-- Password Requirements -->
+                            <div class="password-requirements mt-2">
+                                <small class="text-muted">Password must contain:</small>
+                                <ul class="requirements-list mt-1">
+                                    <li id="req-length" class="requirement">
+                                        <i class="fas fa-times text-danger me-1"></i>
+                                        At least 6 characters
+                                    </li>
+                                    <li id="req-uppercase" class="requirement">
+                                        <i class="fas fa-times text-danger me-1"></i>
+                                        One uppercase letter
+                                    </li>
+                                    <li id="req-lowercase" class="requirement">
+                                        <i class="fas fa-times text-danger me-1"></i>
+                                        One lowercase letter
+                                    </li>
+                                    <li id="req-number" class="requirement">
+                                        <i class="fas fa-times text-danger me-1"></i>
+                                        One digit (0-9)
+                                    </li>
+                                    <li id="req-nonalpha" class="requirement">
+                                        <i class="fas fa-times text-danger me-1"></i>
+                                        One non-alphanumeric character (!@@#$%^&amp;*)
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Confirm Password Field -->
+                        <div class="form-floating mb-4">
+                            <div class="input-group">
+                                <div class="form-floating flex-grow-1">
+                                    <input asp-for="ConfirmPassword" 
+                                           class="form-control" 
+                                           id="confirmPassword" 
+                                           placeholder="Confirm Password"
+                                           type="password"
+                                           autocomplete="new-password"
+                                           required />
+                                    <label for="confirmPassword">
+                                        <i class="fas fa-lock me-2 text-muted"></i>Confirm Password
+                                    </label>
+                                </div>
+                                <button type="button" class="btn btn-outline-secondary password-toggle" data-target="ConfirmPassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="ConfirmPassword" class="invalid-feedback"></span>
+                            <div class="password-match mt-2" id="passwordMatch" style="display: none;">
+                                <small id="matchText" class="text-muted">
+                                    <i class="fas fa-times text-danger me-1"></i>
+                                    Passwords do not match
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg py-3" id="submitBtn">
+                                <span class="btn-text">
+                                    <i class="fas fa-user-plus me-2"></i>
+                                    Create Account
+                                </span>
+                                <span class="btn-loading" style="display: none;">
+                                    <i class="fas fa-spinner fa-spin me-2"></i>
+                                    Creating Account...
+                                </span>
+                            </button>
+                        </div>
+
+                        <!-- Login Link -->
+                        <div class="text-center">
+                            <p class="mb-0 text-muted">
+                                Already have an account? 
+                                <a asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" class="text-decoration-none smooth-link">
+                                    Sign in here
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-    
-    <button type="submit" class="btn btn-primary">Register <i class="fas fa-check ml-1"></i></button>
-</form>
+</div>
 
-@section Scripts {
-    @await Html.PartialAsync("_ValidationScriptsPartial")
-}
+<style>
+    /* Password-specific styling to match ChangePassword page */
+    .input-group .form-floating {
+        flex: 1;
+    }
+
+    .input-group .form-floating > label {
+        z-index: 4;
+    }
+
+    .password-toggle {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        min-width: 45px;
+    }
+
+    .password-toggle:hover {
+        background-color: #f8f9fa;
+    }
+
+    /* Password Strength Indicator */
+    .password-strength {
+        margin-top: 0.5rem;
+    }
+
+    .strength-bar {
+        height: 4px;
+        background-color: #e9ecef;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .strength-fill {
+        height: 100%;
+        width: 0%;
+        transition: all 0.3s ease;
+        border-radius: 2px;
+    }
+
+    .strength-fill.weak { background-color: #dc3545; width: 20%; }
+    .strength-fill.fair { background-color: #fd7e14; width: 40%; }
+    .strength-fill.good { background-color: #ffc107; width: 80%; }
+    .strength-fill.strong { background-color: #198754; width: 100%; }
+
+    /* Password Requirements */
+    .requirements-list {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 0;
+    }
+
+    .requirement {
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+        transition: all 0.2s ease;
+    }
+
+    .requirement.met i {
+        color: #198754 !important;
+    }
+
+    .requirement.met i:before {
+        content: "\f00c";
+    }
+
+    /* Password Match Indicator */
+    .password-match {
+        transition: all 0.2s ease;
+    }
+
+    .password-match.match #matchText {
+        color: #198754 !important;
+    }
+
+    .password-match.match i {
+        color: #198754 !important;
+    }
+
+    .password-match.match i:before {
+        content: "\f00c";
+    }
+
+    @@media (max-width: 576px) {
+        .password-toggle {
+            min-width: 40px;
+        }
+    }
+</style>
+
+<script>
+    (function() {
+        'use strict';
+        
+        // Password visibility toggle functionality
+        document.querySelectorAll('.password-toggle').forEach(button => {
+            button.addEventListener('click', function() {
+                const targetName = this.getAttribute('data-target');
+                const input = document.querySelector(`input[name="${targetName}"]`);
+                const icon = this.querySelector('i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.className = 'fas fa-eye-slash';
+                    this.setAttribute('aria-label', 'Hide password');
+                } else {
+                    input.type = 'password';
+                    icon.className = 'fas fa-eye';
+                    this.setAttribute('aria-label', 'Show password');
+                }
+            });
+        });
+
+        // Password strength checker
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const strengthIndicator = document.getElementById('passwordStrength');
+        const strengthFill = document.getElementById('strengthFill');
+        const strengthText = document.getElementById('strengthLevel');
+        const passwordMatch = document.getElementById('passwordMatch');
+        const matchText = document.getElementById('matchText');
+
+        // Password requirements elements
+        const requirements = {
+            length: document.getElementById('req-length'),
+            uppercase: document.getElementById('req-uppercase'),
+            lowercase: document.getElementById('req-lowercase'),
+            number: document.getElementById('req-number'),
+            nonalpha: document.getElementById('req-nonalpha')
+        };
+
+        function checkPasswordStrength(password) {
+            let score = 0;
+            const checks = {
+                length: password.length >= 6,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /\d/.test(password),
+                nonalpha: /[^a-zA-Z0-9]/.test(password)
+            };
+
+            // Update requirement indicators
+            Object.keys(checks).forEach(key => {
+                if (requirements[key]) {
+                    if (checks[key]) {
+                        requirements[key].classList.add('met');
+                        score++;
+                    } else {
+                        requirements[key].classList.remove('met');
+                    }
+                }
+            });
+
+            // Calculate strength
+            let strength = 'weak';
+            let strengthClass = 'weak';
+            
+            if (score === 5) {
+                strength = 'Strong';
+                strengthClass = 'strong';
+            } else if (score === 4) {
+                strength = 'Good';
+                strengthClass = 'good';
+            } else if (score >= 3) {
+                strength = 'Fair';
+                strengthClass = 'fair';
+            } else {
+                strength = 'Weak';
+                strengthClass = 'weak';
+            }
+
+            // Update UI
+            strengthFill.className = `strength-fill ${strengthClass}`;
+            strengthText.textContent = strength;
+            
+            return score >= 4;
+        }
+
+        function checkPasswordMatch() {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            
+            if (confirmPassword.length > 0) {
+                passwordMatch.style.display = 'block';
+                if (password === confirmPassword) {
+                    passwordMatch.classList.add('match');
+                    matchText.innerHTML = '<i class="fas fa-check text-success me-1"></i>Passwords match';
+                    return true;
+                } else {
+                    passwordMatch.classList.remove('match');
+                    matchText.innerHTML = '<i class="fas fa-times text-danger me-1"></i>Passwords do not match';
+                    return false;
+                }
+            } else {
+                passwordMatch.style.display = 'none';
+                return false;
+            }
+        }
+
+        // Event listeners
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            
+            if (password.length > 0) {
+                strengthIndicator.style.display = 'block';
+                checkPasswordStrength(password);
+            } else {
+                strengthIndicator.style.display = 'none';
+            }
+            
+            if (confirmPasswordInput.value.length > 0) {
+                checkPasswordMatch();
+            }
+        });
+
+        confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+
+        // Form submission with loading state
+        document.querySelector('form').addEventListener('submit', function() {
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
+            
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline';
+            submitBtn.disabled = true;
+        });
+
+        // Initialize accessibility
+        document.querySelectorAll('.password-toggle').forEach(button => {
+            button.setAttribute('aria-label', 'Show password');
+            button.setAttribute('type', 'button');
+        });
+    })();
+</script>

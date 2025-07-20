@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -38,6 +37,11 @@ namespace Ribosoft.Controllers
          */
         private readonly IEmailSender _emailSender;
 
+        /*! \property _oneTimeCodeService
+         * \brief One-time code service object
+         */
+        private readonly IOneTimeCodeService _oneTimeCodeService;
+
         /*! \property _logger
          * \brief Log service object
          */
@@ -50,11 +54,13 @@ namespace Ribosoft.Controllers
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
+            IOneTimeCodeService oneTimeCodeService,
             ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _oneTimeCodeService = oneTimeCodeService;
             _logger = logger;
         }
 
@@ -105,11 +111,6 @@ namespace Ribosoft.Controllers
                 if (result.RequiresTwoFactor)
                 {
                     return RedirectToAction(nameof(LoginWith2fa), new { returnUrl, model.RememberMe });
-                }
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToAction(nameof(Lockout));
                 }
                 else
                 {
@@ -204,11 +205,6 @@ namespace Ribosoft.Controllers
                 _logger.LogInformation("User with ID {UserId} logged in with 2fa.", user.Id);
                 return RedirectToLocal(returnUrl);
             }
-            else if (result.IsLockedOut)
-            {
-                _logger.LogWarning("User with ID {UserId} account locked out.", user.Id);
-                return RedirectToAction(nameof(Lockout));
-            }
             else
             {
                 _logger.LogWarning("Invalid authenticator code entered for user with ID {UserId}.", user.Id);
@@ -218,9 +214,9 @@ namespace Ribosoft.Controllers
         }
 
         /*!
-         * \brief HTTP GET for logging in with recovery code
+         * \brief HTTP GET for logging in with one-time email code
          * \param returnUrl Return URL
-         * \return View for login with recovery code
+         * \return View for login with one-time code
          */
         [HttpGet]
         [AllowAnonymous]
@@ -233,13 +229,23 @@ namespace Ribosoft.Controllers
                 throw new ApplicationException($"Unable to load two-factor authentication user.");
             }
 
-            ViewData["ReturnUrl"] = returnUrl;
+            // Generate and send the one-time code
+            await _oneTimeCodeService.GenerateAndSendCodeAsync(user.Id, user.Email!, "2FA_BYPASS");
 
-            return View();
+            var model = new LoginWithRecoveryCodeViewModel
+            {
+                Email = user.Email!,
+                CodeSent = true,
+                CanResend = true,
+                ResendCooldownSeconds = 0
+            };
+
+            ViewData["ReturnUrl"] = returnUrl;
+            return View(model);
         }
 
         /*!
-         * \brief HTTP POST for logging in with recovery code
+         * \brief HTTP POST for logging in with one-time email code
          * \param model Model object of the login view
          * \param returnUrl Return URL
          * \return View based on result
@@ -260,37 +266,60 @@ namespace Ribosoft.Controllers
                 throw new ApplicationException($"Unable to load two-factor authentication user.");
             }
 
-            var recoveryCode = model.RecoveryCode.Replace(" ", string.Empty);
+            // Validate the one-time code
+            var isValidCode = await _oneTimeCodeService.ValidateCodeAsync(user.Id, model.OneTimeCode, "2FA_BYPASS");
 
-            var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
-
-            if (result.Succeeded)
+            if (isValidCode)
             {
-                _logger.LogInformation("User with ID {UserId} logged in with a recovery code.", user.Id);
+                // Sign in the user (similar to 2FA recovery code sign-in)
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                
+                _logger.LogInformation("User with ID {UserId} logged in with a one-time email code.", user.Id);
                 return RedirectToLocal(returnUrl);
-            }
-            if (result.IsLockedOut)
-            {
-                _logger.LogWarning("User with ID {UserId} account locked out.", user.Id);
-                return RedirectToAction(nameof(Lockout));
             }
             else
             {
-                _logger.LogWarning("Invalid recovery code entered for user with ID {UserId}", user.Id);
-                ModelState.AddModelError(string.Empty, "Invalid recovery code entered.");
-                return View();
+                _logger.LogWarning("Invalid one-time code entered for user with ID {UserId}", user.Id);
+                ModelState.AddModelError(string.Empty, "Invalid or expired verification code. Please try again or request a new code.");
+                
+                // Prepare model for re-display
+                model.Email = user.Email!;
+                model.CodeSent = true;
+                model.CanResend = true;
+                model.ResendCooldownSeconds = 0;
+                
+                return View(model);
             }
         }
 
-        /*! \fn Lockout
-         * \brief HTTP GET for lockout page
-         * \return View for lockout of user
+        /*!
+         * \brief HTTP POST for resending one-time email code
+         * \param returnUrl Return URL
+         * \return JSON result indicating success/failure
          */
-        [HttpGet]
+        [HttpPost]
         [AllowAnonymous]
-        public IActionResult Lockout()
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResendOneTimeCode(string? returnUrl = null)
         {
-            return View();
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user == null)
+            {
+                return Json(new { success = false, message = "Session expired. Please start over." });
+            }
+
+            try
+            {
+                await _oneTimeCodeService.GenerateAndSendCodeAsync(user.Id, user.Email!, "2FA_BYPASS");
+                _logger.LogInformation("One-time code resent for user with ID {UserId}", user.Id);
+                
+                return Json(new { success = true, message = "A new verification code has been sent to your email." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to resend one-time code for user with ID {UserId}", user.Id);
+                return Json(new { success = false, message = "Failed to send verification code. Please try again." });
+            }
         }
 
         /*!
@@ -335,8 +364,9 @@ namespace Ribosoft.Controllers
                     var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
                     await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToLocal(returnUrl);
+                    // Show success message with email confirmation instruction
+                    ViewData["SuccessMessage"] = "Your account has been created successfully! Please check your email and click the confirmation link to activate your account before signing in.";
+                    return View(new RegisterViewModel()); // Return empty model for clean form
                 }
                 AddErrors(result);
             }
@@ -356,103 +386,6 @@ namespace Ribosoft.Controllers
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
             return RedirectToAction(nameof(HomeController.Index), "Home");
-        }
-
-        /*! \fn ExternalLogin
-         * \brief HTTP POST for logging in as an account externally
-         * \param provider External provider string
-         * \param returnUrl Return URL
-         * \return View based on result
-         */
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public IActionResult ExternalLogin(string provider, string? returnUrl = null)
-        {
-            // Request a redirect to the external login provider.
-            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { returnUrl });
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
-            return Challenge(properties, provider);
-        }
-
-        /*! \fn ExternalLoginCallback
-         * \brief HTTP GET for callback of external login
-         * \param returnUrl Return URL
-         * \param remoteError String for errors from external login
-         * \return View based on result
-         */
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
-        {
-            if (remoteError != null)
-            {
-                ErrorMessage = $"Error from external provider: {remoteError}";
-                return RedirectToAction(nameof(Login));
-            }
-            var info = await _signInManager.GetExternalLoginInfoAsync();
-            if (info == null)
-            {
-                return RedirectToAction(nameof(Login));
-            }
-
-            // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
-            if (result.Succeeded)
-            {
-                _logger.LogInformation("User logged in with {Name} provider.", info.LoginProvider);
-                return RedirectToLocal(returnUrl);
-            }
-            if (result.IsLockedOut)
-            {
-                return RedirectToAction(nameof(Lockout));
-            }
-            else
-            {
-                // If the user does not have an account, then ask the user to create an account.
-                ViewData["ReturnUrl"] = returnUrl;
-                ViewData["LoginProvider"] = info.LoginProvider;
-                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                return View("ExternalLogin", new ExternalLoginViewModel { Email = email });
-            }
-        }
-
-        /*! \fn ExternalLoginConfirmation
-         * \brief HTTP POST for confirming logging in externally
-         * \param model Model object of the login view
-         * \param returnUrl Return URL
-         * \return View based on result
-         */
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginViewModel model, string? returnUrl = null)
-        {
-            if (ModelState.IsValid)
-            {
-                // Get the information about the user from the external login provider
-                var info = await _signInManager.GetExternalLoginInfoAsync();
-                if (info == null)
-                {
-                    throw new ApplicationException("Error loading external login information during confirmation.");
-                }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await _userManager.CreateAsync(user);
-                if (result.Succeeded)
-                {
-                    result = await _userManager.AddLoginAsync(user, info);
-                    if (result.Succeeded)
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
-                        return RedirectToLocal(returnUrl);
-                    }
-                }
-                AddErrors(result);
-            }
-
-            ViewData["ReturnUrl"] = returnUrl;
-            return View(nameof(ExternalLogin), model);
         }
 
         /*! \fn ConfirmEmail
@@ -512,8 +445,7 @@ namespace Ribosoft.Controllers
                 // visit https://go.microsoft.com/fwlink/?LinkID=532713
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var callbackUrl = Url.ResetPasswordCallbackLink(user.Id, code, Request.Scheme);
-                await _emailSender.SendEmailAsync(model.Email, "Reset Password",
-                   $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
+                await _emailSender.SendPasswordResetAsync(model.Email, callbackUrl);
                 return RedirectToAction(nameof(ForgotPasswordConfirmation));
             }
 
@@ -539,13 +471,25 @@ namespace Ribosoft.Controllers
          */
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult ResetPassword(string? code = null)
+        public async Task<IActionResult> ResetPassword(string? userId = null, string? code = null)
         {
             if (code == null)
             {
                 throw new ApplicationException("A code must be supplied for password reset.");
             }
+            
             var model = new ResetPasswordViewModel { Code = code };
+            
+            // If userId is provided, look up the user and populate the email
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user != null)
+                {
+                    model.Email = user.Email ?? string.Empty;
+                }
+            }
+            
             return View(model);
         }
 
@@ -575,7 +519,7 @@ namespace Ribosoft.Controllers
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
             AddErrors(result);
-            return View();
+            return View(model);
         }
 
         /*! \fn ResetPasswordConfirmation
@@ -585,16 +529,6 @@ namespace Ribosoft.Controllers
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ResetPasswordConfirmation()
-        {
-            return View();
-        }
-
-        /*! \fn AccessDenied
-         * \brief HTTP GET for access denied view
-         * \return View for login page
-         */
-        [HttpGet]
-        public IActionResult AccessDenied()
         {
             return View();
         }

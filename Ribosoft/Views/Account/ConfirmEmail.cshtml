@@ -1,13 +1,63 @@
 ﻿@{
-    ViewData["Title"] = "Confirm email";
+    ViewData["Title"] = "Email Confirmed";
 }
 
-<h2 class="my-3">@ViewData["Title"]</h2>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+            <div class="text-center mb-4">
+                <h1 class="h3 mb-2 font-weight-normal">Email Confirmed!</h1>
+                <p class="text-muted">Your account is now fully activated</p>
+            </div>
 
-<div class="card box-shadow my-3">
-    <div class="card-body">
-        <p>
-            Thank you for confirming your email.
-        </p>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 text-center">
+                    <!-- Success Icon -->
+                    <div class="mb-4">
+                        <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                            <i class="fas fa-check fa-2x text-success"></i>
+                        </div>
+                    </div>
+
+                    <!-- Success Message -->
+                    <h5 class="fw-bold text-dark mb-3">Welcome to Ribosoft!</h5>
+                    <p class="text-muted mb-4">
+                        Thank you for confirming your email address. Your Ribosoft account is now fully activated and you can access all features.
+                    </p>
+
+                    <!-- Action Button -->
+                    <div class="d-grid mb-3">
+                        <a asp-action="Login" class="btn btn-primary btn-lg py-3">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            Sign In to Your Account
+                        </a>
+                    </div>
+
+                    <!-- Additional Info -->
+                    <div class="text-center">
+                        <p class="mb-0 text-muted small">
+                            Your account is now ready to use. Sign in to start designing ribozymes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Getting Started -->
+            <div class="mt-4">
+                <div class="card border-0 bg-light">
+                    <div class="card-body p-3">
+                        <h6 class="fw-bold text-dark mb-2">
+                            <i class="fas fa-rocket me-2 text-primary"></i>
+                            Getting Started
+                        </h6>
+                        <ul class="small text-muted mb-0 ps-3">
+                            <li>Explore ribozyme templates in the library</li>
+                            <li>Submit your first design request</li>
+                            <li>Download and analyze your results</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

@@ -1,9 +1,266 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    ViewData["FullWidth"] = true;
 }
 
-<div class="cover-page d-flex flex-column justify-content-center">
-    <div class="helix"></div>
-    <h1 class="display-1">Welcome to <strong>Ribosoft</strong></h1>
-    <h2>A web service for designing cleaving ribozymes</h2>
+<div class="landing-page">
+    <!-- Full-Screen DNA Double Helix -->
+    <div class="dna-helix-container">
+        <div class="material">
+            @for (int i = 1; i <= 50; i++)
+            {
+                <div class="dna" style="animation-delay: -@(i * 0.1)s;"></div>
+            }
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="landing-content">
+        <h1 class="display-1">Welcome to <strong>Ribosoft<span class="version-badge">2.0</span></strong></h1>
+        <h2>A web service for designing cleaving ribozymes</h2>
+        <div class="landing-actions">
+            <a href="/Request" class="btn btn-primary btn-lg">
+                <i class="fas fa-rocket me-2"></i>Start Designing
+            </a>
+            <a href="/Jobs" class="btn btn-success btn-lg">
+                <i class="fas fa-list me-2"></i>View Jobs
+            </a>
+        </div>
+    </div>
 </div>
+
+<style>
+/* Prevent overflow on main element */
+main {
+    overflow: hidden !important;
+    position: relative;
+}
+
+/* Full-Screen DNA Helix Animation */
+.dna-helix-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    opacity: 0.25;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.material {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform-style: preserve-3d;
+    transform: rotateZ(-25deg);
+    width: 100%;
+    height: 100%;
+}
+
+@@keyframes rotate {
+    0% {
+        transform: rotateX(0deg);
+    }
+    100% {
+        transform: rotateX(360deg);
+    }
+}
+
+.dna { /* DNA strand line */
+    position: relative;
+    width: 2px;
+    height: 150px;
+    border: 2px dotted #555;
+    box-shadow: 0 0 12px rgba(85, 85, 85, 0.4);
+    background: transparent;
+    margin: 0px 15px;
+    animation: rotate 5s linear infinite;
+}
+
+.dna::before { /* Top nucleotide */
+    content: "";
+    position: absolute;
+    top: -4px;
+    left: -7px;
+    width: 14px;
+    height: 14px;
+    background: #dc3545;
+    border-radius: 50%;
+    box-shadow: 0 0 12px rgba(220, 53, 69, 0.6);
+}
+
+.dna::after { /* Bottom nucleotide */
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: -7px;
+    width: 14px;
+    height: 14px;
+    background: #007bff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.6);
+}
+
+/* Landing content styling - consistent with existing app */
+.landing-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    padding: 2rem;
+}
+
+.landing-content h1 {
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+/* Version badge - elegant grey styling */
+.version-badge {
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    margin-left: 0.5rem;
+    vertical-align: super;
+    border: 1px solid #495057;
+    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+    font-weight: 600;
+    text-shadow: none;
+    position: relative;
+    top: -0.8em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.landing-content h2 {
+    margin-bottom: 2rem;
+    font-weight: 300;
+    opacity: 0.9;
+}
+
+.landing-actions {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.landing-actions .btn {
+    min-width: 200px;
+    font-weight: 500;
+    text-shadow: none;
+    transition: all 0.3s ease;
+}
+
+/* Button styling for light background */
+.btn-success {
+    background-color: rgba(40, 167, 69, 0.9) !important;
+    border-color: rgba(40, 167, 69, 1) !important;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.btn-success:hover {
+    background-color: rgba(40, 167, 69, 1) !important;
+    border-color: rgba(40, 167, 69, 1) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+}
+
+.btn-primary {
+    background-color: rgba(0, 123, 255, 0.9) !important;
+    border-color: rgba(0, 123, 255, 1) !important;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.btn-primary:hover {
+    background-color: rgba(0, 123, 255, 1) !important;
+    border-color: rgba(0, 123, 255, 1) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+}
+
+/* Responsive adjustments */
+@@media (max-width: 768px) {
+    .dna {
+        height: 120px;
+        margin: 0px 12px;
+    }
+    
+    .landing-content h1 {
+        font-size: 3rem;
+    }
+    
+    .version-badge {
+        font-size: 1.2rem;
+        margin-left: 0.4rem;
+        padding: 0.15rem 0.5rem;
+        top: -0.6em;
+    }
+    
+    .landing-content h2 {
+        font-size: 2rem;
+    }
+    
+    .landing-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .landing-actions .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@@media (max-width: 480px) {
+    .dna {
+        height: 100px;
+        margin: 0px 10px;
+    }
+    
+    .landing-content h1 {
+        font-size: 2.5rem;
+    }
+    
+    .version-badge {
+        font-size: 1rem;
+        margin-left: 0.3rem;
+        padding: 0.1rem 0.4rem;
+        top: -0.5em;
+    }
+    
+    .landing-content h2 {
+        font-size: 1.5rem;
+    }
+}
+
+@@media (min-width: 1200px) {
+    .dna {
+        height: 180px;
+        margin: 0px 18px;
+    }
+}
+
+@@media (min-width: 1600px) {
+    .dna {
+        height: 200px;
+        margin: 0px 20px;
+    }
+}
+</style>

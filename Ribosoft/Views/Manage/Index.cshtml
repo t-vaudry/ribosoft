@@ -1,55 +1,282 @@
-﻿@model IndexViewModel
+@model IndexViewModel
 @{
-    ViewData["Title"] = "Profile";
+    ViewData["Title"] = "Profile Settings";
     ViewData.AddActivePage(ManageNavPages.Index);
 }
 
 @await Html.PartialAsync("_StatusMessage", Model.StatusMessage)
 
-<form method="post">
-    <div class="card box-shadow">
-        <div class="card-body">
-            <h5 class="card-title border-bottom border-gray pb-2 mb-3">@ViewData["Title"]</h5>
+<div class="profile-content">
+    <!-- Profile Form -->
+    <form method="post">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="All" class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Please correct the following errors:</strong>
+            </div>
+        }
 
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Username"></label>
-                <input asp-for="Username" class="form-control" disabled />
+        <!-- Username Section -->
+        <div class="form-section mb-4">
+            <div class="form-floating">
+                <input asp-for="Username" class="form-control bg-light" disabled readonly />
+                <label asp-for="Username" class="form-label">
+                    <i class="fas fa-user me-2 text-muted"></i>Username
+                </label>
+                <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Your username cannot be changed
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Email"></label>
-                @if (Model.IsEmailConfirmed)
-                {
-                    <div class="input-group">
-                        <input asp-for="Email" class="form-control" />
-                        <div class="input-group-append">
-                            <span class="input-group-text">Verified <i class="fas fa-check ml-1"></i></span>
-                        </div>
+        </div>
+
+        <!-- Email Section -->
+        <div class="form-section mb-4">
+            <label asp-for="Email" class="form-label fw-semibold">
+                <i class="fas fa-envelope me-2 text-primary"></i>Email Address
+            </label>
+            
+            @if (Model.IsEmailConfirmed)
+            {
+                <div class="input-group">
+                    <div class="form-floating flex-grow-1">
+                        <input asp-for="Email" class="form-control" placeholder="Enter your email" />
+                        <label asp-for="Email">Email Address</label>
                     </div>
-                }
-                else
-                {
-                    <div class="input-group mb-3">
-                        <input asp-for="Email" class="form-control">
-                        <div class="input-group-append">
-                            <a asp-action="SendVerificationEmail" class="btn btn-primary" type="button">Send verification email</a>
-                        </div>
+                    <span class="input-group-text bg-success text-white">
+                        <i class="fas fa-check-circle me-1"></i>Verified
+                    </span>
+                </div>
+                <div class="form-text text-success">
+                    <i class="fas fa-shield-check me-1"></i>
+                    Your email address has been verified
+                </div>
+            }
+            else
+            {
+                <div class="input-group">
+                    <div class="form-floating flex-grow-1">
+                        <input asp-for="Email" class="form-control border-warning" placeholder="Enter your email" />
+                        <label asp-for="Email">Email Address</label>
                     </div>
-                }
-                <span asp-validation-for="Email" class="text-danger"></span>
+                    <a asp-action="SendVerificationEmail" class="btn btn-warning d-flex align-items-center" id="sendVerificationBtn">
+                        <i class="fas fa-paper-plane me-1" id="sendVerificationIcon"></i>
+                        <span class="d-none d-sm-inline" id="sendVerificationText">Send Verification</span>
+                        <span class="d-sm-none" id="sendVerificationTextMobile">Verify</span>
+                    </a>
+                </div>
+                <div class="form-text text-warning">
+                    <i class="fas fa-exclamation-triangle me-1"></i>
+                    Please verify your email address to secure your account
+                </div>
+            }
+            <span asp-validation-for="Email" class="invalid-feedback d-block"></span>
+        </div>
+
+        <!-- Phone Number Section -->
+        <div class="form-section mb-4">
+            <div class="form-floating">
+                <input asp-for="PhoneNumber" class="form-control" placeholder="Enter your phone number" type="tel" />
+                <label asp-for="PhoneNumber" class="form-label">
+                    <i class="fas fa-phone me-2 text-primary"></i>Phone Number (Optional)
+                </label>
+                <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Optional - Used for account recovery and security notifications
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="PhoneNumber"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            <span asp-validation-for="PhoneNumber" class="invalid-feedback d-block"></span>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions d-flex justify-content-between align-items-center pt-3 border-top">
+            <div class="text-muted small">
+                <i class="fas fa-clock me-1"></i>
+                Changes are saved immediately
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-secondary" onclick="resetForm()">
+                    <i class="fas fa-undo me-1"></i>Reset
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i>Save Changes
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Help Section -->
+    <div class="help-section mt-5 pt-4 border-top">
+        <h6 class="mb-3">
+            <i class="fas fa-question-circle me-2 text-info"></i>Need Help?
+        </h6>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="help-item">
+                    <h6 class="small fw-semibold"><i class="fas fa-user me-2"></i>Username</h6>
+                    <p class="small text-muted mb-0">Your username is permanent and cannot be changed. It's used for login and identification.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="help-item">
+                    <h6 class="small fw-semibold"><i class="fas fa-envelope me-2"></i>Email Address</h6>
+                    <p class="small text-muted mb-0">Your email is used for account recovery, notifications, and security alerts. Please keep it verified.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="help-item">
+                    <h6 class="small fw-semibold"><i class="fas fa-phone me-2"></i>Phone Number</h6>
+                    <p class="small text-muted mb-0">Optional field for additional security and account recovery options.</p>
+                </div>
             </div>
         </div>
     </div>
-    <div class="my-3">
-        <button type="submit" class="btn btn-primary">Save <i class="fas fa-check ml-1"></i></button>
-    </div>
-</form>
+</div>
 
-@section Scripts {
-    @await Html.PartialAsync("_ValidationScriptsPartial")
-}
+<style>
+    .profile-content {
+        max-width: 100%;
+    }
+
+    .form-section {
+        position: relative;
+    }
+
+    .form-floating > .form-control:disabled,
+    .form-floating > .form-control[readonly] {
+        background-color: var(--bs-gray-100);
+        opacity: 0.8;
+    }
+
+    .input-group .form-floating {
+        flex: 1;
+    }
+
+    .input-group .form-floating > label {
+        z-index: 4;
+    }
+
+    .input-group .btn {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    .form-actions {
+        margin-top: 2rem;
+    }
+
+    .help-section {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 0.375rem;
+    }
+
+    .help-item {
+        padding: 1rem;
+        background: white;
+        border-radius: 0.375rem;
+        height: 100%;
+        border: 1px solid #e9ecef;
+    }
+
+    .btn-group .btn {
+        min-width: 100px;
+    }
+
+    /* Form validation styling */
+    .was-validated .form-control:valid,
+    .form-control.is-valid {
+        border-color: #198754;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='m2.3 6.73.94-.94 1.38 1.38'/%3e%3c/svg%3e");
+    }
+
+    .was-validated .form-control:invalid,
+    .form-control.is-invalid {
+        border-color: #dc3545;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 4.6 2.4 2.4m0-2.4L5.8 7'/%3e%3c/svg%3e");
+    }
+
+    /* Mobile responsiveness */
+    @@media (max-width: 576px) {
+        .help-item {
+            padding: 0.75rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch !important;
+        }
+
+        .btn-group {
+            width: 100%;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+        }
+    }
+</style>
+
+<script>
+    // Simple UX enhancements
+    (function() {
+        'use strict';
+        
+        // Reset form function
+        window.resetForm = function() {
+            const form = document.querySelector('form');
+            form.reset();
+        };
+        
+        // Auto-save indication (visual feedback)
+        const inputs = document.querySelectorAll('input[type="email"], input[type="tel"]');
+        inputs.forEach(input => {
+            let timeout;
+            input.addEventListener('input', function() {
+                clearTimeout(timeout);
+                this.classList.add('border-warning');
+                
+                timeout = setTimeout(() => {
+                    this.classList.remove('border-warning');
+                }, 1000);
+            });
+        });
+        
+        // Send verification email button enhancement
+        const sendVerificationBtn = document.getElementById('sendVerificationBtn');
+        if (sendVerificationBtn) {
+            sendVerificationBtn.addEventListener('click', function(e) {
+                // Prevent double-clicking
+                if (this.classList.contains('disabled')) {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Show loading state
+                const icon = document.getElementById('sendVerificationIcon');
+                const text = document.getElementById('sendVerificationText');
+                const textMobile = document.getElementById('sendVerificationTextMobile');
+                
+                this.classList.add('disabled');
+                icon.className = 'fas fa-spinner fa-spin me-1';
+                if (text) text.textContent = 'Sending...';
+                if (textMobile) textMobile.textContent = 'Sending...';
+                
+                // Allow the navigation to proceed
+                return true;
+            });
+        }
+        
+        // Ensure phone number is never required on the client side
+        document.addEventListener('DOMContentLoaded', function() {
+            const phoneInput = document.querySelector('input[name="PhoneNumber"]');
+            if (phoneInput) {
+                phoneInput.removeAttribute('required');
+                phoneInput.setAttribute('aria-required', 'false');
+            }
+        });
+    })();
+</script>

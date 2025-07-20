@@ -1,30 +1,212 @@
-﻿@model Ribosoft.Models.RibozymeStructure
+@model Ribosoft.Models.RibozymeStructure
 
 @{
-    ViewData["Title"] = "Edit Ribozyme Structure";
+    ViewData["Title"] = "Edit Structure";
 }
 
-<h2 class="my-3">Edit ribozyme structure</h2>
-
-<form asp-action="Edit">
-    <div class="card my-3 box-shadow">
-        <div class="card-body">
-            <h5 class="card-title border-bottom border-gray pb-2 mb-3">Ribozyme structure</h5>
-
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="RibozymeId" />
-
-            @Html.EditorForModel()
+<div class="container-fluid px-3 px-md-4">
+    <div class="ribozymes-content">
+        <!-- Page Header -->
+        <div class="page-header mb-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-edit me-2 text-warning"></i>Edit Structure
+                    </h1>
+                    <p class="text-muted mb-0">Modify the structural configuration parameters</p>
+                </div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Ribozymes" asp-action="Index" class="text-decoration-none">
+                                <i class="fas fa-dna me-1"></i>Ribozymes
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Ribozymes" asp-action="Details" asp-route-id="@Model.RibozymeId" class="text-decoration-none">
+                                @ViewBag.RibozymeName
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Edit Structure</li>
+                    </ol>
+                </nav>
+            </div>
         </div>
-    </div>
 
-    <div class="clearfix">
-        <a class="btn btn-secondary float-md-left" asp-controller="Ribozymes" asp-action="Details" asp-route-id="@Model.RibozymeId"><i class="fas fa-arrow-left mr-1"></i> Cancel</a>
-        <input type="submit" value="Save" class="btn btn-primary float-md-right" />
-    </div>
-</form>
+        <form asp-action="Edit">
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Please correct the following errors:</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+            <!-- Current Information Card -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="card-title mb-1">
+                        <i class="fas fa-info-circle me-2 text-primary"></i>Current Information
+                    </h5>
+                    <small class="text-muted">Overview of the structure's current details</small>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <span class="text-muted small fw-semibold">
+                                            <i class="fas fa-hashtag me-1"></i>Structure ID:
+                                        </span>
+                                    </div>
+                                    <div class="col-8">
+                                        <span class="badge bg-light text-dark border">#@Model.Id</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <span class="text-muted small fw-semibold">
+                                            <i class="fas fa-dna me-1"></i>Ribozyme ID:
+                                        </span>
+                                    </div>
+                                    <div class="col-8">
+                                        <span class="badge bg-primary">#@Model.RibozymeId</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <span class="text-muted small fw-semibold">
+                                            <i class="fas fa-cut me-1"></i>Current Cutsite:
+                                        </span>
+                                    </div>
+                                    <div class="col-8">
+                                        <span class="badge bg-danger">@Model.Cutsite</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <span class="text-muted small fw-semibold">
+                                            <i class="fas fa-cogs me-1"></i>Post Process:
+                                        </span>
+                                    </div>
+                                    <div class="col-8">
+                                        @if (Model.PostProcess)
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check me-1"></i>Enabled
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                <i class="fas fa-times me-1"></i>Disabled
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Form Card -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-warning bg-opacity-10 border-bottom">
+                    <h5 class="card-title mb-1">
+                        <i class="fas fa-edit me-2 text-warning"></i>Edit Structure Configuration
+                    </h5>
+                    <small class="text-muted">Modify the ribozyme and substrate structural parameters</small>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Important:</strong> Changes to the structure configuration may affect ribozyme functionality. Please verify all parameters before saving.
+                    </div>
+                    
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="RibozymeId" />
+                    
+                    @Html.EditorForModel()
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <a class="btn btn-outline-secondary me-2" asp-controller="Ribozymes" asp-action="Details" asp-route-id="@Model.RibozymeId">
+                        <i class="fas fa-arrow-left me-2"></i>Cancel
+                    </a>
+                    <a class="btn btn-outline-info" asp-controller="Ribozymes" asp-action="Index">
+                        <i class="fas fa-list me-2"></i>Back to Ribozymes
+                    </a>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-save me-2"></i>Save Changes
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .ribozymes-content {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    .info-item {
+        margin-bottom: 0.75rem;
+    }
+
+    .info-item:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Mobile responsiveness */
+    @@media (max-width: 768px) {
+        .page-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .page-header nav {
+            margin-top: 0.5rem;
+        }
+
+        .card-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .card-header .btn,
+        .card-header .btn-group {
+            margin-top: 0.5rem;
+        }
+    }
+</style>

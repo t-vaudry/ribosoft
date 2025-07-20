@@ -5,235 +5,711 @@
 @inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Create a new request";
+    ViewData["Title"] = "Create New Request";
 }
 
-<h1 class="my-3">@ViewData["Title"]</h1>
-
-<div id="app">
-    <form method="post">
-
-        @if (Model.ExceededMaxRequests)
-        {
-            <div class="alert alert-danger box-shadow" role="alert">
-                <h5 class="alert-heading"><i class="fas fa-exclamation-triangle mr-1"></i> Request limit exceeded</h5>
-                <p class="mb-0 mt-3">You've exceeded your request limit (@Model.MaxRequests). Please delete some requests and try again. This request will not be saved.</p>
-            </div>
-        }
-
-        @if (!ViewData.ModelState.IsValid)
-        {
-            <div class="alert alert-danger box-shadow" role="alert">
-                <h5 class="alert-heading"><i class="fas fa-exclamation-triangle mr-1"></i> Some errors were encountered</h5>
-                @foreach (var modelState in ViewData.ModelState.Values)
-                {
-                    foreach (var error in modelState.Errors)
-                    {
-                        <p class="mb-0 mt-3">@error.ErrorMessage</p>
-                    }
-                }
-            </div>
-        }
-
-        <!-- Ribozyme Selection -->
-        <div class="my-3 p-3 bg-white rounded box-shadow">
-            <h6 class="border-bottom border-gray pb-2">Ribozyme</h6>
-
-            <div class="form-group mb-0">
-                <label asp-for="RibozymeStructure"></label>
-                <v-select label="ribozymeOptions" :options="options" id="ribozymes" :on-change="ribozymeId"></v-select>
-                <datalist id="ribozymeList">
-                    @foreach (var item in ViewBag.Ribozymes)
-                    {
-                        <option value="@item.Text" data-value="@item.Value"></option>
-                    }
-                </datalist>
-                <input asp-for="RibozymeStructure" type="hidden" value="-1">
-                <span asp-validation-for="RibozymeStructure" class="text-danger"></span>
+<div class="container-fluid px-3 px-md-4">
+    <div class="request-content">
+        <!-- Page Header -->
+        <div class="page-header mb-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-plus-circle me-2 text-success"></i>Create New Request
+                    </h1>
+                    <p class="text-muted mb-0">Design ribozymes for your target RNA sequence with customizable parameters</p>
+                </div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Home" asp-action="Index" class="text-decoration-none smooth-link">
+                                <i class="fas fa-home me-1"></i>Home
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">New Request</li>
+                    </ol>
+                </nav>
             </div>
         </div>
 
-        <!-- Sequence Selection -->
-        <div class="my-3 p-3 bg-white rounded box-shadow">
-            <h6 class="border-bottom border-gray pb-2">RNA sequence</h6>
-
-            <div class="form-group" id="inputSequenceFormGroup">
-                <label asp-for="InputSequence"></label>
-                <span data-toggle="tooltip" data-placement="right" title="@Localizer["InputSequenceTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
-                <textarea asp-for="InputSequence" class="form-control @ViewData.ModelState.InvalidFieldClass("InputSequence")" placeholder="CUUGAAGUGGUU..." :disabled="genbankLoading" rows="6" id="inputSequence"></textarea>
-                <span asp-validation-for="InputSequence" class="invalid-feedback"></span>
-            </div>
-
-            <div class="form-group form-inline">
-                <label class="btn btn-sm btn-secondary" for="FASTAfileInput">Upload a FASTA file</label>
-                <input type="file" class="form-control-file d-none" value="Use FASTA file" v-on:change="processFASTAfile" :disabled="genbankLoading" id="FASTAfileInput">
-                <span class="mx-2">or</span>
-                <label class="sr-only" for="accesionNumber">Get sequence from GenBank by accession number</label>
-                <input type="text" class="form-control form-control-sm" id="accesionNumber" :disabled="genbankLoading" placeholder="Accession number">
-                <button type="button" class="btn btn-sm btn-secondary mx-1" v-on:click="getFromGenbank" :disabled="genbankLoading">Search</button>
-                <span data-toggle="tooltip" data-placement="right" title="@Localizer["GenBankTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
-                <span class="ml-1" v-if="genbankLoading" v-cloak><i class="fas fa-circle-notch fa-spin"></i></span>
-                <span class="text-danger ml-1" v-cloak>{{ genbankStatus }}</span>
-            </div>
-
-            <div class="form-row mb-0">
-                <div class="form-group col-md-6 mb-0">
-                    <label asp-for="OpenReadingFrameStart"></label>
-                    <span data-toggle="tooltip" data-placement="right" title="@Localizer["ORFStartTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
-                    <input asp-for="OpenReadingFrameStart" id="orfStart" class="form-control" min="0" v-on:change="openReadingFrame" :disabled="genbankLoading">
-                    <span asp-validation-for="OpenReadingFrameStart" class="text-danger"></span>
-                </div>
-
-                <div class="form-group col-md-6 mb-0">
-                    <label asp-for="OpenReadingFrameEnd"></label>
-                    <span data-toggle="tooltip" data-placement="right" title="@Localizer["ORFEndTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
-                    <input asp-for="OpenReadingFrameEnd" id="orfEnd" class="form-control" min="0" v-on:change="openReadingFrame" :disabled="genbankLoading">
-                    <span asp-validation-for="OpenReadingFrameEnd" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Regions for Target Design -->
-        <div class="my-3 p-3 bg-white rounded box-shadow" v-show="ORFExists">
-            <div class="clearfix border-bottom border-gray mb-2">
-                <h6 class="float-md-left">Target regions <span data-toggle="tooltip" data-placement="right" title="@Localizer["TargetRegionsTooltip"]"><i class="fas fa-question-circle text-info"></i></span></h6>
-            </div>
-
-            <div class="form-group mb-0">
-                @for (var i = 0; i < Model.TargetRegions.Length; i++)
+        <div class="request-content">
+            <form method="post">
+                <!-- Error Messages -->
+                @if (Model.ExceededMaxRequests)
                 {
-                    <div class="form-check form-check-inline">
-                        <input type="checkbox" class="form-check-input" asp-for="@Model.TargetRegions[i].Selected">
-                        <label class="form-check-label" asp-for="@Model.TargetRegions[i].Selected">@Model.TargetRegions[i].Name</label>
-                        <input type="hidden" asp-for="@Model.TargetRegions[i].Id"/>
-                        <input type="hidden" asp-for="@Model.TargetRegions[i].Name"/>
+                    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-exclamation-triangle me-3 fs-4"></i>
+                            <div>
+                                <h5 class="alert-heading mb-1">Request Limit Exceeded</h5>
+                                <p class="mb-0">You've exceeded your request limit (@Model.MaxRequests). Please delete some requests and try again. This request will not be saved.</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 }
-                <span asp-validation-for="TargetRegions" class="text-danger"></span>
-            </div>
-        </div>
 
-        <!-- Target Environment -->
-        <div class="my-3 p-3 bg-white rounded box-shadow">
-            <h6 class="border-bottom border-gray pb-2">Target environment</h6>
-
-            <div class="form-group mb-0">
-                @foreach (var item in Model.TargetEnvironments)
+                @if (!ViewData.ModelState.IsValid)
                 {
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" asp-for="SelectedTargetEnvironment" type="radio" value="@item.Value" v-on:change="targetEnvironment" id="targetEnvironment@(item.Value)">
-                        <label class="form-check-label" for="targetEnvironment@(item.Value)">@item.Name</label>
+                    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-exclamation-triangle me-3 fs-4 mt-1"></i>
+                            <div>
+                                <h5 class="alert-heading mb-2">Validation Errors</h5>
+                                <ul class="mb-0 ps-3">
+                                    @foreach (var modelState in ViewData.ModelState.Values)
+                                    {
+                                        foreach (var error in modelState.Errors)
+                                        {
+                                            <li>@error.ErrorMessage</li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 }
-                <span asp-validation-for="SelectedTargetEnvironment" class="text-danger"></span>
-            </div>
 
-            <div class="form-group mt-2 border-top pt-2" v-show="inVivoSelected">
-                <label asp-for="InVivoEnvironment"></label>
-                <v-select :options="inVivoOptions" id="environments" :on-change="vivoEnvironment"></v-select>
-                <datalist id="environmentList">
-                    @foreach (var item in ViewBag.Assemblies)
-                    {
-                        <option value="@item.Text" data-value="@item.Value"></option>
-                    }
-                </datalist>
-                <input asp-for="InVivoEnvironment" type="hidden" value="-1">
-                <span asp-validation-for="InVivoEnvironment" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-0" v-show="inVivoSelected">
-                @foreach (var item in Model.SpecificityMethods)
-                {
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" asp-for="SelectedSpecificityMethod" type="radio" value="@item.Value" id="specificity@(item.Value)">
-                        <label class="form-check-label" for="specificity@(item.Value)">@item.Name</label>
+                <!-- Ribozyme Selection Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="card-title mb-1">
+                            <i class="fas fa-dna me-2 text-primary"></i>Ribozyme Selection
+                        </h5>
+                        <small class="text-muted">Choose the ribozyme template for your design</small>
                     </div>
-                }
-                <span asp-validation-for="SelectedSpecificityMethod" class="text-danger"></span>
-                <span data-toggle="tooltip" data-placement="right" title="@Localizer["SpecificityTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
-            </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="ribozymeSearch" class="form-label">
+                                <i class="fas fa-dna me-2"></i>@Html.DisplayNameFor(model => model.RibozymeStructure)
+                            </label>
+                            <div class="dropdown w-100">
+                                <input type="text" 
+                                       class="form-control dropdown-toggle" 
+                                       id="ribozymeSearch" 
+                                       placeholder="Search ribozymes..."
+                                       data-bs-toggle="dropdown" 
+                                       aria-expanded="false"
+                                       autocomplete="off">
+                                <ul class="dropdown-menu w-100" id="ribozymeDropdown">
+                                    @foreach (var item in ViewBag.Ribozymes)
+                                    {
+                                        <li><a class="dropdown-item" href="#" data-value="@item.Value">@item.Text</a></li>
+                                    }
+                                </ul>
+                                <input asp-for="RibozymeStructure" type="hidden" value="-1" id="ribozymeValue">
+                            </div>
+                            <span asp-validation-for="RibozymeStructure" class="invalid-feedback d-block"></span>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Type to search for a ribozyme template that will be used as the basis for your design
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="TargetTemperature"></label>
-                <input asp-for="TargetTemperature" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("Temperature")">
-                <span asp-validation-for="TargetTemperature" class="invalid-feedback"></span>
-            </div>
+                <!-- RNA Sequence Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="card-title mb-1">
+                            <i class="fas fa-code me-2 text-info"></i>RNA Sequence
+                        </h5>
+                        <small class="text-muted">Provide the target RNA sequence for ribozyme design</small>
+                    </div>
+                    <div class="card-body">
+                        <!-- Sequence Input -->
+                        <div class="mb-4" id="inputSequenceFormGroup">
+                            <div class="form-floating">
+                                <textarea asp-for="InputSequence" 
+                                          class="form-control @ViewData.ModelState.InvalidFieldClass("InputSequence")" 
+                                          placeholder="CUUGAAGUGGUU..." 
+                                          :disabled="genbankLoading" 
+                                          rows="6" 
+                                          id="inputSequence"
+                                          style="height: 120px;"></textarea>
+                                <label asp-for="InputSequence">
+                                    <i class="fas fa-code me-2"></i>@Html.DisplayNameFor(model => model.InputSequence)
+                                </label>
+                                <span asp-validation-for="InputSequence" class="invalid-feedback"></span>
+                            </div>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                @Localizer["InputSequenceTooltip"]
+                            </div>
+                        </div>
+
+                        <!-- File Upload and GenBank Section -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <div class="border rounded p-3 h-100">
+                                    <h6 class="text-primary mb-3">
+                                        <i class="fas fa-upload me-2"></i>Upload FASTA File
+                                    </h6>
+                                    <div class="d-grid">
+                                        <label class="btn btn-outline-primary" for="FASTAfileInput">
+                                            <i class="fas fa-file-upload me-2"></i>Choose FASTA File
+                                        </label>
+                                        <input type="file" class="form-control d-none" id="FASTAfileInput">
+                                    </div>
+                                    <small class="text-muted mt-2 d-block">Upload a FASTA file to automatically populate the sequence</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="border rounded p-3 h-100">
+                                    <h6 class="text-success mb-3">
+                                        <i class="fas fa-database me-2"></i>GenBank Lookup
+                                    </h6>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="accesionNumber" placeholder="Accession number">
+                                        <button type="button" class="btn btn-outline-success" id="genbankSearchBtn">
+                                            <i class="fas fa-search me-1"></i>Search
+                                        </button>
+                                    </div>
+                                    <div class="mt-2">
+                                        <span id="genbankLoading" style="display: none;">
+                                            <i class="fas fa-spinner fa-spin me-1"></i>Loading...
+                                        </span>
+                                        <span class="text-danger" id="genbankStatus"></span>
+                                    </div>
+                                    <small class="text-muted mt-1 d-block">@Localizer["GenBankTooltip"]</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ORF Settings -->
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input asp-for="OpenReadingFrameStart" 
+                                           id="orfStart" 
+                                           class="form-control" 
+                                           min="0" 
+                                           placeholder="0">
+                                    <label asp-for="OpenReadingFrameStart">
+                                        <i class="fas fa-play me-2"></i>@Html.DisplayNameFor(model => model.OpenReadingFrameStart)
+                                    </label>
+                                    <span asp-validation-for="OpenReadingFrameStart" class="invalid-feedback"></span>
+                                </div>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    @Localizer["ORFStartTooltip"]
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input asp-for="OpenReadingFrameEnd" 
+                                           id="orfEnd" 
+                                           class="form-control" 
+                                           min="0" 
+                                           placeholder="0">
+                                    <label asp-for="OpenReadingFrameEnd">
+                                        <i class="fas fa-stop me-2"></i>@Html.DisplayNameFor(model => model.OpenReadingFrameEnd)
+                                    </label>
+                                    <span asp-validation-for="OpenReadingFrameEnd" class="invalid-feedback"></span>
+                                </div>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    @Localizer["ORFEndTooltip"]
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Target Regions Card -->
+                <div class="card border-0 shadow-sm mb-4" id="targetRegionsCard" style="display: none;">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="card-title mb-1">
+                            <i class="fas fa-crosshairs me-2 text-warning"></i>Target Regions
+                        </h5>
+                        <small class="text-muted">Select the regions where ribozymes should target</small>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle me-2"></i>
+                            @Localizer["TargetRegionsTooltip"]
+                        </div>
+                        <div class="row g-3">
+                            @for (var i = 0; i < Model.TargetRegions.Length; i++)
+                            {
+                                <div class="col-md-4 col-sm-6">
+                                    <div class="form-check form-check-card">
+                                        <input type="checkbox" class="form-check-input" asp-for="@Model.TargetRegions[i].Selected" id="target_@i">
+                                        <label class="form-check-label w-100" asp-for="@Model.TargetRegions[i].Selected" for="target_@i">
+                                            <div class="card h-100">
+                                                <div class="card-body text-center">
+                                                    <i class="fas fa-bullseye text-warning mb-2 fs-4"></i>
+                                                    <div class="fw-semibold">@Model.TargetRegions[i].Name</div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                        <input type="hidden" asp-for="@Model.TargetRegions[i].Id"/>
+                                        <input type="hidden" asp-for="@Model.TargetRegions[i].Name"/>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <span asp-validation-for="TargetRegions" class="invalid-feedback d-block"></span>
+                    </div>
+                </div>
+
+                <!-- Target Environment Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="card-title mb-1">
+                            <i class="fas fa-flask me-2 text-success"></i>Target Environment
+                        </h5>
+                        <small class="text-muted">Configure the experimental environment settings</small>
+                    </div>
+                    <div class="card-body">
+                        <!-- Environment Type Selection -->
+                        <div class="mb-4">
+                            <div class="row g-3">
+                                @foreach (var item in Model.TargetEnvironments)
+                                {
+                                    <div class="col-md-6">
+                                        <div class="form-check form-check-card">
+                                            <input class="form-check-input" 
+                                                   asp-for="SelectedTargetEnvironment" 
+                                                   type="radio" 
+                                                   value="@item.Value" 
+                                                   id="targetEnvironment@(item.Value)">
+                                            <label class="form-check-label w-100" for="targetEnvironment@(item.Value)">
+                                                <div class="card h-100">
+                                                    <div class="card-body text-center">
+                                                        <i class="fas @(item.Name.Contains("vivo") ? "fa-vial" : "fa-microscope") text-success mb-2 fs-4"></i>
+                                                        <div class="fw-semibold">@item.Name</div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <span asp-validation-for="SelectedTargetEnvironment" class="invalid-feedback d-block"></span>
+                        </div>
+
+                        <!-- In Vivo Specific Settings -->
+                        <div id="inVivoSettings" style="display: none;">
+                            <div class="border-top pt-4 mb-4">
+                                <div class="form-group mb-3">
+                                    <label for="environmentSearch" class="form-label">
+                                        <i class="fas fa-dna me-2"></i>@Html.DisplayNameFor(model => model.InVivoEnvironment)
+                                    </label>
+                                    <div class="dropdown w-100">
+                                        <input type="text" 
+                                               class="form-control dropdown-toggle" 
+                                               id="environmentSearch" 
+                                               placeholder="Search environments..."
+                                               data-bs-toggle="dropdown" 
+                                               aria-expanded="false"
+                                               autocomplete="off">
+                                        <ul class="dropdown-menu w-100" id="environmentDropdown">
+                                            @foreach (var item in ViewBag.Assemblies)
+                                            {
+                                                <li><a class="dropdown-item" href="#" data-value="@item.Value">@item.Text</a></li>
+                                            }
+                                        </ul>
+                                        <input asp-for="InVivoEnvironment" type="hidden" value="-1" id="environmentValue">
+                                    </div>
+                                    <span asp-validation-for="InVivoEnvironment" class="invalid-feedback d-block"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">
+                                        <i class="fas fa-search me-2"></i>Specificity Method
+                                    </label>
+                                    <div class="row g-2">
+                                        @foreach (var item in Model.SpecificityMethods)
+                                        {
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" 
+                                                           asp-for="SelectedSpecificityMethod" 
+                                                           type="radio" 
+                                                           value="@item.Value" 
+                                                           id="specificity@(item.Value)">
+                                                    <label class="form-check-label" for="specificity@(item.Value)">
+                                                        @item.Name
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                    <span asp-validation-for="SelectedSpecificityMethod" class="invalid-feedback d-block"></span>
+                                    <div class="form-text">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        @Localizer["SpecificityTooltip"]
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Target Temperature -->
+                        <div class="form-floating">
+                            <input asp-for="TargetTemperature" 
+                                   type="text" 
+                                   class="form-control @ViewData.ModelState.InvalidFieldClass("TargetTemperature")"
+                                   placeholder="37">
+                            <label asp-for="TargetTemperature">
+                                <i class="fas fa-thermometer-half me-2"></i>@Html.DisplayNameFor(model => model.TargetTemperature)
+                            </label>
+                            <span asp-validation-for="TargetTemperature" class="invalid-feedback"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Environment Properties Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="card-title mb-1">
+                            <i class="fas fa-cogs me-2 text-info"></i>Environment Properties
+                        </h5>
+                        <small class="text-muted">Configure the chemical and physical environment parameters</small>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input asp-for="Temperature" 
+                                           type="text" 
+                                           class="form-control @ViewData.ModelState.InvalidFieldClass("Temperature")"
+                                           placeholder="37">
+                                    <label asp-for="Temperature">
+                                        <i class="fas fa-thermometer-half me-2"></i>@Html.DisplayNameFor(model => model.Temperature)
+                                    </label>
+                                    <span asp-validation-for="Temperature" class="invalid-feedback"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input asp-for="Na" 
+                                           type="text" 
+                                           class="form-control @ViewData.ModelState.InvalidFieldClass("Na")"
+                                           placeholder="1.0">
+                                    <label asp-for="Na">
+                                        <i class="fas fa-atom me-2"></i>@Html.DisplayNameFor(model => model.Na)
+                                    </label>
+                                    <span asp-validation-for="Na" class="invalid-feedback"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input asp-for="Probe" 
+                                           type="text" 
+                                           class="form-control @ViewData.ModelState.InvalidFieldClass("Probe")"
+                                           placeholder="0.0001">
+                                    <label asp-for="Probe">
+                                        <i class="fas fa-search me-2"></i>@Html.DisplayNameFor(model => model.Probe)
+                                    </label>
+                                    <span asp-validation-for="Probe" class="invalid-feedback"></span>
+                                </div>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    @Localizer["ProbeTooltip"]
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Settings Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom">
+                        <div class="d-flex align-items-center">
+                            <h5 class="card-title mb-0 me-3">
+                                <i class="fas fa-sliders-h me-2 text-secondary"></i>Advanced Settings
+                            </h5>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="advancedSettings">
+                                <label class="form-check-label" for="advancedSettings">
+                                    <small>Show advanced options</small>
+                                </label>
+                            </div>
+                        </div>
+                        <small class="text-muted">Fine-tune the optimization parameters</small>
+                    </div>
+                    <div class="card-body advanced-settings-content" style="display: none;">
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Advanced Settings:</strong> These parameters control the optimization tolerances. Modify only if you understand their impact on the design process.
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input asp-for="DesiredTemperatureTolerance" 
+                                           type="text" 
+                                           class="form-control @ViewData.ModelState.InvalidFieldClass("DesiredTemperatureTolerance")"
+                                           placeholder="5.0">
+                                    <label asp-for="DesiredTemperatureTolerance">
+                                        <i class="fas fa-thermometer-half me-2"></i>@Html.DisplayNameFor(model => model.DesiredTemperatureTolerance)
+                                    </label>
+                                    <span asp-validation-for="DesiredTemperatureTolerance" class="invalid-feedback"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input asp-for="SpecificityTolerance" 
+                                           type="text" 
+                                           class="form-control @ViewData.ModelState.InvalidFieldClass("SpecificityTolerance")"
+                                           placeholder="0.1">
+                                    <label asp-for="SpecificityTolerance">
+                                        <i class="fas fa-crosshairs me-2"></i>@Html.DisplayNameFor(model => model.SpecificityTolerance)
+                                    </label>
+                                    <span asp-validation-for="SpecificityTolerance" class="invalid-feedback"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input asp-for="AccessibilityTolerance" 
+                                           type="text" 
+                                           class="form-control @ViewData.ModelState.InvalidFieldClass("AccessibilityTolerance")"
+                                           placeholder="0.1">
+                                    <label asp-for="AccessibilityTolerance">
+                                        <i class="fas fa-unlock me-2"></i>@Html.DisplayNameFor(model => model.AccessibilityTolerance)
+                                    </label>
+                                    <span asp-validation-for="AccessibilityTolerance" class="invalid-feedback"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input asp-for="StructureTolerance" 
+                                           type="text" 
+                                           class="form-control @ViewData.ModelState.InvalidFieldClass("StructureTolerance")"
+                                           placeholder="0.1">
+                                    <label asp-for="StructureTolerance">
+                                        <i class="fas fa-project-diagram me-2"></i>@Html.DisplayNameFor(model => model.StructureTolerance)
+                                    </label>
+                                    <span asp-validation-for="StructureTolerance" class="invalid-feedback"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid gap-2 mb-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-paper-plane me-2"></i>Submit Request
+                    </button>
+                </div>
+            </form>
         </div>
-
-        <!-- Environment Properties -->
-        <div class="my-3 p-3 bg-white rounded box-shadow">
-            <h6 class="border-bottom border-gray pb-2">Environment properties</h6>
-
-            <div class="form-group">
-                <label asp-for="Temperature"></label>
-                <input asp-for="Temperature" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("Temperature")">
-                <span asp-validation-for="Temperature" class="invalid-feedback"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Na"></label>
-                <input asp-for="Na" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("Na")">
-                <span asp-validation-for="Na" class="invalid-feedback"></span>
-            </div>
-            <div class="form-group mb-0">
-                <label asp-for="Probe"></label> <span data-toggle="tooltip" data-placement="right" title="@Localizer["ProbeTooltip"]"><i class="fas fa-question-circle text-info"></i></span>
-                <input asp-for="Probe" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("Probe")">
-                <span asp-validation-for="Probe" class="invalid-feedback"></span>
-            </div>
-        </div>
-
-        <!-- Advanced Settings -->
-        <div class="my-3 p-3 bg-white rounded box-shadow">
-            <label class="showMore border-bottom border-gray pb-2" for="advancedSettings">Advanced settings</label>
-            <input id="advancedSettings" type="checkbox">
-            <div>
-                <div class="form-group">
-                    <label asp-for="DesiredTemperatureTolerance"></label>
-                    <input asp-for="DesiredTemperatureTolerance" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("DesiredTemperatureTolerance")">
-                    <span asp-validation-for="DesiredTemperatureTolerance" class="invalid-feedback"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="SpecificityTolerance"></label>
-                    <input asp-for="SpecificityTolerance" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("SpecificityTolerance")">
-                    <span asp-validation-for="SpecificityTolerance" class="invalid-feedback"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="AccessibilityTolerance"></label>
-                    <input asp-for="AccessibilityTolerance" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("AccessibilityTolerance")">
-                    <span asp-validation-for="AccessibilityTolerance" class="invalid-feedback"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="StructureTolerance"></label>
-                    <input asp-for="StructureTolerance" type="text" class="form-control @ViewData.ModelState.InvalidFieldClass("StructureTolerance")">
-                    <span asp-validation-for="StructureTolerance" class="invalid-feedback"></span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Potential Cut Sites -->
-        @* <div class="panel panel-default"> *@
-        @*     <div class="panel-heading" v-on:click="expand('cutSiteTitle', 'cutSiteBody')"> *@
-        @*         <h3 id="cutSiteTitle" class="panel-title collapsed">Potential Cut Sites</h3> *@
-        @*     </div> *@
-        @*     <div id="cutSiteBody" class="panel-body collapse"> *@
-        @*         <div class="form-group"> *@
-        @*             <label asp-for="CutSites">Cut Sites:</label> *@
-        @*             <select multiple asp-for="CutSites" class="form-control"> *@
-        @*                 <option v-for="cutSite in cutSites">{{ cutSite }}</option> *@
-        @*             </select> *@
-        @*         </div> *@
-        @*     </div> *@
-        @* </div> *@
-
-        <input type="submit" class="btn btn-primary btn-block" value="Submit request">
-    </form>
+    </div>
 </div>
+
+<style>
+    .request-content {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    .form-check-card .card {
+        transition: all 0.2s ease;
+        cursor: pointer;
+        border: 2px solid #e9ecef;
+    }
+
+    .form-check-card input:checked + label .card {
+        border-color: #0d6efd;
+        background-color: #f8f9ff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .form-check-card .card:hover {
+        border-color: #0d6efd;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .advanced-settings-content {
+        transition: all 0.3s ease;
+    }
+
+    /* Searchable dropdown styling */
+    .dropdown-toggle {
+        position: relative;
+        cursor: pointer;
+    }
+
+    .dropdown-toggle::after {
+        position: absolute;
+        right: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        border-top: 0.3em solid;
+        border-right: 0.3em solid transparent;
+        border-bottom: 0;
+        border-left: 0.3em solid transparent;
+        pointer-events: none;
+    }
+
+    .dropdown-menu {
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+
+    .dropdown-item {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        transition: background-color 0.15s ease-in-out;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .dropdown-item:active {
+        background-color: #0d6efd;
+        color: white;
+    }
+
+    /* Form styling */
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-label {
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #212529;
+    }
+
+    .form-control:focus {
+        border-color: #86b7fe;
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    /* Mobile responsiveness */
+    @@media (max-width: 768px) {
+        .page-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .page-header nav {
+            margin-top: 0.5rem;
+        }
+
+        .card-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .dropdown-menu {
+            max-height: 150px;
+        }
+    }
+</style>
 
 @section scripts{
     <script src="~/dist/request.js"></script>
 
     <script>
         $(function() {
-            $('[data-toggle="tooltip"]').tooltip();
+            // Initialize Bootstrap tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Advanced settings toggle
+            $('#advancedSettings').change(function() {
+                const content = $('.advanced-settings-content');
+                if (this.checked) {
+                    content.slideDown(300);
+                } else {
+                    content.slideUp(300);
+                }
+            });
+
+            // Searchable dropdown functionality
+            function initSearchableDropdown(searchInputId, dropdownId, hiddenInputId, onChangeCallback) {
+                const searchInput = $('#' + searchInputId);
+                const dropdown = $('#' + dropdownId);
+                const hiddenInput = $('#' + hiddenInputId);
+                const dropdownItems = dropdown.find('.dropdown-item');
+
+                // Search functionality
+                searchInput.on('input', function() {
+                    const searchTerm = $(this).val().toLowerCase();
+                    
+                    dropdownItems.each(function() {
+                        const text = $(this).text().toLowerCase();
+                        const listItem = $(this).parent();
+                        
+                        if (text.includes(searchTerm)) {
+                            listItem.show();
+                        } else {
+                            listItem.hide();
+                        }
+                    });
+                });
+
+                // Item selection
+                dropdownItems.on('click', function(e) {
+                    e.preventDefault();
+                    const value = $(this).data('value');
+                    const text = $(this).text();
+                    
+                    searchInput.val(text);
+                    hiddenInput.val(value);
+                    
+                    // Trigger change event for Vue.js
+                    if (onChangeCallback && typeof window[onChangeCallback] === 'function') {
+                        window[onChangeCallback]();
+                    }
+                    
+                    // Close dropdown
+                    bootstrap.Dropdown.getInstance(searchInput[0])?.hide();
+                });
+
+                // Clear search when dropdown is shown
+                searchInput.on('shown.bs.dropdown', function() {
+                    dropdownItems.parent().show();
+                });
+            }
+
+            // Initialize searchable dropdowns
+            initSearchableDropdown('ribozymeSearch', 'ribozymeDropdown', 'ribozymeValue', 'ribozymeId');
+            initSearchableDropdown('environmentSearch', 'environmentDropdown', 'environmentValue', 'vivoEnvironment');
+
+            // Form validation enhancements
+            $('form').on('submit', function(e) {
+                const submitBtn = $(this).find('button[type="submit"]');
+                const originalText = submitBtn.html();
+                
+                submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>Processing...').prop('disabled', true);
+                
+                // Re-enable button after 30 seconds as fallback
+                setTimeout(function() {
+                    submitBtn.html(originalText).prop('disabled', false);
+                }, 30000);
+            });
+
+            // Enhanced form field styling
+            $('.form-floating input, .form-floating select, .form-floating textarea').on('focus blur', function() {
+                $(this).closest('.form-floating').toggleClass('focused');
+            });
         });
     </script>
 }

@@ -287,3 +287,11 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+
+# Amazon Q Developer files
+AmazonQ.md
+UI_MODERNIZATION_STATUS.md
+
+# CodeQL files
+codeql-*/
+*.sarif

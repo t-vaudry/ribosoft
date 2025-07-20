@@ -60,7 +60,7 @@ jobs:
         ls -la wwwroot/dist/ || echo "No dist directory found"
         
     - name: Restore .NET dependencies
-      run: dotnet restore Ribosoft.sln
+      run: dotnet restore Ribosoft.sln /p:Configuration=Release
       
     - name: Build RibosoftAlgo first (required for other projects)
       run: |

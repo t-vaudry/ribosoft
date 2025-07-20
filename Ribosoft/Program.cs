@@ -105,7 +105,9 @@ public class Program
             .AddDefaultTokenProviders();
 
         // Application services
-        services.AddTransient<IEmailSender, EmailSender>();
+        services.AddTransient<IEmailSender, MailgunEmailSender>();
+        services.AddTransient<ISecureEmailTemplateService, SecureEmailTemplateService>();
+        services.AddScoped<IOneTimeCodeService, OneTimeCodeService>();
 
         // Localization
         services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -127,7 +129,10 @@ public class Program
         services.AddCloudscribePagination();
         
         // Hangfire server
-        services.AddHangfireServer();
+        services.AddHangfireServer(options =>
+        {
+            options.Queues = new[] { "default", "blast" };
+        });
     }
     
     private static void ConfigurePipeline(WebApplication app)
