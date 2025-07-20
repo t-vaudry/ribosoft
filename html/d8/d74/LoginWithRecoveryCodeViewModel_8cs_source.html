@@ -7,7 +7,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.12.0"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <!-- jQuery with Subresource Integrity (SRI) for security -->
+        <script type="text/javascript" 
+                src="https://code.jquery.com/jquery-2.1.1.min.js"
+                integrity="sha256-h0cGsrExGgcJOUVBkMOVsKOVE7zTABGF0kpOe4p4Tc4="
+                crossorigin="anonymous"></script>
         <title>Ribosoft: LoginWithRecoveryCodeViewModel.cs Source File</title>
         <!--<link href="../../tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="../../dynsections.js"></script>
@@ -20,8 +24,15 @@
         <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
         <link href="../../custom.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <!-- Bootstrap CSS with SRI for security -->
+        <link rel="stylesheet" 
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+              integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+              crossorigin="anonymous">
+        <!-- Bootstrap JS with SRI for security -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+                integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+                crossorigin="anonymous"></script>
         <link href="../../jquery.smartmenus.bootstrap.css" rel="stylesheet">
         <link href="../../jquery.powertip.css" rel="stylesheet">
         <script type="text/javascript" src="../../jquery.smartmenus.js"></script>
@@ -116,16 +127,31 @@ $(function(){ initResizable(false); });
 <div class="foldopen" id="foldopen00012" data-start="{" data-end="};">
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html">   12</a></span>    <span class="keyword">public</span> <span class="keyword">class </span><a class="code hl_class" href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html">LoginWithRecoveryCodeViewModel</a></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    {</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>        [Required]</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>        [Required(ErrorMessage = <span class="stringliteral">&quot;Please enter the verification code.&quot;</span>)]</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>        [DataType(DataType.Text)]</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>        [Display(Name = <span class="stringliteral">&quot;Recovery Code&quot;</span>)]</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html#a6f82db3ebb55ba36ecded2afa2adde63">   20</a></span>        <span class="keyword">public</span> <span class="keywordtype">string</span> <a class="code hl_property" href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html#a6f82db3ebb55ba36ecded2afa2adde63">RecoveryCode</a> { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keywordtype">string</span>.Empty;</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    }</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>        [Display(Name = <span class="stringliteral">&quot;Verification Code&quot;</span>)]</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>        [StringLength(6, MinimumLength = 6, ErrorMessage = <span class="stringliteral">&quot;Verification code must be exactly 6 digits.&quot;</span>)]</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        [RegularExpression(<span class="stringliteral">@&quot;^\d{6}$&quot;</span>, ErrorMessage = <span class="stringliteral">&quot;Verification code must be 6 digits.&quot;</span>)]</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html#a5fa64aa04e1ec57133af70e0adbbd5c5">   22</a></span>        <span class="keyword">public</span> <span class="keywordtype">string</span> <a class="code hl_class" href="../../dc/d91/classRibosoft_1_1Models_1_1OneTimeCode.html">OneTimeCode</a> { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keywordtype">string</span>.Empty;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        [Display(Name = <span class="stringliteral">&quot;Email Address&quot;</span>)]</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html#a3db210b15e12a20e0d517100f5e4f753">   28</a></span>        <span class="keyword">public</span> <span class="keywordtype">string</span> <a class="code hl_property" href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html#a3db210b15e12a20e0d517100f5e4f753">Email</a> { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keywordtype">string</span>.Empty;</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html#a6e1227176bb6aedf45448f79045ed167">   33</a></span>        <span class="keyword">public</span> <span class="keywordtype">bool</span> <a class="code hl_property" href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html#a6e1227176bb6aedf45448f79045ed167">CodeSent</a> { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html#a63223887968ff5be0bb45d8f24df9426">   38</a></span>        <span class="keyword">public</span> <span class="keywordtype">bool</span> <a class="code hl_property" href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html#a63223887968ff5be0bb45d8f24df9426">CanResend</a> { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html#a3ae44d006ead398256421ef8c0977db5">   43</a></span>        <span class="keyword">public</span> <span class="keywordtype">int</span> <a class="code hl_property" href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html#a3ae44d006ead398256421ef8c0977db5">ResendCooldownSeconds</a> { <span class="keyword">get</span>; <span class="keyword">set</span>; } = 0;</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    }</div>
 </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>}</div>
-<div class="ttc" id="aclassRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel_html"><div class="ttname"><a href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html">Ribosoft.Models.AccountViewModels.LoginWithRecoveryCodeViewModel</a></div><div class="ttdoc">Model class for the login with recovery code view.</div><div class="ttdef"><b>Definition</b> <a href="#l00012">LoginWithRecoveryCodeViewModel.cs:13</a></div></div>
-<div class="ttc" id="aclassRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel_html_a6f82db3ebb55ba36ecded2afa2adde63"><div class="ttname"><a href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html#a6f82db3ebb55ba36ecded2afa2adde63">Ribosoft.Models.AccountViewModels.LoginWithRecoveryCodeViewModel.RecoveryCode</a></div><div class="ttdeci">string RecoveryCode</div><div class="ttdoc">Recovery code.</div><div class="ttdef"><b>Definition</b> <a href="#l00020">LoginWithRecoveryCodeViewModel.cs:20</a></div></div>
-<div class="ttc" id="anamespaceRibosoft_1_1Models_1_1AccountViewModels_html"><div class="ttname"><a href="../../d3/d1f/namespaceRibosoft_1_1Models_1_1AccountViewModels.html">Ribosoft.Models.AccountViewModels</a></div><div class="ttdef"><b>Definition</b> <a href="../../db/d79/ExternalLoginViewModel_8cs_source.html#l00007">ExternalLoginViewModel.cs:8</a></div></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>}</div>
+<div class="ttc" id="aclassRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel_html"><div class="ttname"><a href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html">Ribosoft.Models.AccountViewModels.LoginWithRecoveryCodeViewModel</a></div><div class="ttdoc">Model class for the login with one-time email code view.</div><div class="ttdef"><b>Definition</b> <a href="#l00012">LoginWithRecoveryCodeViewModel.cs:13</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel_html_a3ae44d006ead398256421ef8c0977db5"><div class="ttname"><a href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html#a3ae44d006ead398256421ef8c0977db5">Ribosoft.Models.AccountViewModels.LoginWithRecoveryCodeViewModel.ResendCooldownSeconds</a></div><div class="ttdeci">int ResendCooldownSeconds</div><div class="ttdoc">Seconds remaining before user can request another code.</div><div class="ttdef"><b>Definition</b> <a href="#l00043">LoginWithRecoveryCodeViewModel.cs:43</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel_html_a3db210b15e12a20e0d517100f5e4f753"><div class="ttname"><a href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html#a3db210b15e12a20e0d517100f5e4f753">Ribosoft.Models.AccountViewModels.LoginWithRecoveryCodeViewModel.Email</a></div><div class="ttdeci">string Email</div><div class="ttdoc">Email address for display purposes (read-only)</div><div class="ttdef"><b>Definition</b> <a href="#l00028">LoginWithRecoveryCodeViewModel.cs:28</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel_html_a63223887968ff5be0bb45d8f24df9426"><div class="ttname"><a href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html#a63223887968ff5be0bb45d8f24df9426">Ribosoft.Models.AccountViewModels.LoginWithRecoveryCodeViewModel.CanResend</a></div><div class="ttdeci">bool CanResend</div><div class="ttdoc">Indicates if user can request a new code.</div><div class="ttdef"><b>Definition</b> <a href="#l00038">LoginWithRecoveryCodeViewModel.cs:38</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel_html_a6e1227176bb6aedf45448f79045ed167"><div class="ttname"><a href="../../d9/df4/classRibosoft_1_1Models_1_1AccountViewModels_1_1LoginWithRecoveryCodeViewModel.html#a6e1227176bb6aedf45448f79045ed167">Ribosoft.Models.AccountViewModels.LoginWithRecoveryCodeViewModel.CodeSent</a></div><div class="ttdeci">bool CodeSent</div><div class="ttdoc">Indicates if a code has been sent.</div><div class="ttdef"><b>Definition</b> <a href="#l00033">LoginWithRecoveryCodeViewModel.cs:33</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1Models_1_1OneTimeCode_html"><div class="ttname"><a href="../../dc/d91/classRibosoft_1_1Models_1_1OneTimeCode.html">Ribosoft.Models.OneTimeCode</a></div><div class="ttdoc">Model class for one-time authentication codes sent via email.</div><div class="ttdef"><b>Definition</b> <a href="../../db/dd0/OneTimeCode_8cs_source.html#l00010">OneTimeCode.cs:11</a></div></div>
+<div class="ttc" id="anamespaceRibosoft_1_1Models_1_1AccountViewModels_html"><div class="ttname"><a href="../../d3/d1f/namespaceRibosoft_1_1Models_1_1AccountViewModels.html">Ribosoft.Models.AccountViewModels</a></div><div class="ttdef"><b>Definition</b> <a href="../../d5/d35/ForgotPasswordViewModel_8cs_source.html#l00007">ForgotPasswordViewModel.cs:8</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->

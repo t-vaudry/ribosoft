@@ -7,7 +7,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.12.0"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <!-- jQuery with Subresource Integrity (SRI) for security -->
+        <script type="text/javascript" 
+                src="https://code.jquery.com/jquery-2.1.1.min.js"
+                integrity="sha256-h0cGsrExGgcJOUVBkMOVsKOVE7zTABGF0kpOe4p4Tc4="
+                crossorigin="anonymous"></script>
         <title>Ribosoft: RibozymesController.cs Source File</title>
         <!--<link href="../../tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="../../dynsections.js"></script>
@@ -20,8 +24,15 @@
         <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
         <link href="../../custom.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <!-- Bootstrap CSS with SRI for security -->
+        <link rel="stylesheet" 
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+              integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+              crossorigin="anonymous">
+        <!-- Bootstrap JS with SRI for security -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+                integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+                crossorigin="anonymous"></script>
         <link href="../../jquery.smartmenus.bootstrap.css" rel="stylesheet">
         <link href="../../jquery.powertip.css" rel="stylesheet">
         <script type="text/javascript" src="../../jquery.smartmenus.js"></script>
@@ -134,200 +145,222 @@ $(function(){ initResizable(false); });
 <div class="foldopen" id="foldopen00038" data-start="{" data-end="}">
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#af240456a6a165ef12643769cca36e3f5">   38</a></span>        <span class="keyword">public</span> async Task&lt;IActionResult&gt; <a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#af240456a6a165ef12643769cca36e3f5">Index</a>()</div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>        {</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>            <span class="keywordflow">return</span> View(await <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.Ribozymes.ToListAsync());</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        }</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>            <span class="keywordflow">return</span> View(await <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.Ribozymes</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>                .Include(r =&gt; r.RibozymeStructures)</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>                .ToListAsync());</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        }</div>
 </div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
-<div class="foldopen" id="foldopen00047" data-start="{" data-end="}">
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a7f5bcff4a97b7ac14815aeb3f8a5a538">   47</a></span>        <span class="keyword">public</span> async Task&lt;IActionResult&gt; <a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a7f5bcff4a97b7ac14815aeb3f8a5a538">Details</a>(<span class="keywordtype">int</span>? <span class="keywordtype">id</span>)</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        {</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>            <span class="keywordflow">if</span> (<span class="keywordtype">id</span> == <span class="keyword">null</span>)</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            {</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>                <span class="keywordflow">return</span> NotFound();</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>            }</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>            var ribozyme = await _context.Ribozymes</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>                .Include(r =&gt; r.RibozymeStructures)</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>                .SingleOrDefaultAsync(m =&gt; m.Id == <span class="keywordtype">id</span>);</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>            <span class="keywordflow">if</span> (ribozyme == <span class="keyword">null</span>)</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>            {</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>                <span class="keywordflow">return</span> NotFound();</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>            }</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>            <span class="keywordflow">return</span> View(ribozyme);</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>        }</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="foldopen" id="foldopen00049" data-start="{" data-end="}">
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a7f5bcff4a97b7ac14815aeb3f8a5a538">   49</a></span>        <span class="keyword">public</span> async Task&lt;IActionResult&gt; <a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a7f5bcff4a97b7ac14815aeb3f8a5a538">Details</a>(<span class="keywordtype">int</span>? <span class="keywordtype">id</span>)</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        {</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>            <span class="keywordflow">if</span> (<span class="keywordtype">id</span> == <span class="keyword">null</span>)</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>            {</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>                <span class="keywordflow">return</span> NotFound();</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>            }</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>            var ribozyme = await _context.Ribozymes</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>                .Include(r =&gt; r.RibozymeStructures)</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>                .SingleOrDefaultAsync(m =&gt; m.Id == <span class="keywordtype">id</span>);</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>            <span class="keywordflow">if</span> (ribozyme == <span class="keyword">null</span>)</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>            {</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>                <span class="keywordflow">return</span> NotFound();</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>            }</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>            <span class="keywordflow">return</span> View(ribozyme);</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        }</div>
 </div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>        [Authorize(Roles = <span class="stringliteral">&quot;Administrator&quot;</span>)]</div>
-<div class="foldopen" id="foldopen00071" data-start="{" data-end="}">
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a8acebbad29bc6a94aa23a282f0bdd695">   71</a></span>        <span class="keyword">public</span> IActionResult <a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a8acebbad29bc6a94aa23a282f0bdd695">Create</a>()</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>        {</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>            <a class="code hl_class" href="../../d8/dd7/classRibosoft_1_1Models_1_1RibozymeViewModel_1_1RibozymeCreateViewModel.html">RibozymeCreateViewModel</a> model = <span class="keyword">new</span> <a class="code hl_class" href="../../d8/dd7/classRibosoft_1_1Models_1_1RibozymeViewModel_1_1RibozymeCreateViewModel.html">RibozymeCreateViewModel</a>();</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>            model.<a class="code hl_property" href="../../d8/dd7/classRibosoft_1_1Models_1_1RibozymeViewModel_1_1RibozymeCreateViewModel.html#a87b4b45745e490dc15063995efe73cdc">RibozymeStructures</a>.Add(<span class="keyword">new</span> <a class="code hl_class" href="../../d4/de8/classRibosoft_1_1Models_1_1RibozymeStructure.html">RibozymeStructure</a>());</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>            <span class="keywordflow">return</span> View(<span class="stringliteral">&quot;Create&quot;</span>, model);</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        }</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>        [Authorize(Roles = <span class="stringliteral">&quot;Administrator&quot;</span>)]</div>
+<div class="foldopen" id="foldopen00073" data-start="{" data-end="}">
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a8acebbad29bc6a94aa23a282f0bdd695">   73</a></span>        <span class="keyword">public</span> IActionResult <a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a8acebbad29bc6a94aa23a282f0bdd695">Create</a>()</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>        {</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>            <a class="code hl_class" href="../../d8/dd7/classRibosoft_1_1Models_1_1RibozymeViewModel_1_1RibozymeCreateViewModel.html">RibozymeCreateViewModel</a> model = <span class="keyword">new</span> <a class="code hl_class" href="../../d8/dd7/classRibosoft_1_1Models_1_1RibozymeViewModel_1_1RibozymeCreateViewModel.html">RibozymeCreateViewModel</a>();</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>            model.<a class="code hl_property" href="../../d8/dd7/classRibosoft_1_1Models_1_1RibozymeViewModel_1_1RibozymeCreateViewModel.html#a87b4b45745e490dc15063995efe73cdc">RibozymeStructures</a>.Add(<span class="keyword">new</span> <a class="code hl_class" href="../../d4/de8/classRibosoft_1_1Models_1_1RibozymeStructure.html">RibozymeStructure</a>());</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>            <span class="keywordflow">return</span> View(<span class="stringliteral">&quot;Create&quot;</span>, model);</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>        }</div>
 </div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>        [HttpPost]</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>        [ValidateAntiForgeryToken]</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>        [Authorize(Roles = <span class="stringliteral">&quot;Administrator&quot;</span>)]</div>
-<div class="foldopen" id="foldopen00086" data-start="{" data-end="}">
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno"><a class="line" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a822bb16f051229e5616fe5550f97d325">   86</a></span>        <span class="keyword">public</span> async Task&lt;IActionResult&gt; <a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a822bb16f051229e5616fe5550f97d325">Create</a>([Bind(<span class="stringliteral">&quot;Name,RibozymeStructures&quot;</span>)] <a class="code hl_class" href="../../d8/dd7/classRibosoft_1_1Models_1_1RibozymeViewModel_1_1RibozymeCreateViewModel.html">RibozymeCreateViewModel</a> model)</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>        {</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>            <span class="keywordflow">if</span> (ModelState.IsValid)</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>            {</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>                var ribozyme = <span class="keyword">new</span> <a class="code hl_class" href="../../d5/de9/classRibosoft_1_1Models_1_1Ribozyme.html">Ribozyme</a></div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>                {</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>                    Name = model.Name</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>                };</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>                </div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>                <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.Add(ribozyme);</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>                await <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.SaveChangesAsync();</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>                <span class="keywordflow">foreach</span> (var structure <span class="keywordflow">in</span> model.<a class="code hl_property" href="../../d8/dd7/classRibosoft_1_1Models_1_1RibozymeViewModel_1_1RibozymeCreateViewModel.html#a87b4b45745e490dc15063995efe73cdc">RibozymeStructures</a>)</div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>                {</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>                    var ribozymeStructure = <span class="keyword">new</span> <a class="code hl_class" href="../../d4/de8/classRibosoft_1_1Models_1_1RibozymeStructure.html">RibozymeStructure</a></div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>                    {</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>                        RibozymeId = ribozyme.Id,</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>                        Sequence = structure.Sequence,</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>                        Structure = structure.Structure,</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>                        SubstrateTemplate = structure.SubstrateTemplate,</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>                        SubstrateStructure = structure.SubstrateStructure,</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>                        Cutsite = structure.Cutsite,</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>                        PostProcess = structure.PostProcess</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>                    };</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span> </div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>                    <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.Add(ribozymeStructure);</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>                    await <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.SaveChangesAsync();</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>                }</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>                </div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>                <span class="keywordflow">return</span> RedirectToAction(nameof(<a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a7f5bcff4a97b7ac14815aeb3f8a5a538">Details</a>), <span class="stringliteral">&quot;Ribozymes&quot;</span>, <span class="keyword">new</span> {<span class="keywordtype">id</span> = ribozyme.Id});</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>            }</div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>            </div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>            <span class="keywordflow">return</span> View(model);</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>        }</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>        [HttpPost]</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>        [ValidateAntiForgeryToken]</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>        [Authorize(Roles = <span class="stringliteral">&quot;Administrator&quot;</span>)]</div>
+<div class="foldopen" id="foldopen00088" data-start="{" data-end="}">
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a822bb16f051229e5616fe5550f97d325">   88</a></span>        <span class="keyword">public</span> async Task&lt;IActionResult&gt; <a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a822bb16f051229e5616fe5550f97d325">Create</a>([Bind(<span class="stringliteral">&quot;Name,RibozymeStructures&quot;</span>)] <a class="code hl_class" href="../../d8/dd7/classRibosoft_1_1Models_1_1RibozymeViewModel_1_1RibozymeCreateViewModel.html">RibozymeCreateViewModel</a> model)</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>        {</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>            <span class="keywordflow">if</span> (ModelState.IsValid)</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>            {</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>                var ribozyme = <span class="keyword">new</span> <a class="code hl_class" href="../../d5/de9/classRibosoft_1_1Models_1_1Ribozyme.html">Ribozyme</a></div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>                {</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>                    Name = model.Name</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>                };</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>                </div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>                <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.Add(ribozyme);</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>                await <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.SaveChangesAsync();</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>                <span class="keywordflow">foreach</span> (var structure <span class="keywordflow">in</span> model.<a class="code hl_property" href="../../d8/dd7/classRibosoft_1_1Models_1_1RibozymeViewModel_1_1RibozymeCreateViewModel.html#a87b4b45745e490dc15063995efe73cdc">RibozymeStructures</a>)</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>                {</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>                    var ribozymeStructure = <span class="keyword">new</span> <a class="code hl_class" href="../../d4/de8/classRibosoft_1_1Models_1_1RibozymeStructure.html">RibozymeStructure</a></div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>                    {</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>                        RibozymeId = ribozyme.Id,</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>                        Sequence = structure.Sequence,</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>                        Structure = structure.Structure,</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>                        SubstrateTemplate = structure.SubstrateTemplate,</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>                        SubstrateStructure = structure.SubstrateStructure,</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>                        Cutsite = structure.Cutsite,</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>                        PostProcess = structure.PostProcess</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>                    };</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span> </div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>                    <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.Add(ribozymeStructure);</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>                    await <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.SaveChangesAsync();</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>                }</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>                </div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>                <span class="keywordflow">return</span> RedirectToAction(nameof(<a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a7f5bcff4a97b7ac14815aeb3f8a5a538">Details</a>), <span class="stringliteral">&quot;Ribozymes&quot;</span>, <span class="keyword">new</span> {<span class="keywordtype">id</span> = ribozyme.Id});</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>            }</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>            </div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>            <span class="keywordflow">return</span> View(model);</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>        }</div>
 </div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span> </div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>        [Authorize(Roles = <span class="stringliteral">&quot;Administrator&quot;</span>)]</div>
-<div class="foldopen" id="foldopen00127" data-start="{" data-end="}">
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno"><a class="line" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a717ef29248b53e8b338e6dcd5398d101">  127</a></span>        <span class="keyword">public</span> async Task&lt;IActionResult&gt; <a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a717ef29248b53e8b338e6dcd5398d101">Edit</a>(<span class="keywordtype">int</span>? <span class="keywordtype">id</span>)</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>        {</div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>            <span class="keywordflow">if</span> (<span class="keywordtype">id</span> == <span class="keyword">null</span>)</div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>            {</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>                <span class="keywordflow">return</span> NotFound();</div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>            }</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span> </div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>            var ribozyme = await <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.Ribozymes.SingleOrDefaultAsync(m =&gt; m.Id == <span class="keywordtype">id</span>);</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>            <span class="keywordflow">if</span> (ribozyme == <span class="keyword">null</span>)</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>            {</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>                <span class="keywordflow">return</span> NotFound();</div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>            }</div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>            <span class="keywordflow">return</span> View(ribozyme);</div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>        }</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span> </div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>        [Authorize(Roles = <span class="stringliteral">&quot;Administrator&quot;</span>)]</div>
+<div class="foldopen" id="foldopen00129" data-start="{" data-end="}">
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno"><a class="line" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a717ef29248b53e8b338e6dcd5398d101">  129</a></span>        <span class="keyword">public</span> async Task&lt;IActionResult&gt; <a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a717ef29248b53e8b338e6dcd5398d101">Edit</a>(<span class="keywordtype">int</span>? <span class="keywordtype">id</span>)</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>        {</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>            <span class="keywordflow">if</span> (<span class="keywordtype">id</span> == <span class="keyword">null</span>)</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>            {</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>                <span class="keywordflow">return</span> NotFound();</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>            }</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span> </div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>            var ribozyme = await _context.Ribozymes</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>                .Include(r =&gt; r.RibozymeStructures)</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>                .SingleOrDefaultAsync(m =&gt; m.Id == <span class="keywordtype">id</span>);</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>            <span class="keywordflow">if</span> (ribozyme == <span class="keyword">null</span>)</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>            {</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>                <span class="keywordflow">return</span> NotFound();</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>            }</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>            <span class="keywordflow">return</span> View(ribozyme);</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>        }</div>
 </div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span> </div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>        [HttpPost]</div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>        [ValidateAntiForgeryToken]</div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>        [Authorize(Roles = <span class="stringliteral">&quot;Administrator&quot;</span>)]</div>
-<div class="foldopen" id="foldopen00151" data-start="{" data-end="}">
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno"><a class="line" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#af20f203635a5ec065897336d59c9b5c6">  151</a></span>        <span class="keyword">public</span> async Task&lt;IActionResult&gt; <a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#af20f203635a5ec065897336d59c9b5c6">Edit</a>(<span class="keywordtype">int</span> <span class="keywordtype">id</span>, [Bind(<span class="stringliteral">&quot;Id,Name&quot;</span>)] <a class="code hl_class" href="../../d5/de9/classRibosoft_1_1Models_1_1Ribozyme.html">Ribozyme</a> ribozyme)</div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>        {</div>
-<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>            <span class="keywordflow">if</span> (<span class="keywordtype">id</span> != ribozyme.<a class="code hl_property" href="../../d5/de9/classRibosoft_1_1Models_1_1Ribozyme.html#a02c5a04e87286409127e1632031d3ee6">Id</a>)</div>
-<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>            {</div>
-<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>                <span class="keywordflow">return</span> NotFound();</div>
-<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>            }</div>
-<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span> </div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>            <span class="keywordflow">if</span> (ModelState.IsValid)</div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>            {</div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>                <span class="keywordflow">try</span></div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>                {</div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>                    <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.Update(ribozyme);</div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>                    await <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.SaveChangesAsync();</div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>                }</div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>                <span class="keywordflow">catch</span> (DbUpdateConcurrencyException)</div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>                {</div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>                    <span class="keywordflow">if</span> (!<a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a85387de753688d6a19014ec693289f9d">RibozymeExists</a>(ribozyme.<a class="code hl_property" href="../../d5/de9/classRibosoft_1_1Models_1_1Ribozyme.html#a02c5a04e87286409127e1632031d3ee6">Id</a>))</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>                    {</div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>                        <span class="keywordflow">return</span> NotFound();</div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>                    }</div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>                    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span> </div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>        [HttpPost]</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>        [ValidateAntiForgeryToken]</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>        [Authorize(Roles = <span class="stringliteral">&quot;Administrator&quot;</span>)]</div>
+<div class="foldopen" id="foldopen00155" data-start="{" data-end="}">
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno"><a class="line" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#af20f203635a5ec065897336d59c9b5c6">  155</a></span>        <span class="keyword">public</span> async Task&lt;IActionResult&gt; <a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#af20f203635a5ec065897336d59c9b5c6">Edit</a>(<span class="keywordtype">int</span> <span class="keywordtype">id</span>, [Bind(<span class="stringliteral">&quot;Id,Name&quot;</span>)] <a class="code hl_class" href="../../d5/de9/classRibosoft_1_1Models_1_1Ribozyme.html">Ribozyme</a> ribozyme)</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>        {</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>            <span class="keywordflow">if</span> (<span class="keywordtype">id</span> != ribozyme.<a class="code hl_property" href="../../d5/de9/classRibosoft_1_1Models_1_1Ribozyme.html#a02c5a04e87286409127e1632031d3ee6">Id</a>)</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>            {</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>                <span class="keywordflow">return</span> NotFound();</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>            }</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span> </div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>            <span class="keywordflow">if</span> (ModelState.IsValid)</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>            {</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>                <span class="keywordflow">try</span></div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>                {</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>                    <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.Update(ribozyme);</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>                    await <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.SaveChangesAsync();</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>                }</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>                <span class="keywordflow">catch</span> (DbUpdateConcurrencyException)</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>                {</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>                    <span class="keywordflow">if</span> (!<a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a85387de753688d6a19014ec693289f9d">RibozymeExists</a>(ribozyme.<a class="code hl_property" href="../../d5/de9/classRibosoft_1_1Models_1_1Ribozyme.html#a02c5a04e87286409127e1632031d3ee6">Id</a>))</div>
 <div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>                    {</div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>                        <span class="keywordflow">throw</span>;</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>                        <span class="keywordflow">return</span> NotFound();</div>
 <div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>                    }</div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>                }</div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>                <span class="keywordflow">return</span> RedirectToAction(nameof(<a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a7f5bcff4a97b7ac14815aeb3f8a5a538">Details</a>), <span class="stringliteral">&quot;Ribozymes&quot;</span>, <span class="keyword">new</span> { <span class="keywordtype">id</span> });</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>            }</div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>            <span class="keywordflow">return</span> View(ribozyme);</div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>        }</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>                    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>                    {</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>                        <span class="keywordflow">throw</span>;</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>                    }</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>                }</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>                <span class="keywordflow">return</span> RedirectToAction(nameof(<a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a7f5bcff4a97b7ac14815aeb3f8a5a538">Details</a>), <span class="stringliteral">&quot;Ribozymes&quot;</span>, <span class="keyword">new</span> { <span class="keywordtype">id</span> });</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>            }</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>            <span class="keywordflow">return</span> View(ribozyme);</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>        }</div>
 </div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span> </div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>        [Authorize(Roles = <span class="stringliteral">&quot;Administrator&quot;</span>)]</div>
-<div class="foldopen" id="foldopen00187" data-start="{" data-end="}">
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno"><a class="line" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#acc0bfbfc5d3e240260f6ac07b991f1ef">  187</a></span>        <span class="keyword">public</span> async Task&lt;IActionResult&gt; <a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#acc0bfbfc5d3e240260f6ac07b991f1ef">Delete</a>(<span class="keywordtype">int</span>? <span class="keywordtype">id</span>)</div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>        {</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>            <span class="keywordflow">if</span> (<span class="keywordtype">id</span> == <span class="keyword">null</span>)</div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>            {</div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>                <span class="keywordflow">return</span> NotFound();</div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>            }</div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span> </div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>            var ribozyme = await _context.Ribozymes</div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>                .SingleOrDefaultAsync(m =&gt; m.Id == <span class="keywordtype">id</span>);</div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>            <span class="keywordflow">if</span> (ribozyme == <span class="keyword">null</span>)</div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>            {</div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>                <span class="keywordflow">return</span> NotFound();</div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>            }</div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span> </div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>            <span class="keywordflow">return</span> View(ribozyme);</div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>        }</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span> </div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>        [Authorize(Roles = <span class="stringliteral">&quot;Administrator&quot;</span>)]</div>
+<div class="foldopen" id="foldopen00191" data-start="{" data-end="}">
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno"><a class="line" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#acc0bfbfc5d3e240260f6ac07b991f1ef">  191</a></span>        <span class="keyword">public</span> async Task&lt;IActionResult&gt; <a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#acc0bfbfc5d3e240260f6ac07b991f1ef">Delete</a>(<span class="keywordtype">int</span>? <span class="keywordtype">id</span>)</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>        {</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>            <span class="keywordflow">if</span> (<span class="keywordtype">id</span> == <span class="keyword">null</span>)</div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>            {</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>                <span class="keywordflow">return</span> NotFound();</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>            }</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span> </div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>            var ribozyme = await _context.Ribozymes</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>                .Include(r =&gt; r.RibozymeStructures)</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>                .SingleOrDefaultAsync(m =&gt; m.Id == <span class="keywordtype">id</span>);</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>            <span class="keywordflow">if</span> (ribozyme == <span class="keyword">null</span>)</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>            {</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>                <span class="keywordflow">return</span> NotFound();</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>            }</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span> </div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>            <span class="keywordflow">return</span> View(ribozyme);</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>        }</div>
 </div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span> </div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>        <span class="comment">// POST: Ribozymes/Delete/5</span></div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>        [HttpPost, ActionName(<span class="stringliteral">&quot;Delete&quot;</span>)]</div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>        [ValidateAntiForgeryToken]</div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>        [Authorize(Roles = <span class="stringliteral">&quot;Administrator&quot;</span>)]</div>
-<div class="foldopen" id="foldopen00213" data-start="{" data-end="}">
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno"><a class="line" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a25853e6d1a8cf087d50249b33c08c053">  213</a></span>        <span class="keyword">public</span> async Task&lt;IActionResult&gt; <a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a25853e6d1a8cf087d50249b33c08c053">DeleteConfirmed</a>(<span class="keywordtype">int</span> <span class="keywordtype">id</span>)</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>        {</div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>            var ribozyme = await <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.Ribozymes.SingleOrDefaultAsync(m =&gt; m.Id == <span class="keywordtype">id</span>);</div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>            <span class="keywordflow">if</span> (ribozyme != <span class="keyword">null</span>)</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>            {</div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>                <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.Ribozymes.Remove(ribozyme);</div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>                await <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.SaveChangesAsync();</div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>            }</div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>            <span class="keywordflow">return</span> RedirectToAction(nameof(<a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#af240456a6a165ef12643769cca36e3f5">Index</a>));</div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>        }</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span> </div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>        <span class="comment">// POST: Ribozymes/Delete/5</span></div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>        [HttpPost, ActionName(<span class="stringliteral">&quot;Delete&quot;</span>)]</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>        [ValidateAntiForgeryToken]</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>        [Authorize(Roles = <span class="stringliteral">&quot;Administrator&quot;</span>)]</div>
+<div class="foldopen" id="foldopen00218" data-start="{" data-end="}">
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno"><a class="line" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a25853e6d1a8cf087d50249b33c08c053">  218</a></span>        <span class="keyword">public</span> async Task&lt;IActionResult&gt; <a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a25853e6d1a8cf087d50249b33c08c053">DeleteConfirmed</a>(<span class="keywordtype">int</span> <span class="keywordtype">id</span>)</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>        {</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>            <span class="keywordflow">try</span></div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>            {</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>                var ribozyme = await <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.Ribozymes.SingleOrDefaultAsync(m =&gt; m.Id == <span class="keywordtype">id</span>);</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>                <span class="keywordflow">if</span> (ribozyme != <span class="keyword">null</span>)</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>                {</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>                    <span class="keywordtype">string</span> ribozymeName = ribozyme.Name;</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>                    <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.Ribozymes.Remove(ribozyme);</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>                    await <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.SaveChangesAsync();</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>                    </div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>                    TempData[<span class="stringliteral">&quot;SuccessMessage&quot;</span>] = $<span class="stringliteral">&quot;Ribozyme &#39;{ribozymeName}&#39; has been successfully deleted.&quot;</span>;</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>                }</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>                <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>                {</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>                    TempData[<span class="stringliteral">&quot;ErrorMessage&quot;</span>] = <span class="stringliteral">&quot;Ribozyme not found or has already been deleted.&quot;</span>;</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>                }</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>            }</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>            <span class="keywordflow">catch</span> (Exception)</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>            {</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>                TempData[<span class="stringliteral">&quot;ErrorMessage&quot;</span>] = <span class="stringliteral">&quot;An error occurred while deleting the ribozyme. Please try again.&quot;</span>;</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>                <span class="comment">// Log the exception if you have logging configured</span></div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>                <span class="comment">// _logger.LogError(ex, &quot;Error deleting ribozyme with ID {Id}&quot;, id);</span></div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>            }</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>            </div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>            <span class="keywordflow">return</span> RedirectToAction(nameof(<a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#af240456a6a165ef12643769cca36e3f5">Index</a>));</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>        }</div>
 </div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span> </div>
-<div class="foldopen" id="foldopen00229" data-start="{" data-end="}">
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno"><a class="line" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a85387de753688d6a19014ec693289f9d">  229</a></span>        <span class="keyword">private</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a85387de753688d6a19014ec693289f9d">RibozymeExists</a>(<span class="keywordtype">int</span> <span class="keywordtype">id</span>)</div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>        {</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>            <span class="keywordflow">return</span> <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.Ribozymes.Any(e =&gt; e.Id == <span class="keywordtype">id</span>);</div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>        }</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span> </div>
+<div class="foldopen" id="foldopen00251" data-start="{" data-end="}">
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno"><a class="line" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a85387de753688d6a19014ec693289f9d">  251</a></span>        <span class="keyword">private</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a85387de753688d6a19014ec693289f9d">RibozymeExists</a>(<span class="keywordtype">int</span> <span class="keywordtype">id</span>)</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>        {</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>            <span class="keywordflow">return</span> <a class="code hl_variable" href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">_context</a>.Ribozymes.Any(e =&gt; e.Id == <span class="keywordtype">id</span>);</div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>        }</div>
 </div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>    }</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>    }</div>
 </div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>}</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>}</div>
 <div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html">Ribosoft.Controllers.RibozymesController</a></div><div class="ttdoc">Controller class for the ribozyme templates in the system.</div><div class="ttdef"><b>Definition</b> <a href="#l00018">RibozymesController.cs:19</a></div></div>
-<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_a25853e6d1a8cf087d50249b33c08c053"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a25853e6d1a8cf087d50249b33c08c053">Ribosoft.Controllers.RibozymesController.DeleteConfirmed</a></div><div class="ttdeci">async Task&lt; IActionResult &gt; DeleteConfirmed(int id)</div><div class="ttdoc">HTTP POST request to confirm delete ribozyme.</div><div class="ttdef"><b>Definition</b> <a href="#l00213">RibozymesController.cs:213</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_a25853e6d1a8cf087d50249b33c08c053"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a25853e6d1a8cf087d50249b33c08c053">Ribosoft.Controllers.RibozymesController.DeleteConfirmed</a></div><div class="ttdeci">async Task&lt; IActionResult &gt; DeleteConfirmed(int id)</div><div class="ttdoc">HTTP POST request to confirm delete ribozyme.</div><div class="ttdef"><b>Definition</b> <a href="#l00218">RibozymesController.cs:218</a></div></div>
 <div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_a53f75b6ff443bfdd1806f4caa580ebe9"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a53f75b6ff443bfdd1806f4caa580ebe9">Ribosoft.Controllers.RibozymesController._context</a></div><div class="ttdeci">readonly ApplicationDbContext _context</div><div class="ttdoc">Local application database context.</div><div class="ttdef"><b>Definition</b> <a href="#l00023">RibozymesController.cs:23</a></div></div>
-<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_a717ef29248b53e8b338e6dcd5398d101"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a717ef29248b53e8b338e6dcd5398d101">Ribosoft.Controllers.RibozymesController.Edit</a></div><div class="ttdeci">async Task&lt; IActionResult &gt; Edit(int? id)</div><div class="ttdoc">HTTP GET request for edit ribozyme page.</div><div class="ttdef"><b>Definition</b> <a href="#l00127">RibozymesController.cs:127</a></div></div>
-<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_a7f5bcff4a97b7ac14815aeb3f8a5a538"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a7f5bcff4a97b7ac14815aeb3f8a5a538">Ribosoft.Controllers.RibozymesController.Details</a></div><div class="ttdeci">async Task&lt; IActionResult &gt; Details(int? id)</div><div class="ttdoc">HTTP GET request for details page.</div><div class="ttdef"><b>Definition</b> <a href="#l00047">RibozymesController.cs:47</a></div></div>
-<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_a822bb16f051229e5616fe5550f97d325"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a822bb16f051229e5616fe5550f97d325">Ribosoft.Controllers.RibozymesController.Create</a></div><div class="ttdeci">async Task&lt; IActionResult &gt; Create([Bind(&quot;Name,RibozymeStructures&quot;)] RibozymeCreateViewModel model)</div><div class="ttdoc">HTTP POST request to create new ribozyme.</div><div class="ttdef"><b>Definition</b> <a href="#l00086">RibozymesController.cs:86</a></div></div>
-<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_a85387de753688d6a19014ec693289f9d"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a85387de753688d6a19014ec693289f9d">Ribosoft.Controllers.RibozymesController.RibozymeExists</a></div><div class="ttdeci">bool RibozymeExists(int id)</div><div class="ttdoc">Helper function to check for existence of ribozyme.</div><div class="ttdef"><b>Definition</b> <a href="#l00229">RibozymesController.cs:229</a></div></div>
-<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_a8acebbad29bc6a94aa23a282f0bdd695"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a8acebbad29bc6a94aa23a282f0bdd695">Ribosoft.Controllers.RibozymesController.Create</a></div><div class="ttdeci">IActionResult Create()</div><div class="ttdoc">HTTP GET request for create page.</div><div class="ttdef"><b>Definition</b> <a href="#l00071">RibozymesController.cs:71</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_a717ef29248b53e8b338e6dcd5398d101"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a717ef29248b53e8b338e6dcd5398d101">Ribosoft.Controllers.RibozymesController.Edit</a></div><div class="ttdeci">async Task&lt; IActionResult &gt; Edit(int? id)</div><div class="ttdoc">HTTP GET request for edit ribozyme page.</div><div class="ttdef"><b>Definition</b> <a href="#l00129">RibozymesController.cs:129</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_a7f5bcff4a97b7ac14815aeb3f8a5a538"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a7f5bcff4a97b7ac14815aeb3f8a5a538">Ribosoft.Controllers.RibozymesController.Details</a></div><div class="ttdeci">async Task&lt; IActionResult &gt; Details(int? id)</div><div class="ttdoc">HTTP GET request for details page.</div><div class="ttdef"><b>Definition</b> <a href="#l00049">RibozymesController.cs:49</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_a822bb16f051229e5616fe5550f97d325"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a822bb16f051229e5616fe5550f97d325">Ribosoft.Controllers.RibozymesController.Create</a></div><div class="ttdeci">async Task&lt; IActionResult &gt; Create([Bind(&quot;Name,RibozymeStructures&quot;)] RibozymeCreateViewModel model)</div><div class="ttdoc">HTTP POST request to create new ribozyme.</div><div class="ttdef"><b>Definition</b> <a href="#l00088">RibozymesController.cs:88</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_a85387de753688d6a19014ec693289f9d"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a85387de753688d6a19014ec693289f9d">Ribosoft.Controllers.RibozymesController.RibozymeExists</a></div><div class="ttdeci">bool RibozymeExists(int id)</div><div class="ttdoc">Helper function to check for existence of ribozyme.</div><div class="ttdef"><b>Definition</b> <a href="#l00251">RibozymesController.cs:251</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_a8acebbad29bc6a94aa23a282f0bdd695"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a8acebbad29bc6a94aa23a282f0bdd695">Ribosoft.Controllers.RibozymesController.Create</a></div><div class="ttdeci">IActionResult Create()</div><div class="ttdoc">HTTP GET request for create page.</div><div class="ttdef"><b>Definition</b> <a href="#l00073">RibozymesController.cs:73</a></div></div>
 <div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_a94a82a032afc94d071a836aaaf1a1048"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a94a82a032afc94d071a836aaaf1a1048">Ribosoft.Controllers.RibozymesController.RibozymesController</a></div><div class="ttdeci">RibozymesController(ApplicationDbContext context)</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition</b> <a href="#l00029">RibozymesController.cs:29</a></div></div>
-<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_acc0bfbfc5d3e240260f6ac07b991f1ef"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#acc0bfbfc5d3e240260f6ac07b991f1ef">Ribosoft.Controllers.RibozymesController.Delete</a></div><div class="ttdeci">async Task&lt; IActionResult &gt; Delete(int? id)</div><div class="ttdoc">HTTP GET request for deleting a ribozyme.</div><div class="ttdef"><b>Definition</b> <a href="#l00187">RibozymesController.cs:187</a></div></div>
-<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_af20f203635a5ec065897336d59c9b5c6"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#af20f203635a5ec065897336d59c9b5c6">Ribosoft.Controllers.RibozymesController.Edit</a></div><div class="ttdeci">async Task&lt; IActionResult &gt; Edit(int id, [Bind(&quot;Id,Name&quot;)] Ribozyme ribozyme)</div><div class="ttdoc">HTTP POST request for edit ribozyme form submission.</div><div class="ttdef"><b>Definition</b> <a href="#l00151">RibozymesController.cs:151</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_acc0bfbfc5d3e240260f6ac07b991f1ef"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#acc0bfbfc5d3e240260f6ac07b991f1ef">Ribosoft.Controllers.RibozymesController.Delete</a></div><div class="ttdeci">async Task&lt; IActionResult &gt; Delete(int? id)</div><div class="ttdoc">HTTP GET request for deleting a ribozyme.</div><div class="ttdef"><b>Definition</b> <a href="#l00191">RibozymesController.cs:191</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_af20f203635a5ec065897336d59c9b5c6"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#af20f203635a5ec065897336d59c9b5c6">Ribosoft.Controllers.RibozymesController.Edit</a></div><div class="ttdeci">async Task&lt; IActionResult &gt; Edit(int id, [Bind(&quot;Id,Name&quot;)] Ribozyme ribozyme)</div><div class="ttdoc">HTTP POST request for edit ribozyme form submission.</div><div class="ttdef"><b>Definition</b> <a href="#l00155">RibozymesController.cs:155</a></div></div>
 <div class="ttc" id="aclassRibosoft_1_1Controllers_1_1RibozymesController_html_af240456a6a165ef12643769cca36e3f5"><div class="ttname"><a href="../../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#af240456a6a165ef12643769cca36e3f5">Ribosoft.Controllers.RibozymesController.Index</a></div><div class="ttdeci">async Task&lt; IActionResult &gt; Index()</div><div class="ttdoc">HTTP GET request for ribozymes page.</div><div class="ttdef"><b>Definition</b> <a href="#l00038">RibozymesController.cs:38</a></div></div>
 <div class="ttc" id="aclassRibosoft_1_1Models_1_1RibozymeStructure_html"><div class="ttname"><a href="../../d4/de8/classRibosoft_1_1Models_1_1RibozymeStructure.html">Ribosoft.Models.RibozymeStructure</a></div><div class="ttdoc">Model class for a ribozyme structure.</div><div class="ttdef"><b>Definition</b> <a href="../../dd/d90/RibozymeStructure_8cs_source.html#l00013">RibozymeStructure.cs:14</a></div></div>
 <div class="ttc" id="aclassRibosoft_1_1Models_1_1RibozymeViewModel_1_1RibozymeCreateViewModel_html"><div class="ttname"><a href="../../d8/dd7/classRibosoft_1_1Models_1_1RibozymeViewModel_1_1RibozymeCreateViewModel.html">Ribosoft.Models.RibozymeViewModel.RibozymeCreateViewModel</a></div><div class="ttdoc">Model class for the create ribozyme view.</div><div class="ttdef"><b>Definition</b> <a href="../../d8/d46/RibozymeCreateViewModel_8cs_source.html#l00012">RibozymeCreateViewModel.cs:13</a></div></div>
 <div class="ttc" id="aclassRibosoft_1_1Models_1_1RibozymeViewModel_1_1RibozymeCreateViewModel_html_a87b4b45745e490dc15063995efe73cdc"><div class="ttname"><a href="../../d8/dd7/classRibosoft_1_1Models_1_1RibozymeViewModel_1_1RibozymeCreateViewModel.html#a87b4b45745e490dc15063995efe73cdc">Ribosoft.Models.RibozymeViewModel.RibozymeCreateViewModel.RibozymeStructures</a></div><div class="ttdeci">List&lt; RibozymeStructure &gt; RibozymeStructures</div><div class="ttdoc">List of ribozyme structures.</div><div class="ttdef"><b>Definition</b> <a href="../../d8/d46/RibozymeCreateViewModel_8cs_source.html#l00033">RibozymeCreateViewModel.cs:33</a></div></div>
 <div class="ttc" id="aclassRibosoft_1_1Models_1_1Ribozyme_html"><div class="ttname"><a href="../../d5/de9/classRibosoft_1_1Models_1_1Ribozyme.html">Ribosoft.Models.Ribozyme</a></div><div class="ttdoc">Model class for the ribozyme containing its structures.</div><div class="ttdef"><b>Definition</b> <a href="../../d4/d1e/Models_2Ribozyme_8cs_source.html#l00012">Models/Ribozyme.cs:13</a></div></div>
 <div class="ttc" id="aclassRibosoft_1_1Models_1_1Ribozyme_html_a02c5a04e87286409127e1632031d3ee6"><div class="ttname"><a href="../../d5/de9/classRibosoft_1_1Models_1_1Ribozyme.html#a02c5a04e87286409127e1632031d3ee6">Ribosoft.Models.Ribozyme.Id</a></div><div class="ttdeci">int Id</div><div class="ttdoc">Ribozyme ID.</div><div class="ttdef"><b>Definition</b> <a href="../../d4/d1e/Models_2Ribozyme_8cs_source.html#l00025">Models/Ribozyme.cs:25</a></div></div>
-<div class="ttc" id="anamespaceRibosoft_1_1Controllers_html"><div class="ttname"><a href="../../d6/d4e/namespaceRibosoft_1_1Controllers.html">Ribosoft.Controllers</a></div><div class="ttdef"><b>Definition</b> <a href="../../d4/d8e/AccountController_8cs_source.html#l00018">AccountController.cs:19</a></div></div>
+<div class="ttc" id="anamespaceRibosoft_1_1Controllers_html"><div class="ttname"><a href="../../d6/d4e/namespaceRibosoft_1_1Controllers.html">Ribosoft.Controllers</a></div><div class="ttdef"><b>Definition</b> <a href="../../d4/d8e/AccountController_8cs_source.html#l00017">AccountController.cs:18</a></div></div>
 <div class="ttc" id="anamespaceRibosoft_1_1Models_1_1RibozymeViewModel_html"><div class="ttname"><a href="../../d4/d66/namespaceRibosoft_1_1Models_1_1RibozymeViewModel.html">Ribosoft.Models.RibozymeViewModel</a></div><div class="ttdef"><b>Definition</b> <a href="../../d8/d46/RibozymeCreateViewModel_8cs_source.html#l00006">RibozymeCreateViewModel.cs:7</a></div></div>
-<div class="ttc" id="anamespaceRibosoft_1_1Models_html"><div class="ttname"><a href="../../d2/d21/namespaceRibosoft_1_1Models.html">Ribosoft.Models</a></div><div class="ttdef"><b>Definition</b> <a href="../../db/d79/ExternalLoginViewModel_8cs_source.html#l00007">ExternalLoginViewModel.cs:8</a></div></div>
+<div class="ttc" id="anamespaceRibosoft_1_1Models_html"><div class="ttname"><a href="../../d2/d21/namespaceRibosoft_1_1Models.html">Ribosoft.Models</a></div><div class="ttdef"><b>Definition</b> <a href="../../d5/d35/ForgotPasswordViewModel_8cs_source.html#l00007">ForgotPasswordViewModel.cs:8</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->

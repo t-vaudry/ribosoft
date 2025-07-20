@@ -12,6 +12,5 @@ var searchData=
   ['build_20c_20algorithm_20library_9',['3. Build C++ Algorithm Library',['../index.html#autotoc_md10',1,'']]],
   ['build_20frontend_20critical_20step_10',['4. Build Frontend (Critical Step)',['../index.html#autotoc_md11',1,'']]],
   ['build_20issues_11',['Frontend Build Issues',['../index.html#autotoc_md23',1,'']]],
-  ['buildargumentstring_12',['BuildArgumentString',['../d0/dcc/classRibosoft_1_1Blast_1_1Blaster.html#aa68c16e9d95d07519e3e1188543b119d',1,'Ribosoft::Blast::Blaster']]],
-  ['bytes_13',['Bytes',['../d9/d4a/classRibosoft_1_1Blast_1_1Database.html#a68f7fd9599b043f39bb08868ab4285d5',1,'Ribosoft::Blast::Database']]]
+  ['bytes_12',['Bytes',['../d9/d4a/classRibosoft_1_1Blast_1_1Database.html#a68f7fd9599b043f39bb08868ab4285d5',1,'Ribosoft::Blast::Database']]]
 ];

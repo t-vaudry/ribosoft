@@ -7,7 +7,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.12.0"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <!-- jQuery with Subresource Integrity (SRI) for security -->
+        <script type="text/javascript" 
+                src="https://code.jquery.com/jquery-2.1.1.min.js"
+                integrity="sha256-h0cGsrExGgcJOUVBkMOVsKOVE7zTABGF0kpOe4p4Tc4="
+                crossorigin="anonymous"></script>
         <title>Ribosoft: Ribosoft.Controllers.ManageController Class Reference</title>
         <!--<link href="../../tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="../../dynsections.js"></script>
@@ -20,8 +24,15 @@
         <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
         <link href="../../custom.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <!-- Bootstrap CSS with SRI for security -->
+        <link rel="stylesheet" 
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+              integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+              crossorigin="anonymous">
+        <!-- Bootstrap JS with SRI for security -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+                integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+                crossorigin="anonymous"></script>
         <link href="../../jquery.smartmenus.bootstrap.css" rel="stylesheet">
         <link href="../../jquery.powertip.css" rel="stylesheet">
         <script type="text/javascript" src="../../jquery.smartmenus.js"></script>
@@ -154,6 +165,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a300c7e8a9b7e4752ff50b785be8cd9cb" id="r_a300c7e8a9b7e4752ff50b785be8cd9cb"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a300c7e8a9b7e4752ff50b785be8cd9cb">GenerateRecoveryCodesWarning</a> ()</td></tr>
 <tr class="memdesc:a300c7e8a9b7e4752ff50b785be8cd9cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET request for the generate recovery codes warning page.  <br /></td></tr>
 <tr class="separator:a300c7e8a9b7e4752ff50b785be8cd9cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35486a51b9e8d8195af09d5b19e3705f" id="r_a35486a51b9e8d8195af09d5b19e3705f"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a35486a51b9e8d8195af09d5b19e3705f">GetAuthenticatorData</a> ()</td></tr>
+<tr class="memdesc:a35486a51b9e8d8195af09d5b19e3705f"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST request to get authenticator setup data as JSON.  <br /></td></tr>
+<tr class="separator:a35486a51b9e8d8195af09d5b19e3705f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c93fe759f810c872219c5c928d12c35" id="r_a3c93fe759f810c872219c5c928d12c35"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3c93fe759f810c872219c5c928d12c35">GetRecoveryCodes</a> ()</td></tr>
+<tr class="memdesc:a3c93fe759f810c872219c5c928d12c35"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET request to get current recovery codes as JSON.  <br /></td></tr>
+<tr class="separator:a3c93fe759f810c872219c5c928d12c35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f619348844552eaf85f42e5ee5f1f5b" id="r_a1f619348844552eaf85f42e5ee5f1f5b"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1f619348844552eaf85f42e5ee5f1f5b">Index</a> ()</td></tr>
 <tr class="memdesc:a1f619348844552eaf85f42e5ee5f1f5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET request for the manage account page.  <br /></td></tr>
 <tr class="separator:a1f619348844552eaf85f42e5ee5f1f5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -175,9 +192,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a361611d600f357688aab7e7babde94b6" id="r_a361611d600f357688aab7e7babde94b6"><td class="memItemLeft" align="right" valign="top">IActionResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a361611d600f357688aab7e7babde94b6">ResetAuthenticatorWarning</a> ()</td></tr>
 <tr class="memdesc:a361611d600f357688aab7e7babde94b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET request for the reset authenticator warning page.  <br /></td></tr>
 <tr class="separator:a361611d600f357688aab7e7babde94b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d3f8dbce02357bcb043fa6affd5e29d" id="r_a5d3f8dbce02357bcb043fa6affd5e29d"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5d3f8dbce02357bcb043fa6affd5e29d">SendVerificationEmail</a> (<a class="el" href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html">IndexViewModel</a> model)</td></tr>
-<tr class="memdesc:a5d3f8dbce02357bcb043fa6affd5e29d"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST request to send verification email for account.  <br /></td></tr>
-<tr class="separator:a5d3f8dbce02357bcb043fa6affd5e29d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c13c25b51265066b2260d066aca62c8" id="r_a4c13c25b51265066b2260d066aca62c8"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c13c25b51265066b2260d066aca62c8">SendVerificationEmail</a> ()</td></tr>
+<tr class="memdesc:a4c13c25b51265066b2260d066aca62c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET request to send verification email for account.  <br /></td></tr>
+<tr class="separator:a4c13c25b51265066b2260d066aca62c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27cda807f3a6ae5bf08ce6bb2c5481d0" id="r_a27cda807f3a6ae5bf08ce6bb2c5481d0"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a27cda807f3a6ae5bf08ce6bb2c5481d0">SetPassword</a> ()</td></tr>
 <tr class="memdesc:a27cda807f3a6ae5bf08ce6bb2c5481d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET request for set password page.  <br /></td></tr>
 <tr class="separator:a27cda807f3a6ae5bf08ce6bb2c5481d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -242,7 +259,7 @@ Static Private Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Controller class for the management of accounts. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00024">24</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00025">25</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ab630a65d946577cb5d81c0fad7003e13" name="ab630a65d946577cb5d81c0fad7003e13"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab630a65d946577cb5d81c0fad7003e13">&#9670;&#160;</a></span>ManageController()</h2>
@@ -298,7 +315,7 @@ Static Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00069">69</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00070">70</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -334,7 +351,7 @@ Static Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00630">630</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00773">773</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -364,7 +381,7 @@ Static Private Attributes</h2></td></tr>
 <p>HTTP GET request for change password page. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of the change password index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00192">192</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00210">210</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -400,7 +417,7 @@ Static Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of the change password index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00217">217</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00235">235</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -428,9 +445,9 @@ Static Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>HTTP POST request to disable two-factor authentication. </p>
-<dl class="section return"><dt>Returns</dt><dd>View of the two-factor authentication index </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>View of the two-factor authentication index or JSON response for AJAX </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00449">449</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00467">467</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -460,7 +477,7 @@ Static Private Attributes</h2></td></tr>
 <p>HTTP GET request for disabled two-factor authentication warning page. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of the disabled two-factor authentication index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00427">427</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00445">445</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -490,7 +507,7 @@ Static Private Attributes</h2></td></tr>
 <p>HTTP GET request for enable authenticator page. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of the enable authenticator index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00472">472</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00504">504</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -526,7 +543,7 @@ Static Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of the show recovery codes index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00493">493</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00525">525</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -556,7 +573,7 @@ Static Private Attributes</h2></td></tr>
 <p>HTTP GET request to the external logins page. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of the external logins index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00306">306</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00324">324</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -592,7 +609,7 @@ Static Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Formatted key </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00643">643</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00786">786</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -633,7 +650,7 @@ Static Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>String of QR code URI </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00666">666</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00809">809</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -661,9 +678,9 @@ Static Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>HTTP POST request to generate new two-factor authentication recovery codes. </p>
-<dl class="section return"><dt>Returns</dt><dd>View of the show recovery codes index </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>View of the show recovery codes index or JSON response for AJAX </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00603">603</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00644">644</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -693,7 +710,67 @@ Static Private Attributes</h2></td></tr>
 <p>HTTP GET request for the generate recovery codes warning page. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of the generate recovery codes index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00581">581</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00622">622</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+
+</div>
+</div>
+<a id="a35486a51b9e8d8195af09d5b19e3705f" name="a35486a51b9e8d8195af09d5b19e3705f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a35486a51b9e8d8195af09d5b19e3705f">&#9670;&#160;</a></span>GetAuthenticatorData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.ManageController.GetAuthenticatorData </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>HTTP POST request to get authenticator setup data as JSON. </p>
+<dl class="section return"><dt>Returns</dt><dd>JSON with shared key and authenticator URI </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00687">687</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+
+</div>
+</div>
+<a id="a3c93fe759f810c872219c5c928d12c35" name="a3c93fe759f810c872219c5c928d12c35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c93fe759f810c872219c5c928d12c35">&#9670;&#160;</a></span>GetRecoveryCodes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.ManageController.GetRecoveryCodes </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>HTTP GET request to get current recovery codes as JSON. </p>
+<dl class="section return"><dt>Returns</dt><dd>JSON with recovery codes </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00725">725</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -723,7 +800,7 @@ Static Private Attributes</h2></td></tr>
 <p>HTTP GET request for the manage account page. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of the manage account index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00094">94</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00095">95</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -759,7 +836,7 @@ Static Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of the manage account index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00121">121</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00122">122</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -794,7 +871,7 @@ Static Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00330">330</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00348">348</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -824,7 +901,7 @@ Static Private Attributes</h2></td></tr>
 <p>HTTP GET request to add the external login. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of the external logins index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00346">346</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00364">364</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -864,7 +941,7 @@ Static Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00680">680</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00823">823</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -900,7 +977,7 @@ Static Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of the external logins index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00380">380</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00398">398</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -928,9 +1005,9 @@ Static Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>HTTP POST request to reset the authentication app key. </p>
-<dl class="section return"><dt>Returns</dt><dd>View of the enable authenticator index </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>View of the enable authenticator index or JSON response for AJAX </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00561">561</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00593">593</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -960,12 +1037,12 @@ Static Private Attributes</h2></td></tr>
 <p>HTTP GET request for the reset authenticator warning page. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of the reset authenticator index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00550">550</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00582">582</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
-<a id="a5d3f8dbce02357bcb043fa6affd5e29d" name="a5d3f8dbce02357bcb043fa6affd5e29d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5d3f8dbce02357bcb043fa6affd5e29d">&#9670;&#160;</a></span>SendVerificationEmail()</h2>
+<a id="a4c13c25b51265066b2260d066aca62c8" name="a4c13c25b51265066b2260d066aca62c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c13c25b51265066b2260d066aca62c8">&#9670;&#160;</a></span>SendVerificationEmail()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -976,7 +1053,7 @@ Static Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.ManageController.SendVerificationEmail </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html">IndexViewModel</a></td>          <td class="paramname"><span class="paramname"><em>model</em></span></td><td>)</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -987,16 +1064,10 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>HTTP POST request to send verification email for account. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">model</td><td>Model object of index view </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>View of the manage account index </dd></dl>
+<p>HTTP GET request to send verification email for account. </p>
+<dl class="section return"><dt>Returns</dt><dd>Redirect to manage account index with status message </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00165">165</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00164">164</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -1026,7 +1097,7 @@ Static Private Attributes</h2></td></tr>
 <p>HTTP GET request for set password page. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of the set password index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00249">249</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00267">267</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -1062,7 +1133,7 @@ Static Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of the set password index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00275">275</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00293">293</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -1092,7 +1163,7 @@ Static Private Attributes</h2></td></tr>
 <p>HTTP GET request for the show recovery codes page. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of the show recovery codes index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00533">533</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00565">565</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -1122,7 +1193,7 @@ Static Private Attributes</h2></td></tr>
 <p>HTTP GET request for two-factor authentication page. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of the two-factor authentication index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00404">404</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00422">422</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -1149,7 +1220,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Local application email sender. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00039">39</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00040">40</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -1175,7 +1246,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Local logging service. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00044">44</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00045">45</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -1201,7 +1272,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Local application sign in manager. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00034">34</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00035">35</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -1227,7 +1298,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Local URL encoder. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00049">49</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00050">50</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -1253,7 +1324,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Local application user manager. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00029">29</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00030">30</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -1279,7 +1350,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Authenticator URI formate. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00054">54</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00055">55</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -1305,7 +1376,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>String name of RecoveryCodesKey. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00059">59</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00060">60</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>
@@ -1332,7 +1403,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Status message stored in temp data. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00087">87</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dd/dbb/ManageController_8cs_source.html#l00088">88</a> of file <a class="el" href="../../dd/dbb/ManageController_8cs_source.html">ManageController.cs</a>.</p>
 
 </div>
 </div>

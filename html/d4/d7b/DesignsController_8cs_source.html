@@ -7,7 +7,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.12.0"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <!-- jQuery with Subresource Integrity (SRI) for security -->
+        <script type="text/javascript" 
+                src="https://code.jquery.com/jquery-2.1.1.min.js"
+                integrity="sha256-h0cGsrExGgcJOUVBkMOVsKOVE7zTABGF0kpOe4p4Tc4="
+                crossorigin="anonymous"></script>
         <title>Ribosoft: DesignsController.cs Source File</title>
         <!--<link href="../../tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="../../dynsections.js"></script>
@@ -20,8 +24,15 @@
         <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
         <link href="../../custom.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <!-- Bootstrap CSS with SRI for security -->
+        <link rel="stylesheet" 
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+              integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+              crossorigin="anonymous">
+        <!-- Bootstrap JS with SRI for security -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+                integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+                crossorigin="anonymous"></script>
         <link href="../../jquery.smartmenus.bootstrap.css" rel="stylesheet">
         <link href="../../jquery.powertip.css" rel="stylesheet">
         <script type="text/javascript" src="../../jquery.smartmenus.js"></script>
@@ -152,28 +163,79 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        }</div>
 </div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
-<div class="foldopen" id="foldopen00071" data-start="{" data-end="}">
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="../../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a14cf917ff5b1530e81df825f6c7021d4">   71</a></span>        <span class="keyword">public</span> FileStreamResult <a class="code hl_function" href="../../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a14cf917ff5b1530e81df825f6c7021d4">DownloadDesign</a>(<span class="keywordtype">string</span> jobID, <span class="keywordtype">string</span> rank, <span class="keywordtype">string</span> cutsiteIndex, <span class="keywordtype">string</span> desiredTemperatureScore, <span class="keywordtype">string</span> specificityScore, <span class="keywordtype">string</span> accessibilityScore, <span class="keywordtype">string</span> structureScore, <span class="keywordtype">string</span> createdAt, <span class="keywordtype">string</span> updatedAt, <span class="keywordtype">string</span> sequence)</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>        {</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>            <span class="comment">// TODO: Break up sequence into chunks of max line length</span></div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>            var payload = String.Format(<span class="stringliteral">&quot;&gt;Rank {0} | CutsiteIndex {1} | DesiredTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}&quot;</span>, rank, cutsiteIndex, desiredTemperatureScore, specificityScore, accessibilityScore, structureScore, createdAt, updatedAt, sequence);</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>            var byteArray = Encoding.ASCII.GetBytes(payload);</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>            var stream = <span class="keyword">new</span> MemoryStream(byteArray);</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>            <span class="keywordflow">return</span> File(stream, <span class="stringliteral">&quot;text/plain&quot;</span>, String.Format(<span class="stringliteral">&quot;job{0}_rank{1}.fasta&quot;</span>, jobID, rank));</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>        }</div>
+<div class="foldopen" id="foldopen00063" data-start="{" data-end="}">
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="../../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a99b6b5f4c013a6522f757abccd8f9ed7">   63</a></span>        <span class="keyword">public</span> async Task&lt;IActionResult&gt; <a class="code hl_function" href="../../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a99b6b5f4c013a6522f757abccd8f9ed7">ModalDetails</a>(<span class="keywordtype">int</span>? <span class="keywordtype">id</span>)</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>        {</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>            <span class="keywordflow">if</span> (<span class="keywordtype">id</span> == <span class="keyword">null</span>)</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>            {</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>                <span class="keywordflow">return</span> NotFound();</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>            }</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>            var design = await _context.Designs</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>                .Include(d =&gt; d.Job)</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>                .SingleOrDefaultAsync(m =&gt; m.Id == <span class="keywordtype">id</span>);</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>            <span class="keywordflow">if</span> (design == <span class="keyword">null</span>)</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>            {</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>                <span class="keywordflow">return</span> NotFound();</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>            }</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>            <span class="keywordflow">return</span> PartialView(<span class="stringliteral">&quot;_DesignModalDetails&quot;</span>, design);</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>        }</div>
 </div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    }</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>        [HttpPost]</div>
+<div class="foldopen" id="foldopen00088" data-start="{" data-end="}">
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="../../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a8b88e6ce79bf0cf7ec8447f0a074da9a">   88</a></span>        <span class="keyword">public</span> async Task&lt;IActionResult&gt; <a class="code hl_function" href="../../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a8b88e6ce79bf0cf7ec8447f0a074da9a">Export</a>(<span class="keywordtype">int</span> designId, <span class="keywordtype">string</span> format = <span class="stringliteral">&quot;fasta&quot;</span>)</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>        {</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>            var design = await _context.Designs</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>                .Include(d =&gt; d.Job)</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>                .SingleOrDefaultAsync(d =&gt; d.Id == designId);</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>                </div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>            <span class="keywordflow">if</span> (design == <span class="keyword">null</span>)</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>            {</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>                <span class="keywordflow">return</span> NotFound();</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>            }</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>            <span class="keywordflow">if</span> (format.ToLower() == <span class="stringliteral">&quot;fasta&quot;</span>)</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>            {</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>                var payload = String.Format(<span class="stringliteral">&quot;&gt;Rank {0} | CutsiteIndex {1} | DesiredTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}&quot;</span>, </div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>                    design.Rank, design.CutsiteIndex, design.DesiredTemperatureScore, design.SpecificityScore, </div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>                    design.AccessibilityScore, design.StructureScore, design.CreatedAt, design.UpdatedAt, design.Sequence);</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>                var byteArray = Encoding.ASCII.GetBytes(payload);</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>                var stream = <span class="keyword">new</span> MemoryStream(byteArray);</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>                <span class="keywordflow">return</span> File(stream, <span class="stringliteral">&quot;text/plain&quot;</span>, String.Format(<span class="stringliteral">&quot;job{0}_rank{1}.fasta&quot;</span>, design.JobId, design.Rank));</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>            }</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span> </div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>            <span class="keywordflow">return</span> BadRequest(<span class="stringliteral">&quot;Unsupported format&quot;</span>);</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>        }</div>
 </div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>}</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span> </div>
+<div class="foldopen" id="foldopen00127" data-start="{" data-end="}">
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno"><a class="line" href="../../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a14cf917ff5b1530e81df825f6c7021d4">  127</a></span>        <span class="keyword">public</span> FileStreamResult <a class="code hl_function" href="../../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a14cf917ff5b1530e81df825f6c7021d4">DownloadDesign</a>(<span class="keywordtype">string</span> jobID, <span class="keywordtype">string</span> rank, <span class="keywordtype">string</span> cutsiteIndex, <span class="keywordtype">string</span> desiredTemperatureScore, <span class="keywordtype">string</span> specificityScore, <span class="keywordtype">string</span> accessibilityScore, <span class="keywordtype">string</span> structureScore, <span class="keywordtype">string</span> createdAt, <span class="keywordtype">string</span> updatedAt, <span class="keywordtype">string</span> sequence)</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>        {</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>            <span class="comment">// TODO: Break up sequence into chunks of max line length</span></div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>            var payload = String.Format(<span class="stringliteral">&quot;&gt;Rank {0} | CutsiteIndex {1} | DesiredTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}&quot;</span>, rank, cutsiteIndex, desiredTemperatureScore, specificityScore, accessibilityScore, structureScore, createdAt, updatedAt, sequence);</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span> </div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>            var byteArray = Encoding.ASCII.GetBytes(payload);</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>            var stream = <span class="keyword">new</span> MemoryStream(byteArray);</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>            <span class="keywordflow">return</span> File(stream, <span class="stringliteral">&quot;text/plain&quot;</span>, String.Format(<span class="stringliteral">&quot;job{0}_rank{1}.fasta&quot;</span>, jobID, rank));</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>        }</div>
+</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>    }</div>
+</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>}</div>
 <div class="ttc" id="aclassRibosoft_1_1Controllers_1_1DesignsController_html"><div class="ttname"><a href="../../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html">Ribosoft.Controllers.DesignsController</a></div><div class="ttdoc">Controller class for the designs of a ribozyme.</div><div class="ttdef"><b>Definition</b> <a href="#l00019">DesignsController.cs:20</a></div></div>
 <div class="ttc" id="aclassRibosoft_1_1Controllers_1_1DesignsController_html_a0287817f3e7d6e47306f5670d469ca40"><div class="ttname"><a href="../../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a0287817f3e7d6e47306f5670d469ca40">Ribosoft.Controllers.DesignsController.Details</a></div><div class="ttdeci">async Task&lt; IActionResult &gt; Details(int? id)</div><div class="ttdoc">HTTP GET for view of details of a design.</div><div class="ttdef"><b>Definition</b> <a href="#l00040">DesignsController.cs:40</a></div></div>
-<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1DesignsController_html_a14cf917ff5b1530e81df825f6c7021d4"><div class="ttname"><a href="../../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a14cf917ff5b1530e81df825f6c7021d4">Ribosoft.Controllers.DesignsController.DownloadDesign</a></div><div class="ttdeci">FileStreamResult DownloadDesign(string jobID, string rank, string cutsiteIndex, string desiredTemperatureScore, string specificityScore, string accessibilityScore, string structureScore, string createdAt, string updatedAt, string sequence)</div><div class="ttdoc">HTTP GET to download FASTA file of current design.</div><div class="ttdef"><b>Definition</b> <a href="#l00071">DesignsController.cs:71</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1DesignsController_html_a14cf917ff5b1530e81df825f6c7021d4"><div class="ttname"><a href="../../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a14cf917ff5b1530e81df825f6c7021d4">Ribosoft.Controllers.DesignsController.DownloadDesign</a></div><div class="ttdeci">FileStreamResult DownloadDesign(string jobID, string rank, string cutsiteIndex, string desiredTemperatureScore, string specificityScore, string accessibilityScore, string structureScore, string createdAt, string updatedAt, string sequence)</div><div class="ttdoc">HTTP GET to download FASTA file of current design.</div><div class="ttdef"><b>Definition</b> <a href="#l00127">DesignsController.cs:127</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1DesignsController_html_a8b88e6ce79bf0cf7ec8447f0a074da9a"><div class="ttname"><a href="../../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a8b88e6ce79bf0cf7ec8447f0a074da9a">Ribosoft.Controllers.DesignsController.Export</a></div><div class="ttdeci">async Task&lt; IActionResult &gt; Export(int designId, string format=&quot;fasta&quot;)</div><div class="ttdoc">HTTP POST to export individual design.</div><div class="ttdef"><b>Definition</b> <a href="#l00088">DesignsController.cs:88</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1Controllers_1_1DesignsController_html_a99b6b5f4c013a6522f757abccd8f9ed7"><div class="ttname"><a href="../../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a99b6b5f4c013a6522f757abccd8f9ed7">Ribosoft.Controllers.DesignsController.ModalDetails</a></div><div class="ttdeci">async Task&lt; IActionResult &gt; ModalDetails(int? id)</div><div class="ttdoc">HTTP GET to get design details for modal display.</div><div class="ttdef"><b>Definition</b> <a href="#l00063">DesignsController.cs:63</a></div></div>
 <div class="ttc" id="aclassRibosoft_1_1Controllers_1_1DesignsController_html_ac5a7a3d9c1db91a1c7707521d9e58f59"><div class="ttname"><a href="../../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#ac5a7a3d9c1db91a1c7707521d9e58f59">Ribosoft.Controllers.DesignsController.DesignsController</a></div><div class="ttdeci">DesignsController(ApplicationDbContext context)</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition</b> <a href="#l00030">DesignsController.cs:30</a></div></div>
 <div class="ttc" id="aclassRibosoft_1_1Controllers_1_1DesignsController_html_ae76d6a16852d29e8f7d70c9a369b9620"><div class="ttname"><a href="../../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#ae76d6a16852d29e8f7d70c9a369b9620">Ribosoft.Controllers.DesignsController._context</a></div><div class="ttdeci">readonly ApplicationDbContext _context</div><div class="ttdoc">Local application database context.</div><div class="ttdef"><b>Definition</b> <a href="#l00024">DesignsController.cs:24</a></div></div>
-<div class="ttc" id="anamespaceRibosoft_1_1Controllers_html"><div class="ttname"><a href="../../d6/d4e/namespaceRibosoft_1_1Controllers.html">Ribosoft.Controllers</a></div><div class="ttdef"><b>Definition</b> <a href="../../d4/d8e/AccountController_8cs_source.html#l00018">AccountController.cs:19</a></div></div>
-<div class="ttc" id="anamespaceRibosoft_1_1Models_html"><div class="ttname"><a href="../../d2/d21/namespaceRibosoft_1_1Models.html">Ribosoft.Models</a></div><div class="ttdef"><b>Definition</b> <a href="../../db/d79/ExternalLoginViewModel_8cs_source.html#l00007">ExternalLoginViewModel.cs:8</a></div></div>
+<div class="ttc" id="anamespaceRibosoft_1_1Controllers_html"><div class="ttname"><a href="../../d6/d4e/namespaceRibosoft_1_1Controllers.html">Ribosoft.Controllers</a></div><div class="ttdef"><b>Definition</b> <a href="../../d4/d8e/AccountController_8cs_source.html#l00017">AccountController.cs:18</a></div></div>
+<div class="ttc" id="anamespaceRibosoft_1_1Models_html"><div class="ttname"><a href="../../d2/d21/namespaceRibosoft_1_1Models.html">Ribosoft.Models</a></div><div class="ttdef"><b>Definition</b> <a href="../../d5/d35/ForgotPasswordViewModel_8cs_source.html#l00007">ForgotPasswordViewModel.cs:8</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->

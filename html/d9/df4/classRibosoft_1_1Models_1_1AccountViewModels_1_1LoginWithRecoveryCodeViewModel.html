@@ -7,7 +7,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.12.0"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <!-- jQuery with Subresource Integrity (SRI) for security -->
+        <script type="text/javascript" 
+                src="https://code.jquery.com/jquery-2.1.1.min.js"
+                integrity="sha256-h0cGsrExGgcJOUVBkMOVsKOVE7zTABGF0kpOe4p4Tc4="
+                crossorigin="anonymous"></script>
         <title>Ribosoft: Ribosoft.Models.AccountViewModels.LoginWithRecoveryCodeViewModel Class Reference</title>
         <!--<link href="../../tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="../../dynsections.js"></script>
@@ -20,8 +24,15 @@
         <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
         <link href="../../custom.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <!-- Bootstrap CSS with SRI for security -->
+        <link rel="stylesheet" 
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+              integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+              crossorigin="anonymous">
+        <!-- Bootstrap JS with SRI for security -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+                integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+                crossorigin="anonymous"></script>
         <link href="../../jquery.smartmenus.bootstrap.css" rel="stylesheet">
         <link href="../../jquery.powertip.css" rel="stylesheet">
         <script type="text/javascript" src="../../jquery.smartmenus.js"></script>
@@ -109,22 +120,34 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
-<p>Model class for the login with recovery code view.  
+<p>Model class for the login with one-time email code view.  
  <a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
-<tr class="memitem:a6f82db3ebb55ba36ecded2afa2adde63" id="r_a6f82db3ebb55ba36ecded2afa2adde63"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6f82db3ebb55ba36ecded2afa2adde63">RecoveryCode</a> = string.Empty<code> [get, set]</code></td></tr>
-<tr class="memdesc:a6f82db3ebb55ba36ecded2afa2adde63"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recovery code.  <br /></td></tr>
-<tr class="separator:a6f82db3ebb55ba36ecded2afa2adde63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63223887968ff5be0bb45d8f24df9426" id="r_a63223887968ff5be0bb45d8f24df9426"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a63223887968ff5be0bb45d8f24df9426">CanResend</a> = true<code> [get, set]</code></td></tr>
+<tr class="memdesc:a63223887968ff5be0bb45d8f24df9426"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates if user can request a new code.  <br /></td></tr>
+<tr class="separator:a63223887968ff5be0bb45d8f24df9426"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e1227176bb6aedf45448f79045ed167" id="r_a6e1227176bb6aedf45448f79045ed167"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6e1227176bb6aedf45448f79045ed167">CodeSent</a> = false<code> [get, set]</code></td></tr>
+<tr class="memdesc:a6e1227176bb6aedf45448f79045ed167"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates if a code has been sent.  <br /></td></tr>
+<tr class="separator:a6e1227176bb6aedf45448f79045ed167"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3db210b15e12a20e0d517100f5e4f753" id="r_a3db210b15e12a20e0d517100f5e4f753"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3db210b15e12a20e0d517100f5e4f753">Email</a> = string.Empty<code> [get, set]</code></td></tr>
+<tr class="memdesc:a3db210b15e12a20e0d517100f5e4f753"><td class="mdescLeft">&#160;</td><td class="mdescRight">Email address for display purposes (read-only)  <br /></td></tr>
+<tr class="separator:a3db210b15e12a20e0d517100f5e4f753"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fa64aa04e1ec57133af70e0adbbd5c5" id="r_a5fa64aa04e1ec57133af70e0adbbd5c5"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5fa64aa04e1ec57133af70e0adbbd5c5">OneTimeCode</a> = string.Empty<code> [get, set]</code></td></tr>
+<tr class="memdesc:a5fa64aa04e1ec57133af70e0adbbd5c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">One-time code sent via email.  <br /></td></tr>
+<tr class="separator:a5fa64aa04e1ec57133af70e0adbbd5c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ae44d006ead398256421ef8c0977db5" id="r_a3ae44d006ead398256421ef8c0977db5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3ae44d006ead398256421ef8c0977db5">ResendCooldownSeconds</a> = 0<code> [get, set]</code></td></tr>
+<tr class="memdesc:a3ae44d006ead398256421ef8c0977db5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seconds remaining before user can request another code.  <br /></td></tr>
+<tr class="separator:a3ae44d006ead398256421ef8c0977db5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Model class for the login with recovery code view. </p>
+<div class="textblock"><p>Model class for the login with one-time email code view. </p>
 
 <p class="definition">Definition at line <a class="el" href="../../d8/d74/LoginWithRecoveryCodeViewModel_8cs_source.html#l00012">12</a> of file <a class="el" href="../../d8/d74/LoginWithRecoveryCodeViewModel_8cs_source.html">LoginWithRecoveryCodeViewModel.cs</a>.</p>
 </div><h2 class="groupheader">Property Documentation</h2>
-<a id="a6f82db3ebb55ba36ecded2afa2adde63" name="a6f82db3ebb55ba36ecded2afa2adde63"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6f82db3ebb55ba36ecded2afa2adde63">&#9670;&#160;</a></span>RecoveryCode</h2>
+<a id="a63223887968ff5be0bb45d8f24df9426" name="a63223887968ff5be0bb45d8f24df9426"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63223887968ff5be0bb45d8f24df9426">&#9670;&#160;</a></span>CanResend</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -133,7 +156,7 @@ Properties</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">string Ribosoft.Models.AccountViewModels.LoginWithRecoveryCodeViewModel.RecoveryCode = string.Empty</td>
+          <td class="memname">bool Ribosoft.Models.AccountViewModels.LoginWithRecoveryCodeViewModel.CanResend = true</td>
         </tr>
       </table>
   </td>
@@ -143,9 +166,113 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Recovery code. </p>
+<p>Indicates if user can request a new code. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../d8/d74/LoginWithRecoveryCodeViewModel_8cs_source.html#l00020">20</a> of file <a class="el" href="../../d8/d74/LoginWithRecoveryCodeViewModel_8cs_source.html">LoginWithRecoveryCodeViewModel.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d8/d74/LoginWithRecoveryCodeViewModel_8cs_source.html#l00038">38</a> of file <a class="el" href="../../d8/d74/LoginWithRecoveryCodeViewModel_8cs_source.html">LoginWithRecoveryCodeViewModel.cs</a>.</p>
+
+</div>
+</div>
+<a id="a6e1227176bb6aedf45448f79045ed167" name="a6e1227176bb6aedf45448f79045ed167"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e1227176bb6aedf45448f79045ed167">&#9670;&#160;</a></span>CodeSent</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Ribosoft.Models.AccountViewModels.LoginWithRecoveryCodeViewModel.CodeSent = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Indicates if a code has been sent. </p>
+
+<p class="definition">Definition at line <a class="el" href="../../d8/d74/LoginWithRecoveryCodeViewModel_8cs_source.html#l00033">33</a> of file <a class="el" href="../../d8/d74/LoginWithRecoveryCodeViewModel_8cs_source.html">LoginWithRecoveryCodeViewModel.cs</a>.</p>
+
+</div>
+</div>
+<a id="a3db210b15e12a20e0d517100f5e4f753" name="a3db210b15e12a20e0d517100f5e4f753"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3db210b15e12a20e0d517100f5e4f753">&#9670;&#160;</a></span>Email</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string Ribosoft.Models.AccountViewModels.LoginWithRecoveryCodeViewModel.Email = string.Empty</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Email address for display purposes (read-only) </p>
+
+<p class="definition">Definition at line <a class="el" href="../../d8/d74/LoginWithRecoveryCodeViewModel_8cs_source.html#l00028">28</a> of file <a class="el" href="../../d8/d74/LoginWithRecoveryCodeViewModel_8cs_source.html">LoginWithRecoveryCodeViewModel.cs</a>.</p>
+
+</div>
+</div>
+<a id="a5fa64aa04e1ec57133af70e0adbbd5c5" name="a5fa64aa04e1ec57133af70e0adbbd5c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fa64aa04e1ec57133af70e0adbbd5c5">&#9670;&#160;</a></span>OneTimeCode</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string Ribosoft.Models.AccountViewModels.LoginWithRecoveryCodeViewModel.OneTimeCode = string.Empty</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>One-time code sent via email. </p>
+
+<p class="definition">Definition at line <a class="el" href="../../d8/d74/LoginWithRecoveryCodeViewModel_8cs_source.html#l00022">22</a> of file <a class="el" href="../../d8/d74/LoginWithRecoveryCodeViewModel_8cs_source.html">LoginWithRecoveryCodeViewModel.cs</a>.</p>
+
+</div>
+</div>
+<a id="a3ae44d006ead398256421ef8c0977db5" name="a3ae44d006ead398256421ef8c0977db5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ae44d006ead398256421ef8c0977db5">&#9670;&#160;</a></span>ResendCooldownSeconds</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Ribosoft.Models.AccountViewModels.LoginWithRecoveryCodeViewModel.ResendCooldownSeconds = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Seconds remaining before user can request another code. </p>
+
+<p class="definition">Definition at line <a class="el" href="../../d8/d74/LoginWithRecoveryCodeViewModel_8cs_source.html#l00043">43</a> of file <a class="el" href="../../d8/d74/LoginWithRecoveryCodeViewModel_8cs_source.html">LoginWithRecoveryCodeViewModel.cs</a>.</p>
 
 </div>
 </div>

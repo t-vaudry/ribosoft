@@ -7,7 +7,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.12.0"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <!-- jQuery with Subresource Integrity (SRI) for security -->
+        <script type="text/javascript" 
+                src="https://code.jquery.com/jquery-2.1.1.min.js"
+                integrity="sha256-h0cGsrExGgcJOUVBkMOVsKOVE7zTABGF0kpOe4p4Tc4="
+                crossorigin="anonymous"></script>
         <title>Ribosoft: Ribosoft.Controllers.JobsController Class Reference</title>
         <!--<link href="../../tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="../../dynsections.js"></script>
@@ -20,8 +24,15 @@
         <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
         <link href="../../custom.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <!-- Bootstrap CSS with SRI for security -->
+        <link rel="stylesheet" 
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+              integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+              crossorigin="anonymous">
+        <!-- Bootstrap JS with SRI for security -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+                integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+                crossorigin="anonymous"></script>
         <link href="../../jquery.smartmenus.bootstrap.css" rel="stylesheet">
         <link href="../../jquery.powertip.css" rel="stylesheet">
         <script type="text/javascript" src="../../jquery.smartmenus.js"></script>
@@ -128,6 +139,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4195967f0d26862093804ab806b5aab7" id="r_a4195967f0d26862093804ab806b5aab7"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4195967f0d26862093804ab806b5aab7">AddJob</a> (<a class="el" href="../../d0/dcf/classRibosoft_1_1Models_1_1JobsViewModels_1_1JobIndexViewModel.html">JobIndexViewModel</a> model)</td></tr>
 <tr class="memdesc:a4195967f0d26862093804ab806b5aab7"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST request for job form submission This request will attempt to transfer ownership of a job to the current user.  <br /></td></tr>
 <tr class="separator:a4195967f0d26862093804ab806b5aab7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7882487c064da7bff8dfa031b8c79bb" id="r_ae7882487c064da7bff8dfa031b8c79bb"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae7882487c064da7bff8dfa031b8c79bb">CancelJob</a> (int id)</td></tr>
+<tr class="memdesc:ae7882487c064da7bff8dfa031b8c79bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST request to cancel a job via AJAX.  <br /></td></tr>
+<tr class="separator:ae7882487c064da7bff8dfa031b8c79bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a6169cf9fb15e64eb0840b2e8a47348" id="r_a2a6169cf9fb15e64eb0840b2e8a47348"><td class="memItemLeft" align="right" valign="top">IActionResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2a6169cf9fb15e64eb0840b2e8a47348">Create</a> ()</td></tr>
 <tr class="memdesc:a2a6169cf9fb15e64eb0840b2e8a47348"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET request for job create page.  <br /></td></tr>
 <tr class="separator:a2a6169cf9fb15e64eb0840b2e8a47348"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -140,9 +154,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad9ae3b615d0f6a45a0a8d3d6daa17042" id="r_ad9ae3b615d0f6a45a0a8d3d6daa17042"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad9ae3b615d0f6a45a0a8d3d6daa17042">DeleteConfirmed</a> (int id)</td></tr>
 <tr class="memdesc:ad9ae3b615d0f6a45a0a8d3d6daa17042"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST request to confirm deletion of job.  <br /></td></tr>
 <tr class="separator:ad9ae3b615d0f6a45a0a8d3d6daa17042"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a946e07ce01029248181580a08f9cf5d3" id="r_a946e07ce01029248181580a08f9cf5d3"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a946e07ce01029248181580a08f9cf5d3">Details</a> (int? id, string sortOrder, int pageNumber, string filterData)</td></tr>
-<tr class="memdesc:a946e07ce01029248181580a08f9cf5d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET request for job details page.  <br /></td></tr>
-<tr class="separator:a946e07ce01029248181580a08f9cf5d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a9b5b291bb75064d3d8cf1b9488b28c" id="r_a8a9b5b291bb75064d3d8cf1b9488b28c"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a9b5b291bb75064d3d8cf1b9488b28c">DeleteJob</a> (int id)</td></tr>
+<tr class="memdesc:a8a9b5b291bb75064d3d8cf1b9488b28c"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST request to delete a job via AJAX.  <br /></td></tr>
+<tr class="separator:a8a9b5b291bb75064d3d8cf1b9488b28c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b063757214b929beaf3e40aa81ea7dc" id="r_a4b063757214b929beaf3e40aa81ea7dc"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4b063757214b929beaf3e40aa81ea7dc">Details</a> (int? id, string sortOrder=&quot;&quot;, int pageNumber=1, string filterData=&quot;&quot;, float? minDesiredTemp=null, float? maxSpecificity=null, float? minAccessibility=null, float? minStructure=null)</td></tr>
+<tr class="memdesc:a4b063757214b929beaf3e40aa81ea7dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET request for job details page.  <br /></td></tr>
+<tr class="separator:a4b063757214b929beaf3e40aa81ea7dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5ffe1157b3aa5b342fe186863ffd940" id="r_ac5ffe1157b3aa5b342fe186863ffd940"><td class="memItemLeft" align="right" valign="top">virtual ActionResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac5ffe1157b3aa5b342fe186863ffd940">Download</a> (string fileGuid, string fileName, string fileType)</td></tr>
 <tr class="memdesc:ac5ffe1157b3aa5b342fe186863ffd940"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET request to download files stored in temp storage.  <br /></td></tr>
 <tr class="separator:ac5ffe1157b3aa5b342fe186863ffd940"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -155,6 +172,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad0b803d74d2a6870649402ec2beca7a4" id="r_ad0b803d74d2a6870649402ec2beca7a4"><td class="memItemLeft" align="right" valign="top">JsonResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad0b803d74d2a6870649402ec2beca7a4">DownloadSelectedDesigns</a> (int jobID, string selectedDesigns, string format)</td></tr>
 <tr class="memdesc:ad0b803d74d2a6870649402ec2beca7a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST request to bulk download selected designs.  <br /></td></tr>
 <tr class="separator:ad0b803d74d2a6870649402ec2beca7a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7dc745e1e0892c5782e83877c400a163" id="r_a7dc745e1e0892c5782e83877c400a163"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7dc745e1e0892c5782e83877c400a163">GetDesignsTable</a> (int id, string sortOrder=&quot;&quot;, int pageNumber=1, float? minDesiredTemp=null, float? maxSpecificity=null, float? minAccessibility=null, float? minStructure=null)</td></tr>
+<tr class="memdesc:a7dc745e1e0892c5782e83877c400a163"><td class="mdescLeft">&#160;</td><td class="mdescRight">AJAX endpoint for job details table updates (pagination, sorting, filtering)  <br /></td></tr>
+<tr class="separator:a7dc745e1e0892c5782e83877c400a163"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72e664bfb3783194c8d3912998083287" id="r_a72e664bfb3783194c8d3912998083287"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a72e664bfb3783194c8d3912998083287">Index</a> (<a class="el" href="../../d0/dcf/classRibosoft_1_1Models_1_1JobsViewModels_1_1JobIndexViewModel.html">JobIndexViewModel</a> model)</td></tr>
 <tr class="memdesc:a72e664bfb3783194c8d3912998083287"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET request for job main page.  <br /></td></tr>
 <tr class="separator:a72e664bfb3783194c8d3912998083287"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -213,7 +233,7 @@ Private Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Controller class for the jobs. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00030">30</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00032">32</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af4f01125d195d3dfb649ca370bc35d0c" name="af4f01125d195d3dfb649ca370bc35d0c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af4f01125d195d3dfb649ca370bc35d0c">&#9670;&#160;</a></span>JobsController()</h2>
@@ -251,7 +271,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00047">47</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00049">49</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -288,7 +308,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of the job index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00074">74</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00076">76</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -328,7 +348,43 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00762">762</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00942">942</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+
+</div>
+</div>
+<a id="ae7882487c064da7bff8dfa031b8c79bb" name="ae7882487c064da7bff8dfa031b8c79bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7882487c064da7bff8dfa031b8c79bb">&#9670;&#160;</a></span>CancelJob()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.JobsController.CancelJob </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>HTTP POST request to cancel a job via AJAX. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>Job ID </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>JSON result indicating success or failure </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00431">431</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -358,7 +414,7 @@ Private Attributes</h2></td></tr>
 <p>HTTP GET request for job create page. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of the create index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00243">243</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00322">322</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -394,7 +450,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of the details index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00256">256</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00335">335</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -430,7 +486,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of the job delete index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00282">282</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00361">361</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -466,12 +522,48 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of the jobs index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00312">312</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00391">391</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
-<a id="a946e07ce01029248181580a08f9cf5d3" name="a946e07ce01029248181580a08f9cf5d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a946e07ce01029248181580a08f9cf5d3">&#9670;&#160;</a></span>Details()</h2>
+<a id="a8a9b5b291bb75064d3d8cf1b9488b28c" name="a8a9b5b291bb75064d3d8cf1b9488b28c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a9b5b291bb75064d3d8cf1b9488b28c">&#9670;&#160;</a></span>DeleteJob()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.JobsController.DeleteJob </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>HTTP POST request to delete a job via AJAX. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>Job ID </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>JSON result indicating success or failure </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00478">478</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+
+</div>
+</div>
+<a id="a4b063757214b929beaf3e40aa81ea7dc" name="a4b063757214b929beaf3e40aa81ea7dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b063757214b929beaf3e40aa81ea7dc">&#9670;&#160;</a></span>Details()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -487,17 +579,37 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>sortOrder</em></span>, </td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>sortOrder</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;&quot;</span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>pageNumber</em></span>, </td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>pageNumber</em></span><span class="paramdefsep"> = </span><span class="paramdefval">1</span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>filterData</em></span>&#160;)</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>filterData</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;&quot;</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float?</td>          <td class="paramname"><span class="paramname"><em>minDesiredTemp</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float?</td>          <td class="paramname"><span class="paramname"><em>maxSpecificity</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float?</td>          <td class="paramname"><span class="paramname"><em>minAccessibility</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float?</td>          <td class="paramname"><span class="paramname"><em>minStructure</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -519,7 +631,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of the details index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00181">181</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00183">183</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -566,7 +678,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>File stream of downloaded designs </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00427">427</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00603">603</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -613,7 +725,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>JSON results of files to download </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00377">377</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00553">553</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -677,7 +789,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00700">700</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00880">880</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -707,7 +819,7 @@ Private Attributes</h2></td></tr>
 <p>HTTP POST request to download CSV of job ids This request will generate a CSV of all the current user's job ids. </p>
 <dl class="section return"><dt>Returns</dt><dd>File for download </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00108">108</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00110">110</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -754,7 +866,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>JSON results of files to download </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00407">407</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00583">583</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -806,7 +918,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00636">636</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00816">816</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -858,7 +970,78 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00545">545</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00725">725</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+
+</div>
+</div>
+<a id="a7dc745e1e0892c5782e83877c400a163" name="a7dc745e1e0892c5782e83877c400a163"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7dc745e1e0892c5782e83877c400a163">&#9670;&#160;</a></span>GetDesignsTable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.JobsController.GetDesignsTable </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>sortOrder</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;&quot;</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>pageNumber</em></span><span class="paramdefsep"> = </span><span class="paramdefval">1</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float?</td>          <td class="paramname"><span class="paramname"><em>minDesiredTemp</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float?</td>          <td class="paramname"><span class="paramname"><em>maxSpecificity</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float?</td>          <td class="paramname"><span class="paramname"><em>minAccessibility</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float?</td>          <td class="paramname"><span class="paramname"><em>minStructure</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>AJAX endpoint for job details table updates (pagination, sorting, filtering) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>Job ID </td></tr>
+    <tr><td class="paramname">sortOrder</td><td>String of current sort order </td></tr>
+    <tr><td class="paramname">pageNumber</td><td>Page number of the details </td></tr>
+    <tr><td class="paramname">minDesiredTemp</td><td>Minimum desired temperature filter </td></tr>
+    <tr><td class="paramname">maxSpecificity</td><td>Maximum specificity filter </td></tr>
+    <tr><td class="paramname">minAccessibility</td><td>Minimum accessibility filter </td></tr>
+    <tr><td class="paramname">minStructure</td><td>Minimum structure filter </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>JSON response with table HTML and pagination info </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00241">241</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -888,7 +1071,7 @@ Private Attributes</h2></td></tr>
 <p>Helper function to retrieve the current user. </p>
 <dl class="section return"><dt>Returns</dt><dd>Current application user </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00359">359</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00535">535</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -929,7 +1112,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View model object </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00448">448</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00624">624</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -975,7 +1158,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00575">575</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00755">755</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -1011,7 +1194,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of the job index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00060">60</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00062">62</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -1047,7 +1230,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Boolean results from the check </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00350">350</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00526">526</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -1093,7 +1276,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00605">605</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00785">785</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -1145,7 +1328,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00667">667</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00847">847</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -1180,7 +1363,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00480">480</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00656">656</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -1220,7 +1403,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00495">495</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00672">672</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -1256,7 +1439,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of the job index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00133">133</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00135">135</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -1283,7 +1466,7 @@ Private Attributes</h2></td></tr>
 
 <p>Local application database context. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00035">35</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00037">37</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>
@@ -1309,7 +1492,7 @@ Private Attributes</h2></td></tr>
 
 <p>Local user manager. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00040">40</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d2/d17/JobsController_8cs_source.html#l00042">42</a> of file <a class="el" href="../../d2/d17/JobsController_8cs_source.html">JobsController.cs</a>.</p>
 
 </div>
 </div>

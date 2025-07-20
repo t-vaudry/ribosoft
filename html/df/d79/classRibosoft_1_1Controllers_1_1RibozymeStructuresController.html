@@ -7,7 +7,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.12.0"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <!-- jQuery with Subresource Integrity (SRI) for security -->
+        <script type="text/javascript" 
+                src="https://code.jquery.com/jquery-2.1.1.min.js"
+                integrity="sha256-h0cGsrExGgcJOUVBkMOVsKOVE7zTABGF0kpOe4p4Tc4="
+                crossorigin="anonymous"></script>
         <title>Ribosoft: Ribosoft.Controllers.RibozymeStructuresController Class Reference</title>
         <!--<link href="../../tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="../../dynsections.js"></script>
@@ -20,8 +24,15 @@
         <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
         <link href="../../custom.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <!-- Bootstrap CSS with SRI for security -->
+        <link rel="stylesheet" 
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+              integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+              crossorigin="anonymous">
+        <!-- Bootstrap JS with SRI for security -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+                integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+                crossorigin="anonymous"></script>
         <link href="../../jquery.smartmenus.bootstrap.css" rel="stylesheet">
         <link href="../../jquery.powertip.css" rel="stylesheet">
         <script type="text/javascript" src="../../jquery.smartmenus.js"></script>
@@ -131,24 +142,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6e56929bdac42d0e04727ccdaaeb5c30" id="r_a6e56929bdac42d0e04727ccdaaeb5c30"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6e56929bdac42d0e04727ccdaaeb5c30">Create</a> (int? ribozymeId, [Bind(&quot;Cutsite,Sequence,Structure,SubstrateTemplate,SubstrateStructure,PostProcess&quot;)] <a class="el" href="../../d4/de8/classRibosoft_1_1Models_1_1RibozymeStructure.html">RibozymeStructure</a> ribozymeStructure)</td></tr>
 <tr class="memdesc:a6e56929bdac42d0e04727ccdaaeb5c30"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST request for ribozyme structures create form submission.  <br /></td></tr>
 <tr class="separator:a6e56929bdac42d0e04727ccdaaeb5c30"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a916e84688f671c7a581cfbbe8c3a39b7" id="r_a916e84688f671c7a581cfbbe8c3a39b7"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a916e84688f671c7a581cfbbe8c3a39b7">Delete</a> (int? id)</td></tr>
-<tr class="memdesc:a916e84688f671c7a581cfbbe8c3a39b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET request for ribozyme structures delete page.  <br /></td></tr>
-<tr class="separator:a916e84688f671c7a581cfbbe8c3a39b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a2967a68c95798994650fcaf1af3f64" id="r_a4a2967a68c95798994650fcaf1af3f64"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4a2967a68c95798994650fcaf1af3f64">DeleteConfirmed</a> (int id)</td></tr>
 <tr class="memdesc:a4a2967a68c95798994650fcaf1af3f64"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST request to delete ribozyme structure.  <br /></td></tr>
 <tr class="separator:a4a2967a68c95798994650fcaf1af3f64"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1370568d24fce202976db34a74235cf6" id="r_a1370568d24fce202976db34a74235cf6"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1370568d24fce202976db34a74235cf6">Details</a> (int? id)</td></tr>
-<tr class="memdesc:a1370568d24fce202976db34a74235cf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET request for ribozyme structures details page.  <br /></td></tr>
-<tr class="separator:a1370568d24fce202976db34a74235cf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d37ac6de164a2ca3bc4c0d093246495" id="r_a3d37ac6de164a2ca3bc4c0d093246495"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3d37ac6de164a2ca3bc4c0d093246495">Edit</a> (int id, [Bind(&quot;Id,RibozymeId,Cutsite,Sequence,Structure,SubstrateTemplate,SubstrateStructure,PostProcess&quot;)] <a class="el" href="../../d4/de8/classRibosoft_1_1Models_1_1RibozymeStructure.html">RibozymeStructure</a> ribozymeStructure)</td></tr>
 <tr class="memdesc:a3d37ac6de164a2ca3bc4c0d093246495"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST request for ribozyme structures edit form submission.  <br /></td></tr>
 <tr class="separator:a3d37ac6de164a2ca3bc4c0d093246495"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0d3967e3d79b9a948b29472ee62e5ef" id="r_af0d3967e3d79b9a948b29472ee62e5ef"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af0d3967e3d79b9a948b29472ee62e5ef">Edit</a> (int? id)</td></tr>
 <tr class="memdesc:af0d3967e3d79b9a948b29472ee62e5ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET request for ribozyme structures edit page.  <br /></td></tr>
 <tr class="separator:af0d3967e3d79b9a948b29472ee62e5ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a821807d2d9be29c71bc9cc87ffe299b7" id="r_a821807d2d9be29c71bc9cc87ffe299b7"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a821807d2d9be29c71bc9cc87ffe299b7">Index</a> ()</td></tr>
-<tr class="memdesc:a821807d2d9be29c71bc9cc87ffe299b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET request for ribozyme structures page.  <br /></td></tr>
-<tr class="separator:a821807d2d9be29c71bc9cc87ffe299b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
@@ -235,7 +237,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of ribozyme structures create index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html#l00072">72</a> of file <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html">RibozymeStructuresController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html#l00039">39</a> of file <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html">RibozymeStructuresController.cs</a>.</p>
 
 </div>
 </div>
@@ -276,43 +278,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of ribozyme structures details index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html#l00098">98</a> of file <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html">RibozymeStructuresController.cs</a>.</p>
-
-</div>
-</div>
-<a id="a916e84688f671c7a581cfbbe8c3a39b7" name="a916e84688f671c7a581cfbbe8c3a39b7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a916e84688f671c7a581cfbbe8c3a39b7">&#9670;&#160;</a></span>Delete()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.RibozymeStructuresController.Delete </td>
-          <td>(</td>
-          <td class="paramtype">int?</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>HTTP GET request for ribozyme structures delete page. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>Ribozyme Structure Id </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>View of ribozyme structures delete index </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html#l00191">191</a> of file <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html">RibozymeStructuresController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html#l00066">66</a> of file <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html">RibozymeStructuresController.cs</a>.</p>
 
 </div>
 </div>
@@ -346,45 +312,9 @@ Private Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>View of ribozyme structures details index </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>JSON response for AJAX calls or redirect for regular requests </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html#l00217">217</a> of file <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html">RibozymeStructuresController.cs</a>.</p>
-
-</div>
-</div>
-<a id="a1370568d24fce202976db34a74235cf6" name="a1370568d24fce202976db34a74235cf6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1370568d24fce202976db34a74235cf6">&#9670;&#160;</a></span>Details()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.RibozymeStructuresController.Details </td>
-          <td>(</td>
-          <td class="paramtype">int?</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>HTTP GET request for ribozyme structures details page. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>RibozymeStructure Id </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>View of ribozyme structures details index </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html#l00048">48</a> of file <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html">RibozymeStructuresController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html#l00164">164</a> of file <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html">RibozymeStructuresController.cs</a>.</p>
 
 </div>
 </div>
@@ -425,7 +355,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of ribozyme structures details index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html#l00154">154</a> of file <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html">RibozymeStructuresController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html#l00125">125</a> of file <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html">RibozymeStructuresController.cs</a>.</p>
 
 </div>
 </div>
@@ -461,37 +391,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View of ribozyme structures edit index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html#l00129">129</a> of file <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html">RibozymeStructuresController.cs</a>.</p>
-
-</div>
-</div>
-<a id="a821807d2d9be29c71bc9cc87ffe299b7" name="a821807d2d9be29c71bc9cc87ffe299b7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a821807d2d9be29c71bc9cc87ffe299b7">&#9670;&#160;</a></span>Index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.RibozymeStructuresController.Index </td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>HTTP GET request for ribozyme structures page. </p>
-<dl class="section return"><dt>Returns</dt><dd>View of ribozyme structures index </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html#l00037">37</a> of file <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html">RibozymeStructuresController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html#l00097">97</a> of file <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html">RibozymeStructuresController.cs</a>.</p>
 
 </div>
 </div>
@@ -527,7 +427,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Boolean result of the check </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html#l00234">234</a> of file <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html">RibozymeStructuresController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html#l00197">197</a> of file <a class="el" href="../../d8/d3a/RibozymeStructuresController_8cs_source.html">RibozymeStructuresController.cs</a>.</p>
 
 </div>
 </div>

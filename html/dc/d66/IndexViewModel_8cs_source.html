@@ -7,7 +7,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.12.0"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <!-- jQuery with Subresource Integrity (SRI) for security -->
+        <script type="text/javascript" 
+                src="https://code.jquery.com/jquery-2.1.1.min.js"
+                integrity="sha256-h0cGsrExGgcJOUVBkMOVsKOVE7zTABGF0kpOe4p4Tc4="
+                crossorigin="anonymous"></script>
         <title>Ribosoft: IndexViewModel.cs Source File</title>
         <!--<link href="../../tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="../../dynsections.js"></script>
@@ -20,8 +24,15 @@
         <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
         <link href="../../custom.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <!-- Bootstrap CSS with SRI for security -->
+        <link rel="stylesheet" 
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+              integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+              crossorigin="anonymous">
+        <!-- Bootstrap JS with SRI for security -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+                integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+                crossorigin="anonymous"></script>
         <link href="../../jquery.smartmenus.bootstrap.css" rel="stylesheet">
         <link href="../../jquery.powertip.css" rel="stylesheet">
         <script type="text/javascript" src="../../jquery.smartmenus.js"></script>
@@ -124,20 +135,19 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>        [EmailAddress]</div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#a411037fe86ea65550d5a9b643454f220">   29</a></span>        <span class="keyword">public</span> <span class="keywordtype">string</span> <a class="code hl_property" href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#a411037fe86ea65550d5a9b643454f220">Email</a> { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="stringliteral">&quot;&quot;</span>;</div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>        [Phone]</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        [Display(Name = <span class="stringliteral">&quot;Phone number&quot;</span>)]</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#a5cf8546c15b29a1df80a119deac2a78e">   36</a></span>        <span class="keyword">public</span> <span class="keywordtype">string</span> <a class="code hl_property" href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#a5cf8546c15b29a1df80a119deac2a78e">PhoneNumber</a> { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keywordtype">string</span>.Empty;</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#ac4417011a0f647d6c9e190882c141a9e">   41</a></span>        <span class="keyword">public</span> <span class="keywordtype">string</span> <a class="code hl_property" href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#ac4417011a0f647d6c9e190882c141a9e">StatusMessage</a> { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keywordtype">string</span>.Empty;</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    }</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>        [Display(Name = <span class="stringliteral">&quot;Phone number&quot;</span>)]</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#a3716bc0b9594182a24f393704a33df29">   35</a></span>        <span class="keyword">public</span> <span class="keywordtype">string</span>? <a class="code hl_property" href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#a3716bc0b9594182a24f393704a33df29">PhoneNumber</a> { <span class="keyword">get</span>; <span class="keyword">set</span>; }</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#ac4417011a0f647d6c9e190882c141a9e">   40</a></span>        <span class="keyword">public</span> <span class="keywordtype">string</span> <a class="code hl_property" href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#ac4417011a0f647d6c9e190882c141a9e">StatusMessage</a> { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keywordtype">string</span>.Empty;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    }</div>
 </div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>}</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>}</div>
 <div class="ttc" id="aclassRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel_html"><div class="ttname"><a href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html">Ribosoft.Models.ManageViewModels.IndexViewModel</a></div><div class="ttdoc">Model class for the index view.</div><div class="ttdef"><b>Definition</b> <a href="#l00012">IndexViewModel.cs:13</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel_html_a3716bc0b9594182a24f393704a33df29"><div class="ttname"><a href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#a3716bc0b9594182a24f393704a33df29">Ribosoft.Models.ManageViewModels.IndexViewModel.PhoneNumber</a></div><div class="ttdeci">string? PhoneNumber</div><div class="ttdoc">User phone number (optional)</div><div class="ttdef"><b>Definition</b> <a href="#l00035">IndexViewModel.cs:35</a></div></div>
 <div class="ttc" id="aclassRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel_html_a411037fe86ea65550d5a9b643454f220"><div class="ttname"><a href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#a411037fe86ea65550d5a9b643454f220">Ribosoft.Models.ManageViewModels.IndexViewModel.Email</a></div><div class="ttdeci">string Email</div><div class="ttdoc">Email address.</div><div class="ttdef"><b>Definition</b> <a href="#l00029">IndexViewModel.cs:29</a></div></div>
-<div class="ttc" id="aclassRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel_html_a5cf8546c15b29a1df80a119deac2a78e"><div class="ttname"><a href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#a5cf8546c15b29a1df80a119deac2a78e">Ribosoft.Models.ManageViewModels.IndexViewModel.PhoneNumber</a></div><div class="ttdeci">string PhoneNumber</div><div class="ttdoc">User phone number.</div><div class="ttdef"><b>Definition</b> <a href="#l00036">IndexViewModel.cs:36</a></div></div>
 <div class="ttc" id="aclassRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel_html_a89cb930a0bf28c8c82bee3039eda1cc9"><div class="ttname"><a href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#a89cb930a0bf28c8c82bee3039eda1cc9">Ribosoft.Models.ManageViewModels.IndexViewModel.Username</a></div><div class="ttdeci">string Username</div><div class="ttdoc">Username.</div><div class="ttdef"><b>Definition</b> <a href="#l00017">IndexViewModel.cs:17</a></div></div>
 <div class="ttc" id="aclassRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel_html_abe23fd4d5f996d0d375708a021653603"><div class="ttname"><a href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#abe23fd4d5f996d0d375708a021653603">Ribosoft.Models.ManageViewModels.IndexViewModel.IsEmailConfirmed</a></div><div class="ttdeci">bool IsEmailConfirmed</div><div class="ttdoc">Is the user's email confirmed?</div><div class="ttdef"><b>Definition</b> <a href="#l00022">IndexViewModel.cs:22</a></div></div>
-<div class="ttc" id="aclassRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel_html_ac4417011a0f647d6c9e190882c141a9e"><div class="ttname"><a href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#ac4417011a0f647d6c9e190882c141a9e">Ribosoft.Models.ManageViewModels.IndexViewModel.StatusMessage</a></div><div class="ttdeci">string StatusMessage</div><div class="ttdoc">Status message.</div><div class="ttdef"><b>Definition</b> <a href="#l00041">IndexViewModel.cs:41</a></div></div>
+<div class="ttc" id="aclassRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel_html_ac4417011a0f647d6c9e190882c141a9e"><div class="ttname"><a href="../../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#ac4417011a0f647d6c9e190882c141a9e">Ribosoft.Models.ManageViewModels.IndexViewModel.StatusMessage</a></div><div class="ttdeci">string StatusMessage</div><div class="ttdoc">Status message.</div><div class="ttdef"><b>Definition</b> <a href="#l00040">IndexViewModel.cs:40</a></div></div>
 <div class="ttc" id="anamespaceRibosoft_1_1Models_1_1ManageViewModels_html"><div class="ttname"><a href="../../d8/d5c/namespaceRibosoft_1_1Models_1_1ManageViewModels.html">Ribosoft.Models.ManageViewModels</a></div><div class="ttdef"><b>Definition</b> <a href="../../df/dcb/ChangePasswordViewModel_8cs_source.html#l00007">ChangePasswordViewModel.cs:8</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.8-->

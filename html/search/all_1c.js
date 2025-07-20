@@ -8,6 +8,9 @@ var searchData=
   ['updaterank_3c_20t_20_3e_5',['UpdateRank&lt; T &gt;',['../d1/d96/classRibosoft_1_1MultiObjectiveOptimization_1_1MultiObjectiveOptimizer.html#aa52d5cbfb7e82b9d3130351095a9e0c9',1,'Ribosoft::MultiObjectiveOptimization::MultiObjectiveOptimizer']]],
   ['uploadfile_6',['UploadFile',['../d0/dcf/classRibosoft_1_1Models_1_1JobsViewModels_1_1JobIndexViewModel.html#a27c6485d2cd6ab0d88d367d12095ee89',1,'Ribosoft::Models::JobsViewModels::JobIndexViewModel']]],
   ['uploadjobs_7',['UploadJobs',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a920325619f5147430572b28dbe2e86c7',1,'Ribosoft::Controllers::JobsController']]],
-  ['useindex_8',['UseIndex',['../d7/d7c/classRibosoft_1_1Blast_1_1BlastParameters.html#a8fc5ec3749a18baa611019e3dd962653',1,'Ribosoft::Blast::BlastParameters']]],
-  ['username_9',['Username',['../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#a89cb930a0bf28c8c82bee3039eda1cc9',1,'Ribosoft::Models::ManageViewModels::IndexViewModel']]]
+  ['usedat_8',['UsedAt',['../dc/d91/classRibosoft_1_1Models_1_1OneTimeCode.html#afee5d982b25d48d97f755accaa767762',1,'Ribosoft::Models::OneTimeCode']]],
+  ['useindex_9',['UseIndex',['../d7/d7c/classRibosoft_1_1Blast_1_1BlastParameters.html#a8fc5ec3749a18baa611019e3dd962653',1,'Ribosoft::Blast::BlastParameters']]],
+  ['user_10',['User',['../dc/d91/classRibosoft_1_1Models_1_1OneTimeCode.html#aaf2a02428796bf3d0bd4ac1680474603',1,'Ribosoft::Models::OneTimeCode']]],
+  ['userid_11',['UserId',['../dc/d91/classRibosoft_1_1Models_1_1OneTimeCode.html#a7c0193aeb7480f0c9d9e8ba13b51fbba',1,'Ribosoft::Models::OneTimeCode']]],
+  ['username_12',['Username',['../d1/d0c/classRibosoft_1_1Models_1_1ManageViewModels_1_1IndexViewModel.html#a89cb930a0bf28c8c82bee3039eda1cc9',1,'Ribosoft::Models::ManageViewModels::IndexViewModel']]]
 ];

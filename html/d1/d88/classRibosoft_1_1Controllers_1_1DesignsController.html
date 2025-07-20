@@ -7,7 +7,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.12.0"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <!-- jQuery with Subresource Integrity (SRI) for security -->
+        <script type="text/javascript" 
+                src="https://code.jquery.com/jquery-2.1.1.min.js"
+                integrity="sha256-h0cGsrExGgcJOUVBkMOVsKOVE7zTABGF0kpOe4p4Tc4="
+                crossorigin="anonymous"></script>
         <title>Ribosoft: Ribosoft.Controllers.DesignsController Class Reference</title>
         <!--<link href="../../tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="../../dynsections.js"></script>
@@ -20,8 +24,15 @@
         <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
         <link href="../../custom.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <!-- Bootstrap CSS with SRI for security -->
+        <link rel="stylesheet" 
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+              integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+              crossorigin="anonymous">
+        <!-- Bootstrap JS with SRI for security -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+                integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+                crossorigin="anonymous"></script>
         <link href="../../jquery.smartmenus.bootstrap.css" rel="stylesheet">
         <link href="../../jquery.powertip.css" rel="stylesheet">
         <script type="text/javascript" src="../../jquery.smartmenus.js"></script>
@@ -130,6 +141,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a14cf917ff5b1530e81df825f6c7021d4" id="r_a14cf917ff5b1530e81df825f6c7021d4"><td class="memItemLeft" align="right" valign="top">FileStreamResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a14cf917ff5b1530e81df825f6c7021d4">DownloadDesign</a> (string jobID, string rank, string cutsiteIndex, string desiredTemperatureScore, string specificityScore, string accessibilityScore, string structureScore, string createdAt, string updatedAt, string sequence)</td></tr>
 <tr class="memdesc:a14cf917ff5b1530e81df825f6c7021d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET to download FASTA file of current design.  <br /></td></tr>
 <tr class="separator:a14cf917ff5b1530e81df825f6c7021d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b88e6ce79bf0cf7ec8447f0a074da9a" id="r_a8b88e6ce79bf0cf7ec8447f0a074da9a"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8b88e6ce79bf0cf7ec8447f0a074da9a">Export</a> (int designId, string format=&quot;fasta&quot;)</td></tr>
+<tr class="memdesc:a8b88e6ce79bf0cf7ec8447f0a074da9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST to export individual design.  <br /></td></tr>
+<tr class="separator:a8b88e6ce79bf0cf7ec8447f0a074da9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99b6b5f4c013a6522f757abccd8f9ed7" id="r_a99b6b5f4c013a6522f757abccd8f9ed7"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a99b6b5f4c013a6522f757abccd8f9ed7">ModalDetails</a> (int? id)</td></tr>
+<tr class="memdesc:a99b6b5f4c013a6522f757abccd8f9ed7"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET to get design details for modal display.  <br /></td></tr>
+<tr class="separator:a99b6b5f4c013a6522f757abccd8f9ed7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -298,7 +315,84 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>FASTA file </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d7b/DesignsController_8cs_source.html#l00071">71</a> of file <a class="el" href="../../d4/d7b/DesignsController_8cs_source.html">DesignsController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d7b/DesignsController_8cs_source.html#l00127">127</a> of file <a class="el" href="../../d4/d7b/DesignsController_8cs_source.html">DesignsController.cs</a>.</p>
+
+</div>
+</div>
+<a id="a8b88e6ce79bf0cf7ec8447f0a074da9a" name="a8b88e6ce79bf0cf7ec8447f0a074da9a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b88e6ce79bf0cf7ec8447f0a074da9a">&#9670;&#160;</a></span>Export()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.DesignsController.Export </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>designId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>format</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;fasta&quot;</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>HTTP POST to export individual design. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">designId</td><td>Design ID </td></tr>
+    <tr><td class="paramname">format</td><td>Export format (fasta, csv, etc.) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>File download </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d4/d7b/DesignsController_8cs_source.html#l00088">88</a> of file <a class="el" href="../../d4/d7b/DesignsController_8cs_source.html">DesignsController.cs</a>.</p>
+
+</div>
+</div>
+<a id="a99b6b5f4c013a6522f757abccd8f9ed7" name="a99b6b5f4c013a6522f757abccd8f9ed7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99b6b5f4c013a6522f757abccd8f9ed7">&#9670;&#160;</a></span>ModalDetails()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.DesignsController.ModalDetails </td>
+          <td>(</td>
+          <td class="paramtype">int?</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>HTTP GET to get design details for modal display. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>Design ID </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Partial view with design details for modal </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d4/d7b/DesignsController_8cs_source.html#l00063">63</a> of file <a class="el" href="../../d4/d7b/DesignsController_8cs_source.html">DesignsController.cs</a>.</p>
 
 </div>
 </div>
