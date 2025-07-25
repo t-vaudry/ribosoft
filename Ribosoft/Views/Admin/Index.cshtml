@@ -18,7 +18,7 @@
                     <option value="">All Roles</option>
                     @foreach (var role in Model.AvailableRoles)
                     {
-                        <option value="@role" @(Model.RoleFilter == role ? "selected" : "")>@role</option>
+                        <option value="@role" selected="@(Model.RoleFilter == role)">@role</option>
                     }
                 </select>
                 <button class="btn btn-primary" type="submit">
@@ -297,7 +297,7 @@
         background-color: rgba(0, 0, 0, 0.025);
     }
 
-    @media (max-width: 768px) {
+    @@media (max-width: 768px) {
         .table-responsive {
             font-size: 0.875rem;
         }

@@ -12,27 +12,27 @@ namespace Ribosoft.Models.AdminViewModels
         /*! \property Id
          * \brief User ID
          */
-        public string Id { get; set; }
+        public string Id { get; set; } = "";
 
         /*! \property UserName
          * \brief Username
          */
-        public string UserName { get; set; }
+        public string UserName { get; set; } = "";
 
         /*! \property Email
          * \brief Email address
          */
-        public string Email { get; set; }
+        public string Email { get; set; } = "";
 
         /*! \property FirstName
          * \brief First name
          */
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
         /*! \property LastName
          * \brief Last name
          */
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
         /*! \property EmailConfirmed
          * \brief Whether email is confirmed
@@ -42,7 +42,7 @@ namespace Ribosoft.Models.AdminViewModels
         /*! \property PhoneNumber
          * \brief Phone number
          */
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
         /*! \property PhoneNumberConfirmed
          * \brief Whether phone number is confirmed
@@ -92,7 +92,7 @@ namespace Ribosoft.Models.AdminViewModels
         /*! \property RecentJobs
          * \brief Recent jobs created by user
          */
-        public object RecentJobs { get; set; }
+        public object? RecentJobs { get; set; }
 
         /*! \property IsLockedOut
          * \brief Whether user is currently locked out
@@ -124,7 +124,7 @@ namespace Ribosoft.Models.AdminViewModels
          * \brief User ID
          */
         [Required]
-        public string UserId { get; set; }
+        public string UserId { get; set; } = "";
 
         /*! \property Roles
          * \brief List of roles to assign

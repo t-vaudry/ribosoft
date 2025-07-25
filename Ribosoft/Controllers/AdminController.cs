@@ -71,10 +71,8 @@ namespace Ribosoft.Controllers
                 // Apply search filter
                 if (!string.IsNullOrEmpty(searchTerm))
                 {
-                    query = query.Where(u => u.UserName.Contains(searchTerm) || 
-                                           u.Email.Contains(searchTerm) ||
-                                           (u.FirstName != null && u.FirstName.Contains(searchTerm)) ||
-                                           (u.LastName != null && u.LastName.Contains(searchTerm)));
+                    query = query.Where(u => u.UserName!.Contains(searchTerm) || 
+                                           u.Email!.Contains(searchTerm));
                 }
 
                 var totalUsers = await query.CountAsync();
@@ -89,23 +87,23 @@ namespace Ribosoft.Controllers
                 foreach (var user in users)
                 {
                     var roles = await _userManager.GetRolesAsync(user);
-                    var jobCount = await _context.Jobs.CountAsync(j => j.Owner.Id == user.Id);
+                    var jobCount = await _context.Jobs.CountAsync(j => j.OwnerId == user.Id);
 
                     userViewModels.Add(new UserListItemViewModel
                     {
                         Id = user.Id,
-                        UserName = user.UserName,
-                        Email = user.Email,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
+                        UserName = user.UserName ?? "",
+                        Email = user.Email ?? "",
+                        FirstName = "", // Not available in base ApplicationUser
+                        LastName = "", // Not available in base ApplicationUser
                         EmailConfirmed = user.EmailConfirmed,
                         LockoutEnd = user.LockoutEnd,
                         AccessFailedCount = user.AccessFailedCount,
                         TwoFactorEnabled = user.TwoFactorEnabled,
                         Roles = roles.ToList(),
                         JobCount = jobCount,
-                        LastLoginDate = user.LastLoginDate,
-                        RegistrationDate = user.RegistrationDate
+                        LastLoginDate = null, // Not available in base ApplicationUser
+                        RegistrationDate = DateTime.UtcNow // Use a default value
                     });
                 }
 
@@ -153,23 +151,23 @@ namespace Ribosoft.Controllers
                 }
 
                 var roles = await _userManager.GetRolesAsync(user);
-                var jobCount = await _context.Jobs.CountAsync(j => j.Owner.Id == user.Id);
+                var jobCount = await _context.Jobs.CountAsync(j => j.OwnerId == user.Id);
                 var recentJobs = await _context.Jobs
-                    .Where(j => j.Owner.Id == user.Id)
+                    .Where(j => j.OwnerId == user.Id)
                     .OrderByDescending(j => j.CreatedAt)
                     .Take(5)
-                    .Select(j => new { j.Id, j.Name, j.Status, j.CreatedAt })
+                    .Select(j => new { j.Id, JobName = j.RNAInput, State = j.JobState.ToString(), j.CreatedAt })
                     .ToListAsync();
 
                 var userDetails = new UserDetailsViewModel
                 {
                     Id = user.Id,
-                    UserName = user.UserName,
-                    Email = user.Email,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
+                    UserName = user.UserName ?? "",
+                    Email = user.Email ?? "",
+                    FirstName = "", // Not available in base ApplicationUser
+                    LastName = "", // Not available in base ApplicationUser
                     EmailConfirmed = user.EmailConfirmed,
-                    PhoneNumber = user.PhoneNumber,
+                    PhoneNumber = user.PhoneNumber ?? "",
                     PhoneNumberConfirmed = user.PhoneNumberConfirmed,
                     TwoFactorEnabled = user.TwoFactorEnabled,
                     LockoutEnd = user.LockoutEnd,
@@ -177,8 +175,8 @@ namespace Ribosoft.Controllers
                     AccessFailedCount = user.AccessFailedCount,
                     Roles = roles.ToList(),
                     JobCount = jobCount,
-                    LastLoginDate = user.LastLoginDate,
-                    RegistrationDate = user.RegistrationDate,
+                    LastLoginDate = null, // Not available in base ApplicationUser
+                    RegistrationDate = DateTime.UtcNow, // Use a default value
                     RecentJobs = recentJobs
                 };
 

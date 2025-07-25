@@ -69,27 +69,27 @@ namespace Ribosoft.Models.AdminViewModels
         /*! \property Id
          * \brief User ID
          */
-        public string Id { get; set; }
+        public string Id { get; set; } = "";
 
         /*! \property UserName
          * \brief Username
          */
-        public string UserName { get; set; }
+        public string UserName { get; set; } = "";
 
         /*! \property Email
          * \brief Email address
          */
-        public string Email { get; set; }
+        public string Email { get; set; } = "";
 
         /*! \property FirstName
          * \brief First name
          */
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
         /*! \property LastName
          * \brief Last name
          */
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
         /*! \property EmailConfirmed
          * \brief Whether email is confirmed

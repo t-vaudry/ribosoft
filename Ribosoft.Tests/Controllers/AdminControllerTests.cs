@@ -77,8 +77,8 @@ namespace Ribosoft.Tests.Controllers
             // Arrange
             var users = new List<ApplicationUser>
             {
-                new ApplicationUser { Id = "1", UserName = "user1", Email = "user1@test.com", RegistrationDate = DateTime.UtcNow },
-                new ApplicationUser { Id = "2", UserName = "user2", Email = "user2@test.com", RegistrationDate = DateTime.UtcNow }
+                new ApplicationUser { Id = "1", UserName = "user1", Email = "user1@test.com" },
+                new ApplicationUser { Id = "2", UserName = "user2", Email = "user2@test.com" }
             };
 
             var queryableUsers = users.AsQueryable();
@@ -105,8 +105,8 @@ namespace Ribosoft.Tests.Controllers
             // Arrange
             var users = new List<ApplicationUser>
             {
-                new ApplicationUser { Id = "1", UserName = "john", Email = "john@test.com", RegistrationDate = DateTime.UtcNow },
-                new ApplicationUser { Id = "2", UserName = "jane", Email = "jane@test.com", RegistrationDate = DateTime.UtcNow }
+                new ApplicationUser { Id = "1", UserName = "john", Email = "john@test.com" },
+                new ApplicationUser { Id = "2", UserName = "jane", Email = "jane@test.com" }
             };
 
             var queryableUsers = users.AsQueryable();
@@ -135,10 +135,7 @@ namespace Ribosoft.Tests.Controllers
             { 
                 Id = "1", 
                 UserName = "testuser", 
-                Email = "test@test.com",
-                FirstName = "Test",
-                LastName = "User",
-                RegistrationDate = DateTime.UtcNow
+                Email = "test@test.com"
             };
 
             _userManagerMock.Setup(x => x.FindByIdAsync("1")).ReturnsAsync(user);
