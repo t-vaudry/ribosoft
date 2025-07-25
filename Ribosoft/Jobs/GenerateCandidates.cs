@@ -216,10 +216,96 @@ namespace Ribosoft.Jobs
         private Job GetJob(int jobId)
         {
             return _db.Jobs
-                .Include(j => j.Owner)
                 .Include(j => j.Assembly)
                 .Include(j => j.Ribozyme!)
                     .ThenInclude(r => r.RibozymeStructures)
+                .Single(j => j.Id == jobId);
+        }
+
+        /*! \fn UpdateJobProperties
+         * \brief Safely updates job state and status message without affecting navigation properties
+         * \param jobId Job ID
+         * \param jobState New job state
+         * \param statusMessage New status message
+         */
+        private async Task UpdateJobProperties(int jobId, JobState jobState, string? statusMessage = null)
+        {
+            var existingJob = await _db.Jobs.FindAsync(jobId);
+            if (existingJob != null)
+            {
+                existingJob.JobState = jobState;
+                if (statusMessage != null)
+                {
+                    existingJob.StatusMessage = statusMessage;
+                }
+                await _db.SaveChangesAsync();
+            }
+        }
+
+        /*! \fn UpdateJobTolerances
+         * \brief Safely updates job tolerance values without affecting navigation properties
+         * \param jobId Job ID
+         * \param desiredTempTolerance New desired temperature tolerance
+         * \param accessibilityTolerance New accessibility tolerance
+         */
+        private async Task UpdateJobTolerances(int jobId, float? desiredTempTolerance, float? accessibilityTolerance)
+        {
+            var existingJob = await _db.Jobs.FindAsync(jobId);
+            if (existingJob != null)
+            {
+                existingJob.DesiredTempTolerance = desiredTempTolerance;
+                existingJob.AccessibilityTolerance = accessibilityTolerance;
+                await _db.SaveChangesAsync();
+            }
+        }
+
+        /*! \fn UpdateJobSpecificityTolerance
+         * \brief Safely updates job specificity tolerance without affecting navigation properties
+         * \param jobId Job ID
+         * \param specificityTolerance New specificity tolerance
+         */
+        private async Task UpdateJobSpecificityTolerance(int jobId, float? specificityTolerance)
+        {
+            var existingJob = await _db.Jobs.FindAsync(jobId);
+            if (existingJob != null)
+            {
+                existingJob.SpecificityTolerance = specificityTolerance;
+                await _db.SaveChangesAsync();
+            }
+        }
+
+        /*! \fn UpdateJobSafely
+         * \brief Safely updates job properties without affecting navigation properties
+         * \param job Job object to update
+         */
+        private async Task UpdateJobSafely(Job job)
+        {
+            // Only update the job entity, not its navigation properties
+            var existingJob = await _db.Jobs.FindAsync(job.Id);
+            if (existingJob != null)
+            {
+                // Update only the properties we care about, not navigation properties
+                existingJob.JobState = job.JobState;
+                existingJob.StatusMessage = job.StatusMessage;
+                existingJob.DesiredTempTolerance = job.DesiredTempTolerance;
+                existingJob.SpecificityTolerance = job.SpecificityTolerance;
+                existingJob.AccessibilityTolerance = job.AccessibilityTolerance;
+                existingJob.StructureTolerance = job.StructureTolerance;
+                
+                // No need to call Update or Attach - EF is already tracking existingJob
+                await _db.SaveChangesAsync();
+            }
+        }
+
+        /*! \fn GetJobWithOwner
+         * \brief Retrieves job object with owner from provided job ID (only when owner is needed)
+         * \param jobId Job ID
+         * \return Job object with owner
+         */
+        private Job GetJobWithOwner(int jobId)
+        {
+            return _db.Jobs
+                .Include(j => j.Owner)
                 .Single(j => j.Id == jobId);
         }
 
@@ -305,8 +391,7 @@ namespace Ribosoft.Jobs
                     finally
                     {
                         _db.ChangeTracker.AutoDetectChangesEnabled = true;
-                        _db.Jobs.Attach(job);
-                        await _db.SaveChangesAsync();
+                        await UpdateJobProperties(job.Id, job.JobState, job.StatusMessage);
                     }
 
                     candidateGenerator.Clear();
@@ -319,21 +404,22 @@ namespace Ribosoft.Jobs
             // Check that there are designs left
             if (!designs.Any())
             {
-                job.JobState = JobState.Warning;
-                job.StatusMessage = "No designs returned from Candidate Generation!";
-                _logger.LogError("No designs returned from Candidate Generation!");
                 _db.ChangeTracker.AutoDetectChangesEnabled = true;
-                _db.Jobs.Attach(job);
-                await _db.SaveChangesAsync();
+                await UpdateJobProperties(job.Id, JobState.Warning, "No designs returned from Candidate Generation!");
+                _logger.LogError("No designs returned from Candidate Generation!");
                 return;
             }
 
-            job.DesiredTempTolerance *= designs.Max(d => d.DesiredTemperatureScore.GetValueOrDefault()) - designs.Min(d => d.DesiredTemperatureScore.GetValueOrDefault());
-            job.AccessibilityTolerance *= designs.Max(d => d.AccessibilityScore.GetValueOrDefault()) - designs.Min(d => d.AccessibilityScore.GetValueOrDefault());
+            var maxDesiredTemp = designs.Max(d => d.DesiredTemperatureScore.GetValueOrDefault());
+            var minDesiredTemp = designs.Min(d => d.DesiredTemperatureScore.GetValueOrDefault());
+            var maxAccessibility = designs.Max(d => d.AccessibilityScore.GetValueOrDefault());
+            var minAccessibility = designs.Min(d => d.AccessibilityScore.GetValueOrDefault());
+            
+            var newDesiredTempTolerance = job.DesiredTempTolerance * (maxDesiredTemp - minDesiredTemp);
+            var newAccessibilityTolerance = job.AccessibilityTolerance * (maxAccessibility - minAccessibility);
             
             _db.ChangeTracker.AutoDetectChangesEnabled = true;
-            _db.Jobs.Attach(job);
-            await _db.SaveChangesAsync();
+            await UpdateJobTolerances(job.Id, newDesiredTempTolerance, newAccessibilityTolerance);
         }
 
         /*! \fn SetTargetRegions
@@ -422,7 +508,7 @@ namespace Ribosoft.Jobs
          * \param job Job object
          * \param cancellationToken Cancellation token
          */
-        private async Task CalculateStructure(Job job, IJobCancellationToken cancellationToken)
+        private Task CalculateStructure(Job job, IJobCancellationToken cancellationToken)
         {
             IList<Design> designs = _db.Designs
                              .Where(d => d.JobId == job.Id)
@@ -430,8 +516,8 @@ namespace Ribosoft.Jobs
 
             _ribosoftAlgo.Structure(designs);
 
-            _db.Jobs.Attach(job);
-            await _db.SaveChangesAsync();
+            // No need to update job state here - it's handled by DoStage
+            return Task.CompletedTask;
         }
 
         /*! \fn MultiObjectiveOptimize
@@ -515,19 +601,14 @@ namespace Ribosoft.Jobs
             // Check that there are designs left
             if (!completedDesigns.Any())
             {
-                job.JobState = JobState.Warning;
-                job.StatusMessage = "No designs returned from Candidate Generation!";
+                await UpdateJobProperties(job.Id, JobState.Warning, "No designs returned from Candidate Generation!");
                 _logger.LogError("No designs returned from Candidate Generation!");
-                _db.Jobs.Attach(job);
-                await _db.SaveChangesAsync();
                 return;
             }
 
             float deltaSpecificity = completedDesigns.Max(d => d.SpecificityScore.GetValueOrDefault()) - completedDesigns.Min(d => d.SpecificityScore.GetValueOrDefault());
-            job.SpecificityTolerance *= deltaSpecificity;
-            _db.Jobs.Attach(job);
-
-            await _db.SaveChangesAsync();
+            var newSpecificityTolerance = job.SpecificityTolerance * deltaSpecificity;
+            await UpdateJobSpecificityTolerance(job.Id, newSpecificityTolerance);
         }
 
         /*! \fn CalculateSpecificity
@@ -595,9 +676,11 @@ namespace Ribosoft.Jobs
          */
         private async Task CompleteJob(Job job, IJobCancellationToken cancellationToken)
         {
-            if (job.Owner != null)
+            // Load the job with owner only when we need to send email
+            var jobWithOwner = GetJobWithOwner(job.Id);
+            if (jobWithOwner.Owner != null)
             {
-                await SendJobCompletionEmail(job.Owner);
+                await SendJobCompletionEmail(jobWithOwner.Owner);
             }
         }
 
