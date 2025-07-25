@@ -199,6 +199,94 @@ namespace Ribosoft.Jobs
             await func(job, cancellationToken);
         }
 
+        /*! \fn RestartStuckJob
+         * \brief Manually restart a job that's stuck in Structure state
+         * \param jobId Job ID to restart
+         */
+        public async Task RestartStuckJob(int jobId)
+        {
+            var job = GetJob(jobId);
+            
+            _logger.LogInformation($"Attempting to restart stuck job {jobId} from state {job.JobState}");
+            
+            if (job.JobState == JobState.Structure)
+            {
+                // Determine which phase to queue based on TargetEnvironment
+                if (job.TargetEnvironment == TargetEnvironment.InVivo)
+                {
+                    _logger.LogInformation($"Restarting InVivo job {jobId} → Phase2 (BLAST)");
+                    BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase2(jobId, JobCancellationToken.Null));
+                    await UpdateJobProperties(jobId, JobState.QueuedPhase2, "Manually restarted: Queued for Phase2 (BLAST analysis)");
+                }
+                else if (job.TargetEnvironment == TargetEnvironment.InVitro)
+                {
+                    _logger.LogInformation($"Restarting InVitro job {jobId} → Phase3 (Optimization)");
+                    BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase3(jobId, JobCancellationToken.Null));
+                    await UpdateJobProperties(jobId, JobState.QueuedPhase3, "Manually restarted: Queued for Phase3 (Multi-objective optimization)");
+                }
+                else
+                {
+                    _logger.LogError($"Job {jobId} has unknown TargetEnvironment: {job.TargetEnvironment}");
+                    await UpdateJobProperties(jobId, JobState.Errored, $"Unknown TargetEnvironment: {job.TargetEnvironment}");
+                }
+            }
+            else
+            {
+                _logger.LogWarning($"Job {jobId} is not in Structure state (current: {job.JobState}), cannot restart");
+            }
+        }
+
+        /*! \fn DiagnoseJobTransition
+         * \brief Diagnostic method to check why a job isn't transitioning from Structure state
+         * \param jobId Job ID to diagnose
+         */
+        public async Task DiagnoseJobTransition(int jobId)
+        {
+            var job = GetJob(jobId);
+            
+            _logger.LogInformation($"=== JOB TRANSITION DIAGNOSIS for Job {jobId} ===");
+            _logger.LogInformation($"Current JobState: {job.JobState} (value: {(int)job.JobState})");
+            _logger.LogInformation($"TargetEnvironment: {job.TargetEnvironment}");
+            _logger.LogInformation($"StatusMessage: '{job.StatusMessage}'");
+            _logger.LogInformation($"CreatedAt: {job.CreatedAt}");
+            _logger.LogInformation($"UpdatedAt: {job.UpdatedAt}");
+            
+            // Check Phase2 condition
+            bool phase2Condition = job.JobState == JobState.Structure && job.TargetEnvironment == TargetEnvironment.InVivo;
+            _logger.LogInformation($"Phase2 condition (Structure + InVivo): {phase2Condition}");
+            _logger.LogInformation($"  - JobState == Structure: {job.JobState == JobState.Structure}");
+            _logger.LogInformation($"  - TargetEnvironment == InVivo: {job.TargetEnvironment == TargetEnvironment.InVivo}");
+            
+            // Check Phase3 condition  
+            bool phase3Condition = job.JobState == JobState.Structure && job.TargetEnvironment == TargetEnvironment.InVitro;
+            _logger.LogInformation($"Phase3 condition (Structure + InVitro): {phase3Condition}");
+            _logger.LogInformation($"  - JobState == Structure: {job.JobState == JobState.Structure}");
+            _logger.LogInformation($"  - TargetEnvironment == InVitro: {job.TargetEnvironment == TargetEnvironment.InVitro}");
+            
+            // Check if job should transition
+            if (phase2Condition)
+            {
+                _logger.LogInformation("Job SHOULD transition to Phase2 (QueuedPhase2 → Specificity)");
+                _logger.LogInformation("Manually queuing Phase2...");
+                BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase2(jobId, JobCancellationToken.Null));
+                await UpdateJobProperties(jobId, JobState.QueuedPhase2, "Manually queued for Phase2 (BLAST analysis)");
+            }
+            else if (phase3Condition)
+            {
+                _logger.LogInformation("Job SHOULD transition to Phase3 (QueuedPhase3 → MultiObjectiveOptimization)");
+                _logger.LogInformation("Manually queuing Phase3...");
+                BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase3(jobId, JobCancellationToken.Null));
+                await UpdateJobProperties(jobId, JobState.QueuedPhase3, "Manually queued for Phase3 (Multi-objective optimization)");
+            }
+            else
+            {
+                _logger.LogError("Job does NOT meet conditions for Phase2 or Phase3 transition!");
+                _logger.LogError("This indicates a bug in the job processing logic.");
+            }
+            
+            _logger.LogInformation("=== END DIAGNOSIS ===");
+        }
+
         /*! \fn GetStatusMessageForState
          * \brief Gets a descriptive status message for a given job state
          * \param state Job state
