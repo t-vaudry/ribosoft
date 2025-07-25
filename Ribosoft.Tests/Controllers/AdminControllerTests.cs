@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Ribosoft.Controllers;
@@ -17,6 +20,108 @@ using Xunit;
 
 namespace Ribosoft.Tests.Controllers
 {
+    // Helper classes for async enumeration in tests
+    internal class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
+    {
+        private readonly IQueryProvider _inner;
+
+        internal TestAsyncQueryProvider(IQueryProvider inner)
+        {
+            _inner = inner;
+        }
+
+        public IQueryable CreateQuery(System.Linq.Expressions.Expression expression)
+        {
+            return new TestAsyncEnumerable<TEntity>(expression);
+        }
+
+        public IQueryable<TElement> CreateQuery<TElement>(System.Linq.Expressions.Expression expression)
+        {
+            return new TestAsyncEnumerable<TElement>(expression);
+        }
+
+        public object Execute(System.Linq.Expressions.Expression expression)
+        {
+            return _inner.Execute(expression);
+        }
+
+        public TResult Execute<TResult>(System.Linq.Expressions.Expression expression)
+        {
+            return _inner.Execute<TResult>(expression);
+        }
+
+        public TResult ExecuteAsync<TResult>(System.Linq.Expressions.Expression expression, CancellationToken cancellationToken = default)
+        {
+            var expectedResultType = typeof(TResult);
+            
+            // Handle Task<int> for CountAsync()
+            if (expectedResultType == typeof(Task<int>))
+            {
+                var executionResult = Execute(expression);
+                var count = ((IEnumerable<TEntity>)executionResult).Count();
+                return (TResult)(object)Task.FromResult(count);
+            }
+            
+            // Handle Task<List<T>> for ToListAsync()
+            if (expectedResultType.IsGenericType && expectedResultType.GetGenericTypeDefinition() == typeof(Task<>))
+            {
+                var innerType = expectedResultType.GetGenericArguments()[0];
+                if (innerType.IsGenericType && innerType.GetGenericTypeDefinition() == typeof(List<>))
+                {
+                    var executionResult = Execute(expression);
+                    var listMethod = typeof(Enumerable).GetMethod("ToList")!.MakeGenericMethod(innerType.GetGenericArguments()[0]);
+                    var list = listMethod.Invoke(null, new[] { executionResult });
+                    var taskFromResultMethod = typeof(Task).GetMethod("FromResult")!.MakeGenericMethod(innerType);
+                    var task = taskFromResultMethod.Invoke(null, new[] { list });
+                    return (TResult)task!;
+                }
+            }
+
+            // Fallback to synchronous execution
+            return _inner.Execute<TResult>(expression);
+        }
+    }
+
+    internal class TestAsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, IQueryable<T>
+    {
+        public TestAsyncEnumerable(IEnumerable<T> enumerable)
+            : base(enumerable)
+        { }
+
+        public TestAsyncEnumerable(System.Linq.Expressions.Expression expression)
+            : base(expression)
+        { }
+
+        public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        {
+            return new TestAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
+        }
+
+        IQueryProvider IQueryable.Provider => new TestAsyncQueryProvider<T>(this);
+    }
+
+    internal class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
+    {
+        private readonly IEnumerator<T> _inner;
+
+        public TestAsyncEnumerator(IEnumerator<T> inner)
+        {
+            _inner = inner;
+        }
+
+        public T Current => _inner.Current;
+
+        public ValueTask<bool> MoveNextAsync()
+        {
+            return ValueTask.FromResult(_inner.MoveNext());
+        }
+
+        public ValueTask DisposeAsync()
+        {
+            _inner.Dispose();
+            return ValueTask.CompletedTask;
+        }
+    }
     /*! \class AdminControllerTests
      * \brief Unit tests for AdminController
      */
@@ -52,7 +157,16 @@ namespace Ribosoft.Tests.Controllers
                 new IdentityRole { Name = "Administrator" },
                 new IdentityRole { Name = "User" }
             };
-            _roleManagerMock.Setup(rm => rm.Roles).Returns(roles.AsQueryable());
+            var mockRoles = new TestAsyncEnumerable<IdentityRole>(roles);
+            _roleManagerMock.Setup(rm => rm.Roles).Returns(mockRoles);
+
+            // Add test jobs to the context
+            _context.Jobs.AddRange(
+                new Job { Id = 1, OwnerId = "1", CreatedAt = DateTime.UtcNow },
+                new Job { Id = 2, OwnerId = "1", CreatedAt = DateTime.UtcNow },
+                new Job { Id = 3, OwnerId = "2", CreatedAt = DateTime.UtcNow }
+            );
+            _context.SaveChanges();
 
             // Setup Logger mock
             _loggerMock = new Mock<ILogger<AdminController>>();
@@ -89,11 +203,9 @@ namespace Ribosoft.Tests.Controllers
                 new ApplicationUser { Id = "2", UserName = "user2", Email = "user2@test.com" }
             };
 
-            // Add users to the in-memory database
-            _context.Users.AddRange(users);
-            await _context.SaveChangesAsync();
-
-            _userManagerMock.Setup(x => x.Users).Returns(_context.Users);
+            // Create async queryable mock
+            var mockUsers = new TestAsyncEnumerable<ApplicationUser>(users);
+            _userManagerMock.Setup(x => x.Users).Returns(mockUsers);
             _userManagerMock.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationUser>()))
                 .ReturnsAsync(new List<string> { "User" });
 
@@ -118,11 +230,9 @@ namespace Ribosoft.Tests.Controllers
                 new ApplicationUser { Id = "2", UserName = "jane", Email = "jane@test.com" }
             };
 
-            // Add users to the in-memory database
-            _context.Users.AddRange(users);
-            await _context.SaveChangesAsync();
-
-            _userManagerMock.Setup(x => x.Users).Returns(_context.Users);
+            // Create async queryable mock
+            var mockUsers = new TestAsyncEnumerable<ApplicationUser>(users);
+            _userManagerMock.Setup(x => x.Users).Returns(mockUsers);
             _userManagerMock.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationUser>()))
                 .ReturnsAsync(new List<string> { "User" });
 
