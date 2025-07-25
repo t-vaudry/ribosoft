@@ -228,8 +228,12 @@ namespace Ribosoft.Jobs
          */
         private async Task RecreateDbContext()
         {
+            _logger.LogInformation("RecreateDbContext: Saving changes and recreating context");
             await _db.SaveChangesAsync();
+            var oldContext = _db;
             _db = new ApplicationDbContext(_dbOptions);
+            oldContext.Dispose();
+            _logger.LogInformation("RecreateDbContext: New context created");
         }
 
         /*! \fn GetJob
@@ -254,15 +258,44 @@ namespace Ribosoft.Jobs
          */
         private async Task UpdateJobProperties(int jobId, JobState jobState, string? statusMessage = null)
         {
-            var existingJob = await _db.Jobs.FindAsync(jobId);
+            // Use explicit query instead of FindAsync to ensure we get the complete entity
+            var existingJob = await _db.Jobs
+                .Where(j => j.Id == jobId)
+                .FirstOrDefaultAsync();
+                
             if (existingJob != null)
             {
+                // Log current state for debugging
+                _logger.LogInformation($"Updating Job {jobId}: OwnerId={existingJob.OwnerId}, State={existingJob.JobState}->{jobState}, Message='{statusMessage}'");
+                
                 existingJob.JobState = jobState;
                 if (statusMessage != null)
                 {
                     existingJob.StatusMessage = statusMessage;
                 }
+                
+                // Mark entity as modified explicitly
+                _db.Entry(existingJob).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
+                
+                // Verify the job still exists and has correct OwnerId after save
+                var verifyJob = await _db.Jobs.Where(j => j.Id == jobId).FirstOrDefaultAsync();
+                if (verifyJob == null)
+                {
+                    _logger.LogError($"Job {jobId} disappeared after SaveChangesAsync!");
+                }
+                else if (string.IsNullOrEmpty(verifyJob.OwnerId))
+                {
+                    _logger.LogError($"Job {jobId} OwnerId became null/empty after SaveChangesAsync! Was: '{existingJob.OwnerId}'");
+                }
+                else
+                {
+                    _logger.LogInformation($"Job {jobId} successfully updated. OwnerId: {verifyJob.OwnerId}, State: {verifyJob.JobState}");
+                }
+            }
+            else
+            {
+                _logger.LogError($"Job {jobId} not found when trying to update properties!");
             }
         }
 
@@ -274,12 +307,23 @@ namespace Ribosoft.Jobs
          */
         private async Task UpdateJobTolerances(int jobId, float? desiredTempTolerance, float? accessibilityTolerance)
         {
-            var existingJob = await _db.Jobs.FindAsync(jobId);
+            var existingJob = await _db.Jobs
+                .Where(j => j.Id == jobId)
+                .FirstOrDefaultAsync();
+                
             if (existingJob != null)
             {
+                _logger.LogInformation($"Updating Job {jobId} tolerances: OwnerId={existingJob.OwnerId}");
+                
                 existingJob.DesiredTempTolerance = desiredTempTolerance;
                 existingJob.AccessibilityTolerance = accessibilityTolerance;
+                
+                _db.Entry(existingJob).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
+            }
+            else
+            {
+                _logger.LogError($"Job {jobId} not found when trying to update tolerances!");
             }
         }
 
@@ -290,11 +334,22 @@ namespace Ribosoft.Jobs
          */
         private async Task UpdateJobSpecificityTolerance(int jobId, float? specificityTolerance)
         {
-            var existingJob = await _db.Jobs.FindAsync(jobId);
+            var existingJob = await _db.Jobs
+                .Where(j => j.Id == jobId)
+                .FirstOrDefaultAsync();
+                
             if (existingJob != null)
             {
+                _logger.LogInformation($"Updating Job {jobId} specificity tolerance: OwnerId={existingJob.OwnerId}");
+                
                 existingJob.SpecificityTolerance = specificityTolerance;
+                
+                _db.Entry(existingJob).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
+            }
+            else
+            {
+                _logger.LogError($"Job {jobId} not found when trying to update specificity tolerance!");
             }
         }
 
