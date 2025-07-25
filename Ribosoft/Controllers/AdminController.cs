@@ -122,7 +122,10 @@ namespace Ribosoft.Controllers
                     PageSize = pageSize,
                     TotalUsers = totalUsers,
                     TotalPages = (int)Math.Ceiling((double)totalUsers / pageSize),
-                    AvailableRoles = await _roleManager.Roles.Select(r => r.Name).ToListAsync()
+                    AvailableRoles = await _roleManager.Roles
+                        .Where(r => r.Name != null)
+                        .Select(r => r.Name!)
+                        .ToListAsync()
                 };
 
                 return View(viewModel);

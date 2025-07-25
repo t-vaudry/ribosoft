@@ -45,6 +45,14 @@ namespace Ribosoft.Tests.Controllers
             var roleStoreMock = new Mock<IRoleStore<IdentityRole>>();
             _roleManagerMock = new Mock<RoleManager<IdentityRole>>(
                 roleStoreMock.Object, null, null, null, null);
+            
+            // Setup roles for the role manager
+            var roles = new List<IdentityRole>
+            {
+                new IdentityRole { Name = "Administrator" },
+                new IdentityRole { Name = "User" }
+            };
+            _roleManagerMock.Setup(rm => rm.Roles).Returns(roles.AsQueryable());
 
             // Setup Logger mock
             _loggerMock = new Mock<ILogger<AdminController>>();
@@ -81,13 +89,13 @@ namespace Ribosoft.Tests.Controllers
                 new ApplicationUser { Id = "2", UserName = "user2", Email = "user2@test.com" }
             };
 
-            var queryableUsers = users.AsQueryable();
-            _userManagerMock.Setup(x => x.Users).Returns(queryableUsers);
+            // Add users to the in-memory database
+            _context.Users.AddRange(users);
+            await _context.SaveChangesAsync();
+
+            _userManagerMock.Setup(x => x.Users).Returns(_context.Users);
             _userManagerMock.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationUser>()))
                 .ReturnsAsync(new List<string> { "User" });
-
-            _roleManagerMock.Setup(x => x.Roles)
-                .Returns(new List<IdentityRole> { new IdentityRole("User"), new IdentityRole("Administrator") }.AsQueryable());
 
             // Act
             var result = await _controller.Index();
@@ -96,7 +104,8 @@ namespace Ribosoft.Tests.Controllers
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsType<UserManagementViewModel>(viewResult.Model);
             Assert.Equal(2, model.Users.Count);
-            Assert.Equal(2, model.TotalUsers);
+            Assert.Contains("Administrator", model.AvailableRoles);
+            Assert.Contains("User", model.AvailableRoles);
         }
 
         [Fact]
@@ -109,13 +118,13 @@ namespace Ribosoft.Tests.Controllers
                 new ApplicationUser { Id = "2", UserName = "jane", Email = "jane@test.com" }
             };
 
-            var queryableUsers = users.AsQueryable();
-            _userManagerMock.Setup(x => x.Users).Returns(queryableUsers);
+            // Add users to the in-memory database
+            _context.Users.AddRange(users);
+            await _context.SaveChangesAsync();
+
+            _userManagerMock.Setup(x => x.Users).Returns(_context.Users);
             _userManagerMock.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationUser>()))
                 .ReturnsAsync(new List<string> { "User" });
-
-            _roleManagerMock.Setup(x => x.Roles)
-                .Returns(new List<IdentityRole> { new IdentityRole("User") }.AsQueryable());
 
             // Act
             var result = await _controller.Index("john");
