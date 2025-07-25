@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
@@ -187,10 +188,58 @@ namespace Ribosoft.Tests.Controllers
             var identity = new ClaimsIdentity(claims, "Test");
             var principal = new ClaimsPrincipal(identity);
 
+            var httpContext = new DefaultHttpContext { User = principal };
+            
+            // Setup TempData
+            var tempDataProvider = new Mock<ITempDataProvider>();
+            var tempDataDictionary = new TempDataDictionary(httpContext, tempDataProvider.Object);
+            
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = principal }
+                HttpContext = httpContext
             };
+            _controller.TempData = tempDataDictionary;
+        }
+
+        [Fact]
+        public async Task Index_Debug_CheckNullReferences()
+        {
+            // Arrange - minimal setup to debug null reference
+            var users = new List<ApplicationUser>
+            {
+                new ApplicationUser { Id = "1", UserName = "user1", Email = "user1@test.com" },
+                new ApplicationUser { Id = "2", UserName = "user2", Email = "user2@test.com" }
+            };
+
+            var mockUsers = new TestAsyncEnumerable<ApplicationUser>(users);
+            _userManagerMock.Setup(x => x.Users).Returns(mockUsers);
+            _userManagerMock.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationUser>()))
+                .ReturnsAsync(new List<string> { "User" });
+
+            try
+            {
+                // Act
+                var result = await _controller.Index();
+                
+                // Check if we got a ViewResult or RedirectResult
+                if (result is ViewResult viewResult)
+                {
+                    Assert.True(true, "Got ViewResult as expected");
+                }
+                else if (result is RedirectToActionResult redirectResult)
+                {
+                    Assert.True(false, $"Got RedirectToActionResult instead of ViewResult. Action: {redirectResult.ActionName}, Controller: {redirectResult.ControllerName}");
+                }
+                else
+                {
+                    Assert.True(false, $"Got unexpected result type: {result.GetType()}");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exact location of the exception
+                Assert.True(false, $"Exception: {ex.GetType().Name}: {ex.Message}\nStack trace: {ex.StackTrace}");
+            }
         }
 
         [Fact]
