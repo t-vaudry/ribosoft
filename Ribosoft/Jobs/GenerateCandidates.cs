@@ -192,11 +192,35 @@ namespace Ribosoft.Jobs
             // set the job to this stage's state
             if (job.JobState != state)
             {
-                job.JobState = state;
-                await _db.SaveChangesAsync();
+                var statusMessage = GetStatusMessageForState(state);
+                await UpdateJobProperties(job.Id, state, statusMessage);
             }
 
             await func(job, cancellationToken);
+        }
+
+        /*! \fn GetStatusMessageForState
+         * \brief Gets a descriptive status message for a given job state
+         * \param state Job state
+         * \return Status message
+         */
+        private string GetStatusMessageForState(JobState state)
+        {
+            return state switch
+            {
+                JobState.New => "Job created and queued for processing",
+                JobState.CandidateGenerator => "Generating ribozyme candidates...",
+                JobState.Structure => "Calculating structure scores...",
+                JobState.Specificity => "Running BLAST analysis for specificity...",
+                JobState.MultiObjectiveOptimization => "Optimizing and ranking candidates...",
+                JobState.QueuedPhase2 => "Queued for BLAST analysis (Phase 2)",
+                JobState.QueuedPhase3 => "Queued for optimization (Phase 3)",
+                JobState.Completed => "Job completed successfully",
+                JobState.Warning => "Job completed with warnings",
+                JobState.Errored => "Job failed with errors",
+                JobState.Cancelled => "Job was cancelled",
+                _ => $"Job in state: {state}"
+            };
         }
 
         /*! \fn RecreateDbContext
@@ -325,9 +349,7 @@ namespace Ribosoft.Jobs
             }
             else
             {
-                job.JobState = JobState.Warning;
-                job.StatusMessage = "No Target Region Selected!";
-                await _db.SaveChangesAsync();
+                await UpdateJobProperties(job.Id, JobState.Warning, "No Target Region Selected!");
                 return;
             }
 
@@ -352,10 +374,8 @@ namespace Ribosoft.Jobs
                     }
                     catch (CandidateGeneration.CandidateGenerationException e)
                     {
-                        job.JobState = JobState.Errored;
-                        job.StatusMessage = e.Message;
                         _logger.LogError(e, "Exception occurred during Candidate Generation.");
-                        await _db.SaveChangesAsync();
+                        await UpdateJobProperties(job.Id, JobState.Errored, e.Message);
                         return;
                     }
 
@@ -363,12 +383,15 @@ namespace Ribosoft.Jobs
                     try
                     {
                         uint batchCount = 0;
+                        uint totalProcessed = 0;
+                        uint totalCandidates = (uint)candidates.Count();
                         _db.ChangeTracker.AutoDetectChangesEnabled = false;
 
                         foreach (var candidate in candidates)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
                             RunScoreAlgorithms(candidate, job, ribozymeStructure, RNAStructure);
+                            totalProcessed++;
 
                             if (++batchCount % 100 == 0)
                             {
@@ -376,6 +399,10 @@ namespace Ribosoft.Jobs
                                 await RecreateDbContext();
                                 _db.ChangeTracker.AutoDetectChangesEnabled = false;
                                 batchCount = 0;
+                                
+                                // Update progress status
+                                var progressMessage = $"Processing candidates: {totalProcessed}/{totalCandidates} completed";
+                                await UpdateJobProperties(job.Id, JobState.CandidateGenerator, progressMessage);
                             }
                         }
 
@@ -383,9 +410,8 @@ namespace Ribosoft.Jobs
                     }
                     catch (RibosoftAlgoException e)
                     {
-                        job.JobState = JobState.Errored;
-                        job.StatusMessage = e.Code.ToString();
                         _logger.LogError(e, "Exception occurred during Ribosoft Algorithms.");
+                        await UpdateJobProperties(job.Id, JobState.Errored, e.Code.ToString());
                         return;
                     }
                     finally
@@ -420,6 +446,10 @@ namespace Ribosoft.Jobs
             
             _db.ChangeTracker.AutoDetectChangesEnabled = true;
             await UpdateJobTolerances(job.Id, newDesiredTempTolerance, newAccessibilityTolerance);
+            
+            // Update status to show candidate generation is complete
+            var designCount = designs.Count();
+            await UpdateJobProperties(job.Id, JobState.CandidateGenerator, $"Candidate generation completed: {designCount} designs generated");
         }
 
         /*! \fn SetTargetRegions
@@ -508,7 +538,7 @@ namespace Ribosoft.Jobs
          * \param job Job object
          * \param cancellationToken Cancellation token
          */
-        private Task CalculateStructure(Job job, IJobCancellationToken cancellationToken)
+        private async Task CalculateStructure(Job job, IJobCancellationToken cancellationToken)
         {
             IList<Design> designs = _db.Designs
                              .Where(d => d.JobId == job.Id)
@@ -516,8 +546,8 @@ namespace Ribosoft.Jobs
 
             _ribosoftAlgo.Structure(designs);
 
-            // No need to update job state here - it's handled by DoStage
-            return Task.CompletedTask;
+            // Update status to show structure calculation is complete
+            await UpdateJobProperties(job.Id, JobState.Structure, $"Structure calculation completed for {designs.Count} designs");
         }
 
         /*! \fn MultiObjectiveOptimize
@@ -532,17 +562,16 @@ namespace Ribosoft.Jobs
 
             try
             {
-                _multiObjectiveOptimizer.Optimize(_db.Designs.Where(j => j.JobId == job.Id).ToList(), 1);
+                var designs = _db.Designs.Where(j => j.JobId == job.Id).ToList();
+                _multiObjectiveOptimizer.Optimize(designs, 1);
+                
+                // Update status to show optimization is complete
+                await UpdateJobProperties(job.Id, JobState.MultiObjectiveOptimization, $"Multi-objective optimization completed: {designs.Count} designs ranked");
             }
             catch (MultiObjectiveOptimization.MultiObjectiveOptimizationException e)
             {
-                job.JobState = JobState.Errored;
-                job.StatusMessage = e.Message;
                 _logger.LogError(e, "Exception occurred during Multi Objective Optimization.");
-            }
-            finally
-            {
-                await _db.SaveChangesAsync();
+                await UpdateJobProperties(job.Id, JobState.Errored, e.Message);
             }
         }
 
@@ -609,6 +638,9 @@ namespace Ribosoft.Jobs
             float deltaSpecificity = completedDesigns.Max(d => d.SpecificityScore.GetValueOrDefault()) - completedDesigns.Min(d => d.SpecificityScore.GetValueOrDefault());
             var newSpecificityTolerance = job.SpecificityTolerance * deltaSpecificity;
             await UpdateJobSpecificityTolerance(job.Id, newSpecificityTolerance);
+            
+            // Update status to show BLAST analysis is complete
+            await UpdateJobProperties(job.Id, JobState.Specificity, $"BLAST analysis completed for {completedDesigns.Count()} designs");
         }
 
         /*! \fn CalculateSpecificity
