@@ -227,6 +227,7 @@ ribosoft/
 - **Background Processing**: Hangfire job queue system
 - **User Management**: ASP.NET Core Identity
 - **RNA Visualization**: Interactive structure visualization
+- **Enhanced Accessibility Scoring**: Section-based analysis of binding site accessibility (improved from binary approach)
 
 ## Docker Support
 
