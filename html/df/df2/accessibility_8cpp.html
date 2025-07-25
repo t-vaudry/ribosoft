@@ -114,7 +114,9 @@ $(function(){ initResizable(false); });
 <div id="doc-content">
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">accessibility.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -123,15 +125,34 @@ $(function(){ initResizable(false); });
 <code>#include &lt;cstring&gt;</code><br />
 <code>#include &lt;cmath&gt;</code><br />
 <code>#include &lt;regex&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;mutex&gt;</code><br />
 <code>#include &quot;functions.h&quot;</code><br />
+<code>#include &lt;melting.h&gt;</code><br />
 </div>
 <p><a href="../../df/df2/accessibility_8cpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d2d/structribosoft_1_1AccessibleSection.html">ribosoft::AccessibleSection</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure representing a contiguous accessible section within a binding arm.  <a href="../../d9/d2d/structribosoft_1_1AccessibleSection.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a78ceedb01d65fdf8a81beb56848da9d8" id="r_a78ceedb01d65fdf8a81beb56848da9d8"><td class="memItemLeft" align="right" valign="top">R_STATUS&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a78ceedb01d65fdf8a81beb56848da9d8">ribosoft::accessibility</a> (const char *substrate_sequence, const char *substrate_structure, const char *folded_structure, const float na_concentration, const float probe_concentration, const float target_temp, float &amp;score)</td></tr>
-<tr class="memdesc:a78ceedb01d65fdf8a81beb56848da9d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accessibility score. Used to calculate the accessibility of the cutsite in the RNA sequence. ViennaRNA library used to fold the RNA sequence w/o constraints. Score is evaluated as perfect (0) if the binding arms are not paired on the RNA, or the annealing temperature of the binding arms.  <br /></td></tr>
+<tr class="memdesc:a78ceedb01d65fdf8a81beb56848da9d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accessibility score. Used to calculate the accessibility of the cutsite in the RNA sequence. ViennaRNA library used to fold the RNA sequence w/o constraints. Score is now calculated using section-based analysis: identifies contiguous accessible regions within each binding arm and scores them individually, providing more nuanced scoring than the previous binary approach.  <br /></td></tr>
 <tr class="separator:a78ceedb01d65fdf8a81beb56848da9d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf3db6c50db9cf57b34ce3fc1696af5d" id="r_aaf3db6c50db9cf57b34ce3fc1696af5d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaf3db6c50db9cf57b34ce3fc1696af5d">ribosoft::calculate_section_accessibility_score</a> (const std::vector&lt; <a class="el" href="../../d9/d2d/structribosoft_1_1AccessibleSection.html">AccessibleSection</a> &gt; &amp;sections, float na_concentration, float probe_concentration, float target_temp)</td></tr>
+<tr class="separator:aaf3db6c50db9cf57b34ce3fc1696af5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d6b91ec737c6b9bc302bcf324e3faa4" id="r_a2d6b91ec737c6b9bc302bcf324e3faa4"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="../../d9/d2d/structribosoft_1_1AccessibleSection.html">AccessibleSection</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2d6b91ec737c6b9bc302bcf324e3faa4">ribosoft::find_accessible_sections</a> (const std::string &amp;arm_sequence, const std::string &amp;arm_folded_structure)</td></tr>
+<tr class="separator:a2d6b91ec737c6b9bc302bcf324e3faa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ad6a78dc338ce95a9a03cfb5559a6128b" id="r_ad6a78dc338ce95a9a03cfb5559a6128b"><td class="memItemLeft" align="right" valign="top">std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad6a78dc338ce95a9a03cfb5559a6128b">ribosoft::melting_mutex</a></td></tr>
+<tr class="memdesc:ad6a78dc338ce95a9a03cfb5559a6128b"><td class="mdescLeft">&#160;</td><td class="mdescRight">External reference to melting mutex.  <br /></td></tr>
+<tr class="separator:ad6a78dc338ce95a9a03cfb5559a6128b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a78ceedb01d65fdf8a81beb56848da9d8" name="a78ceedb01d65fdf8a81beb56848da9d8"></a>
@@ -178,7 +199,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Accessibility score. Used to calculate the accessibility of the cutsite in the RNA sequence. ViennaRNA library used to fold the RNA sequence w/o constraints. Score is evaluated as perfect (0) if the binding arms are not paired on the RNA, or the annealing temperature of the binding arms. </p>
+<p>Accessibility score. Used to calculate the accessibility of the cutsite in the RNA sequence. ViennaRNA library used to fold the RNA sequence w/o constraints. Score is now calculated using section-based analysis: identifies contiguous accessible regions within each binding arm and scores them individually, providing more nuanced scoring than the previous binary approach. </p>
 <p>Understanding return values:</p><ul>
 <li>R_INVALID_NUCLEOTIDE | rna has an invalid nucleotide</li>
 <li>R_STRUCT_LENGTH_DIFFER | sequence and structure lengths do not match</li>
@@ -191,13 +212,90 @@ Functions</h2></td></tr>
     <tr><td class="paramname">foldedStructure</td><td>structure of target sequence on rna (folded using ViennaRNA) </td></tr>
     <tr><td class="paramname">na_concentration</td><td>Sodium (Na+) concentration (in moles) </td></tr>
     <tr><td class="paramname">probe_concentration</td><td>Nucleic acid concentration in excess (in moles) </td></tr>
+    <tr><td class="paramname">target_temp</td><td>Target temperature for binding </td></tr>
     <tr><td class="paramname">score</td><td>Out variable for accessibility score </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Status Code </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="../../df/df2/accessibility_8cpp_source.html#l00128">128</a> of file <a class="el" href="../../df/df2/accessibility_8cpp_source.html">accessibility.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aaf3db6c50db9cf57b34ce3fc1696af5d" name="aaf3db6c50db9cf57b34ce3fc1696af5d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf3db6c50db9cf57b34ce3fc1696af5d">&#9670;&#160;</a></span>calculate_section_accessibility_score()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double ribosoft::calculate_section_accessibility_score </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="../../d9/d2d/structribosoft_1_1AccessibleSection.html">AccessibleSection</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>sections</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float</td>          <td class="paramname"><span class="paramname"><em>na_concentration</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float</td>          <td class="paramname"><span class="paramname"><em>probe_concentration</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float</td>          <td class="paramname"><span class="paramname"><em>target_temp</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="../../df/df2/accessibility_8cpp_source.html#l00076">76</a> of file <a class="el" href="../../df/df2/accessibility_8cpp_source.html">accessibility.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a2d6b91ec737c6b9bc302bcf324e3faa4" name="a2d6b91ec737c6b9bc302bcf324e3faa4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d6b91ec737c6b9bc302bcf324e3faa4">&#9670;&#160;</a></span>find_accessible_sections()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; AccessibleSection &gt; ribosoft::find_accessible_sections </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>arm_sequence</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>arm_folded_structure</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
 <p class="definition">Definition at line <a class="el" href="../../df/df2/accessibility_8cpp_source.html#l00034">34</a> of file <a class="el" href="../../df/df2/accessibility_8cpp_source.html">accessibility.cpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="ad6a78dc338ce95a9a03cfb5559a6128b" name="ad6a78dc338ce95a9a03cfb5559a6128b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad6a78dc338ce95a9a03cfb5559a6128b">&#9670;&#160;</a></span>melting_mutex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::mutex ribosoft::melting_mutex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>External reference to melting mutex. </p>
+<p>Mutex to lock access to MELTING library. </p>
+
+<p class="definition">Definition at line <a class="el" href="../../d8/d96/anneal_8cpp_source.html#l00017">17</a> of file <a class="el" href="../../d8/d96/anneal_8cpp_source.html">anneal.cpp</a>.</p>
 
 </div>
 </div>

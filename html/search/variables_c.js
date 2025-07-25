@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['value_0',['value',['../da/d16/structRibosoft_1_1Models_1_1JobsViewModels_1_1JobDetailsViewModel_1_1Filter.html#a9e7843343abb61b314dcc1c5aee827d9',1,'Ribosoft::Models::JobsViewModels::JobDetailsViewModel::Filter']]]
+  ['tree_5fedit_5fdistance_5fmutex_0',['tree_edit_distance_mutex',['../d4/de8/structure_8cpp.html#aae755598e8bb5ca82fbe55a20417fb91',1,'ribosoft']]]
 ];

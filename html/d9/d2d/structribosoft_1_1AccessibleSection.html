@@ -12,7 +12,7 @@
                 src="https://code.jquery.com/jquery-2.1.1.min.js"
                 integrity="sha256-h0cGsrExGgcJOUVBkMOVsKOVE7zTABGF0kpOe4p4Tc4="
                 crossorigin="anonymous"></script>
-        <title>Ribosoft: anneal.cpp File Reference</title>
+        <title>Ribosoft: ribosoft::AccessibleSection Struct Reference</title>
         <!--<link href="../../tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="../../dynsections.js"></script>
         <link href="../../navtree.css" rel="stylesheet" type="text/css"/>
@@ -108,98 +108,95 @@ $(function(){ initResizable(false); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="../../dir_ac638dfe624e96a6bfb997fa41925e36.html">RibosoftAlgo</a></li><li class="navelem"><a class="el" href="../../dir_52638133c3b49e06de00d194c5e82851.html">src</a></li>  </ul>
+<li class="navelem"><b>ribosoft</b></li><li class="navelem"><a class="el" href="../../d9/d2d/structribosoft_1_1AccessibleSection.html">AccessibleSection</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">anneal.cpp File Reference</div></div>
+<a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="../../dc/d36/structribosoft_1_1AccessibleSection-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">ribosoft::AccessibleSection Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;dll.h&quot;</code><br />
-<code>#include &lt;cstring&gt;</code><br />
-<code>#include &lt;regex&gt;</code><br />
-<code>#include &lt;iterator&gt;</code><br />
-<code>#include &lt;cmath&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
-<code>#include &lt;mutex&gt;</code><br />
-<code>#include &quot;functions.h&quot;</code><br />
-<code>#include &lt;melting.h&gt;</code><br />
-</div>
-<p><a href="../../d8/d96/anneal_8cpp_source.html">Go to the source code of this file.</a></p>
+
+<p>Structure representing a contiguous accessible section within a binding arm.  
+ <a href="#details">More...</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a24ffa8866a825e47c9ff7c1a6b0a4cc1" id="r_a24ffa8866a825e47c9ff7c1a6b0a4cc1"><td class="memItemLeft" align="right" valign="top">R_STATUS&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a24ffa8866a825e47c9ff7c1a6b0a4cc1">ribosoft::anneal</a> (const char *sequence, const char *structure, const float na_concentration, const float probe_concentration, const float target_temp, float &amp;temp)</td></tr>
-<tr class="memdesc:a24ffa8866a825e47c9ff7c1a6b0a4cc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Annealing Temperature Score Used to calculate the annealing temperature of the ribozyme to the substrate. Using the MELTING library by Le Novère. MELTING, a free tool to compute the melting temperature of nucleic acid duplex. Bioinformatics, 17: 1226-1227.  <br /></td></tr>
-<tr class="separator:a24ffa8866a825e47c9ff7c1a6b0a4cc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a41a89f72d22f16e2be29fe2e887af2fb" id="r_a41a89f72d22f16e2be29fe2e887af2fb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a41a89f72d22f16e2be29fe2e887af2fb">length</a></td></tr>
+<tr class="memdesc:a41a89f72d22f16e2be29fe2e887af2fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of accessible section.  <br /></td></tr>
+<tr class="separator:a41a89f72d22f16e2be29fe2e887af2fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe544ebcb4b55dbb2ebfcd0a02df08c3" id="r_afe544ebcb4b55dbb2ebfcd0a02df08c3"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afe544ebcb4b55dbb2ebfcd0a02df08c3">sequence</a></td></tr>
+<tr class="memdesc:afe544ebcb4b55dbb2ebfcd0a02df08c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sequence of the accessible section.  <br /></td></tr>
+<tr class="separator:afe544ebcb4b55dbb2ebfcd0a02df08c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb674956ab4dfff80d0d5bd3c4aa2268" id="r_abb674956ab4dfff80d0d5bd3c4aa2268"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abb674956ab4dfff80d0d5bd3c4aa2268">start_pos</a></td></tr>
+<tr class="memdesc:abb674956ab4dfff80d0d5bd3c4aa2268"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starting position within the arm.  <br /></td></tr>
+<tr class="separator:abb674956ab4dfff80d0d5bd3c4aa2268"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="a24ffa8866a825e47c9ff7c1a6b0a4cc1" name="a24ffa8866a825e47c9ff7c1a6b0a4cc1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a24ffa8866a825e47c9ff7c1a6b0a4cc1">&#9670;&#160;</a></span>anneal()</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Structure representing a contiguous accessible section within a binding arm. </p>
+
+<p class="definition">Definition at line <a class="el" href="../../df/df2/accessibility_8cpp_source.html#l00022">22</a> of file <a class="el" href="../../df/df2/accessibility_8cpp_source.html">accessibility.cpp</a>.</p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="a41a89f72d22f16e2be29fe2e887af2fb" name="a41a89f72d22f16e2be29fe2e887af2fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41a89f72d22f16e2be29fe2e887af2fb">&#9670;&#160;</a></span>length</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">R_STATUS ribosoft::anneal </td>
-          <td>(</td>
-          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>sequence</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>structure</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const float</td>          <td class="paramname"><span class="paramname"><em>na_concentration</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const float</td>          <td class="paramname"><span class="paramname"><em>probe_concentration</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const float</td>          <td class="paramname"><span class="paramname"><em>target_temp</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float &amp;</td>          <td class="paramname"><span class="paramname"><em>temp</em></span>&#160;)</td>
+          <td class="memname">int ribosoft::AccessibleSection::length</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Annealing Temperature Score Used to calculate the annealing temperature of the ribozyme to the substrate. Using the MELTING library by Le Novère. MELTING, a free tool to compute the melting temperature of nucleic acid duplex. Bioinformatics, 17: 1226-1227. </p>
-<p>Understanding return values:</p><ul>
-<li>R_INVALID_NUCLEOTIDE | sequence has an invalid nucleotide</li>
-<li>R_STRUCT_LENGTH_DIFFER | sequence and structure lengths do not match</li>
-<li>R_INVALID_CONCENTRATION | na_concentration or probe_concentration are out of range</li>
-<li>R_INVALID_ARM_LENGTH | substring length of one of the arms is 1</li>
+<p>Length of accessible section. </p>
+
+<p class="definition">Definition at line <a class="el" href="../../df/df2/accessibility_8cpp_source.html#l00024">24</a> of file <a class="el" href="../../df/df2/accessibility_8cpp_source.html">accessibility.cpp</a>.</p>
+
+</div>
+</div>
+<a id="afe544ebcb4b55dbb2ebfcd0a02df08c3" name="afe544ebcb4b55dbb2ebfcd0a02df08c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe544ebcb4b55dbb2ebfcd0a02df08c3">&#9670;&#160;</a></span>sequence</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ribosoft::AccessibleSection::sequence</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sequence of the accessible section. </p>
+
+<p class="definition">Definition at line <a class="el" href="../../df/df2/accessibility_8cpp_source.html#l00025">25</a> of file <a class="el" href="../../df/df2/accessibility_8cpp_source.html">accessibility.cpp</a>.</p>
+
+</div>
+</div>
+<a id="abb674956ab4dfff80d0d5bd3c4aa2268" name="abb674956ab4dfff80d0d5bd3c4aa2268"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb674956ab4dfff80d0d5bd3c4aa2268">&#9670;&#160;</a></span>start_pos</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ribosoft::AccessibleSection::start_pos</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Starting position within the arm. </p>
+
+<p class="definition">Definition at line <a class="el" href="../../df/df2/accessibility_8cpp_source.html#l00023">23</a> of file <a class="el" href="../../df/df2/accessibility_8cpp_source.html">accessibility.cpp</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
+<li><a class="el" href="../../df/df2/accessibility_8cpp_source.html">accessibility.cpp</a></li>
 </ul>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">sequence</td><td>Substrate sequence </td></tr>
-    <tr><td class="paramname">structure</td><td>Substrate structure to determine binding regions </td></tr>
-    <tr><td class="paramname">na_concentration</td><td>Sodium (Na+) concentration (in moles) </td></tr>
-    <tr><td class="paramname">probe_concentration</td><td>Nucleic acid concentration in excess (in moles) </td></tr>
-    <tr><td class="paramname">target_temp</td><td>Target temperature of binding arms </td></tr>
-    <tr><td class="paramname">temp</td><td>Out variable for annealing temperature score </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Status Code </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="../../d8/d96/anneal_8cpp_source.html#l00041">41</a> of file <a class="el" href="../../d8/d96/anneal_8cpp_source.html">anneal.cpp</a>.</p>
-
-</div>
-</div>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->
