@@ -327,6 +327,32 @@ namespace Ribosoft.Jobs
             }
         }
 
+        /*! \fn UpdateJobStatusMessage
+         * \brief Safely updates only job status message without affecting job state
+         * \param jobId Job ID
+         * \param statusMessage New status message
+         */
+        private async Task UpdateJobStatusMessage(int jobId, string statusMessage)
+        {
+            var existingJob = await _db.Jobs
+                .Where(j => j.Id == jobId)
+                .FirstOrDefaultAsync();
+                
+            if (existingJob != null)
+            {
+                _logger.LogInformation($"Updating Job {jobId} status message: '{statusMessage}' (State remains: {existingJob.JobState})");
+                
+                existingJob.StatusMessage = statusMessage;
+                
+                _db.Entry(existingJob).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+            }
+            else
+            {
+                _logger.LogError($"Job {jobId} not found when trying to update status message!");
+            }
+        }
+
         /*! \fn UpdateJobSpecificityTolerance
          * \brief Safely updates job specificity tolerance without affecting navigation properties
          * \param jobId Job ID
@@ -502,9 +528,9 @@ namespace Ribosoft.Jobs
             _db.ChangeTracker.AutoDetectChangesEnabled = true;
             await UpdateJobTolerances(job.Id, newDesiredTempTolerance, newAccessibilityTolerance);
             
-            // Update status to show candidate generation is complete
+            // Update status message to show candidate generation is complete
             var designCount = designs.Count();
-            await UpdateJobProperties(job.Id, JobState.CandidateGenerator, $"Candidate generation completed: {designCount} designs generated");
+            await UpdateJobStatusMessage(job.Id, $"Candidate generation completed: {designCount} designs generated");
         }
 
         /*! \fn SetTargetRegions
@@ -601,8 +627,8 @@ namespace Ribosoft.Jobs
 
             _ribosoftAlgo.Structure(designs);
 
-            // Update status to show structure calculation is complete
-            await UpdateJobProperties(job.Id, JobState.Structure, $"Structure calculation completed for {designs.Count} designs");
+            // Update status message only, don't change the job state (DoStage manages that)
+            await UpdateJobStatusMessage(job.Id, $"Structure calculation completed for {designs.Count} designs");
         }
 
         /*! \fn MultiObjectiveOptimize
@@ -620,8 +646,8 @@ namespace Ribosoft.Jobs
                 var designs = _db.Designs.Where(j => j.JobId == job.Id).ToList();
                 _multiObjectiveOptimizer.Optimize(designs, 1);
                 
-                // Update status to show optimization is complete
-                await UpdateJobProperties(job.Id, JobState.MultiObjectiveOptimization, $"Multi-objective optimization completed: {designs.Count} designs ranked");
+                // Update status message only, don't change the job state (DoStage manages that)
+                await UpdateJobStatusMessage(job.Id, $"Multi-objective optimization completed: {designs.Count} designs ranked");
             }
             catch (MultiObjectiveOptimization.MultiObjectiveOptimizationException e)
             {
@@ -694,8 +720,8 @@ namespace Ribosoft.Jobs
             var newSpecificityTolerance = job.SpecificityTolerance * deltaSpecificity;
             await UpdateJobSpecificityTolerance(job.Id, newSpecificityTolerance);
             
-            // Update status to show BLAST analysis is complete
-            await UpdateJobProperties(job.Id, JobState.Specificity, $"BLAST analysis completed for {completedDesigns.Count()} designs");
+            // Update status message only, don't change the job state (DoStage manages that)
+            await UpdateJobStatusMessage(job.Id, $"BLAST analysis completed for {completedDesigns.Count()} designs");
         }
 
         /*! \fn CalculateSpecificity
