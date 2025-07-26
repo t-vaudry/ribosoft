@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Ribosoft.Services;
 using Ribosoft.Controllers;
 using Ribosoft.Data;
 using Ribosoft.Models;
@@ -179,13 +181,21 @@ namespace Ribosoft.Tests.Controllers
 
             // Setup Logger mock
             _loggerMock = new Mock<ILogger<AdminController>>();
+            
+            // Setup IWebHostEnvironment mock
+            var environmentMock = new Mock<IWebHostEnvironment>();
+            
+            // Setup IActivityLogService mock
+            var activityLogServiceMock = new Mock<IActivityLogService>();
 
             // Create controller
             _controller = new AdminController(
                 _userManagerMock.Object,
                 _roleManagerMock.Object,
                 _context,
-                _loggerMock.Object);
+                _loggerMock.Object,
+                environmentMock.Object,
+                activityLogServiceMock.Object);
 
             // Setup controller context with admin user
             var claims = new List<Claim>
