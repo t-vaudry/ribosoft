@@ -107,19 +107,25 @@ namespace Ribosoft.Jobs
             // calculate structure score
             await DoStage(job, JobState.Structure, j => j.JobState == JobState.CandidateGenerator, CalculateStructure, cancellationToken);
 
-            // queue phase 2 job for in-vivo runs (blast)
-            await DoStage(job, JobState.QueuedPhase2, j => j.JobState == JobState.Structure && j.TargetEnvironment == TargetEnvironment.InVivo, async (j, c) =>
-                {
-                    BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase2(j.Id, c));
-                    await Task.CompletedTask;
-                }, cancellationToken);
+            // After structure calculation, queue the appropriate next phase
+            // Reload job to get current state after structure calculation
+            job = GetJob(jobId);
             
-            // queue phase 3 job for in-vitro runs, skipping phase 2 (MOO)
-            await DoStage(job, JobState.QueuedPhase3, j => j.JobState == JobState.Structure && j.TargetEnvironment == TargetEnvironment.InVitro, async (j, c) =>
+            if (job.JobState == JobState.Structure)
             {
-                BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase3(j.Id, c));
-                await Task.CompletedTask;
-            }, cancellationToken);
+                if (job.TargetEnvironment == TargetEnvironment.InVivo)
+                {
+                    // InVivo jobs need BLAST analysis (Phase2)
+                    await UpdateJobProperties(jobId, JobState.QueuedPhase2, "Queued for BLAST analysis");
+                    BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase2(jobId, JobCancellationToken.Null));
+                }
+                else if (job.TargetEnvironment == TargetEnvironment.InVitro)
+                {
+                    // InVitro jobs skip BLAST and go directly to optimization (Phase3)
+                    await UpdateJobProperties(jobId, JobState.QueuedPhase3, "Queued for multi-objective optimization");
+                    BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase3(jobId, JobCancellationToken.Null));
+                }
+            }
         }
 
         /*! \fn Phase2
@@ -199,94 +205,6 @@ namespace Ribosoft.Jobs
             await func(job, cancellationToken);
         }
 
-        /*! \fn RestartStuckJob
-         * \brief Manually restart a job that's stuck in Structure state
-         * \param jobId Job ID to restart
-         */
-        public async Task RestartStuckJob(int jobId)
-        {
-            var job = GetJob(jobId);
-            
-            _logger.LogInformation($"Attempting to restart stuck job {jobId} from state {job.JobState}");
-            
-            if (job.JobState == JobState.Structure)
-            {
-                // Determine which phase to queue based on TargetEnvironment
-                if (job.TargetEnvironment == TargetEnvironment.InVivo)
-                {
-                    _logger.LogInformation($"Restarting InVivo job {jobId} → Phase2 (BLAST)");
-                    BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase2(jobId, JobCancellationToken.Null));
-                    await UpdateJobProperties(jobId, JobState.QueuedPhase2, "Manually restarted: Queued for Phase2 (BLAST analysis)");
-                }
-                else if (job.TargetEnvironment == TargetEnvironment.InVitro)
-                {
-                    _logger.LogInformation($"Restarting InVitro job {jobId} → Phase3 (Optimization)");
-                    BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase3(jobId, JobCancellationToken.Null));
-                    await UpdateJobProperties(jobId, JobState.QueuedPhase3, "Manually restarted: Queued for Phase3 (Multi-objective optimization)");
-                }
-                else
-                {
-                    _logger.LogError($"Job {jobId} has unknown TargetEnvironment: {job.TargetEnvironment}");
-                    await UpdateJobProperties(jobId, JobState.Errored, $"Unknown TargetEnvironment: {job.TargetEnvironment}");
-                }
-            }
-            else
-            {
-                _logger.LogWarning($"Job {jobId} is not in Structure state (current: {job.JobState}), cannot restart");
-            }
-        }
-
-        /*! \fn DiagnoseJobTransition
-         * \brief Diagnostic method to check why a job isn't transitioning from Structure state
-         * \param jobId Job ID to diagnose
-         */
-        public async Task DiagnoseJobTransition(int jobId)
-        {
-            var job = GetJob(jobId);
-            
-            _logger.LogInformation($"=== JOB TRANSITION DIAGNOSIS for Job {jobId} ===");
-            _logger.LogInformation($"Current JobState: {job.JobState} (value: {(int)job.JobState})");
-            _logger.LogInformation($"TargetEnvironment: {job.TargetEnvironment}");
-            _logger.LogInformation($"StatusMessage: '{job.StatusMessage}'");
-            _logger.LogInformation($"CreatedAt: {job.CreatedAt}");
-            _logger.LogInformation($"UpdatedAt: {job.UpdatedAt}");
-            
-            // Check Phase2 condition
-            bool phase2Condition = job.JobState == JobState.Structure && job.TargetEnvironment == TargetEnvironment.InVivo;
-            _logger.LogInformation($"Phase2 condition (Structure + InVivo): {phase2Condition}");
-            _logger.LogInformation($"  - JobState == Structure: {job.JobState == JobState.Structure}");
-            _logger.LogInformation($"  - TargetEnvironment == InVivo: {job.TargetEnvironment == TargetEnvironment.InVivo}");
-            
-            // Check Phase3 condition  
-            bool phase3Condition = job.JobState == JobState.Structure && job.TargetEnvironment == TargetEnvironment.InVitro;
-            _logger.LogInformation($"Phase3 condition (Structure + InVitro): {phase3Condition}");
-            _logger.LogInformation($"  - JobState == Structure: {job.JobState == JobState.Structure}");
-            _logger.LogInformation($"  - TargetEnvironment == InVitro: {job.TargetEnvironment == TargetEnvironment.InVitro}");
-            
-            // Check if job should transition
-            if (phase2Condition)
-            {
-                _logger.LogInformation("Job SHOULD transition to Phase2 (QueuedPhase2 → Specificity)");
-                _logger.LogInformation("Manually queuing Phase2...");
-                BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase2(jobId, JobCancellationToken.Null));
-                await UpdateJobProperties(jobId, JobState.QueuedPhase2, "Manually queued for Phase2 (BLAST analysis)");
-            }
-            else if (phase3Condition)
-            {
-                _logger.LogInformation("Job SHOULD transition to Phase3 (QueuedPhase3 → MultiObjectiveOptimization)");
-                _logger.LogInformation("Manually queuing Phase3...");
-                BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase3(jobId, JobCancellationToken.Null));
-                await UpdateJobProperties(jobId, JobState.QueuedPhase3, "Manually queued for Phase3 (Multi-objective optimization)");
-            }
-            else
-            {
-                _logger.LogError("Job does NOT meet conditions for Phase2 or Phase3 transition!");
-                _logger.LogError("This indicates a bug in the job processing logic.");
-            }
-            
-            _logger.LogInformation("=== END DIAGNOSIS ===");
-        }
-
         /*! \fn GetStatusMessageForState
          * \brief Gets a descriptive status message for a given job state
          * \param state Job state
@@ -346,44 +264,20 @@ namespace Ribosoft.Jobs
          */
         private async Task UpdateJobProperties(int jobId, JobState jobState, string? statusMessage = null)
         {
-            // Use explicit query instead of FindAsync to ensure we get the complete entity
             var existingJob = await _db.Jobs
                 .Where(j => j.Id == jobId)
                 .FirstOrDefaultAsync();
                 
             if (existingJob != null)
             {
-                // Log current state for debugging
-                _logger.LogInformation($"Updating Job {jobId}: OwnerId={existingJob.OwnerId}, State={existingJob.JobState}->{jobState}, Message='{statusMessage}'");
-                
                 existingJob.JobState = jobState;
                 if (statusMessage != null)
                 {
                     existingJob.StatusMessage = statusMessage;
                 }
                 
-                // Mark entity as modified explicitly
                 _db.Entry(existingJob).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
-                
-                // Verify the job still exists and has correct OwnerId after save
-                var verifyJob = await _db.Jobs.Where(j => j.Id == jobId).FirstOrDefaultAsync();
-                if (verifyJob == null)
-                {
-                    _logger.LogError($"Job {jobId} disappeared after SaveChangesAsync!");
-                }
-                else if (string.IsNullOrEmpty(verifyJob.OwnerId))
-                {
-                    _logger.LogError($"Job {jobId} OwnerId became null/empty after SaveChangesAsync! Was: '{existingJob.OwnerId}'");
-                }
-                else
-                {
-                    _logger.LogInformation($"Job {jobId} successfully updated. OwnerId: {verifyJob.OwnerId}, State: {verifyJob.JobState}");
-                }
-            }
-            else
-            {
-                _logger.LogError($"Job {jobId} not found when trying to update properties!");
             }
         }
 
@@ -401,45 +295,14 @@ namespace Ribosoft.Jobs
                 
             if (existingJob != null)
             {
-                _logger.LogInformation($"Updating Job {jobId} tolerances: OwnerId={existingJob.OwnerId}");
-                
                 existingJob.DesiredTempTolerance = desiredTempTolerance;
                 existingJob.AccessibilityTolerance = accessibilityTolerance;
                 
                 _db.Entry(existingJob).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
             }
-            else
-            {
-                _logger.LogError($"Job {jobId} not found when trying to update tolerances!");
-            }
         }
 
-        /*! \fn UpdateJobStatusMessage
-         * \brief Safely updates only job status message without affecting job state
-         * \param jobId Job ID
-         * \param statusMessage New status message
-         */
-        private async Task UpdateJobStatusMessage(int jobId, string statusMessage)
-        {
-            var existingJob = await _db.Jobs
-                .Where(j => j.Id == jobId)
-                .FirstOrDefaultAsync();
-                
-            if (existingJob != null)
-            {
-                _logger.LogInformation($"Updating Job {jobId} status message: '{statusMessage}' (State remains: {existingJob.JobState})");
-                
-                existingJob.StatusMessage = statusMessage;
-                
-                _db.Entry(existingJob).State = EntityState.Modified;
-                await _db.SaveChangesAsync();
-            }
-            else
-            {
-                _logger.LogError($"Job {jobId} not found when trying to update status message!");
-            }
-        }
 
         /*! \fn UpdateJobSpecificityTolerance
          * \brief Safely updates job specificity tolerance without affecting navigation properties
@@ -454,16 +317,10 @@ namespace Ribosoft.Jobs
                 
             if (existingJob != null)
             {
-                _logger.LogInformation($"Updating Job {jobId} specificity tolerance: OwnerId={existingJob.OwnerId}");
-                
                 existingJob.SpecificityTolerance = specificityTolerance;
                 
                 _db.Entry(existingJob).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
-            }
-            else
-            {
-                _logger.LogError($"Job {jobId} not found when trying to update specificity tolerance!");
             }
         }
 
@@ -616,9 +473,8 @@ namespace Ribosoft.Jobs
             _db.ChangeTracker.AutoDetectChangesEnabled = true;
             await UpdateJobTolerances(job.Id, newDesiredTempTolerance, newAccessibilityTolerance);
             
-            // Update status message to show candidate generation is complete
+            // Save all designs to database
             var designCount = designs.Count();
-            await UpdateJobStatusMessage(job.Id, $"Candidate generation completed: {designCount} designs generated");
         }
 
         /*! \fn SetTargetRegions
@@ -707,16 +563,15 @@ namespace Ribosoft.Jobs
          * \param job Job object
          * \param cancellationToken Cancellation token
          */
-        private async Task CalculateStructure(Job job, IJobCancellationToken cancellationToken)
+        private Task CalculateStructure(Job job, IJobCancellationToken cancellationToken)
         {
             IList<Design> designs = _db.Designs
                              .Where(d => d.JobId == job.Id)
                              .ToList();
 
             _ribosoftAlgo.Structure(designs);
-
-            // Update status message only, don't change the job state (DoStage manages that)
-            await UpdateJobStatusMessage(job.Id, $"Structure calculation completed for {designs.Count} designs");
+            
+            return Task.CompletedTask;
         }
 
         /*! \fn MultiObjectiveOptimize
@@ -733,9 +588,6 @@ namespace Ribosoft.Jobs
             {
                 var designs = _db.Designs.Where(j => j.JobId == job.Id).ToList();
                 _multiObjectiveOptimizer.Optimize(designs, 1);
-                
-                // Update status message only, don't change the job state (DoStage manages that)
-                await UpdateJobStatusMessage(job.Id, $"Multi-objective optimization completed: {designs.Count} designs ranked");
             }
             catch (MultiObjectiveOptimization.MultiObjectiveOptimizationException e)
             {
@@ -807,9 +659,6 @@ namespace Ribosoft.Jobs
             float deltaSpecificity = completedDesigns.Max(d => d.SpecificityScore.GetValueOrDefault()) - completedDesigns.Min(d => d.SpecificityScore.GetValueOrDefault());
             var newSpecificityTolerance = job.SpecificityTolerance * deltaSpecificity;
             await UpdateJobSpecificityTolerance(job.Id, newSpecificityTolerance);
-            
-            // Update status message only, don't change the job state (DoStage manages that)
-            await UpdateJobStatusMessage(job.Id, $"BLAST analysis completed for {completedDesigns.Count()} designs");
         }
 
         /*! \fn CalculateSpecificity
