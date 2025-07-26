@@ -64,15 +64,18 @@
                     <li>
                         <a class="dropdown-item smooth-link" asp-controller="Manage" asp-action="Index">
                             <i class="fas fa-user-cog me-2 text-primary"></i>
-                            Profile Settings
+                            Account Settings
                         </a>
                     </li>
-                    <li>
-                        <a class="dropdown-item smooth-link" asp-controller="Manage" asp-action="TwoFactorAuthentication">
-                            <i class="fas fa-shield-alt me-2 text-success"></i>
-                            Security & 2FA
-                        </a>
-                    </li>
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <li>
+                            <a class="dropdown-item smooth-link" asp-controller="Admin" asp-action="Index">
+                                <i class="fas fa-users-cog me-2 text-warning"></i>
+                                Administration Panel
+                            </a>
+                        </li>
+                    }
                 }
                 
                 <li><hr class="dropdown-divider"></li>

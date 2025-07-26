@@ -155,6 +155,94 @@ namespace Ribosoft.Data.Migrations.SqlServerMigrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Ribosoft.Models.ActivityLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Category")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DesignId")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("Duration")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Exception")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IpAddress")
+                        .HasMaxLength(45)
+                        .HasColumnType("nvarchar(45)");
+
+                    b.Property<int?>("JobId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LogLevel")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Properties")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RequestMethod")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("RequestPath")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int?>("RibozymeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StatusCode")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserAgent")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("UserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DesignId");
+
+                    b.HasIndex("JobId");
+
+                    b.HasIndex("RibozymeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ActivityLogs");
+                });
+
             modelBuilder.Entity("Ribosoft.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -580,6 +668,33 @@ namespace Ribosoft.Data.Migrations.SqlServerMigrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Ribosoft.Models.ActivityLog", b =>
+                {
+                    b.HasOne("Ribosoft.Models.Design", "Design")
+                        .WithMany()
+                        .HasForeignKey("DesignId");
+
+                    b.HasOne("Ribosoft.Models.Job", "Job")
+                        .WithMany()
+                        .HasForeignKey("JobId");
+
+                    b.HasOne("Ribosoft.Models.Ribozyme", "Ribozyme")
+                        .WithMany()
+                        .HasForeignKey("RibozymeId");
+
+                    b.HasOne("Ribosoft.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Design");
+
+                    b.Navigation("Job");
+
+                    b.Navigation("Ribozyme");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Ribosoft.Models.Design", b =>

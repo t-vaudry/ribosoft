@@ -1,0 +1,176 @@
+@{ 
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<div class="admin-layout-container">
+    <!-- Centered Header -->
+    <div class="admin-header">
+        <div class="text-center">
+            <h1 class="h3 mb-2 font-weight-normal">
+                <i class="fas fa-users-cog me-2 text-warning"></i>
+                Administration Panel
+            </h1>
+            <p class="text-muted">Manage users, roles, and system settings</p>
+        </div>
+    </div>
+
+    <!-- Integrated Tab Container -->
+    <div class="admin-tab-container">
+        <!-- Tab Navigation -->
+        <ul class="nav nav-tabs admin-tabs" id="adminTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "") tab-link" 
+                   asp-action="Index" role="tab">
+                    <i class="fas fa-users me-2"></i>
+                    <span class="d-none d-sm-inline">User Management</span>
+                    <span class="d-sm-none">Users</span>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "SystemInfo" ? "active" : "") tab-link" 
+                   asp-action="SystemInfo" role="tab">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <span class="d-none d-sm-inline">System Info</span>
+                    <span class="d-sm-none">System</span>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Logs" ? "active" : "") tab-link" 
+                   asp-action="Logs" role="tab">
+                    <i class="fas fa-file-alt me-2"></i>
+                    <span class="d-none d-sm-inline">Activity Logs</span>
+                    <span class="d-sm-none">Logs</span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- Tab Content (Direct Connection) -->
+        <div class="tab-content-area">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+<style>
+    .admin-layout-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    .admin-header {
+        padding: 1.5rem 0;
+    }
+
+    /* Integrated Tab Container */
+    .admin-tab-container {
+        background: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        overflow: hidden;
+    }
+
+    /* Tab Navigation */
+    .admin-tabs {
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        margin: 0;
+        padding: 0 1rem;
+    }
+
+    .admin-tabs .nav-link {
+        border: none;
+        color: #6c757d;
+        font-weight: 500;
+        padding: 1rem 1.5rem;
+        transition: all 0.2s ease;
+        position: relative;
+        background: transparent;
+    }
+
+    .admin-tabs .nav-link:hover {
+        color: #ffc107;
+        background: rgba(255, 193, 7, 0.05);
+    }
+
+    .admin-tabs .nav-link.active {
+        color: #ffc107;
+        background: white;
+        border-bottom: 2px solid #ffc107;
+        font-weight: 600;
+    }
+
+    .admin-tabs .nav-link.active::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #ffc107;
+    }
+
+    /* Content Area */
+    .tab-content-area {
+        padding: 1rem;
+        background: white;
+        min-height: 500px;
+    }
+
+    /* Mobile responsiveness */
+    @@media (max-width: 768px) {
+        .admin-layout-container {
+            padding: 0;
+        }
+
+        .admin-header {
+            padding: 1rem;
+        }
+
+        .admin-tab-container {
+            border-radius: 0;
+            box-shadow: none;
+            border-top: 1px solid #dee2e6;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .admin-tabs {
+            padding: 0 0.5rem;
+        }
+
+        .admin-tabs .nav-link {
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .tab-content-area {
+            padding: 0.75rem;
+        }
+    }
+
+    /* Tab hover effects */
+    .admin-tabs .nav-link i {
+        transition: transform 0.2s ease;
+    }
+
+    .admin-tabs .nav-link:hover i {
+        transform: scale(1.1);
+    }
+
+    .admin-tabs .nav-link.active i {
+        transform: scale(1.05);
+    }
+
+    /* Admin-specific styling */
+    .admin-header h1 {
+        color: #495057;
+    }
+
+    .admin-header .text-warning {
+        color: #ffc107 !important;
+    }
+</style>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

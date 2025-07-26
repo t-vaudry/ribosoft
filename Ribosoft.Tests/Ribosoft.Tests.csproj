@@ -22,6 +22,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="Moq" Version="4.20.70" />
     <PackageReference Include="xunit" Version="2.6.6" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.6">
       <PrivateAssets>all</PrivateAssets>
@@ -48,14 +49,9 @@
       <NativeLibraryFiles Include="$(OutputPath)runtimes\**\native\libRibosoftAlgo.*" />
     </ItemGroup>
     
-    <Copy SourceFiles="@(NativeLibraryFiles)" 
-          DestinationFolder="$(OutputPath)" 
-          SkipUnchangedFiles="true" 
-          Condition="'@(NativeLibraryFiles)' != ''" />
+    <Copy SourceFiles="@(NativeLibraryFiles)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" Condition="'@(NativeLibraryFiles)' != ''" />
     
-    <Message Text="Copied native library files to $(OutputPath) for testing" 
-             Importance="high" 
-             Condition="'@(NativeLibraryFiles)' != ''" />
+    <Message Text="Copied native library files to $(OutputPath) for testing" Importance="high" Condition="'@(NativeLibraryFiles)' != ''" />
   </Target>
 
 </Project>

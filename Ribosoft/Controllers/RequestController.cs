@@ -13,6 +13,7 @@ using Ribosoft.GenbankRequests;
 using Ribosoft.Jobs;
 using Ribosoft.Data;
 using Ribosoft.Models.RequestViewModels;
+using Ribosoft.Services;
 
 namespace Ribosoft.Controllers
 {
@@ -36,20 +37,28 @@ namespace Ribosoft.Controllers
          */
         private readonly IConfiguration _configuration;
 
+        /*! \property _activityLogService
+         * \brief Activity log service
+         */
+        private readonly IActivityLogService _activityLogService;
+
         /*! \fn RequestController
          * \brief Default constructor
          * \param context Application database context
          * \param userManager Application user manager
          * \param configuration Application configuration
+         * \param activityLogService Activity log service
          */
         public RequestController(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IActivityLogService activityLogService)
         {
             _context = context;
             _userManager = userManager;
             _configuration = configuration;
+            _activityLogService = activityLogService;
         }
 
         /*!
@@ -127,6 +136,18 @@ namespace Ribosoft.Controllers
                 job.HangfireJobId = BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase1(job.Id, JobCancellationToken.Null));
 
                 await _context.SaveChangesAsync();
+
+                // Log job submission
+                await _activityLogService.LogAsync(
+                    logLevel: "Information",
+                    category: "JobSubmission",
+                    message: $"New ribozyme design job submitted (Job ID: {job.Id})",
+                    userId: user.Id,
+                    userName: user.UserName,
+                    ipAddress: HttpContext.Connection.RemoteIpAddress?.ToString(),
+                    jobId: job.Id,
+                    ribozymeId: job.RibozymeId
+                );
 
                 return RedirectToAction("Details", "Jobs", new {id = job.Id});
             }

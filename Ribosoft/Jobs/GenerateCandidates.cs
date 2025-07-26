@@ -56,6 +56,11 @@ namespace Ribosoft.Jobs
          */
         private readonly Blaster _blaster;
 
+        /*! \property _activityLogService
+         * \brief Activity log service
+         */
+        private readonly IActivityLogService _activityLogService;
+
         /*! \property _db
          * \brief Local application database context
          */
@@ -72,8 +77,11 @@ namespace Ribosoft.Jobs
          * \param emailSender Email sender
          * \param logger Logging service
          * \param configuration Application configuration
+         * \param activityLogService Activity log service
          */
-        public GenerateCandidates(DbContextOptions<ApplicationDbContext> options, IEmailSender emailSender, ILogger<GenerateCandidates> logger, IConfiguration configuration)
+        public GenerateCandidates(DbContextOptions<ApplicationDbContext> options, IEmailSender emailSender, 
+                                ILogger<GenerateCandidates> logger, IConfiguration configuration, 
+                                IActivityLogService activityLogService)
         {
             _dbOptions = options;
             _db =  new ApplicationDbContext(options);
@@ -83,6 +91,7 @@ namespace Ribosoft.Jobs
             _multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
             _configuration = configuration;
             _blaster = new Blaster();
+            _activityLogService = activityLogService;
         }
 
         /*! \fn Phase1
@@ -98,6 +107,14 @@ namespace Ribosoft.Jobs
         {
             var job = GetJob(jobId);
 
+            // Log job execution start
+            await _activityLogService.LogJobExecutionAsync(
+                message: $"Job {jobId} Phase1 started - Candidate generation and structure calculation",
+                jobId: jobId,
+                userId: job.OwnerId,
+                userName: job.Owner?.UserName
+            );
+
             // TODO - temporarily catch retried jobs
             await DoStage(job, JobState.Errored, j => j.JobState != JobState.New, async (j, c) => { await Task.CompletedTask; }, cancellationToken);
 
@@ -107,19 +124,33 @@ namespace Ribosoft.Jobs
             // calculate structure score
             await DoStage(job, JobState.Structure, j => j.JobState == JobState.CandidateGenerator, CalculateStructure, cancellationToken);
 
-            // queue phase 2 job for in-vivo runs (blast)
-            await DoStage(job, JobState.QueuedPhase2, j => j.JobState == JobState.Structure && j.TargetEnvironment == TargetEnvironment.InVivo, async (j, c) =>
-                {
-                    BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase2(j.Id, c));
-                    await Task.CompletedTask;
-                }, cancellationToken);
+            // After structure calculation, queue the appropriate next phase
+            // Reload job to get current state after structure calculation
+            job = GetJob(jobId);
             
-            // queue phase 3 job for in-vitro runs, skipping phase 2 (MOO)
-            await DoStage(job, JobState.QueuedPhase3, j => j.JobState == JobState.Structure && j.TargetEnvironment == TargetEnvironment.InVitro, async (j, c) =>
+            if (job.JobState == JobState.Structure)
             {
-                BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase3(j.Id, c));
-                await Task.CompletedTask;
-            }, cancellationToken);
+                if (job.TargetEnvironment == TargetEnvironment.InVivo)
+                {
+                    // InVivo jobs need BLAST analysis (Phase2)
+                    await UpdateJobProperties(jobId, JobState.QueuedPhase2, "Queued for BLAST analysis");
+                    
+                    await _activityLogService.LogJobExecutionAsync(
+                        message: $"Job {jobId} Phase1 completed - Queued for Phase2 (BLAST analysis)",
+                        jobId: jobId,
+                        userId: job.OwnerId,
+                        userName: job.Owner?.UserName
+                    );
+                    
+                    BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase2(jobId, JobCancellationToken.Null));
+                }
+                else if (job.TargetEnvironment == TargetEnvironment.InVitro)
+                {
+                    // InVitro jobs skip BLAST and go directly to optimization (Phase3)
+                    await UpdateJobProperties(jobId, JobState.QueuedPhase3, "Queued for multi-objective optimization");
+                    BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase3(jobId, JobCancellationToken.Null));
+                }
+            }
         }
 
         /*! \fn Phase2
@@ -192,11 +223,35 @@ namespace Ribosoft.Jobs
             // set the job to this stage's state
             if (job.JobState != state)
             {
-                job.JobState = state;
-                await _db.SaveChangesAsync();
+                var statusMessage = GetStatusMessageForState(state);
+                await UpdateJobProperties(job.Id, state, statusMessage);
             }
 
             await func(job, cancellationToken);
+        }
+
+        /*! \fn GetStatusMessageForState
+         * \brief Gets a descriptive status message for a given job state
+         * \param state Job state
+         * \return Status message
+         */
+        private string GetStatusMessageForState(JobState state)
+        {
+            return state switch
+            {
+                JobState.New => "Job created and queued for processing",
+                JobState.CandidateGenerator => "Generating ribozyme candidates...",
+                JobState.Structure => "Calculating structure scores...",
+                JobState.Specificity => "Running BLAST analysis for specificity...",
+                JobState.MultiObjectiveOptimization => "Optimizing and ranking candidates...",
+                JobState.QueuedPhase2 => "Queued for BLAST analysis (Phase 2)",
+                JobState.QueuedPhase3 => "Queued for optimization (Phase 3)",
+                JobState.Completed => "Job completed successfully",
+                JobState.Warning => "Job completed with warnings",
+                JobState.Errored => "Job failed with errors",
+                JobState.Cancelled => "Job was cancelled",
+                _ => $"Job in state: {state}"
+            };
         }
 
         /*! \fn RecreateDbContext
@@ -204,8 +259,12 @@ namespace Ribosoft.Jobs
          */
         private async Task RecreateDbContext()
         {
+            _logger.LogInformation("RecreateDbContext: Saving changes and recreating context");
             await _db.SaveChangesAsync();
+            var oldContext = _db;
             _db = new ApplicationDbContext(_dbOptions);
+            oldContext.Dispose();
+            _logger.LogInformation("RecreateDbContext: New context created");
         }
 
         /*! \fn GetJob
@@ -216,10 +275,112 @@ namespace Ribosoft.Jobs
         private Job GetJob(int jobId)
         {
             return _db.Jobs
-                .Include(j => j.Owner)
                 .Include(j => j.Assembly)
                 .Include(j => j.Ribozyme!)
                     .ThenInclude(r => r.RibozymeStructures)
+                .Single(j => j.Id == jobId);
+        }
+
+        /*! \fn UpdateJobProperties
+         * \brief Safely updates job state and status message without affecting navigation properties
+         * \param jobId Job ID
+         * \param jobState New job state
+         * \param statusMessage New status message
+         */
+        private async Task UpdateJobProperties(int jobId, JobState jobState, string? statusMessage = null)
+        {
+            var existingJob = await _db.Jobs
+                .Where(j => j.Id == jobId)
+                .FirstOrDefaultAsync();
+                
+            if (existingJob != null)
+            {
+                existingJob.JobState = jobState;
+                if (statusMessage != null)
+                {
+                    existingJob.StatusMessage = statusMessage;
+                }
+                
+                _db.Entry(existingJob).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+            }
+        }
+
+        /*! \fn UpdateJobTolerances
+         * \brief Safely updates job tolerance values without affecting navigation properties
+         * \param jobId Job ID
+         * \param desiredTempTolerance New desired temperature tolerance
+         * \param accessibilityTolerance New accessibility tolerance
+         */
+        private async Task UpdateJobTolerances(int jobId, float? desiredTempTolerance, float? accessibilityTolerance)
+        {
+            var existingJob = await _db.Jobs
+                .Where(j => j.Id == jobId)
+                .FirstOrDefaultAsync();
+                
+            if (existingJob != null)
+            {
+                existingJob.DesiredTempTolerance = desiredTempTolerance;
+                existingJob.AccessibilityTolerance = accessibilityTolerance;
+                
+                _db.Entry(existingJob).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+            }
+        }
+
+
+        /*! \fn UpdateJobSpecificityTolerance
+         * \brief Safely updates job specificity tolerance without affecting navigation properties
+         * \param jobId Job ID
+         * \param specificityTolerance New specificity tolerance
+         */
+        private async Task UpdateJobSpecificityTolerance(int jobId, float? specificityTolerance)
+        {
+            var existingJob = await _db.Jobs
+                .Where(j => j.Id == jobId)
+                .FirstOrDefaultAsync();
+                
+            if (existingJob != null)
+            {
+                existingJob.SpecificityTolerance = specificityTolerance;
+                
+                _db.Entry(existingJob).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+            }
+        }
+
+        /*! \fn UpdateJobSafely
+         * \brief Safely updates job properties without affecting navigation properties
+         * \param job Job object to update
+         */
+        private async Task UpdateJobSafely(Job job)
+        {
+            // Only update the job entity, not its navigation properties
+            var existingJob = await _db.Jobs.FindAsync(job.Id);
+            if (existingJob != null)
+            {
+                // Update only the properties we care about, not navigation properties
+                existingJob.JobState = job.JobState;
+                existingJob.StatusMessage = job.StatusMessage;
+                existingJob.DesiredTempTolerance = job.DesiredTempTolerance;
+                existingJob.SpecificityTolerance = job.SpecificityTolerance;
+                existingJob.AccessibilityTolerance = job.AccessibilityTolerance;
+                existingJob.StructureTolerance = job.StructureTolerance;
+                
+                // No need to call Update or Attach - EF is already tracking existingJob
+                await _db.SaveChangesAsync();
+            }
+        }
+
+        /*! \fn GetJobWithOwner
+         * \brief Retrieves job object with owner from provided job ID (only when owner is needed)
+         * \param jobId Job ID
+         * \return Job object with owner
+         */
+        private Job GetJobWithOwner(int jobId)
+        {
+            return _db.Jobs
+                .Include(j => j.Owner)
                 .Single(j => j.Id == jobId);
         }
 
@@ -239,9 +400,7 @@ namespace Ribosoft.Jobs
             }
             else
             {
-                job.JobState = JobState.Warning;
-                job.StatusMessage = "No Target Region Selected!";
-                await _db.SaveChangesAsync();
+                await UpdateJobProperties(job.Id, JobState.Warning, "No Target Region Selected!");
                 return;
             }
 
@@ -266,10 +425,8 @@ namespace Ribosoft.Jobs
                     }
                     catch (CandidateGeneration.CandidateGenerationException e)
                     {
-                        job.JobState = JobState.Errored;
-                        job.StatusMessage = e.Message;
                         _logger.LogError(e, "Exception occurred during Candidate Generation.");
-                        await _db.SaveChangesAsync();
+                        await UpdateJobProperties(job.Id, JobState.Errored, e.Message);
                         return;
                     }
 
@@ -277,12 +434,15 @@ namespace Ribosoft.Jobs
                     try
                     {
                         uint batchCount = 0;
+                        uint totalProcessed = 0;
+                        uint totalCandidates = (uint)candidates.Count();
                         _db.ChangeTracker.AutoDetectChangesEnabled = false;
 
                         foreach (var candidate in candidates)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
                             RunScoreAlgorithms(candidate, job, ribozymeStructure, RNAStructure);
+                            totalProcessed++;
 
                             if (++batchCount % 100 == 0)
                             {
@@ -290,6 +450,10 @@ namespace Ribosoft.Jobs
                                 await RecreateDbContext();
                                 _db.ChangeTracker.AutoDetectChangesEnabled = false;
                                 batchCount = 0;
+                                
+                                // Update progress status
+                                var progressMessage = $"Processing candidates: {totalProcessed}/{totalCandidates} completed";
+                                await UpdateJobProperties(job.Id, JobState.CandidateGenerator, progressMessage);
                             }
                         }
 
@@ -297,16 +461,14 @@ namespace Ribosoft.Jobs
                     }
                     catch (RibosoftAlgoException e)
                     {
-                        job.JobState = JobState.Errored;
-                        job.StatusMessage = e.Code.ToString();
                         _logger.LogError(e, "Exception occurred during Ribosoft Algorithms.");
+                        await UpdateJobProperties(job.Id, JobState.Errored, e.Code.ToString());
                         return;
                     }
                     finally
                     {
                         _db.ChangeTracker.AutoDetectChangesEnabled = true;
-                        _db.Jobs.Attach(job);
-                        await _db.SaveChangesAsync();
+                        await UpdateJobProperties(job.Id, job.JobState, job.StatusMessage);
                     }
 
                     candidateGenerator.Clear();
@@ -319,21 +481,25 @@ namespace Ribosoft.Jobs
             // Check that there are designs left
             if (!designs.Any())
             {
-                job.JobState = JobState.Warning;
-                job.StatusMessage = "No designs returned from Candidate Generation!";
-                _logger.LogError("No designs returned from Candidate Generation!");
                 _db.ChangeTracker.AutoDetectChangesEnabled = true;
-                _db.Jobs.Attach(job);
-                await _db.SaveChangesAsync();
+                await UpdateJobProperties(job.Id, JobState.Warning, "No designs returned from Candidate Generation!");
+                _logger.LogError("No designs returned from Candidate Generation!");
                 return;
             }
 
-            job.DesiredTempTolerance *= designs.Max(d => d.DesiredTemperatureScore.GetValueOrDefault()) - designs.Min(d => d.DesiredTemperatureScore.GetValueOrDefault());
-            job.AccessibilityTolerance *= designs.Max(d => d.AccessibilityScore.GetValueOrDefault()) - designs.Min(d => d.AccessibilityScore.GetValueOrDefault());
+            var maxDesiredTemp = designs.Max(d => d.DesiredTemperatureScore.GetValueOrDefault());
+            var minDesiredTemp = designs.Min(d => d.DesiredTemperatureScore.GetValueOrDefault());
+            var maxAccessibility = designs.Max(d => d.AccessibilityScore.GetValueOrDefault());
+            var minAccessibility = designs.Min(d => d.AccessibilityScore.GetValueOrDefault());
+            
+            var newDesiredTempTolerance = job.DesiredTempTolerance * (maxDesiredTemp - minDesiredTemp);
+            var newAccessibilityTolerance = job.AccessibilityTolerance * (maxAccessibility - minAccessibility);
             
             _db.ChangeTracker.AutoDetectChangesEnabled = true;
-            _db.Jobs.Attach(job);
-            await _db.SaveChangesAsync();
+            await UpdateJobTolerances(job.Id, newDesiredTempTolerance, newAccessibilityTolerance);
+            
+            // Save all designs to database
+            var designCount = designs.Count();
         }
 
         /*! \fn SetTargetRegions
@@ -422,16 +588,15 @@ namespace Ribosoft.Jobs
          * \param job Job object
          * \param cancellationToken Cancellation token
          */
-        private async Task CalculateStructure(Job job, IJobCancellationToken cancellationToken)
+        private Task CalculateStructure(Job job, IJobCancellationToken cancellationToken)
         {
             IList<Design> designs = _db.Designs
                              .Where(d => d.JobId == job.Id)
                              .ToList();
 
             _ribosoftAlgo.Structure(designs);
-
-            _db.Jobs.Attach(job);
-            await _db.SaveChangesAsync();
+            
+            return Task.CompletedTask;
         }
 
         /*! \fn MultiObjectiveOptimize
@@ -446,17 +611,13 @@ namespace Ribosoft.Jobs
 
             try
             {
-                _multiObjectiveOptimizer.Optimize(_db.Designs.Where(j => j.JobId == job.Id).ToList(), 1);
+                var designs = _db.Designs.Where(j => j.JobId == job.Id).ToList();
+                _multiObjectiveOptimizer.Optimize(designs, 1);
             }
             catch (MultiObjectiveOptimization.MultiObjectiveOptimizationException e)
             {
-                job.JobState = JobState.Errored;
-                job.StatusMessage = e.Message;
                 _logger.LogError(e, "Exception occurred during Multi Objective Optimization.");
-            }
-            finally
-            {
-                await _db.SaveChangesAsync();
+                await UpdateJobProperties(job.Id, JobState.Errored, e.Message);
             }
         }
 
@@ -515,19 +676,14 @@ namespace Ribosoft.Jobs
             // Check that there are designs left
             if (!completedDesigns.Any())
             {
-                job.JobState = JobState.Warning;
-                job.StatusMessage = "No designs returned from Candidate Generation!";
+                await UpdateJobProperties(job.Id, JobState.Warning, "No designs returned from Candidate Generation!");
                 _logger.LogError("No designs returned from Candidate Generation!");
-                _db.Jobs.Attach(job);
-                await _db.SaveChangesAsync();
                 return;
             }
 
             float deltaSpecificity = completedDesigns.Max(d => d.SpecificityScore.GetValueOrDefault()) - completedDesigns.Min(d => d.SpecificityScore.GetValueOrDefault());
-            job.SpecificityTolerance *= deltaSpecificity;
-            _db.Jobs.Attach(job);
-
-            await _db.SaveChangesAsync();
+            var newSpecificityTolerance = job.SpecificityTolerance * deltaSpecificity;
+            await UpdateJobSpecificityTolerance(job.Id, newSpecificityTolerance);
         }
 
         /*! \fn CalculateSpecificity
@@ -595,9 +751,11 @@ namespace Ribosoft.Jobs
          */
         private async Task CompleteJob(Job job, IJobCancellationToken cancellationToken)
         {
-            if (job.Owner != null)
+            // Load the job with owner only when we need to send email
+            var jobWithOwner = GetJobWithOwner(job.Id);
+            if (jobWithOwner.Owner != null)
             {
-                await SendJobCompletionEmail(job.Owner);
+                await SendJobCompletionEmail(jobWithOwner.Owner);
             }
         }
 
