@@ -208,12 +208,6 @@ namespace Ribosoft.Controllers
 
             var roles = await _userManager.GetRolesAsync(user);
             var jobCount = await _context.Jobs.CountAsync(j => j.OwnerId == user.Id);
-            var recentJobs = await _context.Jobs
-                .Where(j => j.OwnerId == user.Id)
-                .Include(j => j.Ribozyme)
-                .OrderByDescending(j => j.CreatedAt)
-                .Take(5)
-                .ToListAsync();
 
             var viewModel = new UserDetailsViewModel
             {
@@ -229,7 +223,7 @@ namespace Ribosoft.Controllers
                 Roles = roles.ToList(),
                 JobCount = jobCount,
                 RegistrationDate = DateTime.UtcNow, // Default since we don't track this
-                RecentJobs = recentJobs
+                RecentJobs = null // Not needed for this modal
             };
 
             return PartialView("_UserDetailsModal", viewModel);
