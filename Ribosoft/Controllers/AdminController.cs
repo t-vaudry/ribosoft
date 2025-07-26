@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 using System.Text.Json;
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -208,7 +209,7 @@ namespace Ribosoft.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting user details for user {UserId}", id);
+                _logger.LogError(ex, "Error getting user details for user {UserId}", SanitizeForLogging(id));
                 return BadRequest("Error retrieving user details");
             }
         }
@@ -338,7 +339,7 @@ namespace Ribosoft.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error updating user roles for user {UserId}", model.UserId);
+                _logger.LogError(ex, "Error updating user roles for user {UserId}", SanitizeForLogging(model.UserId));
                 return BadRequest("Error updating user roles");
             }
         }
@@ -400,7 +401,7 @@ namespace Ribosoft.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error toggling lockout for user {UserId}", id);
+                _logger.LogError(ex, "Error toggling lockout for user {UserId}", SanitizeForLogging(id));
                 return BadRequest("Error updating user lockout status");
             }
         }
@@ -445,7 +446,7 @@ namespace Ribosoft.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error resetting password for user {UserId}", id);
+                _logger.LogError(ex, "Error resetting password for user {UserId}", SanitizeForLogging(id));
                 return Json(new { success = false, message = "Error resetting user password" });
             }
         }
@@ -456,9 +457,28 @@ namespace Ribosoft.Controllers
         private string GenerateRandomPassword()
         {
             const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%";
-            var random = new Random();
-            return new string(Enumerable.Repeat(chars, 12)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
+            using var rng = RandomNumberGenerator.Create();
+            var bytes = new byte[12];
+            rng.GetBytes(bytes);
+            
+            return new string(bytes.Select(b => chars[b % chars.Length]).ToArray());
+        }
+
+        /*! \brief Sanitize user input for safe logging
+         * \param input User input to sanitize
+         * \return Sanitized string safe for logging
+         */
+        private static string SanitizeForLogging(string? input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return "[empty]";
+            
+            // Remove or replace characters that could be used for log injection
+            return input
+                .Replace("\r", "")
+                .Replace("\n", "")
+                .Replace("\t", " ")
+                .Trim();
         }
 
         /*! \brief Display system information
