@@ -4,7 +4,7 @@
     Layout = "~/Views/Admin/_Layout.cshtml";
 }
 
-<div class="container-fluid px-3 px-md-4">
+<div class="container-fluid px-2 px-md-3">
     <div class="admin-content">
         <!-- Page Header -->
         <div class="page-header mb-4">
@@ -27,7 +27,7 @@
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-body">
                 <form method="get" class="row g-3">
-                    <div class="col-md-6">
+                    <div class="col-md-6 col-lg-7">
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="fas fa-search text-muted"></i>
@@ -36,7 +36,7 @@
                                    placeholder="Search by username, email, or name..." />
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-lg-2">
                         <select class="form-select" name="roleFilter">
                             <option value="">All Roles</option>
                             @foreach (var role in Model.AvailableRoles)
@@ -45,7 +45,7 @@
                             }
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-lg-3">
                         <div class="d-flex gap-2">
                             <button class="btn btn-primary flex-fill" type="submit">
                                 <i class="fas fa-search me-1"></i>Search
@@ -97,31 +97,31 @@
                         <table class="table table-hover mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th class="border-0 fw-semibold">
+                                    <th class="border-0 fw-semibold" style="width: 20%;">
                                         <i class="fas fa-user me-1 text-muted"></i>
                                         User
                                     </th>
-                                    <th class="border-0 fw-semibold">
+                                    <th class="border-0 fw-semibold" style="width: 25%;">
                                         <i class="fas fa-envelope me-1 text-muted"></i>
                                         Email
                                     </th>
-                                    <th class="border-0 fw-semibold">
+                                    <th class="border-0 fw-semibold" style="width: 10%;">
                                         <i class="fas fa-user-tag me-1 text-muted"></i>
                                         Role
                                     </th>
-                                    <th class="border-0 fw-semibold">
+                                    <th class="border-0 fw-semibold" style="width: 15%;">
                                         <i class="fas fa-shield-alt me-1 text-muted"></i>
                                         Status
                                     </th>
-                                    <th class="border-0 fw-semibold">
+                                    <th class="border-0 fw-semibold" style="width: 8%;">
                                         <i class="fas fa-tasks me-1 text-muted"></i>
                                         Jobs
                                     </th>
-                                    <th class="border-0 fw-semibold">
+                                    <th class="border-0 fw-semibold" style="width: 12%;">
                                         <i class="fas fa-clock me-1 text-muted"></i>
                                         Last Login
                                     </th>
-                                    <th class="border-0 fw-semibold text-center">
+                                    <th class="border-0 fw-semibold text-center" style="width: 10%;">
                                         <i class="fas fa-cogs me-1 text-muted"></i>
                                         Actions
                                     </th>
@@ -383,6 +383,26 @@
         font-size: 0.75rem;
     }
 
+    /* Table width optimization */
+    .table {
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    .table td {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    /* Better spacing for user info */
+    .table td:first-child {
+        min-width: 180px;
+    }
+
+    .table td:nth-child(2) {
+        min-width: 200px;
+    }
+
     /* Responsive adjustments */
     @@media (max-width: 768px) {
         .table-responsive {
@@ -397,6 +417,17 @@
             width: 28px;
             height: 28px;
             font-size: 10px;
+        }
+
+        .table {
+            table-layout: auto;
+        }
+    }
+
+    @@media (min-width: 1200px) {
+        .container-fluid {
+            max-width: 1400px;
+            margin: 0 auto;
         }
     }
 
