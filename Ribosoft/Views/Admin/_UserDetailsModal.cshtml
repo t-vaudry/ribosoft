@@ -1,55 +1,134 @@
 @model Ribosoft.Models.AdminViewModels.UserDetailsViewModel
 
-<div class="row">
-    <div class="col-md-6">
-        <h6><i class="fas fa-user me-2"></i>Basic Information</h6>
-        <table class="table table-sm">
-            <tr><td><strong>Username:</strong></td><td>@Model.UserName</td></tr>
-            <tr><td><strong>Email:</strong></td><td>
-                @Model.Email
-                @if (Model.EmailConfirmed)
-                {
-                    <i class="fas fa-check-circle text-success ms-1" title="Email Confirmed"></i>
-                }
-                else
-                {
-                    <i class="fas fa-exclamation-circle text-warning ms-1" title="Email Not Confirmed"></i>
-                }
-            </td></tr>
-            <tr><td><strong>Phone:</strong></td><td>@(Model.PhoneNumber ?? "Not provided")</td></tr>
-        </table>
+<div class="container-fluid">
+    <!-- Basic Information Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h6 class="border-bottom pb-2 mb-3">
+                <i class="fas fa-user me-2 text-primary"></i>Basic Information
+            </h6>
+            <div class="row">
+                <div class="col-sm-6 col-lg-4 mb-3">
+                    <label class="form-label text-muted small">Username</label>
+                    <div class="fw-semibold">@Model.UserName</div>
+                </div>
+                <div class="col-sm-6 col-lg-8 mb-3">
+                    <label class="form-label text-muted small">Email Address</label>
+                    <div class="d-flex align-items-center">
+                        <span class="fw-semibold me-2">@Model.Email</span>
+                        @if (Model.EmailConfirmed)
+                        {
+                            <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                <i class="fas fa-check-circle me-1"></i>Verified
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning-subtle text-warning border border-warning-subtle">
+                                <i class="fas fa-exclamation-circle me-1"></i>Unverified
+                            </span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-md-6">
-        <h6><i class="fas fa-shield-alt me-2"></i>Security & Status</h6>
-        <table class="table table-sm">
-            <tr><td><strong>Roles:</strong></td><td>
-                @foreach (var role in Model.Roles)
-                {
-                    <span class="badge @(role == "Administrator" ? "bg-warning text-dark" : role == "Guest" ? "bg-secondary" : "bg-primary") me-1">@role</span>
-                }
-            </td></tr>
-            <tr><td><strong>2FA Enabled:</strong></td><td>
-                @if (Model.TwoFactorEnabled)
-                {
-                    <span class="badge bg-success"><i class="fas fa-check me-1"></i>Yes</span>
-                }
-                else
-                {
-                    <span class="badge bg-secondary"><i class="fas fa-times me-1"></i>No</span>
-                }
-            </td></tr>
-            <tr><td><strong>Failed Attempts:</strong></td><td>@Model.AccessFailedCount</td></tr>
-            <tr><td><strong>Locked Out:</strong></td><td>
-                @if (Model.IsLockedOut)
-                {
-                    <span class="badge bg-danger"><i class="fas fa-lock me-1"></i>Yes</span>
-                }
-                else
-                {
-                    <span class="badge bg-success"><i class="fas fa-check me-1"></i>No</span>
-                }
-            </td></tr>
-            <tr><td><strong>Jobs Created:</strong></td><td>@Model.JobCount</td></tr>
-        </table>
+
+    <!-- Security & Access Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h6 class="border-bottom pb-2 mb-3">
+                <i class="fas fa-shield-alt me-2 text-primary"></i>Security & Access
+            </h6>
+            <div class="row">
+                <div class="col-sm-6 col-lg-4 mb-3">
+                    <label class="form-label text-muted small">User Roles</label>
+                    <div>
+                        @foreach (var role in Model.Roles)
+                        {
+                            <span class="badge @(role == "Administrator" ? "bg-warning text-dark" : role == "Guest" ? "bg-secondary" : "bg-primary") me-1 mb-1">
+                                @if (role == "Administrator")
+                                {
+                                    <i class="fas fa-crown me-1"></i>
+                                }
+                                else if (role == "Guest")
+                                {
+                                    <i class="fas fa-user me-1"></i>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-user-check me-1"></i>
+                                }
+                                @role
+                            </span>
+                        }
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4 mb-3">
+                    <label class="form-label text-muted small">Account Status</label>
+                    <div>
+                        @if (Model.IsLockedOut)
+                        {
+                            <span class="badge bg-danger">
+                                <i class="fas fa-lock me-1"></i>Locked Out
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">
+                                <i class="fas fa-check me-1"></i>Active
+                            </span>
+                        }
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4 mb-3">
+                    <label class="form-label text-muted small">Two-Factor Authentication</label>
+                    <div>
+                        @if (Model.TwoFactorEnabled)
+                        {
+                            <span class="badge bg-success">
+                                <i class="fas fa-shield-alt me-1"></i>Enabled
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">
+                                <i class="fas fa-shield me-1"></i>Disabled
+                            </span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity & Statistics Section -->
+    <div class="row">
+        <div class="col-12">
+            <h6 class="border-bottom pb-2 mb-3">
+                <i class="fas fa-chart-bar me-2 text-primary"></i>Activity & Statistics
+            </h6>
+            <div class="row">
+                <div class="col-sm-6 col-lg-4 mb-3">
+                    <label class="form-label text-muted small">Jobs Created</label>
+                    <div class="fw-semibold">
+                        <span class="badge bg-light text-dark border fs-6">@Model.JobCount</span>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4 mb-3">
+                    <label class="form-label text-muted small">Failed Login Attempts</label>
+                    <div class="fw-semibold">
+                        @if (Model.AccessFailedCount > 0)
+                        {
+                            <span class="badge bg-warning text-dark">@Model.AccessFailedCount</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">0</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
