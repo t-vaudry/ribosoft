@@ -5,13 +5,14 @@ var searchData=
   ['deletejob_2',['DeleteJob',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a8a9b5b291bb75064d3d8cf1b9488b28c',1,'Ribosoft::Controllers::JobsController']]],
   ['designscontroller_3',['DesignsController',['../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#ac5a7a3d9c1db91a1c7707521d9e58f59',1,'Ribosoft::Controllers::DesignsController']]],
   ['details_4',['Details',['../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a0287817f3e7d6e47306f5670d469ca40',1,'Ribosoft.Controllers.DesignsController.Details()'],['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a4b063757214b929beaf3e40aa81ea7dc',1,'Ribosoft.Controllers.JobsController.Details()'],['../d5/da5/classRibosoft_1_1Controllers_1_1RibozymesController.html#a7f5bcff4a97b7ac14815aeb3f8a5a538',1,'Ribosoft.Controllers.RibozymesController.Details()']]],
-  ['disable2fa_5',['Disable2fa',['../dd/d56/classRibosoft_1_1Controllers_1_1ManageController.html#ab7ee662f648b05e73606894c1b04c575',1,'Ribosoft::Controllers::ManageController']]],
-  ['disable2fawarning_6',['Disable2faWarning',['../dd/d56/classRibosoft_1_1Controllers_1_1ManageController.html#a88a0f3ef9acaba293e8aa2ef9fad503a',1,'Ribosoft::Controllers::ManageController']]],
-  ['dostage_7',['DoStage',['../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#a99a4e97b530e99da841674799521e9a8',1,'Ribosoft::Jobs::GenerateCandidates']]],
-  ['download_8',['Download',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ac5ffe1157b3aa5b342fe186863ffd940',1,'Ribosoft::Controllers::JobsController']]],
-  ['downloaddesign_9',['DownloadDesign',['../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a14cf917ff5b1530e81df825f6c7021d4',1,'Ribosoft::Controllers::DesignsController']]],
-  ['downloaddesigns_10',['DownloadDesigns',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a11e318c8abfd72230f4b1a72c79c74f6',1,'Ribosoft::Controllers::JobsController']]],
-  ['downloadfiles_11',['DownloadFiles',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ad95fc105db5a40d1927ce56d5210c9a8',1,'Ribosoft::Controllers::JobsController']]],
-  ['downloadjobs_12',['DownloadJobs',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a82c3a7af53b2dec69f3cd4377651b3fc',1,'Ribosoft::Controllers::JobsController']]],
-  ['downloadselecteddesigns_13',['DownloadSelectedDesigns',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ad0b803d74d2a6870649402ec2beca7a4',1,'Ribosoft::Controllers::JobsController']]]
+  ['determinecategory_5',['DetermineCategory',['../d4/d87/classRibosoft_1_1Middleware_1_1RequestLoggingMiddleware.html#a3492f2e02e073db92ad9d5c45467490f',1,'Ribosoft::Middleware::RequestLoggingMiddleware']]],
+  ['disable2fa_6',['Disable2fa',['../dd/d56/classRibosoft_1_1Controllers_1_1ManageController.html#ab7ee662f648b05e73606894c1b04c575',1,'Ribosoft::Controllers::ManageController']]],
+  ['disable2fawarning_7',['Disable2faWarning',['../dd/d56/classRibosoft_1_1Controllers_1_1ManageController.html#a88a0f3ef9acaba293e8aa2ef9fad503a',1,'Ribosoft::Controllers::ManageController']]],
+  ['dostage_8',['DoStage',['../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#a99a4e97b530e99da841674799521e9a8',1,'Ribosoft::Jobs::GenerateCandidates']]],
+  ['download_9',['Download',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ac5ffe1157b3aa5b342fe186863ffd940',1,'Ribosoft::Controllers::JobsController']]],
+  ['downloaddesign_10',['DownloadDesign',['../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a14cf917ff5b1530e81df825f6c7021d4',1,'Ribosoft::Controllers::DesignsController']]],
+  ['downloaddesigns_11',['DownloadDesigns',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a11e318c8abfd72230f4b1a72c79c74f6',1,'Ribosoft::Controllers::JobsController']]],
+  ['downloadfiles_12',['DownloadFiles',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ad95fc105db5a40d1927ce56d5210c9a8',1,'Ribosoft::Controllers::JobsController']]],
+  ['downloadjobs_13',['DownloadJobs',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a82c3a7af53b2dec69f3cd4377651b3fc',1,'Ribosoft::Controllers::JobsController']]],
+  ['downloadselecteddesigns_14',['DownloadSelectedDesigns',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ad0b803d74d2a6870649402ec2beca7a4',1,'Ribosoft::Controllers::JobsController']]]
 ];

@@ -128,9 +128,9 @@ $(function(){ initResizable(false); });
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a02e85914ac3254a68c5b019d847a6b30" id="r_a02e85914ac3254a68c5b019d847a6b30"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a02e85914ac3254a68c5b019d847a6b30">GenerateCandidates</a> (DbContextOptions&lt; ApplicationDbContext &gt; options, IEmailSender emailSender, ILogger&lt; <a class="el" href="../../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html">GenerateCandidates</a> &gt; logger, IConfiguration configuration)</td></tr>
-<tr class="memdesc:a02e85914ac3254a68c5b019d847a6b30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <br /></td></tr>
-<tr class="separator:a02e85914ac3254a68c5b019d847a6b30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cd0a15de4de51dbff5a587c5d01f468" id="r_a4cd0a15de4de51dbff5a587c5d01f468"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4cd0a15de4de51dbff5a587c5d01f468">GenerateCandidates</a> (DbContextOptions&lt; ApplicationDbContext &gt; options, IEmailSender emailSender, ILogger&lt; <a class="el" href="../../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html">GenerateCandidates</a> &gt; logger, IConfiguration configuration, IActivityLogService activityLogService)</td></tr>
+<tr class="memdesc:a4cd0a15de4de51dbff5a587c5d01f468"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <br /></td></tr>
+<tr class="separator:a4cd0a15de4de51dbff5a587c5d01f468"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d81cf07169a035b9469da288445f9d1" id="r_a8d81cf07169a035b9469da288445f9d1"><td class="memItemLeft" align="right" valign="top">async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8d81cf07169a035b9469da288445f9d1">Phase1</a> (int jobId, IJobCancellationToken cancellationToken)</td></tr>
 <tr class="memdesc:a8d81cf07169a035b9469da288445f9d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Phase one of the software Will submit jobs to begin the candidate generation Followed by being queued for Phase 2 (BLAST queries, if in-vivo) OR straight to Phase 3 (Multi-objective optimization, if in-vitro)  <br /></td></tr>
 <tr class="separator:a8d81cf07169a035b9469da288445f9d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -155,9 +155,9 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a75f6d2887e4c6782fcb0d61ab032f482" id="r_a75f6d2887e4c6782fcb0d61ab032f482"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a75f6d2887e4c6782fcb0d61ab032f482">CalculateSpecificity</a> (string sequence, string database)</td></tr>
 <tr class="memdesc:a75f6d2887e4c6782fcb0d61ab032f482"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to calculate specificity of a given sequence.  <br /></td></tr>
 <tr class="separator:a75f6d2887e4c6782fcb0d61ab032f482"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62cdae03c479bcd85bcc2b4a0a212420" id="r_a62cdae03c479bcd85bcc2b4a0a212420"><td class="memItemLeft" align="right" valign="top">async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a62cdae03c479bcd85bcc2b4a0a212420">CalculateStructure</a> (<a class="el" href="../../d8/dc9/classRibosoft_1_1Models_1_1Job.html">Job</a> job, IJobCancellationToken cancellationToken)</td></tr>
-<tr class="memdesc:a62cdae03c479bcd85bcc2b4a0a212420"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function used to calculate structure score Distance is normalized using scaling to a range based on the highest distance between structure and ideal strucutre of all candidates.  <br /></td></tr>
-<tr class="separator:a62cdae03c479bcd85bcc2b4a0a212420"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75277313d91ef2c31c73b21718f859cd" id="r_a75277313d91ef2c31c73b21718f859cd"><td class="memItemLeft" align="right" valign="top">Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a75277313d91ef2c31c73b21718f859cd">CalculateStructure</a> (<a class="el" href="../../d8/dc9/classRibosoft_1_1Models_1_1Job.html">Job</a> job, IJobCancellationToken cancellationToken)</td></tr>
+<tr class="memdesc:a75277313d91ef2c31c73b21718f859cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function used to calculate structure score Distance is normalized using scaling to a range based on the highest distance between structure and ideal strucutre of all candidates.  <br /></td></tr>
+<tr class="separator:a75277313d91ef2c31c73b21718f859cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac62083831dfb479484f6e6ee2fa4939e" id="r_ac62083831dfb479484f6e6ee2fa4939e"><td class="memItemLeft" align="right" valign="top">async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac62083831dfb479484f6e6ee2fa4939e">CompleteJob</a> (<a class="el" href="../../d8/dc9/classRibosoft_1_1Models_1_1Job.html">Job</a> job, IJobCancellationToken cancellationToken)</td></tr>
 <tr class="memdesc:ac62083831dfb479484f6e6ee2fa4939e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Final phase to complete job and send email confirmation.  <br /></td></tr>
 <tr class="separator:ac62083831dfb479484f6e6ee2fa4939e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -167,6 +167,12 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a617ca283750f0f5d97a770c07b9902fa" id="r_a617ca283750f0f5d97a770c07b9902fa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d8/dc9/classRibosoft_1_1Models_1_1Job.html">Job</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a617ca283750f0f5d97a770c07b9902fa">GetJob</a> (int jobId)</td></tr>
 <tr class="memdesc:a617ca283750f0f5d97a770c07b9902fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves job object from provided job ID.  <br /></td></tr>
 <tr class="separator:a617ca283750f0f5d97a770c07b9902fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa253c5e4ab782d7eefe5fe5c4d76adcd" id="r_aa253c5e4ab782d7eefe5fe5c4d76adcd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d8/dc9/classRibosoft_1_1Models_1_1Job.html">Job</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa253c5e4ab782d7eefe5fe5c4d76adcd">GetJobWithOwner</a> (int jobId)</td></tr>
+<tr class="memdesc:aa253c5e4ab782d7eefe5fe5c4d76adcd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves job object with owner from provided job ID (only when owner is needed)  <br /></td></tr>
+<tr class="separator:aa253c5e4ab782d7eefe5fe5c4d76adcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaef86fff4b4873e6b02be59142aba404" id="r_aaef86fff4b4873e6b02be59142aba404"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaef86fff4b4873e6b02be59142aba404">GetStatusMessageForState</a> (<a class="el" href="../../d2/d21/namespaceRibosoft_1_1Models.html#aa8e56b0fd658471a418acadfc1283990">JobState</a> state)</td></tr>
+<tr class="memdesc:aaef86fff4b4873e6b02be59142aba404"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a descriptive status message for a given job state.  <br /></td></tr>
+<tr class="separator:aaef86fff4b4873e6b02be59142aba404"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad44d87d4c745665a05a70a0e4619120a" id="r_ad44d87d4c745665a05a70a0e4619120a"><td class="memItemLeft" align="right" valign="top">async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad44d87d4c745665a05a70a0e4619120a">MultiObjectiveOptimize</a> (<a class="el" href="../../d8/dc9/classRibosoft_1_1Models_1_1Job.html">Job</a> job, IJobCancellationToken cancellationToken)</td></tr>
 <tr class="memdesc:ad44d87d4c745665a05a70a0e4619120a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function used to run multi-objective optimization Candidates are ranked and stored in the database.  <br /></td></tr>
 <tr class="separator:ad44d87d4c745665a05a70a0e4619120a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -188,9 +194,24 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:aacedafbd4643f27158b78e769fadd697" id="r_aacedafbd4643f27158b78e769fadd697"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aacedafbd4643f27158b78e769fadd697">SetTargetRegions</a> (<a class="el" href="../../d8/dc9/classRibosoft_1_1Models_1_1Job.html">Job</a> job, ref List&lt; string &gt; rnaInputs)</td></tr>
 <tr class="memdesc:aacedafbd4643f27158b78e769fadd697"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function to set the target regions for the job.  <br /></td></tr>
 <tr class="separator:aacedafbd4643f27158b78e769fadd697"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d4a78411542524df099db29a4f6701c" id="r_a4d4a78411542524df099db29a4f6701c"><td class="memItemLeft" align="right" valign="top">async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4d4a78411542524df099db29a4f6701c">UpdateJobProperties</a> (int jobId, <a class="el" href="../../d2/d21/namespaceRibosoft_1_1Models.html#aa8e56b0fd658471a418acadfc1283990">JobState</a> jobState, string? statusMessage=null)</td></tr>
+<tr class="memdesc:a4d4a78411542524df099db29a4f6701c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safely updates job state and status message without affecting navigation properties.  <br /></td></tr>
+<tr class="separator:a4d4a78411542524df099db29a4f6701c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a1e0c57ce80713b7db81ed3c4a1b104" id="r_a6a1e0c57ce80713b7db81ed3c4a1b104"><td class="memItemLeft" align="right" valign="top">async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6a1e0c57ce80713b7db81ed3c4a1b104">UpdateJobSafely</a> (<a class="el" href="../../d8/dc9/classRibosoft_1_1Models_1_1Job.html">Job</a> job)</td></tr>
+<tr class="memdesc:a6a1e0c57ce80713b7db81ed3c4a1b104"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safely updates job properties without affecting navigation properties.  <br /></td></tr>
+<tr class="separator:a6a1e0c57ce80713b7db81ed3c4a1b104"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a255538c580f4536e75c57b0b84000ddf" id="r_a255538c580f4536e75c57b0b84000ddf"><td class="memItemLeft" align="right" valign="top">async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a255538c580f4536e75c57b0b84000ddf">UpdateJobSpecificityTolerance</a> (int jobId, float? specificityTolerance)</td></tr>
+<tr class="memdesc:a255538c580f4536e75c57b0b84000ddf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safely updates job specificity tolerance without affecting navigation properties.  <br /></td></tr>
+<tr class="separator:a255538c580f4536e75c57b0b84000ddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a602157d0fc9d67b9be07fa2624d23113" id="r_a602157d0fc9d67b9be07fa2624d23113"><td class="memItemLeft" align="right" valign="top">async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a602157d0fc9d67b9be07fa2624d23113">UpdateJobTolerances</a> (int jobId, float? desiredTempTolerance, float? accessibilityTolerance)</td></tr>
+<tr class="memdesc:a602157d0fc9d67b9be07fa2624d23113"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safely updates job tolerance values without affecting navigation properties.  <br /></td></tr>
+<tr class="separator:a602157d0fc9d67b9be07fa2624d23113"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
+<tr class="memitem:afd7af85ce1d5f6c672e88c4ce804c1ce" id="r_afd7af85ce1d5f6c672e88c4ce804c1ce"><td class="memItemLeft" align="right" valign="top">readonly IActivityLogService&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afd7af85ce1d5f6c672e88c4ce804c1ce">_activityLogService</a></td></tr>
+<tr class="memdesc:afd7af85ce1d5f6c672e88c4ce804c1ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Activity log service.  <br /></td></tr>
+<tr class="separator:afd7af85ce1d5f6c672e88c4ce804c1ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a90c5b026a23748b10d9794f668cffa" id="r_a1a90c5b026a23748b10d9794f668cffa"><td class="memItemLeft" align="right" valign="top">readonly <a class="el" href="../../d0/dcc/classRibosoft_1_1Blast_1_1Blaster.html">Blaster</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1a90c5b026a23748b10d9794f668cffa">_blaster</a></td></tr>
 <tr class="memdesc:a1a90c5b026a23748b10d9794f668cffa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Local object of BLAST command tool.  <br /></td></tr>
 <tr class="separator:a1a90c5b026a23748b10d9794f668cffa"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -221,8 +242,8 @@ Private Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00022">22</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a02e85914ac3254a68c5b019d847a6b30" name="a02e85914ac3254a68c5b019d847a6b30"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a02e85914ac3254a68c5b019d847a6b30">&#9670;&#160;</a></span>GenerateCandidates()</h2>
+<a id="a4cd0a15de4de51dbff5a587c5d01f468" name="a4cd0a15de4de51dbff5a587c5d01f468"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4cd0a15de4de51dbff5a587c5d01f468">&#9670;&#160;</a></span>GenerateCandidates()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -248,7 +269,12 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">IConfiguration</td>          <td class="paramname"><span class="paramname"><em>configuration</em></span>&#160;)</td>
+          <td class="paramtype">IConfiguration</td>          <td class="paramname"><span class="paramname"><em>configuration</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">IActivityLogService</td>          <td class="paramname"><span class="paramname"><em>activityLogService</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -265,11 +291,12 @@ Private Attributes</h2></td></tr>
     <tr><td class="paramname">emailSender</td><td>Email sender </td></tr>
     <tr><td class="paramname">logger</td><td>Logging service </td></tr>
     <tr><td class="paramname">configuration</td><td>Application configuration </td></tr>
+    <tr><td class="paramname">activityLogService</td><td>Activity log service </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00076">76</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00082">82</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -311,7 +338,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>BLAST parameters </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00568">568</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00724">724</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -352,12 +379,12 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>SpecificityScore </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00539">539</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00695">695</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
-<a id="a62cdae03c479bcd85bcc2b4a0a212420" name="a62cdae03c479bcd85bcc2b4a0a212420"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a62cdae03c479bcd85bcc2b4a0a212420">&#9670;&#160;</a></span>CalculateStructure()</h2>
+<a id="a75277313d91ef2c31c73b21718f859cd" name="a75277313d91ef2c31c73b21718f859cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75277313d91ef2c31c73b21718f859cd">&#9670;&#160;</a></span>CalculateStructure()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -366,7 +393,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">async Task Ribosoft.Jobs.GenerateCandidates.CalculateStructure </td>
+          <td class="memname">Task Ribosoft.Jobs.GenerateCandidates.CalculateStructure </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="../../d8/dc9/classRibosoft_1_1Models_1_1Job.html">Job</a></td>          <td class="paramname"><span class="paramname"><em>job</em></span>, </td>
         </tr>
@@ -392,7 +419,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00425">425</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00591">591</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -432,7 +459,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00596">596</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00752">752</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -490,7 +517,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00181">181</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00212">212</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -526,7 +553,79 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Job object </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00216">216</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00275">275</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+
+</div>
+</div>
+<a id="aa253c5e4ab782d7eefe5fe5c4d76adcd" name="aa253c5e4ab782d7eefe5fe5c4d76adcd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa253c5e4ab782d7eefe5fe5c4d76adcd">&#9670;&#160;</a></span>GetJobWithOwner()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../d8/dc9/classRibosoft_1_1Models_1_1Job.html">Job</a> Ribosoft.Jobs.GenerateCandidates.GetJobWithOwner </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>jobId</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Retrieves job object with owner from provided job ID (only when owner is needed) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">jobId</td><td>Job ID </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Job object with owner </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00380">380</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+
+</div>
+</div>
+<a id="aaef86fff4b4873e6b02be59142aba404" name="aaef86fff4b4873e6b02be59142aba404"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaef86fff4b4873e6b02be59142aba404">&#9670;&#160;</a></span>GetStatusMessageForState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string Ribosoft.Jobs.GenerateCandidates.GetStatusMessageForState </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d2/d21/namespaceRibosoft_1_1Models.html#aa8e56b0fd658471a418acadfc1283990">JobState</a></td>          <td class="paramname"><span class="paramname"><em>state</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets a descriptive status message for a given job state. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>Job state </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Status message </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00238">238</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -566,7 +665,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00443">443</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00608">608</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -606,7 +705,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00097">97</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00106">106</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -646,7 +745,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00134">134</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00165">165</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -686,7 +785,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00159">159</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00190">190</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -715,7 +814,7 @@ Private Attributes</h2></td></tr>
 
 <p>Recreates database context object. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00205">205</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00260">260</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -755,7 +854,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00470">470</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00631">631</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -795,7 +894,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00233">233</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00394">394</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -846,7 +945,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00383">383</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00549">549</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -881,7 +980,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00608">608</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00766">766</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -921,11 +1020,204 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00344">344</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00510">510</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+
+</div>
+</div>
+<a id="a4d4a78411542524df099db29a4f6701c" name="a4d4a78411542524df099db29a4f6701c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d4a78411542524df099db29a4f6701c">&#9670;&#160;</a></span>UpdateJobProperties()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task Ribosoft.Jobs.GenerateCandidates.UpdateJobProperties </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>jobId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d2/d21/namespaceRibosoft_1_1Models.html#aa8e56b0fd658471a418acadfc1283990">JobState</a></td>          <td class="paramname"><span class="paramname"><em>jobState</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string?</td>          <td class="paramname"><span class="paramname"><em>statusMessage</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Safely updates job state and status message without affecting navigation properties. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">jobId</td><td>Job ID </td></tr>
+    <tr><td class="paramname">jobState</td><td>New job state </td></tr>
+    <tr><td class="paramname">statusMessage</td><td>New status message </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00290">290</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+
+</div>
+</div>
+<a id="a6a1e0c57ce80713b7db81ed3c4a1b104" name="a6a1e0c57ce80713b7db81ed3c4a1b104"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a1e0c57ce80713b7db81ed3c4a1b104">&#9670;&#160;</a></span>UpdateJobSafely()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task Ribosoft.Jobs.GenerateCandidates.UpdateJobSafely </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d8/dc9/classRibosoft_1_1Models_1_1Job.html">Job</a></td>          <td class="paramname"><span class="paramname"><em>job</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Safely updates job properties without affecting navigation properties. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">job</td><td>Job object to update </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00356">356</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+
+</div>
+</div>
+<a id="a255538c580f4536e75c57b0b84000ddf" name="a255538c580f4536e75c57b0b84000ddf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a255538c580f4536e75c57b0b84000ddf">&#9670;&#160;</a></span>UpdateJobSpecificityTolerance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task Ribosoft.Jobs.GenerateCandidates.UpdateJobSpecificityTolerance </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>jobId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float?</td>          <td class="paramname"><span class="paramname"><em>specificityTolerance</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Safely updates job specificity tolerance without affecting navigation properties. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">jobId</td><td>Job ID </td></tr>
+    <tr><td class="paramname">specificityTolerance</td><td>New specificity tolerance </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00337">337</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+
+</div>
+</div>
+<a id="a602157d0fc9d67b9be07fa2624d23113" name="a602157d0fc9d67b9be07fa2624d23113"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a602157d0fc9d67b9be07fa2624d23113">&#9670;&#160;</a></span>UpdateJobTolerances()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task Ribosoft.Jobs.GenerateCandidates.UpdateJobTolerances </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>jobId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float?</td>          <td class="paramname"><span class="paramname"><em>desiredTempTolerance</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float?</td>          <td class="paramname"><span class="paramname"><em>accessibilityTolerance</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Safely updates job tolerance values without affecting navigation properties. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">jobId</td><td>Job ID </td></tr>
+    <tr><td class="paramname">desiredTempTolerance</td><td>New desired temperature tolerance </td></tr>
+    <tr><td class="paramname">accessibilityTolerance</td><td>New accessibility tolerance </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00315">315</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="afd7af85ce1d5f6c672e88c4ce804c1ce" name="afd7af85ce1d5f6c672e88c4ce804c1ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd7af85ce1d5f6c672e88c4ce804c1ce">&#9670;&#160;</a></span>_activityLogService</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">readonly IActivityLogService Ribosoft.Jobs.GenerateCandidates._activityLogService</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Activity log service. </p>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00062">62</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+
+</div>
+</div>
 <a id="a1a90c5b026a23748b10d9794f668cffa" name="a1a90c5b026a23748b10d9794f668cffa"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1a90c5b026a23748b10d9794f668cffa">&#9670;&#160;</a></span>_blaster</h2>
 
@@ -1000,7 +1292,7 @@ Private Attributes</h2></td></tr>
 
 <p>Local application database context. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00062">62</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00067">67</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>
@@ -1157,7 +1449,7 @@ Private Attributes</h2></td></tr>
 
 <p>RNA structure string. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00067">67</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html#l00072">72</a> of file <a class="el" href="../../d0/d96/GenerateCandidates_8cs_source.html">GenerateCandidates.cs</a>.</p>
 
 </div>
 </div>

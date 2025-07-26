@@ -134,9 +134,9 @@ Inheritance diagram for Ribosoft.Controllers.AccountController:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:acd03daaa7ae8646e6e406c1d4d0c5aab" id="r_acd03daaa7ae8646e6e406c1d4d0c5aab"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acd03daaa7ae8646e6e406c1d4d0c5aab">AccountController</a> (UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Models_1_1ApplicationUser.html">ApplicationUser</a> &gt; userManager, SignInManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Models_1_1ApplicationUser.html">ApplicationUser</a> &gt; signInManager, IEmailSender emailSender, IOneTimeCodeService oneTimeCodeService, ILogger&lt; <a class="el" href="../../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html">AccountController</a> &gt; logger)</td></tr>
-<tr class="memdesc:acd03daaa7ae8646e6e406c1d4d0c5aab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <br /></td></tr>
-<tr class="separator:acd03daaa7ae8646e6e406c1d4d0c5aab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64097c1a4d9cfb13ab76d35510d7ef7f" id="r_a64097c1a4d9cfb13ab76d35510d7ef7f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a64097c1a4d9cfb13ab76d35510d7ef7f">AccountController</a> (UserManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Models_1_1ApplicationUser.html">ApplicationUser</a> &gt; userManager, SignInManager&lt; <a class="el" href="../../d7/d9c/classRibosoft_1_1Models_1_1ApplicationUser.html">ApplicationUser</a> &gt; signInManager, IEmailSender emailSender, IOneTimeCodeService oneTimeCodeService, ILogger&lt; <a class="el" href="../../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html">AccountController</a> &gt; logger, IActivityLogService activityLogService)</td></tr>
+<tr class="memdesc:a64097c1a4d9cfb13ab76d35510d7ef7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <br /></td></tr>
+<tr class="separator:a64097c1a4d9cfb13ab76d35510d7ef7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab36c6fceca96c33df7fd4126cf78d8e" id="r_aab36c6fceca96c33df7fd4126cf78d8e"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aab36c6fceca96c33df7fd4126cf78d8e">ConfirmEmail</a> (string userId, string code)</td></tr>
 <tr class="memdesc:aab36c6fceca96c33df7fd4126cf78d8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET for confirmation email.  <br /></td></tr>
 <tr class="separator:aab36c6fceca96c33df7fd4126cf78d8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -209,6 +209,9 @@ Private Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
+<tr class="memitem:a720882c602926f16348c45f8c7cb6d7e" id="r_a720882c602926f16348c45f8c7cb6d7e"><td class="memItemLeft" align="right" valign="top">readonly IActivityLogService&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a720882c602926f16348c45f8c7cb6d7e">_activityLogService</a></td></tr>
+<tr class="memdesc:a720882c602926f16348c45f8c7cb6d7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Activity log service object.  <br /></td></tr>
+<tr class="separator:a720882c602926f16348c45f8c7cb6d7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a9a538b01e726f2a2a523bab1843d14" id="r_a1a9a538b01e726f2a2a523bab1843d14"><td class="memItemLeft" align="right" valign="top">readonly IEmailSender&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1a9a538b01e726f2a2a523bab1843d14">_emailSender</a></td></tr>
 <tr class="memdesc:a1a9a538b01e726f2a2a523bab1843d14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sender for emails.  <br /></td></tr>
 <tr class="separator:a1a9a538b01e726f2a2a523bab1843d14"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -230,8 +233,8 @@ Private Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00023">23</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="acd03daaa7ae8646e6e406c1d4d0c5aab" name="acd03daaa7ae8646e6e406c1d4d0c5aab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acd03daaa7ae8646e6e406c1d4d0c5aab">&#9670;&#160;</a></span>AccountController()</h2>
+<a id="a64097c1a4d9cfb13ab76d35510d7ef7f" name="a64097c1a4d9cfb13ab76d35510d7ef7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64097c1a4d9cfb13ab76d35510d7ef7f">&#9670;&#160;</a></span>AccountController()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -262,7 +265,12 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">ILogger&lt; <a class="el" href="../../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html">AccountController</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>logger</em></span>&#160;)</td>
+          <td class="paramtype">ILogger&lt; <a class="el" href="../../d3/d2d/classRibosoft_1_1Controllers_1_1AccountController.html">AccountController</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>logger</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">IActivityLogService</td>          <td class="paramname"><span class="paramname"><em>activityLogService</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -274,7 +282,7 @@ Private Attributes</h2></td></tr>
 
 <p>Default constructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00053">53</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00058">58</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -310,7 +318,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00542">542</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00580">580</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -351,7 +359,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View based on result </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00399">399</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00437">437</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -381,7 +389,7 @@ Private Attributes</h2></td></tr>
 <p>HTTP GET for view of forget password. </p>
 <dl class="section return"><dt>Returns</dt><dd>View for forgot password </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00420">420</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00458">458</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -417,7 +425,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View based on result </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00433">433</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00471">471</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -447,7 +455,7 @@ Private Attributes</h2></td></tr>
 <p>HTTP GET for forgot password confirmation. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of login screen </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00462">462</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00500">500</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -488,7 +496,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View based on result </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00135">135</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00161">161</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -529,7 +537,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View based on result </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00098">98</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00105">105</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -565,7 +573,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Login view </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00080">80</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00087">87</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -606,7 +614,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Login with two-factor auth view </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00160">160</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00186">186</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -653,7 +661,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View based on result </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00186">186</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00212">212</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -694,7 +702,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View based on result </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00256">256</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00282">282</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -730,7 +738,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View for login with one-time code </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00223">223</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00249">249</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -760,7 +768,7 @@ Private Attributes</h2></td></tr>
 <p>HTTP POST for logging out. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of home page </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00384">384</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00410">410</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -796,7 +804,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View based on returnUrl </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00555">555</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00593">593</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -837,7 +845,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View based on result </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00348">348</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00374">374</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -873,7 +881,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View for registering new account </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00332">332</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00358">358</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -909,7 +917,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>JSON result indicating success/failure </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00303">303</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00329">329</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -945,7 +953,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View based on result </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00504">504</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00542">542</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -985,7 +993,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>View for reset password </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00474">474</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00512">512</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
@@ -1015,11 +1023,37 @@ Private Attributes</h2></td></tr>
 <p>HTTP GET for reset password confirmation. </p>
 <dl class="section return"><dt>Returns</dt><dd>View for reset password </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00531">531</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00569">569</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a720882c602926f16348c45f8c7cb6d7e" name="a720882c602926f16348c45f8c7cb6d7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a720882c602926f16348c45f8c7cb6d7e">&#9670;&#160;</a></span>_activityLogService</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">readonly IActivityLogService Ribosoft.Controllers.AccountController._activityLogService</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Activity log service object. </p>
+
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00053">53</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+
+</div>
+</div>
 <a id="a1a9a538b01e726f2a2a523bab1843d14" name="a1a9a538b01e726f2a2a523bab1843d14"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1a9a538b01e726f2a2a523bab1843d14">&#9670;&#160;</a></span>_emailSender</h2>
 
@@ -1173,7 +1207,7 @@ Private Attributes</h2></td></tr>
 
 <p>Error message string used by the controller. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00071">71</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d8e/AccountController_8cs_source.html#l00078">78</a> of file <a class="el" href="../../d4/d8e/AccountController_8cs_source.html">AccountController.cs</a>.</p>
 
 </div>
 </div>

@@ -1,7 +1,7 @@
 var searchData=
 [
   ['calculatespecificity_0',['CalculateSpecificity',['../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#a75f6d2887e4c6782fcb0d61ab032f482',1,'Ribosoft::Jobs::GenerateCandidates']]],
-  ['calculatestructure_1',['CalculateStructure',['../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#a62cdae03c479bcd85bcc2b4a0a212420',1,'Ribosoft::Jobs::GenerateCandidates']]],
+  ['calculatestructure_1',['CalculateStructure',['../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#a75277313d91ef2c31c73b21718f859cd',1,'Ribosoft::Jobs::GenerateCandidates']]],
   ['canceljob_2',['CancelJob',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#ae7882487c064da7bff8dfa031b8c79bb',1,'Ribosoft::Controllers::JobsController']]],
   ['candidate_3',['Candidate',['../de/d83/classRibosoft_1_1Candidate.html#a87c75fe6a2bde387538a25e428c23081',1,'Ribosoft::Candidate']]],
   ['candidategenerationexception_4',['CandidateGenerationException',['../da/d1d/classRibosoft_1_1CandidateGeneration_1_1CandidateGenerationException.html#a850fed1f2ab966194ade6de127f65c09',1,'Ribosoft.CandidateGeneration.CandidateGenerationException.CandidateGenerationException()'],['../da/d1d/classRibosoft_1_1CandidateGeneration_1_1CandidateGenerationException.html#a33e5314c3020e590d70bf921140b1d73',1,'Ribosoft.CandidateGeneration.CandidateGenerationException.CandidateGenerationException(string message)'],['../da/d1d/classRibosoft_1_1CandidateGeneration_1_1CandidateGenerationException.html#a07e0c012b2c6d050389b9dcad9ac8b96',1,'Ribosoft.CandidateGeneration.CandidateGenerationException.CandidateGenerationException(string message, Exception inner)']]],

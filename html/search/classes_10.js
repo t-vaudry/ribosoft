@@ -6,5 +6,6 @@ var searchData=
   ['showrecoverycodesviewmodel_3',['ShowRecoveryCodesViewModel',['../d2/d80/classRibosoft_1_1Models_1_1ManageViewModels_1_1ShowRecoveryCodesViewModel.html',1,'Ribosoft::Models::ManageViewModels']]],
   ['smallestsetsubstrateinfo_4',['SmallestSetSubstrateInfo',['../dd/d31/structRibosoft_1_1CandidateGeneration_1_1SmallestSetSubstrateInfo.html',1,'Ribosoft::CandidateGeneration']]],
   ['specificitymethodviewmodel_5',['SpecificityMethodViewModel',['../d5/ddb/classRibosoft_1_1Models_1_1RequestViewModels_1_1SpecificityMethodViewModel.html',1,'Ribosoft::Models::RequestViewModels']]],
-  ['substrateinfo_6',['SubstrateInfo',['../da/d46/classRibosoft_1_1Biology_1_1SubstrateInfo.html',1,'Ribosoft::Biology']]]
+  ['substrateinfo_6',['SubstrateInfo',['../da/d46/classRibosoft_1_1Biology_1_1SubstrateInfo.html',1,'Ribosoft::Biology']]],
+  ['systeminfoviewmodel_7',['SystemInfoViewModel',['../d4/d96/classRibosoft_1_1Models_1_1AdminViewModels_1_1SystemInfoViewModel.html',1,'Ribosoft::Models::AdminViewModels']]]
 ];

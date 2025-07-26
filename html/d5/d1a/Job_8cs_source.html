@@ -272,19 +272,20 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>            j =&gt; j.JobState == JobState.New</div>
 <div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>                 || j.JobState == JobState.Started</div>
 <div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>                 || j.JobState == JobState.CandidateGenerator</div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>                 || j.JobState == JobState.Specificity</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>                 || j.JobState == JobState.MultiObjectiveOptimization</div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>                 || j.JobState == JobState.QueuedPhase2</div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>                 || j.JobState == <a class="code hl_enumeration" href="../../d2/d21/namespaceRibosoft_1_1Models.html#aa8e56b0fd658471a418acadfc1283990">JobState</a>.QueuedPhase3;</div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span> </div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>        <span class="keyword">public</span> <span class="keyword">static</span> Expression&lt;Func&lt;Job, bool&gt;&gt; Completed() =&gt;</div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>            j =&gt; j.JobState == JobState.Completed</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>                 || j.JobState == JobState.Errored</div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>                 || j.JobState == JobState.Warning</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>                 || j.JobState == <a class="code hl_enumeration" href="../../d2/d21/namespaceRibosoft_1_1Models.html#aa8e56b0fd658471a418acadfc1283990">JobState</a>.Cancelled;</div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    }</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>                 || j.JobState == JobState.Structure</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>                 || j.JobState == JobState.Specificity</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>                 || j.JobState == JobState.MultiObjectiveOptimization</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>                 || j.JobState == JobState.QueuedPhase2</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>                 || j.JobState == <a class="code hl_enumeration" href="../../d2/d21/namespaceRibosoft_1_1Models.html#aa8e56b0fd658471a418acadfc1283990">JobState</a>.QueuedPhase3;</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span> </div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>        <span class="keyword">public</span> <span class="keyword">static</span> Expression&lt;Func&lt;Job, bool&gt;&gt; Completed() =&gt;</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>            j =&gt; j.JobState == JobState.Completed</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>                 || j.JobState == JobState.Errored</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>                 || j.JobState == JobState.Warning</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>                 || j.JobState == <a class="code hl_enumeration" href="../../d2/d21/namespaceRibosoft_1_1Models.html#aa8e56b0fd658471a418acadfc1283990">JobState</a>.Cancelled;</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    }</div>
 </div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>}</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>}</div>
 <div class="ttc" id="aclassRibosoft_1_1Models_1_1ApplicationUser_html"><div class="ttname"><a href="../../d7/d9c/classRibosoft_1_1Models_1_1ApplicationUser.html">Ribosoft.Models.ApplicationUser</a></div><div class="ttdoc">Add profile data for application users by adding properties to the ApplicationUser class.</div><div class="ttdef"><b>Definition</b> <a href="../../d2/d5f/ApplicationUser_8cs_source.html#l00012">ApplicationUser.cs:13</a></div></div>
 <div class="ttc" id="aclassRibosoft_1_1Models_1_1Assembly_html"><div class="ttname"><a href="../../d4/d1a/classRibosoft_1_1Models_1_1Assembly.html">Ribosoft.Models.Assembly</a></div><div class="ttdoc">This model is used for the Assembly databases that are accessible to the system.</div><div class="ttdef"><b>Definition</b> <a href="../../d9/d23/Assembly_8cs_source.html#l00013">Assembly.cs:14</a></div></div>
 <div class="ttc" id="aclassRibosoft_1_1Models_1_1BaseEntity_html"><div class="ttname"><a href="../../d8/dce/classRibosoft_1_1Models_1_1BaseEntity.html">Ribosoft.Models.BaseEntity</a></div><div class="ttdoc">Model class for the base entity of every model.</div><div class="ttdef"><b>Definition</b> <a href="../../d3/d6e/BaseEntity_8cs_source.html#l00012">BaseEntity.cs:13</a></div></div>
