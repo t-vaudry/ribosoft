@@ -4,218 +4,292 @@
     Layout = "~/Views/Admin/_Layout.cshtml";
 }
 
-<!-- Search and Filter Section -->
-<div class="row mb-4">
-    <div class="col-md-8">
-        <form method="get" class="d-flex">
-            <div class="input-group">
-                <span class="input-group-text">
-                    <i class="fas fa-search"></i>
-                </span>
-                <input type="text" class="form-control" name="searchTerm" value="@Model.SearchTerm" 
-                       placeholder="Search by username, email, or name..." />
-                <select class="form-select" name="roleFilter" style="max-width: 150px;">
-                    <option value="">All Roles</option>
-                    @foreach (var role in Model.AvailableRoles)
-                    {
-                        <option value="@role" selected="@(Model.RoleFilter == role)">@role</option>
-                    }
-                </select>
-                <button class="btn btn-primary" type="submit">
-                    <i class="fas fa-search me-1"></i>Search
-                </button>
+<div class="container-fluid px-3 px-md-4">
+    <div class="admin-content">
+        <!-- Page Header -->
+        <div class="page-header mb-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-users me-2 text-primary"></i>@ViewData["Title"]
+                    </h1>
+                    <p class="text-muted mb-0">Manage user accounts, roles, and permissions</p>
+                </div>
+                <div class="admin-badge-container">
+                    <span class="badge bg-warning text-dark">
+                        <i class="fas fa-crown me-1"></i>Admin Only
+                    </span>
+                </div>
             </div>
-        </form>
-    </div>
-    <div class="col-md-4 text-end">
-        <div class="user-stats">
-            <span class="badge bg-info fs-6">
-                <i class="fas fa-users me-1"></i>
-                @Model.TotalUsers Total Users
-            </span>
         </div>
-    </div>
-</div>
 
-<!-- Users Table -->
-<div class="card">
-    <div class="card-header bg-light">
-        <h5 class="mb-0">
-            <i class="fas fa-users me-2"></i>
-            User Management
-            @if (!string.IsNullOrEmpty(Model.SearchTerm) || !string.IsNullOrEmpty(Model.RoleFilter))
-            {
-                <small class="text-muted">
-                    (Filtered: @Model.Users.Count of @Model.TotalUsers users)
-                </small>
-            }
-        </h5>
-    </div>
-    <div class="card-body p-0">
-        @if (Model.Users.Any())
-        {
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>User</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Jobs</th>
-                            <th>Last Login</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var user in Model.Users)
-                        {
-                            <tr data-user-id="@user.Id">
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="user-avatar-small me-2">
-                                            @if (user.Roles.Contains("Administrator"))
-                                            {
-                                                <div class="avatar-circle-small bg-warning">
-                                                    <i class="fas fa-crown text-white"></i>
+        <!-- Search and Filter Section -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0" name="searchTerm" value="@Model.SearchTerm" 
+                                   placeholder="Search by username, email, or name..." />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="roleFilter">
+                            <option value="">All Roles</option>
+                            @foreach (var role in Model.AvailableRoles)
+                            {
+                                <option value="@role" selected="@(Model.RoleFilter == role)">@role</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary flex-fill" type="submit">
+                                <i class="fas fa-search me-1"></i>Search
+                            </button>
+                            @if (!string.IsNullOrEmpty(Model.SearchTerm) || !string.IsNullOrEmpty(Model.RoleFilter))
+                            {
+                                <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="card-title mb-1">
+                            <i class="fas fa-users me-2"></i>
+                            User Management
+                        </h5>
+                        <small class="text-muted">
+                            @if (!string.IsNullOrEmpty(Model.SearchTerm) || !string.IsNullOrEmpty(Model.RoleFilter))
+                            {
+                                <span>Showing @Model.Users.Count of @Model.TotalUsers users</span>
+                            }
+                            else
+                            {
+                                <span>@Model.TotalUsers total users</span>
+                            }
+                        </small>
+                    </div>
+                    <div>
+                        <span class="badge bg-info">
+                            <i class="fas fa-users me-1"></i>
+                            @Model.TotalUsers Total
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.Users.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="border-0 fw-semibold">
+                                        <i class="fas fa-user me-1 text-muted"></i>
+                                        User
+                                    </th>
+                                    <th class="border-0 fw-semibold">
+                                        <i class="fas fa-envelope me-1 text-muted"></i>
+                                        Email
+                                    </th>
+                                    <th class="border-0 fw-semibold">
+                                        <i class="fas fa-user-tag me-1 text-muted"></i>
+                                        Role
+                                    </th>
+                                    <th class="border-0 fw-semibold">
+                                        <i class="fas fa-shield-alt me-1 text-muted"></i>
+                                        Status
+                                    </th>
+                                    <th class="border-0 fw-semibold">
+                                        <i class="fas fa-tasks me-1 text-muted"></i>
+                                        Jobs
+                                    </th>
+                                    <th class="border-0 fw-semibold">
+                                        <i class="fas fa-clock me-1 text-muted"></i>
+                                        Last Login
+                                    </th>
+                                    <th class="border-0 fw-semibold text-center">
+                                        <i class="fas fa-cogs me-1 text-muted"></i>
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in Model.Users)
+                                {
+                                    <tr data-user-id="@user.Id">
+                                        <td class="align-middle">
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar me-3">
+                                                    @if (user.Roles.Contains("Administrator"))
+                                                    {
+                                                        <div class="avatar-circle bg-warning">
+                                                            <i class="fas fa-crown text-white"></i>
+                                                        </div>
+                                                    }
+                                                    else if (user.Roles.Contains("Guest"))
+                                                    {
+                                                        <div class="avatar-circle bg-secondary">
+                                                            <i class="fas fa-user text-white"></i>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="avatar-circle bg-primary">
+                                                            <i class="fas fa-user text-white"></i>
+                                                        </div>
+                                                    }
                                                 </div>
-                                            }
-                                            else if (user.Roles.Contains("Guest"))
-                                            {
-                                                <div class="avatar-circle-small bg-secondary">
-                                                    <i class="fas fa-user text-white"></i>
+                                                <div>
+                                                    <div class="fw-semibold text-dark">@user.DisplayName</div>
+                                                    <small class="text-muted">@user.UserName</small>
                                                 </div>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">
+                                            <div class="d-flex align-items-center">
+                                                <span class="me-2">@user.Email</span>
+                                                @if (user.EmailConfirmed)
+                                                {
+                                                    <i class="fas fa-check-circle text-success" title="Email Confirmed"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fas fa-exclamation-circle text-warning" title="Email Not Confirmed"></i>
+                                                }
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">
+                                            <span class="badge @(user.PrimaryRole == "Administrator" ? "bg-warning text-dark" : user.PrimaryRole == "Guest" ? "bg-secondary" : "bg-primary")">
+                                                @user.PrimaryRole
+                                            </span>
+                                        </td>
+                                        <td class="align-middle">
+                                            <div class="d-flex align-items-center gap-1">
+                                                @if (user.IsLockedOut)
+                                                {
+                                                    <span class="badge bg-danger">
+                                                        <i class="fas fa-lock me-1"></i>Locked
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-success">
+                                                        <i class="fas fa-check me-1"></i>Active
+                                                    </span>
+                                                }
+                                                @if (user.TwoFactorEnabled)
+                                                {
+                                                    <span class="badge bg-info" title="2FA Enabled">
+                                                        <i class="fas fa-shield-alt"></i>
+                                                    </span>
+                                                }
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">
+                                            <span class="badge bg-light text-dark border">@user.JobCount</span>
+                                        </td>
+                                        <td class="align-middle">
+                                            @if (user.LastLoginDate.HasValue)
+                                            {
+                                                <small class="text-muted">@user.LastLoginDate.Value.ToString("MMM dd, yyyy")</small>
                                             }
                                             else
                                             {
-                                                <div class="avatar-circle-small bg-primary">
-                                                    <i class="fas fa-user text-white"></i>
-                                                </div>
+                                                <small class="text-muted">Never</small>
                                             }
-                                        </div>
-                                        <div>
-                                            <div class="fw-semibold">@user.DisplayName</div>
-                                            <small class="text-muted">@user.UserName</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div>
-                                        @user.Email
-                                        @if (user.EmailConfirmed)
-                                        {
-                                            <i class="fas fa-check-circle text-success ms-1" title="Email Confirmed"></i>
-                                        }
-                                        else
-                                        {
-                                            <i class="fas fa-exclamation-circle text-warning ms-1" title="Email Not Confirmed"></i>
-                                        }
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="badge @(user.PrimaryRole == "Administrator" ? "bg-warning" : user.PrimaryRole == "Guest" ? "bg-secondary" : "bg-primary")">
-                                        @user.PrimaryRole
-                                    </span>
-                                </td>
-                                <td>
-                                    @if (user.IsLockedOut)
-                                    {
-                                        <span class="badge bg-danger">
-                                            <i class="fas fa-lock me-1"></i>Locked
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-success">
-                                            <i class="fas fa-check me-1"></i>Active
-                                        </span>
-                                    }
-                                    @if (user.TwoFactorEnabled)
-                                    {
-                                        <span class="badge bg-info ms-1" title="2FA Enabled">
-                                            <i class="fas fa-shield-alt"></i>
-                                        </span>
-                                    }
-                                </td>
-                                <td>
-                                    <span class="badge bg-light text-dark">@user.JobCount</span>
-                                </td>
-                                <td>
-                                    @if (user.LastLoginDate.HasValue)
-                                    {
-                                        <small>@user.LastLoginDate.Value.ToString("MMM dd, yyyy")</small>
-                                    }
-                                    else
-                                    {
-                                        <small class="text-muted">Never</small>
-                                    }
-                                </td>
-                                <td>
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <button type="button" class="btn btn-outline-primary btn-view-user" 
-                                                data-user-id="@user.Id" title="View Details">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-outline-secondary btn-edit-roles" 
-                                                data-user-id="@user.Id" title="Edit Roles">
-                                            <i class="fas fa-user-tag"></i>
-                                        </button>
-                                        @if (!user.Roles.Contains("Administrator"))
-                                        {
-                                            <button type="button" class="btn btn-outline-warning btn-toggle-lockout" 
-                                                    data-user-id="@user.Id" title="@(user.IsLockedOut ? "Unlock User" : "Lock User")">
-                                                <i class="fas @(user.IsLockedOut ? "fa-unlock" : "fa-lock")"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-danger btn-reset-password" 
-                                                    data-user-id="@user.Id" title="Reset Password">
-                                                <i class="fas fa-key"></i>
-                                            </button>
-                                        }
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <button type="button" class="btn btn-outline-primary btn-view-user" 
+                                                        data-user-id="@user.Id" title="View Details">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-outline-secondary btn-edit-roles" 
+                                                        data-user-id="@user.Id" title="Edit Roles">
+                                                    <i class="fas fa-user-tag"></i>
+                                                </button>
+                                                @if (!user.Roles.Contains("Administrator"))
+                                                {
+                                                    <button type="button" class="btn btn-outline-warning btn-toggle-lockout" 
+                                                            data-user-id="@user.Id" title="@(user.IsLockedOut ? "Unlock User" : "Lock User")">
+                                                        <i class="fas @(user.IsLockedOut ? "fa-unlock" : "fa-lock")"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-outline-danger btn-reset-password" 
+                                                            data-user-id="@user.Id" title="Reset Password">
+                                                        <i class="fas fa-key"></i>
+                                                    </button>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <div class="empty-state">
+                            <i class="fas fa-users text-muted mb-3" style="font-size: 3rem;"></i>
+                            <h5 class="text-muted">No users found</h5>
+                            <p class="text-muted">Try adjusting your search criteria or filters.</p>
+                            @if (!string.IsNullOrEmpty(Model.SearchTerm) || !string.IsNullOrEmpty(Model.RoleFilter))
+                            {
+                                <a href="@Url.Action("Index")" class="btn btn-primary">
+                                    <i class="fas fa-times me-2"></i>Clear Filters
+                                </a>
+                            }
+                        </div>
+                    </div>
+                }
             </div>
-        }
-        else
-        {
-            <div class="text-center py-5">
-                <i class="fas fa-users fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">No users found</h5>
-                <p class="text-muted">Try adjusting your search criteria.</p>
-            </div>
-        }
+
+            <!-- Pagination -->
+            @if (Model.TotalPages > 1)
+            {
+                <div class="card-footer bg-white border-top">
+                    <nav aria-label="User pagination">
+                        <ul class="pagination justify-content-center mb-0">
+                            <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { searchTerm = Model.SearchTerm, roleFilter = Model.RoleFilter, page = Model.CurrentPage - 1 })">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            
+                            @for (int i = Math.Max(1, Model.CurrentPage - 2); i <= Math.Min(Model.TotalPages, Model.CurrentPage + 2); i++)
+                            {
+                                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Index", new { searchTerm = Model.SearchTerm, roleFilter = Model.RoleFilter, page = i })">@i</a>
+                                </li>
+                            }
+                            
+                            <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { searchTerm = Model.SearchTerm, roleFilter = Model.RoleFilter, page = Model.CurrentPage + 1 })">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            }
+        </div>
     </div>
 </div>
-
-<!-- Pagination -->
-@if (Model.TotalPages > 1)
-{
-    <nav aria-label="User pagination" class="mt-4">
-        <ul class="pagination justify-content-center">
-            <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
-                <a class="page-link" href="@Url.Action("Index", new { searchTerm = Model.SearchTerm, roleFilter = Model.RoleFilter, page = Model.CurrentPage - 1 })">
-                    <i class="fas fa-chevron-left"></i>
-                </a>
-            </li>
-            
-            @for (int i = Math.Max(1, Model.CurrentPage - 2); i <= Math.Min(Model.TotalPages, Model.CurrentPage + 2); i++)
-            {
-                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                    <a class="page-link" href="@Url.Action("Index", new { searchTerm = Model.SearchTerm, roleFilter = Model.RoleFilter, page = i })">@i</a>
-                </li>
-            }
-            
-            <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
-                <a class="page-link" href="@Url.Action("Index", new { searchTerm = Model.SearchTerm, roleFilter = Model.RoleFilter, page = Model.CurrentPage + 1 })">
-                    <i class="fas fa-chevron-right"></i>
-                </a>
-            </li>
-        </ul>
-    </nav>
-}
 
 <!-- User Details Modal -->
 <div class="modal fade" id="userDetailsModal" tabindex="-1" aria-labelledby="userDetailsModalLabel" aria-hidden="true">
@@ -260,32 +334,48 @@
 </div>
 
 <style>
-    .user-avatar-small {
+    .admin-content {
+        /* Match the styling from other views */
+    }
+
+    .page-header {
+        /* Consistent page header styling */
+    }
+
+    .admin-badge-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .user-avatar {
         display: flex;
         align-items: center;
         justify-content: center;
     }
     
-    .avatar-circle-small {
-        width: 24px;
-        height: 24px;
+    .avatar-circle {
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 10px;
+        font-size: 12px;
     }
 
-    .user-stats {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
+    .empty-state {
+        /* Match empty state styling from other views */
     }
 
     .table th {
-        border-top: none;
+        border-top: none !important;
         font-weight: 600;
         color: #495057;
+        background-color: #f8f9fa;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.025);
     }
 
     .btn-group-sm .btn {
@@ -293,10 +383,7 @@
         font-size: 0.75rem;
     }
 
-    .table-hover tbody tr:hover {
-        background-color: rgba(0, 0, 0, 0.025);
-    }
-
+    /* Responsive adjustments */
     @@media (max-width: 768px) {
         .table-responsive {
             font-size: 0.875rem;
@@ -306,9 +393,40 @@
             padding: 0.2rem 0.4rem;
         }
         
-        .d-none.d-sm-inline {
-            display: none !important;
+        .avatar-circle {
+            width: 28px;
+            height: 28px;
+            font-size: 10px;
         }
+    }
+
+    /* Card styling consistency */
+    .card {
+        border: none;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+
+    .card-header {
+        background-color: #fff;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .card-footer {
+        background-color: #fff;
+        border-top: 1px solid #dee2e6;
+    }
+
+    /* Input group styling */
+    .input-group-text.bg-light {
+        background-color: #f8f9fa !important;
+    }
+
+    .form-control.border-start-0 {
+        border-left: 0;
+    }
+
+    .input-group-text.border-end-0 {
+        border-right: 0;
     }
 </style>
 
