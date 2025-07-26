@@ -43,12 +43,12 @@ namespace Ribosoft.Tests.Controllers
 
         public object Execute(System.Linq.Expressions.Expression expression)
         {
-            return _inner.Execute(expression);
+            return _inner.Execute(expression)!;
         }
 
         public TResult Execute<TResult>(System.Linq.Expressions.Expression expression)
         {
-            return _inner.Execute<TResult>(expression);
+            return _inner.Execute<TResult>(expression)!;
         }
 
         public TResult ExecuteAsync<TResult>(System.Linq.Expressions.Expression expression, CancellationToken cancellationToken = default)
@@ -87,7 +87,7 @@ namespace Ribosoft.Tests.Controllers
             }
 
             // Fallback to synchronous execution
-            return _inner.Execute<TResult>(expression);
+            return _inner.Execute<TResult>(expression)!;
         }
     }
 
@@ -153,12 +153,12 @@ namespace Ribosoft.Tests.Controllers
             // Setup UserManager mock
             var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
             _userManagerMock = new Mock<UserManager<ApplicationUser>>(
-                userStoreMock.Object, null, null, null, null, null, null, null, null);
+                userStoreMock.Object, null!, null!, null!, null!, null!, null!, null!, null!);
 
             // Setup RoleManager mock
             var roleStoreMock = new Mock<IRoleStore<IdentityRole>>();
             _roleManagerMock = new Mock<RoleManager<IdentityRole>>(
-                roleStoreMock.Object, null, null, null, null);
+                roleStoreMock.Object, null!, null!, null!, null!);
             
             // Setup roles for the role manager
             var roles = new List<IdentityRole>
@@ -291,7 +291,7 @@ namespace Ribosoft.Tests.Controllers
         public async Task GetUserDetails_WithInvalidId_ReturnsNotFound()
         {
             // Arrange
-            _userManagerMock.Setup(x => x.FindByIdAsync("invalid")).ReturnsAsync((ApplicationUser)null);
+            _userManagerMock.Setup(x => x.FindByIdAsync("invalid")).ReturnsAsync((ApplicationUser?)null);
 
             // Act
             var result = await _controller.GetUserDetails("invalid");
@@ -414,7 +414,7 @@ namespace Ribosoft.Tests.Controllers
         public async Task ResetUserPassword_WithInvalidUser_ReturnsJsonError()
         {
             // Arrange
-            _userManagerMock.Setup(x => x.FindByIdAsync("invalid")).ReturnsAsync((ApplicationUser)null);
+            _userManagerMock.Setup(x => x.FindByIdAsync("invalid")).ReturnsAsync((ApplicationUser?)null);
 
             // Act
             var result = await _controller.ResetUserPassword("invalid");
@@ -430,8 +430,8 @@ namespace Ribosoft.Tests.Controllers
             
             Assert.NotNull(successProperty);
             Assert.NotNull(messageProperty);
-            Assert.False((bool)successProperty.GetValue(value));
-            Assert.Equal("User not found", (string)messageProperty.GetValue(value));
+            Assert.False((bool)successProperty.GetValue(value)!);
+            Assert.Equal("User not found", (string)messageProperty.GetValue(value)!);
         }
 
         public void Dispose()

@@ -312,7 +312,7 @@ namespace Ribosoft.Controllers
                     }
                 }
 
-                _logger.LogInformation("User {UserId} roles updated by admin {AdminId}", user.Id, User.Identity.Name);
+                _logger.LogInformation("User {UserId} roles updated by admin {AdminId}", user.Id, User.Identity?.Name ?? "Unknown");
                 return Json(new { success = true, message = "User roles updated successfully" });
             }
             catch (Exception ex)
@@ -363,7 +363,7 @@ namespace Ribosoft.Controllers
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User {UserId} {Action} by admin {AdminId}", user.Id, action, User.Identity.Name);
+                    _logger.LogInformation("User {UserId} {Action} by admin {AdminId}", user.Id, action, User.Identity?.Name ?? "Unknown");
                     return Json(new { success = true, message = $"User {action} successfully", action = action });
                 }
                 else
