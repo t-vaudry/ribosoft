@@ -411,7 +411,7 @@ namespace Ribosoft.Tests.Controllers
         }
 
         [Fact]
-        public async Task ResetUserPassword_WithInvalidUser_ReturnsNotFound()
+        public async Task ResetUserPassword_WithInvalidUser_ReturnsJsonError()
         {
             // Arrange
             _userManagerMock.Setup(x => x.FindByIdAsync("invalid")).ReturnsAsync((ApplicationUser)null);
@@ -420,7 +420,18 @@ namespace Ribosoft.Tests.Controllers
             var result = await _controller.ResetUserPassword("invalid");
 
             // Assert
-            Assert.IsType<NotFoundResult>(result);
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            var value = jsonResult.Value;
+            Assert.NotNull(value);
+            
+            // Use reflection to check the anonymous object properties
+            var successProperty = value.GetType().GetProperty("success");
+            var messageProperty = value.GetType().GetProperty("message");
+            
+            Assert.NotNull(successProperty);
+            Assert.NotNull(messageProperty);
+            Assert.False((bool)successProperty.GetValue(value));
+            Assert.Equal("User not found", (string)messageProperty.GetValue(value));
         }
 
         public void Dispose()

@@ -391,7 +391,7 @@ namespace Ribosoft.Controllers
                 var user = await _userManager.FindByIdAsync(id);
                 if (user == null)
                 {
-                    return NotFound();
+                    return Json(new { success = false, message = "User not found" });
                 }
 
                 // Generate a random password
@@ -401,18 +401,20 @@ namespace Ribosoft.Controllers
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("Password reset for user {UserId} by admin {AdminId}", user.Id, User.Identity.Name);
+                    _logger.LogInformation("Password reset for user {UserId} by admin {AdminId}", user.Id, User.Identity?.Name);
                     return Json(new { success = true, message = "Password reset successfully", newPassword = newPassword });
                 }
                 else
                 {
-                    return BadRequest("Failed to reset password");
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    _logger.LogWarning("Failed to reset password for user {UserId}: {Errors}", user.Id, errors);
+                    return Json(new { success = false, message = $"Failed to reset password: {errors}" });
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error resetting password for user {UserId}", id);
-                return BadRequest("Error resetting user password");
+                return Json(new { success = false, message = "Error resetting user password" });
             }
         }
 

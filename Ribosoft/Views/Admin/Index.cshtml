@@ -465,17 +465,19 @@
     }
 
     /* Table styling improvements */
-    .table th,
+    .table th {
+        border-top: none !important;
+        font-weight: 600;
+        color: #495057;
+        background-color: #f8f9fa;
+        padding: 0.5rem 0.75rem;
+        vertical-align: middle;
+    }
+
     .table td {
         border-top: none !important;
         padding: 0.75rem;
         vertical-align: middle;
-    }
-
-    .table th {
-        font-weight: 600;
-        color: #495057;
-        background-color: #f8f9fa;
     }
 
     .table-hover tbody tr:hover {
@@ -685,12 +687,25 @@
                         $('#newPasswordDisplay').val(response.newPassword);
                         $('#passwordResetResultModal').modal('show');
                     } else {
-                        alert('Error: ' + response.message);
+                        alert('Error: ' + (response.message || 'Unknown error occurred'));
                     }
                 })
-                .fail(function() {
+                .fail(function(xhr, status, error) {
                     $('#resetPasswordModal').modal('hide');
-                    alert('Error resetting user password.');
+                    var errorMessage = 'Error resetting user password.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.responseText) {
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            if (response.message) {
+                                errorMessage = response.message;
+                            }
+                        } catch (e) {
+                            // Use default error message
+                        }
+                    }
+                    alert('Error: ' + errorMessage);
                 });
             });
 
