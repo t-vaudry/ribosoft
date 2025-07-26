@@ -97,19 +97,19 @@
                         <table class="table table-hover mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th class="border-0 fw-semibold" style="width: 20%;">
+                                    <th class="border-0 fw-semibold" style="width: 25%;">
                                         <i class="fas fa-user me-1 text-muted"></i>
                                         User
                                     </th>
-                                    <th class="border-0 fw-semibold" style="width: 25%;">
+                                    <th class="border-0 fw-semibold" style="width: 30%;">
                                         <i class="fas fa-envelope me-1 text-muted"></i>
                                         Email
                                     </th>
-                                    <th class="border-0 fw-semibold" style="width: 10%;">
+                                    <th class="border-0 fw-semibold" style="width: 12%;">
                                         <i class="fas fa-user-tag me-1 text-muted"></i>
                                         Role
                                     </th>
-                                    <th class="border-0 fw-semibold" style="width: 15%;">
+                                    <th class="border-0 fw-semibold" style="width: 18%;">
                                         <i class="fas fa-shield-alt me-1 text-muted"></i>
                                         Status
                                     </th>
@@ -117,11 +117,7 @@
                                         <i class="fas fa-tasks me-1 text-muted"></i>
                                         Jobs
                                     </th>
-                                    <th class="border-0 fw-semibold" style="width: 12%;">
-                                        <i class="fas fa-clock me-1 text-muted"></i>
-                                        Last Login
-                                    </th>
-                                    <th class="border-0 fw-semibold text-center" style="width: 10%;">
+                                    <th class="border-0 fw-semibold text-center" style="width: 7%;">
                                         <i class="fas fa-cogs me-1 text-muted"></i>
                                         Actions
                                     </th>
@@ -154,7 +150,16 @@
                                                     }
                                                 </div>
                                                 <div>
-                                                    <div class="fw-semibold text-dark">@user.DisplayName</div>
+                                                    <div class="fw-semibold text-dark">
+                                                        @if (!string.IsNullOrEmpty(user.FirstName) || !string.IsNullOrEmpty(user.LastName))
+                                                        {
+                                                            <span>@user.FirstName @user.LastName</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>@user.DisplayName</span>
+                                                        }
+                                                    </div>
                                                     <small class="text-muted">@user.UserName</small>
                                                 </div>
                                             </div>
@@ -201,16 +206,6 @@
                                         </td>
                                         <td class="align-middle">
                                             <span class="badge bg-light text-dark border">@user.JobCount</span>
-                                        </td>
-                                        <td class="align-middle">
-                                            @if (user.LastLoginDate.HasValue)
-                                            {
-                                                <small class="text-muted">@user.LastLoginDate.Value.ToString("MMM dd, yyyy")</small>
-                                            }
-                                            else
-                                            {
-                                                <small class="text-muted">Never</small>
-                                            }
                                         </td>
                                         <td class="align-middle text-center">
                                             <div class="btn-group btn-group-sm" role="group">
@@ -385,7 +380,6 @@
 
     /* Table width optimization */
     .table {
-        table-layout: fixed;
         width: 100%;
     }
 
@@ -396,11 +390,11 @@
 
     /* Better spacing for user info */
     .table td:first-child {
-        min-width: 180px;
+        min-width: 200px;
     }
 
     .table td:nth-child(2) {
-        min-width: 200px;
+        min-width: 220px;
     }
 
     /* Responsive adjustments */
@@ -420,7 +414,15 @@
         }
 
         .table {
-            table-layout: auto;
+            table-layout: fixed;
+        }
+
+        .table td:first-child {
+            min-width: 150px;
+        }
+
+        .table td:nth-child(2) {
+            min-width: 180px;
         }
     }
 
@@ -552,7 +554,6 @@
             html += '<tr><td><strong>Name:</strong></td><td>' + (user.firstName || '') + ' ' + (user.lastName || '') + '</td></tr>';
             html += '<tr><td><strong>Phone:</strong></td><td>' + (user.phoneNumber || 'Not provided') + '</td></tr>';
             html += '<tr><td><strong>Registered:</strong></td><td>' + new Date(user.registrationDate).toLocaleDateString() + '</td></tr>';
-            html += '<tr><td><strong>Last Login:</strong></td><td>' + (user.lastLoginDate ? new Date(user.lastLoginDate).toLocaleDateString() : 'Never') + '</td></tr>';
             html += '</table>';
             html += '</div>';
             html += '<div class="col-md-6">';
