@@ -7,7 +7,7 @@
 <div class="container-fluid px-2 px-md-3">
     <div class="admin-content">
         <!-- Page Header -->
-        <div class="page-header mb-4">
+        <div class="page-header mb-4 px-3">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <h1 class="h3 mb-1">
@@ -150,17 +150,7 @@
                                                     }
                                                 </div>
                                                 <div>
-                                                    <div class="fw-semibold text-dark">
-                                                        @if (!string.IsNullOrEmpty(user.FirstName) || !string.IsNullOrEmpty(user.LastName))
-                                                        {
-                                                            <span>@user.FirstName @user.LastName</span>
-                                                        }
-                                                        else
-                                                        {
-                                                            <span>@user.DisplayName</span>
-                                                        }
-                                                    </div>
-                                                    <small class="text-muted">@user.UserName</small>
+                                                    <div class="fw-semibold text-dark">@user.UserName</div>
                                                 </div>
                                             </div>
                                         </td>
@@ -472,10 +462,9 @@
                 $('#userDetailsContent').html('<div class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
                 $('#userDetailsModal').modal('show');
                 
-                $.get('@Url.Action("GetUserDetails")', { id: userId })
+                $.get('@Url.Action("GetUserDetailsModal")', { id: userId })
                     .done(function(data) {
-                        var html = buildUserDetailsHtml(data);
-                        $('#userDetailsContent').html(html);
+                        $('#userDetailsContent').html(data);
                     })
                     .fail(function() {
                         $('#userDetailsContent').html('<div class="alert alert-danger">Error loading user details.</div>');
@@ -488,10 +477,9 @@
                 $('#editRolesContent').html('<div class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
                 $('#editRolesModal').modal('show');
                 
-                $.get('@Url.Action("GetUserDetails")', { id: userId })
+                $.get('@Url.Action("GetEditRolesModal")', { id: userId })
                     .done(function(data) {
-                        var html = buildEditRolesHtml(data);
-                        $('#editRolesContent').html(html);
+                        $('#editRolesContent').html(data);
                     })
                     .fail(function() {
                         $('#editRolesContent').html('<div class="alert alert-danger">Error loading user roles.</div>');
@@ -543,95 +531,6 @@
                 }
             });
         });
-
-        function buildUserDetailsHtml(user) {
-            var html = '<div class="row">';
-            html += '<div class="col-md-6">';
-            html += '<h6><i class="fas fa-user me-2"></i>Basic Information</h6>';
-            html += '<table class="table table-sm">';
-            html += '<tr><td><strong>Username:</strong></td><td>' + user.userName + '</td></tr>';
-            html += '<tr><td><strong>Email:</strong></td><td>' + user.email + (user.emailConfirmed ? ' <i class="fas fa-check-circle text-success"></i>' : ' <i class="fas fa-exclamation-circle text-warning"></i>') + '</td></tr>';
-            html += '<tr><td><strong>Name:</strong></td><td>' + (user.firstName || '') + ' ' + (user.lastName || '') + '</td></tr>';
-            html += '<tr><td><strong>Phone:</strong></td><td>' + (user.phoneNumber || 'Not provided') + '</td></tr>';
-            html += '<tr><td><strong>Registered:</strong></td><td>' + new Date(user.registrationDate).toLocaleDateString() + '</td></tr>';
-            html += '</table>';
-            html += '</div>';
-            html += '<div class="col-md-6">';
-            html += '<h6><i class="fas fa-shield-alt me-2"></i>Security & Status</h6>';
-            html += '<table class="table table-sm">';
-            html += '<tr><td><strong>Roles:</strong></td><td>' + user.roles.join(', ') + '</td></tr>';
-            html += '<tr><td><strong>2FA Enabled:</strong></td><td>' + (user.twoFactorEnabled ? 'Yes' : 'No') + '</td></tr>';
-            html += '<tr><td><strong>Failed Attempts:</strong></td><td>' + user.accessFailedCount + '</td></tr>';
-            html += '<tr><td><strong>Locked Out:</strong></td><td>' + (user.isLockedOut ? 'Yes' : 'No') + '</td></tr>';
-            html += '<tr><td><strong>Jobs Created:</strong></td><td>' + user.jobCount + '</td></tr>';
-            html += '</table>';
-            html += '</div>';
-            html += '</div>';
-            return html;
-        }
-
-        function buildEditRolesHtml(user) {
-            var availableRoles = @Html.Raw(Json.Serialize(Model.AvailableRoles));
-            var html = '<form id="editRolesForm">';
-            html += '<input type="hidden" name="userId" value="' + user.id + '" />';
-            html += '<div class="mb-3">';
-            html += '<label class="form-label"><strong>User:</strong> ' + user.displayName + ' (' + user.userName + ')</label>';
-            html += '</div>';
-            html += '<div class="mb-3">';
-            html += '<label class="form-label">Roles:</label>';
-            
-            availableRoles.forEach(function(role) {
-                var checked = user.roles.includes(role) ? 'checked' : '';
-                html += '<div class="form-check">';
-                html += '<input class="form-check-input" type="checkbox" name="roles" value="' + role + '" id="role_' + role + '" ' + checked + '>';
-                html += '<label class="form-check-label" for="role_' + role + '">' + role + '</label>';
-                html += '</div>';
-            });
-            
-            html += '</div>';
-            html += '<div class="d-flex justify-content-end">';
-            html += '<button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>';
-            html += '<button type="submit" class="btn btn-primary">Update Roles</button>';
-            html += '</div>';
-            html += '</form>';
-            
-            setTimeout(function() {
-                $('#editRolesForm').submit(function(e) {
-                    e.preventDefault();
-                    var formData = {
-                        userId: $('input[name="userId"]').val(),
-                        roles: []
-                    };
-                    
-                    $('input[name="roles"]:checked').each(function() {
-                        formData.roles.push($(this).val());
-                    });
-                    
-                    $.ajax({
-                        url: '@Url.Action("UpdateUserRoles")',
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify(formData),
-                        headers: {
-                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-                        }
-                    })
-                    .done(function(response) {
-                        if (response.success) {
-                            $('#editRolesModal').modal('hide');
-                            location.reload();
-                        } else {
-                            alert('Error: ' + response.message);
-                        }
-                    })
-                    .fail(function() {
-                        alert('Error updating user roles.');
-                    });
-                });
-            }, 100);
-            
-            return html;
-        }
     </script>
 }
 

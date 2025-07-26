@@ -1,0 +1,89 @@
+@model Ribosoft.Models.AdminViewModels.UserDetailsViewModel
+
+<div class="row">
+    <div class="col-md-6">
+        <h6><i class="fas fa-user me-2"></i>Basic Information</h6>
+        <table class="table table-sm">
+            <tr><td><strong>Username:</strong></td><td>@Model.UserName</td></tr>
+            <tr><td><strong>Email:</strong></td><td>
+                @Model.Email
+                @if (Model.EmailConfirmed)
+                {
+                    <i class="fas fa-check-circle text-success ms-1" title="Email Confirmed"></i>
+                }
+                else
+                {
+                    <i class="fas fa-exclamation-circle text-warning ms-1" title="Email Not Confirmed"></i>
+                }
+            </td></tr>
+            <tr><td><strong>Phone:</strong></td><td>@(Model.PhoneNumber ?? "Not provided")</td></tr>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <h6><i class="fas fa-shield-alt me-2"></i>Security & Status</h6>
+        <table class="table table-sm">
+            <tr><td><strong>Roles:</strong></td><td>
+                @foreach (var role in Model.Roles)
+                {
+                    <span class="badge @(role == "Administrator" ? "bg-warning text-dark" : role == "Guest" ? "bg-secondary" : "bg-primary") me-1">@role</span>
+                }
+            </td></tr>
+            <tr><td><strong>2FA Enabled:</strong></td><td>
+                @if (Model.TwoFactorEnabled)
+                {
+                    <span class="badge bg-success"><i class="fas fa-check me-1"></i>Yes</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary"><i class="fas fa-times me-1"></i>No</span>
+                }
+            </td></tr>
+            <tr><td><strong>Failed Attempts:</strong></td><td>@Model.AccessFailedCount</td></tr>
+            <tr><td><strong>Locked Out:</strong></td><td>
+                @if (Model.IsLockedOut)
+                {
+                    <span class="badge bg-danger"><i class="fas fa-lock me-1"></i>Yes</span>
+                }
+                else
+                {
+                    <span class="badge bg-success"><i class="fas fa-check me-1"></i>No</span>
+                }
+            </td></tr>
+            <tr><td><strong>Jobs Created:</strong></td><td>@Model.JobCount</td></tr>
+        </table>
+    </div>
+</div>
+
+@if (Model.RecentJobs != null && Model.RecentJobs.Any())
+{
+    <div class="row mt-3">
+        <div class="col-12">
+            <h6><i class="fas fa-tasks me-2"></i>Recent Jobs (Last 5)</h6>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ribozyme</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var job in Model.RecentJobs.Take(5))
+                        {
+                            <tr>
+                                <td>@job.Id</td>
+                                <td>@(job.Ribozyme?.Name ?? "Unknown")</td>
+                                <td>
+                                    <span class="badge @(job.JobState == Ribosoft.Models.JobState.Completed ? "bg-success" : job.JobState == Ribosoft.Models.JobState.Errored ? "bg-danger" : "bg-warning")">
+                                        @job.JobState
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}

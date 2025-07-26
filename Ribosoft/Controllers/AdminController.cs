@@ -180,7 +180,7 @@ namespace Ribosoft.Controllers
                     JobCount = jobCount,
                     LastLoginDate = null, // Not available in base ApplicationUser
                     RegistrationDate = DateTime.UtcNow, // Use a default value
-                    RecentJobs = recentJobs
+                    RecentJobs = null // Don't use this for the JSON endpoint
                 };
 
                 return Json(userDetails);
@@ -190,6 +190,78 @@ namespace Ribosoft.Controllers
                 _logger.LogError(ex, "Error getting user details for user {UserId}", id);
                 return BadRequest("Error retrieving user details");
             }
+        }
+
+        /*! \fn GetUserDetailsModal
+         * \brief Get user details modal content
+         * \param id User ID
+         * \return Partial view with user details
+         */
+        [HttpGet]
+        public async Task<IActionResult> GetUserDetailsModal(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var jobCount = await _context.Jobs.CountAsync(j => j.OwnerId == user.Id);
+            var recentJobs = await _context.Jobs
+                .Where(j => j.OwnerId == user.Id)
+                .Include(j => j.Ribozyme)
+                .OrderByDescending(j => j.CreatedAt)
+                .Take(5)
+                .ToListAsync();
+
+            var viewModel = new UserDetailsViewModel
+            {
+                Id = user.Id,
+                UserName = user.UserName ?? string.Empty,
+                Email = user.Email ?? string.Empty,
+                EmailConfirmed = user.EmailConfirmed,
+                PhoneNumber = user.PhoneNumber,
+                TwoFactorEnabled = user.TwoFactorEnabled,
+                AccessFailedCount = user.AccessFailedCount,
+                LockoutEnd = user.LockoutEnd,
+                LockoutEnabled = user.LockoutEnabled,
+                Roles = roles.ToList(),
+                JobCount = jobCount,
+                RegistrationDate = DateTime.UtcNow, // Default since we don't track this
+                RecentJobs = recentJobs
+            };
+
+            return PartialView("_UserDetailsModal", viewModel);
+        }
+
+        /*! \fn GetEditRolesModal
+         * \brief Get edit roles modal content
+         * \param id User ID
+         * \return Partial view with edit roles form
+         */
+        [HttpGet]
+        public async Task<IActionResult> GetEditRolesModal(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var allRoles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
+
+            var viewModel = new EditUserRolesViewModel
+            {
+                UserId = user.Id,
+                UserName = user.UserName ?? string.Empty,
+                DisplayName = user.UserName ?? string.Empty, // Use username as display name
+                AvailableRoles = allRoles.Where(r => r != null).Cast<string>().ToList(),
+                UserRoles = userRoles.ToList()
+            };
+
+            return PartialView("_EditRolesModal", viewModel);
         }
 
         /*! \brief Update user roles

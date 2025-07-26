@@ -92,7 +92,7 @@ namespace Ribosoft.Models.AdminViewModels
         /*! \property RecentJobs
          * \brief Recent jobs created by user
          */
-        public object? RecentJobs { get; set; }
+        public List<Job>? RecentJobs { get; set; }
 
         /*! \property IsLockedOut
          * \brief Whether user is currently locked out
