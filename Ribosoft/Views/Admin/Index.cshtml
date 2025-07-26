@@ -318,6 +318,118 @@
     </div>
 </div>
 
+<!-- Lock/Unlock User Modal -->
+<div class="modal fade" id="lockUserModal" tabindex="-1" aria-labelledby="lockUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lockUserModalLabel">
+                    <i class="fas fa-lock me-2"></i>Confirm User Lockout
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-start">
+                    <div class="flex-shrink-0 me-3">
+                        <i class="fas fa-exclamation-triangle text-warning fa-2x"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-2" id="lockUserAction">Lock User Account</h6>
+                        <p class="mb-3" id="lockUserMessage">
+                            Are you sure you want to lock this user account? The user will not be able to log in until the account is unlocked.
+                        </p>
+                        <div class="bg-light p-3 rounded">
+                            <strong>User:</strong> <span id="lockUserName"></span><br>
+                            <strong>Email:</strong> <span id="lockUserEmail"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-warning" id="confirmLockUser">
+                    <i class="fas fa-lock me-1"></i>Lock User
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reset Password Modal -->
+<div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resetPasswordModalLabel">
+                    <i class="fas fa-key me-2"></i>Reset User Password
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-start">
+                    <div class="flex-shrink-0 me-3">
+                        <i class="fas fa-exclamation-triangle text-warning fa-2x"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-2">Reset Password Confirmation</h6>
+                        <p class="mb-3">
+                            Are you sure you want to reset this user's password? A new temporary password will be generated and displayed. 
+                            <strong>Make sure to provide this password to the user securely.</strong>
+                        </p>
+                        <div class="bg-light p-3 rounded">
+                            <strong>User:</strong> <span id="resetPasswordUserName"></span><br>
+                            <strong>Email:</strong> <span id="resetPasswordUserEmail"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmResetPassword">
+                    <i class="fas fa-key me-1"></i>Reset Password
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Password Reset Result Modal -->
+<div class="modal fade" id="passwordResetResultModal" tabindex="-1" aria-labelledby="passwordResetResultModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="passwordResetResultModalLabel">
+                    <i class="fas fa-check-circle text-success me-2"></i>Password Reset Successful
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i>
+                    Password has been reset successfully!
+                </div>
+                <div class="mb-3">
+                    <label class="form-label"><strong>New Temporary Password:</strong></label>
+                    <div class="input-group">
+                        <input type="text" class="form-control font-monospace" id="newPasswordDisplay" readonly>
+                        <button class="btn btn-outline-secondary" type="button" id="copyPasswordBtn">
+                            <i class="fas fa-copy me-1"></i>Copy
+                        </button>
+                    </div>
+                </div>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Important:</strong> Please provide this password to the user through a secure channel. 
+                    The user should change this password immediately after logging in.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     .admin-content {
         /* Match the styling from other views */
@@ -352,8 +464,15 @@
         /* Match empty state styling from other views */
     }
 
-    .table th {
+    /* Table styling improvements */
+    .table th,
+    .table td {
         border-top: none !important;
+        padding: 0.75rem;
+        vertical-align: middle;
+    }
+
+    .table th {
         font-weight: 600;
         color: #495057;
         background-color: #f8f9fa;
@@ -486,48 +605,109 @@
                     });
             });
 
-            // Toggle user lockout
+            // Toggle user lockout - show modal
             $('.btn-toggle-lockout').click(function() {
                 var userId = $(this).data('user-id');
                 var button = $(this);
+                var row = button.closest('tr');
+                var userName = row.find('td:first .fw-semibold').text().trim();
+                var userEmail = row.find('td:nth-child(2)').text().trim();
+                var isLocked = button.find('i').hasClass('fa-unlock');
                 
-                if (confirm('Are you sure you want to change this user\'s lockout status?')) {
-                    $.post('@Url.Action("ToggleUserLockout")', { 
-                        id: userId,
-                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
-                    })
-                    .done(function(response) {
-                        if (response.success) {
-                            location.reload();
-                        } else {
-                            alert('Error: ' + response.message);
-                        }
-                    })
-                    .fail(function() {
-                        alert('Error updating user lockout status.');
-                    });
+                // Update modal content based on current lock status
+                if (isLocked) {
+                    $('#lockUserModalLabel').html('<i class="fas fa-unlock me-2"></i>Confirm User Unlock');
+                    $('#lockUserAction').text('Unlock User Account');
+                    $('#lockUserMessage').text('Are you sure you want to unlock this user account? The user will be able to log in again.');
+                    $('#confirmLockUser').removeClass('btn-warning').addClass('btn-success')
+                        .html('<i class="fas fa-unlock me-1"></i>Unlock User');
+                } else {
+                    $('#lockUserModalLabel').html('<i class="fas fa-lock me-2"></i>Confirm User Lockout');
+                    $('#lockUserAction').text('Lock User Account');
+                    $('#lockUserMessage').text('Are you sure you want to lock this user account? The user will not be able to log in until the account is unlocked.');
+                    $('#confirmLockUser').removeClass('btn-success').addClass('btn-warning')
+                        .html('<i class="fas fa-lock me-1"></i>Lock User');
                 }
+                
+                $('#lockUserName').text(userName);
+                $('#lockUserEmail').text(userEmail);
+                $('#confirmLockUser').data('user-id', userId);
+                $('#lockUserModal').modal('show');
             });
 
-            // Reset user password
-            $('.btn-reset-password').click(function() {
+            // Confirm lock/unlock user
+            $('#confirmLockUser').click(function() {
                 var userId = $(this).data('user-id');
                 
-                if (confirm('Are you sure you want to reset this user\'s password? A new temporary password will be generated.')) {
-                    $.post('@Url.Action("ResetUserPassword")', { 
-                        id: userId,
-                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
-                    })
-                    .done(function(response) {
-                        if (response.success) {
-                            alert('Password reset successfully. New password: ' + response.newPassword + '\n\nPlease provide this to the user securely.');
-                        } else {
-                            alert('Error: ' + response.message);
-                        }
-                    })
-                    .fail(function() {
-                        alert('Error resetting user password.');
-                    });
+                $.post('@Url.Action("ToggleUserLockout")', { 
+                    id: userId,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                })
+                .done(function(response) {
+                    $('#lockUserModal').modal('hide');
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                })
+                .fail(function() {
+                    $('#lockUserModal').modal('hide');
+                    alert('Error updating user lockout status.');
+                });
+            });
+
+            // Reset user password - show modal
+            $('.btn-reset-password').click(function() {
+                var userId = $(this).data('user-id');
+                var button = $(this);
+                var row = button.closest('tr');
+                var userName = row.find('td:first .fw-semibold').text().trim();
+                var userEmail = row.find('td:nth-child(2)').text().trim();
+                
+                $('#resetPasswordUserName').text(userName);
+                $('#resetPasswordUserEmail').text(userEmail);
+                $('#confirmResetPassword').data('user-id', userId);
+                $('#resetPasswordModal').modal('show');
+            });
+
+            // Confirm reset password
+            $('#confirmResetPassword').click(function() {
+                var userId = $(this).data('user-id');
+                
+                $.post('@Url.Action("ResetUserPassword")', { 
+                    id: userId,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                })
+                .done(function(response) {
+                    $('#resetPasswordModal').modal('hide');
+                    if (response.success) {
+                        $('#newPasswordDisplay').val(response.newPassword);
+                        $('#passwordResetResultModal').modal('show');
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                })
+                .fail(function() {
+                    $('#resetPasswordModal').modal('hide');
+                    alert('Error resetting user password.');
+                });
+            });
+
+            // Copy password to clipboard
+            $('#copyPasswordBtn').click(function() {
+                var passwordField = document.getElementById('newPasswordDisplay');
+                passwordField.select();
+                passwordField.setSelectionRange(0, 99999); // For mobile devices
+                
+                try {
+                    document.execCommand('copy');
+                    $(this).html('<i class="fas fa-check me-1"></i>Copied!');
+                    setTimeout(() => {
+                        $(this).html('<i class="fas fa-copy me-1"></i>Copy');
+                    }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy password: ', err);
                 }
             });
         });
