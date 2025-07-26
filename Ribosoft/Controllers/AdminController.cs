@@ -2,14 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IO;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Hosting;
 using Ribosoft.Data;
 using Ribosoft.Models;
 using Ribosoft.Models.AdminViewModels;
+using Ribosoft.Services;
+using Ribosoft.Extensions;
 
 namespace Ribosoft.Controllers
 {
@@ -40,22 +45,38 @@ namespace Ribosoft.Controllers
          */
         private readonly ILogger<AdminController> _logger;
 
+        /*! \property _environment
+         * \brief Web host environment
+         */
+        private readonly IWebHostEnvironment _environment;
+
+        /*! \property _activityLogService
+         * \brief Activity log service
+         */
+        private readonly IActivityLogService _activityLogService;
+
         /*! \brief Constructor for AdminController
          * \param userManager User manager service
          * \param roleManager Role manager service
          * \param context Database context
          * \param logger Logging service
+         * \param environment Web host environment
+         * \param activityLogService Activity log service
          */
         public AdminController(
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             ApplicationDbContext context,
-            ILogger<AdminController> logger)
+            ILogger<AdminController> logger,
+            IWebHostEnvironment environment,
+            IActivityLogService activityLogService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _context = context;
             _logger = logger;
+            _environment = environment;
+            _activityLogService = activityLogService;
         }
 
         /*! \brief Display the admin dashboard with user management tabs
@@ -364,6 +385,12 @@ namespace Ribosoft.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User {UserId} {Action} by admin {AdminId}", user.Id, action, User.Identity?.Name ?? "Unknown");
+                    
+                    // Log admin activity
+                    await _activityLogService.LogAdminActivityAsync(this, 
+                        $"User account {action}", user.Id, user.UserName, 
+                        action == "locked" ? "Warning" : "Information");
+                    
                     return Json(new { success = true, message = $"User {action} successfully", action = action });
                 }
                 else
@@ -402,6 +429,11 @@ namespace Ribosoft.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("Password reset for user {UserId} by admin {AdminId}", user.Id, User.Identity?.Name);
+                    
+                    // Log admin activity
+                    await _activityLogService.LogAdminActivityAsync(this, 
+                        $"Password reset for user", user.Id, user.UserName, "Warning");
+                    
                     return Json(new { success = true, message = "Password reset successfully", newPassword = newPassword });
                 }
                 else
@@ -427,6 +459,379 @@ namespace Ribosoft.Controllers
             var random = new Random();
             return new string(Enumerable.Repeat(chars, 12)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        /*! \brief Display system information
+         * \return System information view
+         */
+        [HttpGet]
+        public async Task<IActionResult> SystemInfo()
+        {
+            try
+            {
+                var model = new SystemInfoViewModel();
+
+                // Application Information
+                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                model.ApplicationVersion = assembly.GetName().Version?.ToString() ?? "Unknown";
+                model.FrameworkVersion = Environment.Version.ToString();
+                model.ApplicationStartTime = System.Diagnostics.Process.GetCurrentProcess().StartTime.ToUniversalTime();
+
+                // Server Information
+                model.ServerName = Environment.MachineName;
+                model.OperatingSystem = Environment.OSVersion.ToString();
+                model.ProcessorCount = Environment.ProcessorCount.ToString();
+                
+                var process = System.Diagnostics.Process.GetCurrentProcess();
+                model.WorkingSet = FormatBytes(process.WorkingSet64);
+                model.TotalMemory = FormatBytes(GC.GetTotalMemory(false));
+
+                // Database Information
+                model.DatabaseProvider = _context.Database.ProviderName ?? "Unknown";
+                try
+                {
+                    await _context.Database.OpenConnectionAsync();
+                    model.DatabaseConnectionStatus = true;
+                    model.DatabaseVersion = _context.Database.GetDbConnection().ServerVersion ?? "Unknown";
+                    await _context.Database.CloseConnectionAsync();
+                }
+                catch
+                {
+                    model.DatabaseConnectionStatus = false;
+                    model.DatabaseVersion = "Connection Failed";
+                }
+
+                // Database Statistics
+                model.TotalUsers = await _context.Users.CountAsync();
+                model.TotalJobs = await _context.Jobs.CountAsync();
+                model.TotalRibozymes = await _context.Ribozymes.CountAsync();
+                model.TotalDesigns = await _context.Designs.CountAsync();
+
+                // Background Jobs Information (Hangfire)
+                model.HangfireStatus = true; // Assume running if no errors
+                // Note: Hangfire statistics would require Hangfire.Core references
+
+                // Storage Information
+                model.TempDirectory = Path.GetTempPath();
+                model.TempDirectorySize = GetDirectorySize(Path.GetTempPath());
+                
+                // Configuration Information
+                model.ConfigurationSettings = new Dictionary<string, string>
+                {
+                    ["Environment"] = _environment.EnvironmentName,
+                    ["Content Root"] = _environment.ContentRootPath,
+                    ["Web Root"] = _environment.WebRootPath
+                };
+
+                // Performance Metrics
+                model.ThreadCount = process.Threads.Count;
+                model.MemoryUsage = process.WorkingSet64;
+
+                // Recent Activity
+                var yesterday = DateTime.UtcNow.AddDays(-1);
+                model.JobsLast24Hours = await _context.Jobs.CountAsync(j => j.CreatedAt >= yesterday);
+                
+                var lastJob = await _context.Jobs.OrderByDescending(j => j.CreatedAt).FirstOrDefaultAsync();
+                model.LastJobSubmission = lastJob?.CreatedAt ?? DateTime.MinValue;
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading system information");
+                return View(new SystemInfoViewModel());
+            }
+        }
+
+        /*! \brief Get logs data as JSON for AJAX loading
+         * \return JSON with logs data and pagination info
+         */
+        [HttpGet]
+        public async Task<IActionResult> LogsPartial(string? searchTerm, string[]? logLevels, string[]? categories, 
+            DateTime? startDate, DateTime? endDate, int page = 1, int pageSize = 50)
+        {
+            try
+            {
+                // Set filters based on user selections - no defaults applied
+                var selectedLogLevels = logLevels?.ToList() ?? new List<string>();
+                var selectedCategories = categories?.ToList() ?? new List<string>();
+
+                // Build query for activity logs
+                var query = _context.ActivityLogs.AsQueryable();
+
+                // Apply filters
+                if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    query = query.Where(l => l.Message.Contains(searchTerm) ||
+                                           (l.UserName != null && l.UserName.Contains(searchTerm)) ||
+                                           (l.Exception != null && l.Exception.Contains(searchTerm)));
+                }
+
+                if (selectedLogLevels.Any())
+                {
+                    query = query.Where(l => l.LogLevel != null && selectedLogLevels.Contains(l.LogLevel));
+                }
+
+                if (selectedCategories.Any())
+                {
+                    query = query.Where(l => l.Category != null && selectedCategories.Contains(l.Category));
+                }
+
+                if (startDate.HasValue)
+                {
+                    query = query.Where(l => l.Timestamp >= startDate.Value);
+                }
+
+                if (endDate.HasValue)
+                {
+                    var endOfDay = endDate.Value.Date.AddDays(1);
+                    query = query.Where(l => l.Timestamp < endOfDay);
+                }
+
+                // Get total count for pagination
+                var totalEntries = await query.CountAsync();
+
+                // Get paginated results with related data
+                var logEntries = await query
+                    .Include(l => l.User)
+                    .Include(l => l.Job)
+                    .OrderByDescending(l => l.Timestamp)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+
+                // Transform to anonymous objects with explicit null handling
+                var transformedEntries = logEntries.Select(l => new {
+                    Id = l.Id,
+                    Timestamp = l.Timestamp,
+                    LogLevel = l.LogLevel ?? "Unknown",
+                    Category = l.Category ?? "General", 
+                    Message = string.IsNullOrEmpty(l.Message) ? "No message available" : l.Message,
+                    UserName = l.UserName ?? "System",
+                    HasException = !string.IsNullOrEmpty(l.Exception),
+                    LogLevelBadgeClass = l.LogLevelBadgeClass ?? "bg-secondary",
+                    CategoryBadgeClass = l.CategoryBadgeClass(),
+                    CategoryIcon = l.CategoryIcon()
+                }).ToList();
+
+                // Calculate pagination info
+                var totalPages = (int)Math.Ceiling((double)totalEntries / pageSize);
+
+                return Json(new {
+                    success = true,
+                    data = transformedEntries,
+                    pagination = new {
+                        currentPage = page,
+                        totalPages = totalPages,
+                        totalEntries = totalEntries,
+                        pageSize = pageSize,
+                        hasPreviousPage = page > 1,
+                        hasNextPage = page < totalPages
+                    },
+                    filters = new {
+                        searchTerm = searchTerm,
+                        selectedLogLevels = selectedLogLevels,
+                        selectedCategories = selectedCategories,
+                        startDate = startDate?.ToString("yyyy-MM-dd"),
+                        endDate = endDate?.ToString("yyyy-MM-dd")
+                    }
+                }, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading activity logs partial");
+                return Json(new { 
+                    success = false, 
+                    error = "Error loading logs. Please try again.",
+                    data = new object[0],
+                    pagination = new {
+                        currentPage = 1,
+                        totalPages = 0,
+                        totalEntries = 0,
+                        pageSize = pageSize,
+                        hasPreviousPage = false,
+                        hasNextPage = false
+                    }
+                });
+            }
+        }
+
+        /*! \brief Display activity logs
+         * \return Activity logs view
+         */
+        [HttpGet]
+        public async Task<IActionResult> Logs(string? searchTerm, string[]? logLevels, string[]? categories, 
+            DateTime? startDate, DateTime? endDate, int page = 1, int pageSize = 50)
+        {
+            try
+            {
+                // Set filters based on user selections - no defaults applied
+                var selectedLogLevels = logLevels?.ToList() ?? new List<string>();
+                var selectedCategories = categories?.ToList() ?? new List<string>();
+
+                var model = new ActivityLogViewModel
+                {
+                    SearchTerm = searchTerm,
+                    SelectedLogLevels = selectedLogLevels,
+                    SelectedCategories = selectedCategories,
+                    StartDate = startDate,
+                    EndDate = endDate,
+                    CurrentPage = page,
+                    PageSize = pageSize
+                };
+
+                // Build query for activity logs
+                var query = _context.ActivityLogs.AsQueryable();
+
+                // Apply filters
+                if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    query = query.Where(l => l.Message.Contains(searchTerm) ||
+                                           (l.UserName != null && l.UserName.Contains(searchTerm)) ||
+                                           (l.Exception != null && l.Exception.Contains(searchTerm)));
+                }
+
+                if (selectedLogLevels.Any())
+                {
+                    query = query.Where(l => l.LogLevel != null && selectedLogLevels.Contains(l.LogLevel));
+                }
+
+                if (selectedCategories.Any())
+                {
+                    query = query.Where(l => l.Category != null && selectedCategories.Contains(l.Category));
+                }
+
+                if (startDate.HasValue)
+                {
+                    query = query.Where(l => l.Timestamp >= startDate.Value);
+                }
+
+                if (endDate.HasValue)
+                {
+                    var endOfDay = endDate.Value.Date.AddDays(1);
+                    query = query.Where(l => l.Timestamp < endOfDay);
+                }
+
+                // Get total count for pagination
+                model.TotalEntries = await query.CountAsync();
+
+                // Get paginated results with related data
+                var logs = await query
+                    .Include(l => l.User)
+                    .Include(l => l.Job)
+                    .Include(l => l.Ribozyme)
+                    .Include(l => l.Design)
+                    .OrderByDescending(l => l.Timestamp)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+
+                model.LogEntries = logs;
+
+                // Calculate statistics
+                var yesterday = DateTime.UtcNow.AddDays(-1);
+                var today = DateTime.UtcNow.Date;
+
+                // Get all logs for statistics (limit to recent for performance)
+                var recentLogs = await _context.ActivityLogs
+                    .Where(l => l.Timestamp >= yesterday.AddDays(-7)) // Last week for stats
+                    .ToListAsync();
+
+                model.ErrorsLast24Hours = recentLogs.Count(l => l.Timestamp >= yesterday && l.LogLevel == "Error");
+                model.WarningsLast24Hours = recentLogs.Count(l => l.Timestamp >= yesterday && l.LogLevel == "Warning");
+                model.TotalEventsToday = recentLogs.Count(l => l.Timestamp >= today);
+
+                // Log level counts
+                model.LogLevelCounts = recentLogs.GroupBy(l => l.LogLevel)
+                    .ToDictionary(g => g.Key, g => g.Count());
+
+                // Category counts (only non-null categories)
+                model.CategoryCounts = recentLogs
+                    .Where(l => !string.IsNullOrEmpty(l.Category))
+                    .GroupBy(l => l.Category!)
+                    .ToDictionary(g => g.Key, g => g.Count());
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading activity logs");
+                return View(new ActivityLogViewModel());
+            }
+        }
+
+        /*! \brief Helper method to format bytes
+         * \param bytes Number of bytes
+         * \return Formatted string
+         */
+        private static string FormatBytes(long bytes)
+        {
+            string[] suffixes = { "B", "KB", "MB", "GB", "TB" };
+            int counter = 0;
+            decimal number = bytes;
+            while (Math.Round(number / 1024) >= 1)
+            {
+                number /= 1024;
+                counter++;
+            }
+            return $"{number:n1} {suffixes[counter]}";
+        }
+
+        /*! \brief Get log details for modal display
+         * \param id Log entry ID
+         * \return Partial view with log details
+         */
+        [HttpGet]
+        public async Task<IActionResult> LogDetails(int id)
+        {
+            try
+            {
+                _logger.LogInformation("Loading log details for ID: {LogId}", id);
+
+                if (id <= 0)
+                {
+                    return BadRequest("Invalid log ID");
+                }
+
+                var logEntry = await _context.ActivityLogs
+                    .Include(l => l.User)
+                    .Include(l => l.Job)
+                    .Include(l => l.Ribozyme)
+                    .Include(l => l.Design)
+                    .FirstOrDefaultAsync(l => l.Id == id);
+
+                if (logEntry == null)
+                {
+                    _logger.LogWarning("Log entry not found for ID: {LogId}", id);
+                    return NotFound($"Log entry with ID {id} not found");
+                }
+
+                _logger.LogInformation("Successfully loaded log entry {LogId}", id);
+                return PartialView("_LogDetailsModal", logEntry);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading log details for ID {LogId}", id);
+                return BadRequest($"Error loading log details: {ex.Message}");
+            }
+        }
+
+        /*! \brief Helper method to get directory size
+         * \param path Directory path
+         * \return Formatted size string
+         */
+        private static string GetDirectorySize(string path)
+        {
+            try
+            {
+                var dirInfo = new DirectoryInfo(path);
+                long size = dirInfo.EnumerateFiles("*", SearchOption.AllDirectories).Sum(file => file.Length);
+                return FormatBytes(size);
+            }
+            catch
+            {
+                return "Unknown";
+            }
         }
     }
 }

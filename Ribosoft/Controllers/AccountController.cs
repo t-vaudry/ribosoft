@@ -47,6 +47,11 @@ namespace Ribosoft.Controllers
          */
         private readonly ILogger _logger;
 
+        /*! \property _activityLogService
+         * \brief Activity log service object
+         */
+        private readonly IActivityLogService _activityLogService;
+
         /*!
          * \brief Default constructor
          */
@@ -55,13 +60,15 @@ namespace Ribosoft.Controllers
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             IOneTimeCodeService oneTimeCodeService,
-            ILogger<AccountController> logger)
+            ILogger<AccountController> logger,
+            IActivityLogService activityLogService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _oneTimeCodeService = oneTimeCodeService;
             _logger = logger;
+            _activityLogService = activityLogService;
         }
 
         /*! \property ErrorMessage
@@ -105,7 +112,18 @@ namespace Ribosoft.Controllers
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    var user = await _userManager.FindByEmailAsync(model.Email);
                     _logger.LogInformation("User logged in.");
+                    
+                    // Log successful authentication
+                    await _activityLogService.LogAuthenticationAsync(
+                        message: $"User '{model.Email}' logged in successfully",
+                        userId: user?.Id,
+                        userName: user?.UserName,
+                        ipAddress: HttpContext.Connection.RemoteIpAddress?.ToString(),
+                        success: true
+                    );
+                    
                     return RedirectToLocal(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -114,6 +132,14 @@ namespace Ribosoft.Controllers
                 }
                 else
                 {
+                    // Log failed authentication
+                    await _activityLogService.LogAuthenticationAsync(
+                        message: $"Failed login attempt for '{model.Email}'",
+                        userName: model.Email,
+                        ipAddress: HttpContext.Connection.RemoteIpAddress?.ToString(),
+                        success: false
+                    );
+                    
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return View(model);
                 }
@@ -383,8 +409,20 @@ namespace Ribosoft.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userName = User.Identity?.Name;
+            
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
+            
+            // Log logout activity
+            await _activityLogService.LogAuthenticationAsync(
+                message: $"User '{userName}' logged out",
+                userId: userId,
+                userName: userName,
+                ipAddress: HttpContext.Connection.RemoteIpAddress?.ToString()
+            );
+            
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 

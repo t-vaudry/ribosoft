@@ -1,0 +1,189 @@
+@model Ribosoft.Models.ActivityLog
+@using Ribosoft.Extensions
+
+<!-- Log Header -->
+<div class="d-flex align-items-center mb-4">
+    <div class="flex-shrink-0 me-3">
+        <i class="@Model.CategoryIcon() fa-2x text-muted"></i>
+    </div>
+    <div class="flex-grow-1">
+        <h6 class="mb-1">
+            <span class="badge @Model.LogLevelBadgeClass() me-2">@Model.LogLevel</span>
+            <span class="badge @Model.CategoryBadgeClass()">@Model.Category</span>
+        </h6>
+        <small class="text-muted">
+            <i class="fas fa-clock me-1"></i>@Model.Timestamp.ToString("yyyy-MM-dd HH:mm:ss UTC")
+        </small>
+    </div>
+</div>
+
+<!-- Log Message -->
+<div class="mb-4">
+    <h6 class="text-primary mb-2">
+        <i class="fas fa-comment-alt me-2"></i>Message
+    </h6>
+    <div class="bg-light p-3 rounded border-start border-primary border-3">
+        @Model.Message
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- User Information -->
+    @if (Model.HasUserInfo())
+    {
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-light">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-user text-primary me-2"></i>User Information
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm table-borderless mb-0">
+                        @if (!string.IsNullOrEmpty(Model.UserName))
+                        {
+                            <tr>
+                                <td class="fw-bold" style="width: 35%;">Username:</td>
+                                <td>@Model.UserName</td>
+                            </tr>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.UserId))
+                        {
+                            <tr>
+                                <td class="fw-bold">User ID:</td>
+                                <td><code class="text-muted">@Model.UserId</code></td>
+                            </tr>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.IpAddress))
+                        {
+                            <tr>
+                                <td class="fw-bold">IP Address:</td>
+                                <td><code class="text-info">@Model.IpAddress</code></td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Request Information -->
+    @if (Model.HasRequestInfo())
+    {
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-light">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-globe text-success me-2"></i>Request Information
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm table-borderless mb-0">
+                        @if (!string.IsNullOrEmpty(Model.RequestPath))
+                        {
+                            <tr>
+                                <td class="fw-bold" style="width: 35%;">Path:</td>
+                                <td><code class="text-muted">@Model.RequestPath</code></td>
+                            </tr>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.RequestMethod))
+                        {
+                            <tr>
+                                <td class="fw-bold">Method:</td>
+                                <td><span class="badge bg-info">@Model.RequestMethod</span></td>
+                            </tr>
+                        }
+                        @if (Model.StatusCode.HasValue)
+                        {
+                            <tr>
+                                <td class="fw-bold">Status:</td>
+                                <td>
+                                    <span class="badge @(Model.StatusCode >= 500 ? "bg-danger" : Model.StatusCode >= 400 ? "bg-warning text-dark" : "bg-success")">
+                                        @Model.StatusCode
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                        @if (Model.Duration.HasValue)
+                        {
+                            <tr>
+                                <td class="fw-bold">Duration:</td>
+                                <td>@Model.Duration ms</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Related Data -->
+    @if (Model.HasJobInfo() || Model.HasRibozymeInfo() || Model.HasDesignInfo())
+    {
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-link text-warning me-2"></i>Related Data
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        @if (Model.HasJobInfo())
+                        {
+                            <a href="/Jobs/Details/@Model.JobId" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-cogs me-1"></i>Job @Model.JobId
+                            </a>
+                        }
+                        @if (Model.HasRibozymeInfo())
+                        {
+                            <a href="/Ribozymes/Details/@Model.RibozymeId" class="btn btn-outline-success btn-sm">
+                                <i class="fas fa-dna me-1"></i>Ribozyme @Model.RibozymeId
+                            </a>
+                        }
+                        @if (Model.HasDesignInfo())
+                        {
+                            <a href="/Designs/Details/@Model.DesignId" class="btn btn-outline-info btn-sm">
+                                <i class="fas fa-drafting-compass me-1"></i>Design @Model.DesignId
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Exception Details -->
+    @if (Model.HasException())
+    {
+        <div class="col-12">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Exception Details
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <pre class="bg-dark text-light p-3 rounded mb-0" style="font-size: 0.85rem; max-height: 300px; overflow-y: auto;"><code>@Model.Exception</code></pre>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Additional Properties -->
+    @if (!string.IsNullOrEmpty(Model.Properties))
+    {
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-cog text-secondary me-2"></i>Additional Properties
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <pre class="bg-light p-3 rounded mb-0 border" style="font-size: 0.85rem; max-height: 200px; overflow-y: auto;"><code>@Model.Properties</code></pre>
+                </div>
+            </div>
+        </div>
+    }
+</div>

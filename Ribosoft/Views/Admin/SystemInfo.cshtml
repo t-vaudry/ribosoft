@@ -1,0 +1,477 @@
+@model Ribosoft.Models.AdminViewModels.SystemInfoViewModel
+@{
+    ViewData["Title"] = "System Information";
+    Layout = "~/Views/Admin/_Layout.cshtml";
+}
+
+<div class="container-fluid px-2 px-md-3">
+    <div class="admin-content">
+        <!-- Page Header -->
+        <div class="page-header mb-4 px-3 pt-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-info-circle me-2 text-primary"></i>@ViewData["Title"]
+                    </h1>
+                    <p class="text-muted mb-0">System status, performance metrics, and configuration details</p>
+                </div>
+                <div class="admin-badge-container">
+                    <span class="badge bg-success">
+                        <i class="fas fa-check-circle me-1"></i>System Online
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Overview Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="text-primary mb-2">
+                            <i class="fas fa-clock fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Uptime</h5>
+                        <p class="card-text">
+                            <strong>@((int)Model.Uptime.TotalDays)d @Model.Uptime.Hours:@Model.Uptime.Minutes.ToString("D2")h</strong>
+                        </p>
+                        <small class="text-muted">Since @Model.ApplicationStartTime.ToString("MMM dd, yyyy")</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="text-success mb-2">
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Total Users</h5>
+                        <p class="card-text">
+                            <strong>@Model.TotalUsers.ToString("N0")</strong>
+                        </p>
+                        <small class="text-muted">Registered accounts</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="text-warning mb-2">
+                            <i class="fas fa-cogs fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Total Jobs</h5>
+                        <p class="card-text">
+                            <strong>@Model.TotalJobs.ToString("N0")</strong>
+                        </p>
+                        <small class="text-muted">@Model.JobsLast24Hours in last 24h</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="text-info mb-2">
+                            <i class="fas fa-database fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Database</h5>
+                        <p class="card-text">
+                            @if (Model.DatabaseConnectionStatus)
+                            {
+                                <span class="badge bg-success">Connected</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Disconnected</span>
+                            }
+                        </p>
+                        <small class="text-muted">@Model.DatabaseProvider</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Information Sections -->
+        <div class="row">
+            <!-- Application Information -->
+            <div class="col-lg-6 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-rocket me-2 text-primary"></i>
+                            Application Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>Application:</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                @Model.ApplicationName
+                            </div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>Version:</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                @Model.ApplicationVersion
+                            </div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>.NET Version:</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                @Model.FrameworkVersion
+                            </div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>Started:</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                @Model.ApplicationStartTime.ToString("yyyy-MM-dd HH:mm:ss UTC")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Server Information -->
+            <div class="col-lg-6 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-server me-2 text-success"></i>
+                            Server Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>Server Name:</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                @Model.ServerName
+                            </div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>Operating System:</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                @Model.OperatingSystem
+                            </div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>Processor Count:</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                @Model.ProcessorCount cores
+                            </div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>Working Set:</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                @Model.WorkingSet
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Database Information -->
+            <div class="col-lg-6 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-database me-2 text-info"></i>
+                            Database Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>Provider:</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                @Model.DatabaseProvider
+                            </div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>Version:</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                @Model.DatabaseVersion
+                            </div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>Connection Status:</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                @if (Model.DatabaseConnectionStatus)
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check me-1"></i>Connected
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-times me-1"></i>Disconnected
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>Total Records:</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                @((Model.TotalUsers + Model.TotalJobs + Model.TotalRibozymes + Model.TotalDesigns).ToString("N0"))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="col-lg-6 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-tachometer-alt me-2 text-warning"></i>
+                            Performance Metrics
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>Memory Usage:</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                @Model.WorkingSet
+                            </div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>GC Memory:</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                @Model.TotalMemory
+                            </div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>Thread Count:</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                @Model.ThreadCount
+                            </div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>Jobs (24h):</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                @Model.JobsLast24Hours
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuration Settings -->
+            <div class="col-12 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-cog me-2 text-secondary"></i>
+                            Configuration Settings
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            @foreach (var setting in Model.ConfigurationSettings)
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex justify-content-between align-items-center p-2 bg-light rounded">
+                                        <strong>@setting.Key:</strong>
+                                        <span class="text-muted">@setting.Value</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Statistics -->
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-bar me-2 text-primary"></i>
+                            Data Statistics
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="p-3 bg-light rounded">
+                                    <div class="text-primary mb-2">
+                                        <i class="fas fa-users fa-2x"></i>
+                                    </div>
+                                    <h4 class="mb-1">@Model.TotalUsers.ToString("N0")</h4>
+                                    <small class="text-muted">Users</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="p-3 bg-light rounded">
+                                    <div class="text-warning mb-2">
+                                        <i class="fas fa-cogs fa-2x"></i>
+                                    </div>
+                                    <h4 class="mb-1">@Model.TotalJobs.ToString("N0")</h4>
+                                    <small class="text-muted">Jobs</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="p-3 bg-light rounded">
+                                    <div class="text-success mb-2">
+                                        <i class="fas fa-dna fa-2x"></i>
+                                    </div>
+                                    <h4 class="mb-1">@Model.TotalRibozymes.ToString("N0")</h4>
+                                    <small class="text-muted">Ribozymes</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="p-3 bg-light rounded">
+                                    <div class="text-info mb-2">
+                                        <i class="fas fa-project-diagram fa-2x"></i>
+                                    </div>
+                                    <h4 class="mb-1">@Model.TotalDesigns.ToString("N0")</h4>
+                                    <small class="text-muted">Designs</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .admin-content {
+        /* Match the styling from other views */
+    }
+
+    .page-header {
+        /* Consistent page header styling */
+    }
+
+    .admin-badge-container {
+        display: flex;
+        align-items: center;
+    }
+
+    /* Card styling consistency */
+    .card {
+        border: none;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        background-color: #fff;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .container-fluid {
+            padding: 0;
+        }
+
+        .page-header {
+            padding: 1rem;
+        }
+
+        .card-body .row {
+            font-size: 0.875rem;
+        }
+    }
+
+    @@media (min-width: 1200px) {
+        .container-fluid {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+    }
+
+    /* Status indicators */
+    .badge {
+        font-size: 0.75rem;
+    }
+
+    /* Data display improvements */
+    .card-body .row {
+        margin-bottom: 0.5rem;
+    }
+
+    .card-body .row:last-child {
+        margin-bottom: 0;
+    }
+
+    .card-body hr {
+        margin: 0.5rem 0;
+        opacity: 0.3;
+    }
+
+    /* Statistics cards */
+    .bg-light.rounded {
+        transition: background-color 0.2s ease;
+    }
+
+    .bg-light.rounded:hover {
+        background-color: #e9ecef !important;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Auto-refresh system info every 30 seconds
+            setInterval(function() {
+                // You could implement auto-refresh here if needed
+                // location.reload();
+            }, 30000);
+
+            // Add tooltips to status indicators
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}

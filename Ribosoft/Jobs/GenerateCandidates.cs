@@ -56,6 +56,11 @@ namespace Ribosoft.Jobs
          */
         private readonly Blaster _blaster;
 
+        /*! \property _activityLogService
+         * \brief Activity log service
+         */
+        private readonly IActivityLogService _activityLogService;
+
         /*! \property _db
          * \brief Local application database context
          */
@@ -72,8 +77,11 @@ namespace Ribosoft.Jobs
          * \param emailSender Email sender
          * \param logger Logging service
          * \param configuration Application configuration
+         * \param activityLogService Activity log service
          */
-        public GenerateCandidates(DbContextOptions<ApplicationDbContext> options, IEmailSender emailSender, ILogger<GenerateCandidates> logger, IConfiguration configuration)
+        public GenerateCandidates(DbContextOptions<ApplicationDbContext> options, IEmailSender emailSender, 
+                                ILogger<GenerateCandidates> logger, IConfiguration configuration, 
+                                IActivityLogService activityLogService)
         {
             _dbOptions = options;
             _db =  new ApplicationDbContext(options);
@@ -83,6 +91,7 @@ namespace Ribosoft.Jobs
             _multiObjectiveOptimizer = new MultiObjectiveOptimization.MultiObjectiveOptimizer();
             _configuration = configuration;
             _blaster = new Blaster();
+            _activityLogService = activityLogService;
         }
 
         /*! \fn Phase1
@@ -97,6 +106,14 @@ namespace Ribosoft.Jobs
         public async Task Phase1(int jobId, IJobCancellationToken cancellationToken)
         {
             var job = GetJob(jobId);
+
+            // Log job execution start
+            await _activityLogService.LogJobExecutionAsync(
+                message: $"Job {jobId} Phase1 started - Candidate generation and structure calculation",
+                jobId: jobId,
+                userId: job.OwnerId,
+                userName: job.Owner?.UserName
+            );
 
             // TODO - temporarily catch retried jobs
             await DoStage(job, JobState.Errored, j => j.JobState != JobState.New, async (j, c) => { await Task.CompletedTask; }, cancellationToken);
@@ -117,6 +134,14 @@ namespace Ribosoft.Jobs
                 {
                     // InVivo jobs need BLAST analysis (Phase2)
                     await UpdateJobProperties(jobId, JobState.QueuedPhase2, "Queued for BLAST analysis");
+                    
+                    await _activityLogService.LogJobExecutionAsync(
+                        message: $"Job {jobId} Phase1 completed - Queued for Phase2 (BLAST analysis)",
+                        jobId: jobId,
+                        userId: job.OwnerId,
+                        userName: job.Owner?.UserName
+                    );
+                    
                     BackgroundJob.Enqueue<GenerateCandidates>(x => x.Phase2(jobId, JobCancellationToken.Null));
                 }
                 else if (job.TargetEnvironment == TargetEnvironment.InVitro)

@@ -1,0 +1,1120 @@
+@model Ribosoft.Models.AdminViewModels.ActivityLogViewModel
+@{
+    ViewData["Title"] = "Activity Logs";
+    Layout = "~/Views/Admin/_Layout.cshtml";
+}
+
+<style>
+    .dropdown-item-hover:hover {
+        background-color: #f8f9fa;
+    }
+    
+    /* Dropdown styling fixes */
+    .dropdown-menu {
+        padding: 0 !important;
+        z-index: 200 !important;
+    }
+    
+    .dropdown-item-hover {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .dropdown-item-hover .form-check {
+        padding: 6px 12px !important;
+        margin: 0 !important;
+        display: flex;
+        align-items: center;
+    }
+    
+    .dropdown-item-hover .form-check-input {
+        margin-left: 0 !important;
+        margin-right: 8px;
+        flex-shrink: 0;
+    }
+    
+    .dropdown-item-hover .form-check-label {
+        flex: 1;
+        margin-bottom: 0;
+    }
+    
+    .dropdown-menu .border-bottom {
+        padding: 6px 12px !important;
+        margin: 0;
+    }
+    
+    /* Filter section z-index */
+    .filters-section {
+        position: relative;
+        z-index: 100;
+    }
+    
+    /* Disable table hover when dropdowns are open */
+    .dropdown-open .table-hover tbody tr:hover {
+        background-color: transparent !important;
+    }
+    
+    .dropdown-menu {
+        border: 1px solid #dee2e6;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .form-check-label {
+        cursor: pointer;
+        user-select: none;
+    }
+    
+    .form-check-input:checked + .form-check-label {
+        font-weight: 500;
+    }
+    
+    #filterSummary {
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .logs-table-container {
+        min-height: 400px;
+    }
+</style>
+
+<div class="container-fluid px-2 px-md-3">
+    <div class="admin-content">
+        <!-- Page Header -->
+        <div class="page-header mb-4 px-3 pt-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-file-alt me-2 text-primary"></i>@ViewData["Title"]
+                    </h1>
+                    <p class="text-muted mb-0">System activity logs and audit trail</p>
+                </div>
+                <div class="admin-badge-container">
+                    <span class="badge bg-info me-2">
+                        <i class="fas fa-list me-1"></i>@Model.TotalEntries Total
+                    </span>
+                    <span class="badge bg-success">
+                        <i class="fas fa-calendar-day me-1"></i>@Model.TotalEventsToday Today
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="text-danger mb-2">
+                            <i class="fas fa-exclamation-triangle fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Errors (24h)</h5>
+                        <p class="card-text">
+                            <strong>@Model.ErrorsLast24Hours</strong>
+                        </p>
+                        <small class="text-muted">Critical issues</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="text-warning mb-2">
+                            <i class="fas fa-exclamation-circle fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Warnings (24h)</h5>
+                        <p class="card-text">
+                            <strong>@Model.WarningsLast24Hours</strong>
+                        </p>
+                        <small class="text-muted">Attention needed</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="text-success mb-2">
+                            <i class="fas fa-calendar-day fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Today's Events</h5>
+                        <p class="card-text">
+                            <strong>@Model.TotalEventsToday</strong>
+                        </p>
+                        <small class="text-muted">All activities</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="text-info mb-2">
+                            <i class="fas fa-list fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Total Logs</h5>
+                        <p class="card-text">
+                            <strong>@Model.TotalEntries.ToString("N0")</strong>
+                        </p>
+                        <small class="text-muted">All time</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="card border-0 shadow-sm mb-4 filters-section">
+            <div class="card-body">
+                <div class="row g-3" id="filterForm">
+                    <div class="col-md-3">
+                        <label class="form-label">Search</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0" id="searchTerm" 
+                                   value="@Model.SearchTerm" placeholder="Search logs..." />
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Log Levels</label>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start position-relative" type="button" 
+                                    id="logLevelDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span id="logLevelText">
+                                    @if (Model.SelectedLogLevels.Any())
+                                    {
+                                        if (Model.SelectedLogLevels.Count == 1)
+                                        {
+                                            @Model.SelectedLogLevels.First()
+                                        }
+                                        else
+                                        {
+                                            @($"{Model.SelectedLogLevels.Count} levels selected")
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <text>Select log levels...</text>
+                                    }
+                                </span>
+                            </button>
+                            <ul class="dropdown-menu w-100 shadow-lg border-0" aria-labelledby="logLevelDropdown" 
+                                style="max-height: 400px; overflow-y: auto; min-width: 250px;">
+                                <li class="px-3 py-2 border-bottom bg-light">
+                                    <div class="d-flex justify-content-between gap-1">
+                                        <button type="button" class="btn btn-sm btn-outline-primary flex-fill" onclick="selectAllLogLevels()">
+                                            <i class="fas fa-check-square me-1"></i>All
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="clearAllLogLevels()">
+                                            <i class="fas fa-square me-1"></i>None
+                                        </button>
+                                    </div>
+                                </li>
+                                @foreach (var level in Model.AvailableLogLevels)
+                                {
+                                    <li class="dropdown-item-hover">
+                                        <div class="form-check px-3 py-2 m-0">
+                                            <input class="form-check-input log-level-checkbox" type="checkbox" 
+                                                   value="@level" id="level_@level"
+                                                   @(Model.SelectedLogLevels.Contains(level) ? "checked" : "") />
+                                            <label class="form-check-label w-100 d-flex justify-content-between align-items-center" for="level_@level">
+                                                <span class="@(level == "Error" ? "text-danger fw-semibold" : level == "Warning" ? "text-warning fw-semibold" : level == "Critical" ? "text-danger fw-bold" : "")">
+                                                    @level
+                                                </span>
+                                                @if (Model.LogLevelCounts.ContainsKey(level) && Model.LogLevelCounts[level] > 0)
+                                                {
+                                                    <small class="badge bg-secondary">@Model.LogLevelCounts[level]</small>
+                                                }
+                                            </label>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Categories</label>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start position-relative" type="button" 
+                                    id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span id="categoryText">
+                                    @if (Model.SelectedCategories.Any())
+                                    {
+                                        if (Model.SelectedCategories.Count == 1)
+                                        {
+                                            @Model.SelectedCategories.First()
+                                        }
+                                        else
+                                        {
+                                            @($"{Model.SelectedCategories.Count} categories selected")
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <text>All categories</text>
+                                    }
+                                </span>
+                            </button>
+                            <ul class="dropdown-menu w-100 shadow-lg border-0" aria-labelledby="categoryDropdown" 
+                                style="max-height: 400px; overflow-y: auto; min-width: 250px;">
+                                <li class="px-3 py-2 border-bottom bg-light">
+                                    <div class="d-flex justify-content-between gap-1">
+                                        <button type="button" class="btn btn-sm btn-outline-primary flex-fill" onclick="selectAllCategories()">
+                                            <i class="fas fa-check-square me-1"></i>All
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="clearAllCategories()">
+                                            <i class="fas fa-square me-1"></i>None
+                                        </button>
+                                    </div>
+                                </li>
+                                @foreach (var category in Model.AvailableCategories)
+                                {
+                                    <li class="dropdown-item-hover">
+                                        <div class="form-check px-3 py-2 m-0">
+                                            <input class="form-check-input category-checkbox" type="checkbox" 
+                                                   value="@category" id="cat_@category"
+                                                   @(Model.SelectedCategories.Contains(category) ? "checked" : "") />
+                                            <label class="form-check-label w-100 d-flex justify-content-between align-items-center" for="cat_@category">
+                                                <span>@category</span>
+                                                @if (Model.CategoryCounts.ContainsKey(category) && Model.CategoryCounts[category] > 0)
+                                                {
+                                                    <small class="badge bg-secondary">@Model.CategoryCounts[category]</small>
+                                                }
+                                            </label>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="startDate" 
+                               value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="endDate" 
+                               value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="col-md-12">
+                        <div class="d-flex gap-2 align-items-center">
+                            <button class="btn btn-primary" type="button" onclick="applyFilters()" title="Apply Filters">
+                                <i class="fas fa-filter me-1"></i>Apply Filters
+                            </button>
+                            <button class="btn btn-outline-secondary" type="button" onclick="clearAllFilters()" title="Clear All Filters">
+                                <i class="fas fa-times me-1"></i>Clear All
+                            </button>
+                            <div class="ms-auto">
+                                <div id="filterSummary" class="text-muted small"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="text-center py-4" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="mt-2 text-muted">Loading logs...</div>
+        </div>
+
+        <!-- Logs Content Container -->
+        <div id="logsContainer">
+
+        <!-- Logs Table -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="card-title mb-1">
+                            <i class="fas fa-list me-2"></i>
+                            Activity Logs
+                        </h5>
+                        <small class="text-muted">
+                            @if (Model.TotalEntries != Model.LogEntries.Count)
+                            {
+                                <span>Showing @Model.LogEntries.Count of @Model.TotalEntries.ToString("N0") entries</span>
+                            }
+                            else
+                            {
+                                <span>@Model.TotalEntries.ToString("N0") total entries</span>
+                            }
+                        </small>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.reload()">
+                            <i class="fas fa-sync-alt me-1"></i>Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.LogEntries.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="border-0 fw-semibold" style="width: 15%;">
+                                        <i class="fas fa-clock me-1 text-muted"></i>
+                                        Timestamp
+                                    </th>
+                                    <th class="border-0 fw-semibold" style="width: 10%;">
+                                        <i class="fas fa-layer-group me-1 text-muted"></i>
+                                        Level
+                                    </th>
+                                    <th class="border-0 fw-semibold" style="width: 12%;">
+                                        <i class="fas fa-tag me-1 text-muted"></i>
+                                        Category
+                                    </th>
+                                    <th class="border-0 fw-semibold" style="width: 40%;">
+                                        <i class="fas fa-comment me-1 text-muted"></i>
+                                        Message
+                                    </th>
+                                    <th class="border-0 fw-semibold" style="width: 15%;">
+                                        <i class="fas fa-user me-1 text-muted"></i>
+                                        User
+                                    </th>
+                                    <th class="border-0 fw-semibold text-center" style="width: 8%;">
+                                        <i class="fas fa-info-circle me-1 text-muted"></i>
+                                        Details
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var log in Model.LogEntries)
+                                {
+                                    <tr data-log-id="@log.Id">
+                                        <td class="align-middle">
+                                            <div class="text-nowrap">
+                                                <div class="fw-semibold">@log.Timestamp.ToString("MMM dd, HH:mm")</div>
+                                                <small class="text-muted">@log.Timestamp.ToString("yyyy")</small>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">
+                                            <span class="badge @log.LogLevelBadgeClass">
+                                                @log.LogLevel
+                                            </span>
+                                        </td>
+                                        <td class="align-middle">
+                                            <span class="badge @log.CategoryBadgeClass">
+                                                <i class="@log.CategoryIcon me-1"></i>
+                                                @log.Category
+                                            </span>
+                                        </td>
+                                        <td class="align-middle">
+                                            <div class="log-message">
+                                                @log.Message
+                                                @if (log.HasException)
+                                                {
+                                                    <i class="fas fa-exclamation-triangle text-danger ms-1" title="Has Exception"></i>
+                                                }
+                                            </div>
+                                            @if (log.HasRequestInfo)
+                                            {
+                                                <small class="text-muted">
+                                                    @log.RequestMethod @log.RequestPath
+                                                    @if (log.StatusCode.HasValue)
+                                                    {
+                                                        <span class="badge badge-sm @(log.StatusCode >= 400 ? "bg-danger" : "bg-success") ms-1">
+                                                            @log.StatusCode
+                                                        </span>
+                                                    }
+                                                </small>
+                                            }
+                                        </td>
+                                        <td class="align-middle">
+                                            @if (log.HasUserInfo)
+                                            {
+                                                <div>
+                                                    <div class="fw-semibold">@log.UserName</div>
+                                                    @if (!string.IsNullOrEmpty(log.IpAddress))
+                                                    {
+                                                        <small class="text-muted">@log.IpAddress</small>
+                                                    }
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">System</span>
+                                            }
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <button type="button" class="btn btn-outline-primary btn-sm btn-view-log" 
+                                                    data-log-id="@log.Id" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <div class="empty-state">
+                            <i class="fas fa-file-alt text-muted mb-3" style="font-size: 3rem;"></i>
+                            <h5 class="text-muted">No logs found</h5>
+                            <p class="text-muted">Try adjusting your search criteria or filters.</p>
+                            @if (Model.HasActiveFilters)
+                            {
+                                <a href="@Url.Action("Logs")" class="btn btn-primary">
+                                    <i class="fas fa-times me-2"></i>Clear All Filters
+                                </a>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Pagination -->
+            @if (Model.TotalPages > 1)
+            {
+                <div class="card-footer bg-white border-top">
+                    <nav aria-label="Log pagination">
+                        <ul class="pagination justify-content-center mb-0">
+                            <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                                <a class="page-link" href="@Url.Action("Logs", new { 
+                                    searchTerm = Model.SearchTerm, 
+                                    logLevel = Model.LogLevel, 
+                                    category = Model.Category,
+                                    startDate = Model.StartDate?.ToString("yyyy-MM-dd"),
+                                    endDate = Model.EndDate?.ToString("yyyy-MM-dd"),
+                                    page = Model.CurrentPage - 1 
+                                })">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            
+                            @for (int i = Math.Max(1, Model.CurrentPage - 2); i <= Math.Min(Model.TotalPages, Model.CurrentPage + 2); i++)
+                            {
+                                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Logs", new { 
+                                        searchTerm = Model.SearchTerm, 
+                                        logLevel = Model.LogLevel, 
+                                        category = Model.Category,
+                                        startDate = Model.StartDate?.ToString("yyyy-MM-dd"),
+                                        endDate = Model.EndDate?.ToString("yyyy-MM-dd"),
+                                        page = i 
+                                    })">@i</a>
+                                </li>
+                            }
+                            
+                            <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                                <a class="page-link" href="@Url.Action("Logs", new { 
+                                    searchTerm = Model.SearchTerm, 
+                                    logLevel = Model.LogLevel, 
+                                    category = Model.Category,
+                                    startDate = Model.StartDate?.ToString("yyyy-MM-dd"),
+                                    endDate = Model.EndDate?.ToString("yyyy-MM-dd"),
+                                    page = Model.CurrentPage + 1 
+                                })">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Log Details Modal -->
+<div class="modal fade" id="logDetailsModal" tabindex="-1" aria-labelledby="logDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logDetailsModalLabel">
+                    <i class="fas fa-info-circle me-2"></i>Log Entry Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="logDetailsContent">
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .admin-content {
+        /* Match the styling from other views */
+    }
+
+    .page-header {
+        /* Consistent page header styling */
+    }
+
+    .admin-badge-container {
+        display: flex;
+        align-items: center;
+    }
+
+    /* Table styling improvements */
+    .table th {
+        border-top: none !important;
+        font-weight: 600;
+        color: #495057;
+        background-color: #f8f9fa;
+        padding: 0.5rem 0.75rem;
+        vertical-align: middle;
+    }
+
+    .table td {
+        border-top: none !important;
+        padding: 0.75rem;
+        vertical-align: middle;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.025);
+    }
+
+    /* Log message styling */
+    .log-message {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 400px;
+    }
+
+    /* Badge improvements */
+    .badge-sm {
+        font-size: 0.65rem;
+        padding: 0.2em 0.4em;
+    }
+
+    /* Card styling consistency */
+    .card {
+        border: none;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        background-color: #fff;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .card-footer {
+        background-color: #fff;
+        border-top: 1px solid #dee2e6;
+    }
+
+    /* Input group styling */
+    .input-group-text.bg-light {
+        background-color: #f8f9fa !important;
+    }
+
+    .form-control.border-start-0 {
+        border-left: 0;
+    }
+
+    .input-group-text.border-end-0 {
+        border-right: 0;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .container-fluid {
+            padding: 0;
+        }
+
+        .page-header {
+            padding: 1rem;
+        }
+
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+        
+        .log-message {
+            max-width: 200px;
+        }
+
+        .admin-badge-container {
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.25rem;
+        }
+    }
+
+    @@media (min-width: 1200px) {
+        .container-fluid {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+    }
+
+    /* Empty state styling */
+    .empty-state {
+        padding: 2rem;
+    }
+
+    /* Statistics cards hover effect */
+    .card.h-100:hover {
+        transform: translateY(-2px);
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Global variables
+        let currentPage = 1;
+
+        $(document).ready(function() {
+            // Initialize page
+            initializeDropdowns();
+            loadLogs(1);
+            
+            // Set up event handlers
+            setupEventHandlers();
+            
+            // Initialize tooltips
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        });
+
+        // Initialize dropdown text and functionality
+        function initializeDropdowns() {
+            updateLogLevelText();
+            updateCategoryText();
+            updateFilterSummary();
+            
+            // Prevent dropdowns from closing when clicking inside
+            $('.dropdown-menu').click(function(e) {
+                e.stopPropagation();
+            });
+
+            // Simple solution: disable table hover when dropdowns are open
+            $('.dropdown').on('show.bs.dropdown', function() {
+                $('body').addClass('dropdown-open');
+            });
+
+            $('.dropdown').on('hide.bs.dropdown', function() {
+                // Check if any dropdowns are still open before removing class
+                setTimeout(function() {
+                    if (!$('.dropdown.show').length) {
+                        $('body').removeClass('dropdown-open');
+                    }
+                }, 50);
+            });
+        }
+
+        // Set up all event handlers
+        function setupEventHandlers() {
+            // Dropdown checkbox changes
+            $('.log-level-checkbox').change(function() {
+                updateLogLevelText();
+                updateFilterSummary();
+            });
+
+            $('.category-checkbox').change(function() {
+                updateCategoryText();
+                updateFilterSummary();
+            });
+
+            // Date changes
+            $('#startDate, #endDate').change(function() {
+                updateFilterSummary();
+            });
+
+            // Search input with debounce
+            let searchTimeout;
+            $('#searchTerm').on('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function() {
+                    updateFilterSummary();
+                }, 300);
+            });
+        }
+
+        // AJAX Functions
+        function loadLogs(page = 1) {
+            currentPage = page;
+            const filters = getCurrentFilters();
+
+            $('#loadingIndicator').show();
+            $('#logsContainer').hide();
+
+            // Use jQuery.param with traditional: true for proper array serialization
+            const ajaxData = { ...filters, page: page };
+
+            $.ajax({
+                url: '@Url.Action("LogsPartial", "Admin")',
+                type: 'GET',
+                data: ajaxData,
+                traditional: true, // This ensures arrays are serialized as logLevels=value1&logLevels=value2
+                success: function(response) {
+                    if (response.success) {
+                        buildLogsTable(response.data, response.pagination);
+                    } else {
+                        $('#logsContainer').html(`<div class="alert alert-danger">${response.error}</div>`);
+                    }
+                    
+                    $('#logsContainer').show();
+                    $('#loadingIndicator').hide();
+                    
+                    // Reinitialize event handlers for new content
+                    initializeLogEvents();
+                    $('[data-bs-toggle="tooltip"]').tooltip();
+                },
+                error: function(xhr, status, error) {
+                    $('#loadingIndicator').hide();
+                    $('#logsContainer').html('<div class="alert alert-danger">Error loading logs. Please try again.</div>').show();
+                }
+            });
+        }
+
+        function buildLogsTable(logs, pagination) {
+            let html = `
+                <div class="card border-0 shadow-sm logs-table-container">
+                    <div class="card-header bg-white border-bottom">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">
+                                <i class="fas fa-list me-2"></i>Activity Logs
+                                ${pagination.totalEntries > 0 ? `<small class="text-muted">(${pagination.totalEntries} total)</small>` : ''}
+                            </h6>
+                            <div class="d-flex align-items-center gap-2">
+                                ${pagination.totalPages > 1 ? `<small class="text-muted">Page ${pagination.currentPage} of ${pagination.totalPages}</small>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">`;
+
+            if (logs.length > 0) {
+                html += `
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 140px;">Timestamp</th>
+                                    <th style="width: 80px;">Level</th>
+                                    <th style="width: 120px;">Category</th>
+                                    <th>Message</th>
+                                    <th style="width: 100px;">User</th>
+                                    <th style="width: 80px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+
+                logs.forEach(log => {
+                    const timestamp = new Date(log.timestamp);
+                    
+                    // Safe message handling with null checks and HTML escaping
+                    const message = log.message || "No message";
+                    const displayMessage = message.length > 100 ? 
+                        message.substring(0, 100) + '...' : message;
+                    const escapedMessage = escapeHtml(displayMessage);
+
+                    html += `
+                        <tr>
+                            <td class="text-nowrap">
+                                <small>
+                                    ${timestamp.toLocaleDateString('en-US', {month: '2-digit', day: '2-digit'})} ${timestamp.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false})}
+                                    <br />
+                                    <span class="text-muted">${timestamp.getFullYear()}</span>
+                                </small>
+                            </td>
+                            <td>
+                                <span class="badge ${log.logLevelBadgeClass || 'bg-secondary'}">${escapeHtml(log.logLevel || 'Unknown')}</span>
+                            </td>
+                            <td>
+                                <span class="badge ${log.categoryBadgeClass || 'bg-dark'}">
+                                    <i class="${log.categoryIcon || 'fas fa-tag'} me-1"></i>${escapeHtml(log.category || 'General')}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="log-message">
+                                    <span>${escapedMessage}</span>
+                                </div>
+                                ${log.hasException ? '<small class="text-danger"><i class="fas fa-exclamation-triangle me-1"></i>Exception</small>' : ''}
+                            </td>
+                            <td>
+                                ${log.userName && log.userName !== 'System' ? 
+                                    `<small class="text-muted">${escapeHtml(log.userName)}</small>` : 
+                                    '<small class="text-muted">System</small>'
+                                }
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary view-log-details" 
+                                        data-log-id="${log.id}" 
+                                        data-bs-toggle="tooltip" 
+                                        title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>`;
+                });
+
+                html += `
+                            </tbody>
+                        </table>
+                    </div>`;
+
+                // Add pagination if needed
+                if (pagination.totalPages > 1) {
+                    html += buildPagination(pagination);
+                }
+            } else {
+                html += `
+                    <div class="text-center py-5">
+                        <i class="fas fa-file-alt text-muted mb-3" style="font-size: 3rem;"></i>
+                        <h5 class="text-muted">No logs found</h5>
+                        <p class="text-muted">Try adjusting your search criteria or filters.</p>
+                    </div>`;
+            }
+
+            html += `
+                    </div>
+                </div>`;
+
+            $('#logsContainer').html(html);
+        }
+
+        // HTML escape function to prevent XSS
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function buildPagination(pagination) {
+            let html = `
+                <div class="card-footer bg-white border-top">
+                    <nav aria-label="Activity logs pagination">
+                        <ul class="pagination pagination-sm justify-content-center mb-0">`;
+
+            // Previous button
+            if (pagination.hasPreviousPage) {
+                html += `
+                    <li class="page-item">
+                        <a class="page-link" href="#" data-page="${pagination.currentPage - 1}">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>`;
+            }
+
+            // Page numbers
+            const startPage = Math.max(1, pagination.currentPage - 2);
+            const endPage = Math.min(pagination.totalPages, pagination.currentPage + 2);
+
+            if (startPage > 1) {
+                html += `<li class="page-item"><a class="page-link" href="#" data-page="1">1</a></li>`;
+                if (startPage > 2) {
+                    html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const activeClass = i === pagination.currentPage ? 'active' : '';
+                html += `<li class="page-item ${activeClass}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+            }
+
+            if (endPage < pagination.totalPages) {
+                if (endPage < pagination.totalPages - 1) {
+                    html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                }
+                html += `<li class="page-item"><a class="page-link" href="#" data-page="${pagination.totalPages}">${pagination.totalPages}</a></li>`;
+            }
+
+            // Next button
+            if (pagination.hasNextPage) {
+                html += `
+                    <li class="page-item">
+                        <a class="page-link" href="#" data-page="${pagination.currentPage + 1}">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>`;
+            }
+
+            html += `
+                        </ul>
+                    </nav>
+                </div>`;
+
+            return html;
+        }
+
+        function getCurrentFilters() {
+            const selectedLogLevels = $('.log-level-checkbox:checked').map(function() {
+                return $(this).val();
+            }).get();
+
+            const selectedCategories = $('.category-checkbox:checked').map(function() {
+                return $(this).val();
+            }).get();
+
+            return {
+                searchTerm: $('#searchTerm').val(),
+                logLevels: selectedLogLevels,
+                categories: selectedCategories,
+                startDate: $('#startDate').val(),
+                endDate: $('#endDate').val()
+            };
+        }
+
+        function initializeLogEvents() {
+            // View log details buttons
+            $('.view-log-details').off('click').on('click', function() {
+                var logId = $(this).data('log-id');
+                loadLogDetails(logId);
+            });
+
+            // Pagination links
+            $('.page-link[data-page]').off('click').on('click', function(e) {
+                e.preventDefault();
+                const page = $(this).data('page');
+                loadLogs(page);
+            });
+        }
+
+        function loadLogDetails(logId) {
+            // Show modal with loading state
+            $('#logDetailsContent').html(`
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div class="mt-2">Loading log details...</div>
+                </div>
+            `);
+            
+            $('#logDetailsModal').modal('show');
+            
+            // Load details via AJAX
+            $.ajax({
+                url: '@Url.Action("LogDetails", "Admin")',
+                type: 'GET',
+                data: { id: logId },
+                success: function(data) {
+                    $('#logDetailsContent').html(data);
+                },
+                error: function() {
+                    $('#logDetailsContent').html(`
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Error loading log details. Please try again.
+                        </div>
+                    `);
+                }
+            });
+        }
+
+        // Filter Management Functions
+        function applyFilters() {
+            loadLogs(1);
+        }
+
+        function clearAllFilters() {
+            $('#searchTerm').val('');
+            $('#startDate').val('');
+            $('#endDate').val('');
+            $('.log-level-checkbox, .category-checkbox').prop('checked', false);
+            
+            updateLogLevelText();
+            updateCategoryText();
+            updateFilterSummary();
+            
+            // Load logs with no filters (shows everything)
+            loadLogs(1);
+        }
+
+        // Log Level Dropdown Functions
+        function updateLogLevelText() {
+            const checked = $('.log-level-checkbox:checked');
+            const text = $('#logLevelText');
+            
+            if (checked.length === 0) {
+                text.text('Select log levels...');
+            } else if (checked.length === 1) {
+                text.text(checked.first().val());
+            } else {
+                text.text(checked.length + ' levels selected');
+            }
+        }
+
+        function selectAllLogLevels() {
+            $('.log-level-checkbox').prop('checked', true);
+            updateLogLevelText();
+            updateFilterSummary();
+        }
+
+        function clearAllLogLevels() {
+            $('.log-level-checkbox').prop('checked', false);
+            updateLogLevelText();
+            updateFilterSummary();
+        }
+
+        // Category Dropdown Functions
+        function updateCategoryText() {
+            const checked = $('.category-checkbox:checked');
+            const text = $('#categoryText');
+            
+            if (checked.length === 0) {
+                text.text('All categories');
+            } else if (checked.length === 1) {
+                text.text(checked.first().val());
+            } else {
+                text.text(checked.length + ' categories selected');
+            }
+        }
+
+        function selectAllCategories() {
+            $('.category-checkbox').prop('checked', true);
+            updateCategoryText();
+            updateFilterSummary();
+        }
+
+        function clearAllCategories() {
+            $('.category-checkbox').prop('checked', false);
+            updateCategoryText();
+            updateFilterSummary();
+        }
+
+        // Filter Summary Display
+        function updateFilterSummary() {
+            const filters = getCurrentFilters();
+            let summary = [];
+
+            if (filters.searchTerm) {
+                summary.push(`Search: "${filters.searchTerm}"`);
+            }
+            if (filters.logLevels.length > 0) {
+                summary.push(`Levels: ${filters.logLevels.join(', ')}`);
+            }
+            if (filters.categories.length > 0) {
+                summary.push(`Categories: ${filters.categories.join(', ')}`);
+            }
+            if (filters.startDate) {
+                summary.push(`From: ${filters.startDate}`);
+            }
+            if (filters.endDate) {
+                summary.push(`To: ${filters.endDate}`);
+            }
+
+            $('#filterSummary').text(summary.join(' | '));
+        }
+    </script>
+}
