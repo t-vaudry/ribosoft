@@ -11,7 +11,7 @@ namespace NCBI.Datasets.API.Services;
 /// <summary>
 /// HTTP client service for NCBI Datasets API
 /// </summary>
-public class NCBIDatasetsHttpClient : IDisposable
+public class NCBIDatasetsHttpClient : INCBIDatasetsHttpClient
 {
     private readonly HttpClient _httpClient;
     private readonly NCBIDatasetsApiOptions _options;
@@ -131,6 +131,43 @@ public class NCBIDatasetsHttpClient : IDisposable
                 var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
                 return ApiResponse<byte[]>.Error(
                     $"Download failed: {response.StatusCode} - {errorContent}",
+                    (int)response.StatusCode);
+            }
+        });
+    }
+
+    /// <summary>
+    /// Downloads a file using POST request with request body
+    /// </summary>
+    /// <typeparam name="TRequest">Request type</typeparam>
+    /// <param name="endpoint">API endpoint</param>
+    /// <param name="request">Request data</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>File content as byte array</returns>
+    public async Task<ApiResponse<byte[]>> PostDownloadAsync<TRequest>(
+        string endpoint, 
+        TRequest request, 
+        CancellationToken cancellationToken = default)
+    {
+        return await ExecuteWithRetryAsync(async () =>
+        {
+            _logger.LogDebug("Making POST download request to: {Endpoint}", endpoint);
+            
+            var json = JsonSerializer.Serialize(request, _jsonOptions);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            
+            var response = await _httpClient.PostAsync(endpoint, content, cancellationToken);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                var fileContent = await response.Content.ReadAsByteArrayAsync(cancellationToken);
+                return ApiResponse<byte[]>.Success(fileContent, (int)response.StatusCode);
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                return ApiResponse<byte[]>.Error(
+                    $"POST download failed: {response.StatusCode} - {errorContent}",
                     (int)response.StatusCode);
             }
         });
