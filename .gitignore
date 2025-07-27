@@ -295,3 +295,7 @@ UI_MODERNIZATION_STATUS.md
 # CodeQL files
 codeql-*/
 *.sarif
+
+# NCBI Datasets API development configuration (contains API keys)
+NCBI.Datasets.API/appsettings.Development.json
+NCBI.Datasets.API.Tests/appsettings.Development.json
