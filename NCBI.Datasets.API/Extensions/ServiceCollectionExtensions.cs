@@ -28,11 +28,23 @@ public static class ServiceCollectionExtensions
         // Validate configuration
         services.AddSingleton<IValidateOptions<NCBIDatasetsApiOptions>, NCBIDatasetsApiOptionsValidator>();
 
-        // Add HTTP client
+        // Add HTTP client and register interface
         services.AddHttpClient<NCBIDatasetsHttpClient>();
+        services.AddScoped<INCBIDatasetsHttpClient>(provider => provider.GetRequiredService<NCBIDatasetsHttpClient>());
 
-        // Add services
+        // Add regular HTTP client for newer services
+        services.AddHttpClient();
+
+        // Add all API services
         services.AddScoped<GenomeService>();
+        services.AddScoped<GeneService>();
+        services.AddScoped<VirusService>();
+        services.AddScoped<TaxonomyService>();
+        services.AddScoped<ProteinService>();
+        services.AddScoped<OrganelleService>();
+        services.AddScoped<BioSampleService>();
+        
+        // Add main client
         services.AddScoped<INCBIDatasetsClient, NCBIDatasetsClient>();
 
         return services;
@@ -54,11 +66,23 @@ public static class ServiceCollectionExtensions
         // Validate configuration
         services.AddSingleton<IValidateOptions<NCBIDatasetsApiOptions>, NCBIDatasetsApiOptionsValidator>();
 
-        // Add HTTP client
+        // Add HTTP client and register interface
         services.AddHttpClient<NCBIDatasetsHttpClient>();
+        services.AddScoped<INCBIDatasetsHttpClient>(provider => provider.GetRequiredService<NCBIDatasetsHttpClient>());
 
-        // Add services
+        // Add regular HTTP client for newer services
+        services.AddHttpClient();
+
+        // Add all API services
         services.AddScoped<GenomeService>();
+        services.AddScoped<GeneService>();
+        services.AddScoped<VirusService>();
+        services.AddScoped<TaxonomyService>();
+        services.AddScoped<ProteinService>();
+        services.AddScoped<OrganelleService>();
+        services.AddScoped<BioSampleService>();
+        
+        // Add main client
         services.AddScoped<INCBIDatasetsClient, NCBIDatasetsClient>();
 
         return services;

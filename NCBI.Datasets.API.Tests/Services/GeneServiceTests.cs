@@ -60,7 +60,7 @@ public class GeneServiceTests
         Assert.NotNull(result.Data);
         Assert.Single(result.Data.Reports);
         Assert.Equal(59067, result.Data.Reports[0].Gene!.GeneId);
-        Assert.Equal("IL21", result.Data.Reports[0].Gene.Symbol);
+        Assert.Equal("IL21", result.Data.Reports[0].Gene!.Symbol);
     }
 
     [Fact]

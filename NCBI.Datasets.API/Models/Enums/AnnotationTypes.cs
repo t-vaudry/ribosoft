@@ -382,6 +382,119 @@ public enum AssemblyDatasetReportsRequestContentType
 }
 
 /// <summary>
+/// Virus annotation types
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum VirusAnnotationType
+{
+    /// <summary>
+    /// Genome FASTA sequences
+    /// </summary>
+    GENOME_FASTA,
+
+    /// <summary>
+    /// CDS FASTA sequences
+    /// </summary>
+    CDS_FASTA,
+
+    /// <summary>
+    /// Protein FASTA sequences
+    /// </summary>
+    PROTEIN_FASTA,
+
+    /// <summary>
+    /// Genome GFF annotation
+    /// </summary>
+    GENOME_GFF,
+
+    /// <summary>
+    /// Data report
+    /// </summary>
+    DATA_REPORT,
+
+    /// <summary>
+    /// Annotation report
+    /// </summary>
+    ANNOTATION_REPORT,
+
+    /// <summary>
+    /// BioSample report
+    /// </summary>
+    BIOSAMPLE_REPORT
+}
+
+/// <summary>
+/// Virus data report request content types
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum VirusDataReportRequestContentType
+{
+    /// <summary>
+    /// Complete virus metadata
+    /// </summary>
+    COMPLETE,
+
+    /// <summary>
+    /// Accessions only
+    /// </summary>
+    ACCESSIONS_ONLY
+}
+
+/// <summary>
+/// Virus dataset report types
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum VirusDatasetReportType
+{
+    /// <summary>
+    /// Dataset report
+    /// </summary>
+    DATASET_REPORT,
+
+    /// <summary>
+    /// Annotation report
+    /// </summary>
+    ANNOTATION,
+
+    /// <summary>
+    /// BioSample report
+    /// </summary>
+    BIOSAMPLE_REPORT
+}
+
+/// <summary>
+/// Viral sequence types
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ViralSequenceType
+{
+    /// <summary>
+    /// Genome sequences
+    /// </summary>
+    GENOME,
+
+    /// <summary>
+    /// CDS sequences
+    /// </summary>
+    CDS,
+
+    /// <summary>
+    /// Protein sequences
+    /// </summary>
+    PROTEIN,
+
+    /// <summary>
+    /// None
+    /// </summary>
+    NONE,
+
+    /// <summary>
+    /// BioSample data
+    /// </summary>
+    BIOSAMPLE
+}
+
+/// <summary>
 /// Assembly link types
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -396,4 +509,243 @@ public enum AssemblyLinkType
     /// Statistics link
     /// </summary>
     Stats
+}
+
+// Taxonomy-specific enums
+
+/// <summary>
+/// Content types for taxonomy dataset requests
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum TaxonomyDatasetRequestTaxonomyReportType
+{
+    /// <summary>
+    /// Taxonomy summary report
+    /// </summary>
+    TAXONOMY_SUMMARY,
+
+    /// <summary>
+    /// Names report
+    /// </summary>
+    NAMES_REPORT
+}
+
+/// <summary>
+/// Content types for taxonomy metadata requests
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum TaxonomyMetadataRequestContentType
+{
+    /// <summary>
+    /// Complete taxonomy metadata
+    /// </summary>
+    COMPLETE,
+
+    /// <summary>
+    /// Taxonomy IDs only
+    /// </summary>
+    TAXIDS,
+
+    /// <summary>
+    /// Metadata only
+    /// </summary>
+    METADATA
+}
+
+/// <summary>
+/// Table format options for taxonomy metadata requests
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum TaxonomyMetadataRequestTableFormat
+{
+    /// <summary>
+    /// Summary format
+    /// </summary>
+    SUMMARY
+}
+
+/// <summary>
+/// Types of taxonomy relationships
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum TaxonomyRelationshipType
+{
+    /// <summary>
+    /// Parent taxonomy nodes
+    /// </summary>
+    PARENT,
+
+    /// <summary>
+    /// Child taxonomy nodes
+    /// </summary>
+    CHILDREN,
+
+    /// <summary>
+    /// Sibling taxonomy nodes
+    /// </summary>
+    SIBLINGS,
+
+    /// <summary>
+    /// Ancestor taxonomy nodes
+    /// </summary>
+    ANCESTORS,
+
+    /// <summary>
+    /// Descendant taxonomy nodes
+    /// </summary>
+    DESCENDANTS,
+
+    /// <summary>
+    /// Synonym taxonomy nodes
+    /// </summary>
+    SYNONYMS
+}
+
+/// <summary>
+/// Types of taxonomy links
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum TaxonomyLinkType
+{
+    /// <summary>
+    /// Wikipedia link
+    /// </summary>
+    WIKIPEDIA,
+
+    /// <summary>
+    /// Encyclopedia link
+    /// </summary>
+    ENCYCLOPEDIA,
+
+    /// <summary>
+    /// GenBank link
+    /// </summary>
+    GENBANK,
+
+    /// <summary>
+    /// PubMed link
+    /// </summary>
+    PUBMED,
+
+    /// <summary>
+    /// External link
+    /// </summary>
+    EXTERNAL,
+
+    /// <summary>
+    /// Image link
+    /// </summary>
+    IMAGE
+}
+
+/// <summary>
+/// Image size options for taxonomy images
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum TaxonomyImageSize
+{
+    /// <summary>
+    /// Thumbnail size
+    /// </summary>
+    THUMBNAIL,
+
+    /// <summary>
+    /// Small size
+    /// </summary>
+    SMALL,
+
+    /// <summary>
+    /// Medium size
+    /// </summary>
+    MEDIUM,
+
+    /// <summary>
+    /// Large size
+    /// </summary>
+    LARGE,
+
+    /// <summary>
+    /// Original size
+    /// </summary>
+    ORIGINAL
+}
+
+/// <summary>
+/// Image format options for taxonomy images
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum TaxonomyImageFormat
+{
+    /// <summary>
+    /// JPEG format
+    /// </summary>
+    JPEG,
+
+    /// <summary>
+    /// PNG format
+    /// </summary>
+    PNG,
+
+    /// <summary>
+    /// GIF format
+    /// </summary>
+    GIF,
+
+    /// <summary>
+    /// WebP format
+    /// </summary>
+    WEBP
+}
+
+// Protein service enums
+
+/// <summary>
+/// FASTA types for protein/gene requests
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum FastaType
+{
+    /// <summary>
+    /// Gene FASTA sequences
+    /// </summary>
+    GENE_FASTA,
+
+    /// <summary>
+    /// Protein FASTA sequences
+    /// </summary>
+    PROTEIN_FASTA,
+
+    /// <summary>
+    /// CDS FASTA sequences
+    /// </summary>
+    CDS_FASTA,
+
+    /// <summary>
+    /// RNA FASTA sequences
+    /// </summary>
+    RNA_FASTA
+}
+
+// Organelle service enums
+
+/// <summary>
+/// Content types for organelle metadata requests
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum OrganelleMetadataRequestContentType
+{
+    /// <summary>
+    /// Complete organelle metadata
+    /// </summary>
+    COMPLETE,
+
+    /// <summary>
+    /// Accessions only
+    /// </summary>
+    ACCESSIONS_ONLY,
+
+    /// <summary>
+    /// Metadata only
+    /// </summary>
+    METADATA_ONLY
 }
