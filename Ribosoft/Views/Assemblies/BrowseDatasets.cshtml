@@ -68,7 +68,7 @@
                 </h6>
             </div>
             <div class="card-body">
-                <form id="searchForm">
+                <form method="get" asp-action="BrowseDatasets">
                     <div class="row g-3">
                         <!-- Search input takes more space -->
                         <div class="col-md-8">
@@ -106,12 +106,12 @@
                             </label>
                             <div class="d-grid">
                                 <div class="btn-group" role="group">
-                                    <button type="submit" class="btn btn-primary" id="searchBtn">
+                                    <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-search me-1"></i>Search
                                     </button>
-                                    <button type="button" class="btn btn-outline-secondary" id="clearBtn">
+                                    <a asp-action="BrowseDatasets" class="btn btn-outline-secondary">
                                         <i class="fas fa-times me-1"></i>Clear
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -179,7 +179,7 @@
             <div class="card-header bg-white border-bottom">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
-                        <h5 class="card-title mb-1" id="resultsTitle">
+                        <h5 class="card-title mb-1">
                             @if (string.IsNullOrEmpty(ViewBag.SearchTerm as string))
                             {
                                 <text>Popular Datasets</text>
@@ -189,7 +189,7 @@
                                 <text>Search Results</text>
                             }
                         </h5>
-                        <small class="text-muted" id="resultsCount">@Model.Count() dataset(s) found</small>
+                        <small class="text-muted">@Model.Count() dataset(s) found</small>
                     </div>
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-success" id="downloadSelectedBtn" disabled>
@@ -199,21 +199,8 @@
                 </div>
             </div>
 
-            <!-- Loading Indicator -->
-            <div id="loadingIndicator" class="card-body text-center py-5" style="display: none;">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <div class="mt-3">
-                    <h6 class="text-muted">Searching NCBI Datasets...</h6>
-                    <p class="small text-muted mb-0">This may take a few moments</p>
-                </div>
-            </div>
-
-            <!-- Results Container -->
-            <div id="resultsContainer" class="card-body p-0">
-                @await Html.PartialAsync("_DatasetResults", Model)
-            </div>
+            <div class="card-body p-0">
+                @if (Model.Any())
                 {
                     <form id="downloadForm" asp-action="DownloadDatasets" method="post">
                         <div class="table-responsive">
@@ -559,331 +546,6 @@
 </style>
 
 <script>
-    // AJAX Search functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchForm = document.getElementById('searchForm');
-        const searchInput = document.getElementById('searchTerm');
-        const limitSelect = document.getElementById('limit');
-        const searchBtn = document.getElementById('searchBtn');
-        const clearBtn = document.getElementById('clearBtn');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        const resultsContainer = document.getElementById('resultsContainer');
-        const resultsTitle = document.getElementById('resultsTitle');
-        const resultsCount = document.getElementById('resultsCount');
-
-        // Load initial results
-        loadInitialResults();
-
-        // Handle form submission
-        searchForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            performSearch();
-        });
-
-        // Handle clear button
-        clearBtn.addEventListener('click', function() {
-            searchInput.value = '';
-            limitSelect.value = '50';
-            performSearch();
-        });
-
-        // Handle limit change
-        limitSelect.addEventListener('change', function() {
-            performSearch();
-        });
-
-        // Handle Enter key in search input
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                performSearch();
-            }
-        });
-
-        function loadInitialResults() {
-            // Initial results are already loaded server-side, just initialize handlers
-            initializeTableHandlers();
-        }
-
-        function performSearch() {
-            const searchTerm = searchInput.value.trim();
-            const limit = parseInt(limitSelect.value);
-
-            // Show loading indicator
-            showLoading();
-
-            // Disable search button
-            searchBtn.disabled = true;
-            searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Searching...';
-
-            // Make AJAX request
-            fetch('@Url.Action("SearchDatasets", "Assemblies")', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
-                },
-                body: JSON.stringify({
-                    searchTerm: searchTerm,
-                    limit: limit
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                hideLoading();
-                
-                if (data.success) {
-                    updateResults(data.datasets, data.searchTerm, data.count);
-                } else {
-                    showError(data.error || 'An error occurred while searching.');
-                }
-            })
-            .catch(error => {
-                hideLoading();
-                console.error('Search error:', error);
-                showError('Network error occurred. Please try again.');
-            })
-            .finally(() => {
-                // Re-enable search button
-                searchBtn.disabled = false;
-                searchBtn.innerHTML = '<i class="fas fa-search me-1"></i>Search';
-            });
-        }
-
-        function showLoading() {
-            loadingIndicator.style.display = 'block';
-            resultsContainer.style.display = 'none';
-        }
-
-        function hideLoading() {
-            loadingIndicator.style.display = 'none';
-            resultsContainer.style.display = 'block';
-        }
-
-        function updateResults(datasets, searchTerm, count) {
-            // Update title and count
-            resultsTitle.textContent = searchTerm ? 'Search Results' : 'Popular Datasets';
-            resultsCount.textContent = `${count} dataset(s) found`;
-
-            if (datasets.length === 0) {
-                resultsContainer.innerHTML = `
-                    <div class="text-center py-5">
-                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                        <h5 class="text-muted">No Datasets Found</h5>
-                        <p class="text-muted">Try adjusting your search terms or check the examples below the search box.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Build results table
-            let tableHtml = `
-                <form id="downloadForm" asp-action="DownloadDatasets" method="post">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="border-0 fw-semibold" style="width: 50px;">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="selectAll">
-                                            <label class="form-check-label" for="selectAll">
-                                                <span class="visually-hidden">Select All</span>
-                                            </label>
-                                        </div>
-                                    </th>
-                                    <th class="border-0 fw-semibold">
-                                        <i class="fas fa-barcode me-1 text-muted"></i>Accession ID
-                                    </th>
-                                    <th class="border-0 fw-semibold">
-                                        <i class="fas fa-microscope me-1 text-muted"></i>Organism
-                                    </th>
-                                    <th class="border-0 fw-semibold">
-                                        <i class="fas fa-tag me-1 text-muted"></i>Assembly Name
-                                    </th>
-                                    <th class="border-0 fw-semibold">
-                                        <i class="fas fa-layer-group me-1 text-muted"></i>Level
-                                    </th>
-                                    <th class="border-0 fw-semibold">
-                                        <i class="fas fa-hdd me-1 text-muted"></i>Size
-                                    </th>
-                                    <th class="border-0 fw-semibold">
-                                        <i class="fas fa-calendar me-1 text-muted"></i>Submitted
-                                    </th>
-                                    <th class="border-0 fw-semibold text-center">
-                                        <i class="fas fa-info-circle me-1 text-muted"></i>Status
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-            `;
-
-            datasets.forEach(dataset => {
-                const rowClass = dataset.isAlreadyDownloaded ? 'table-success' : 
-                                dataset.isCurrentlyDownloading ? 'table-warning' : '';
-                
-                const sizeDisplay = dataset.estimatedSize > 0 ? 
-                    `${(dataset.estimatedSize / 1024.0 / 1024.0).toFixed(1)} MB` : 'Unknown';
-                
-                const submittedDate = dataset.submissionDate ? 
-                    new Date(dataset.submissionDate).toLocaleDateString('en-US', { 
-                        year: 'numeric', month: 'short', day: 'numeric' 
-                    }) : 'Unknown';
-
-                tableHtml += `
-                    <tr class="${rowClass}">
-                        <td class="align-middle">
-                            ${!dataset.isAlreadyDownloaded && !dataset.isCurrentlyDownloading ? `
-                                <div class="form-check">
-                                    <input class="form-check-input dataset-checkbox" 
-                                           type="checkbox" 
-                                           name="AccessionIds" 
-                                           value="${dataset.accessionId}" 
-                                           id="dataset-${dataset.accessionId}">
-                                    <label class="form-check-label" for="dataset-${dataset.accessionId}">
-                                        <span class="visually-hidden">Select ${dataset.accessionId}</span>
-                                    </label>
-                                </div>
-                            ` : `
-                                <div class="text-center">
-                                    ${dataset.isAlreadyDownloaded ? 
-                                        '<i class="fas fa-check-circle text-success" title="Already downloaded"></i>' :
-                                        '<i class="fas fa-spinner fa-spin text-warning" title="Currently downloading"></i>'
-                                    }
-                                </div>
-                            `}
-                        </td>
-                        <td class="align-middle">
-                            <code class="text-primary">${dataset.accessionId}</code>
-                        </td>
-                        <td class="align-middle">
-                            <div class="organism-info">
-                                <strong>${dataset.organismName}</strong>
-                                ${dataset.taxonomyId > 0 ? `<br><small class="text-muted">Tax ID: ${dataset.taxonomyId}</small>` : ''}
-                            </div>
-                        </td>
-                        <td class="align-middle">
-                            <div class="assembly-name">${dataset.assemblyName}</div>
-                        </td>
-                        <td class="align-middle">
-                            <span class="badge bg-secondary">${dataset.assemblyLevel}</span>
-                        </td>
-                        <td class="align-middle">
-                            <div class="size-info">
-                                <strong>${sizeDisplay}</strong>
-                                ${dataset.contigCount > 0 ? `<br><small class="text-muted">${dataset.contigCount} contigs</small>` : ''}
-                            </div>
-                        </td>
-                        <td class="align-middle">
-                            <small class="text-muted">${submittedDate}</small>
-                        </td>
-                        <td class="align-middle text-center">
-                            ${dataset.isAlreadyDownloaded ? 
-                                '<span class="badge bg-success"><i class="fas fa-check me-1"></i>Downloaded</span>' :
-                                dataset.isCurrentlyDownloading ?
-                                '<span class="badge bg-warning text-dark"><i class="fas fa-spinner fa-spin me-1"></i>Downloading</span>' :
-                                '<span class="badge bg-light text-dark border"><i class="fas fa-cloud me-1"></i>Available</span>'
-                            }
-                        </td>
-                    </tr>
-                `;
-            });
-
-            tableHtml += `
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- Download Actions -->
-                    <div class="card-footer bg-light border-top">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="text-muted small">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Select datasets above and click "Download Selected" to begin processing
-                            </div>
-                            <div class="d-flex align-items-center gap-3">
-                                <span id="selectedCount" class="text-muted">0 selected</span>
-                                <button type="button" class="btn btn-success" id="downloadSelectedBtn" disabled>
-                                    <i class="fas fa-download me-1"></i>Download Selected
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            `;
-
-            resultsContainer.innerHTML = tableHtml;
-            
-            // Reinitialize event handlers for the new content
-            initializeTableHandlers();
-        }
-
-        function showError(message) {
-            resultsContainer.innerHTML = `
-                <div class="text-center py-5">
-                    <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
-                    <h5 class="text-danger">Error</h5>
-                    <p class="text-muted">${message}</p>
-                    <button class="btn btn-outline-primary" onclick="location.reload()">
-                        <i class="fas fa-refresh me-1"></i>Refresh Page
-                    </button>
-                </div>
-            `;
-        }
-
-        function initializeTableHandlers() {
-            // Reinitialize the existing table functionality
-            const selectAllCheckbox = document.getElementById('selectAll');
-            const datasetCheckboxes = document.querySelectorAll('.dataset-checkbox');
-            const downloadBtn = document.getElementById('downloadSelectedBtn');
-            const selectedCountSpan = document.getElementById('selectedCount');
-            const downloadForm = document.getElementById('downloadForm');
-
-            if (!selectAllCheckbox || !downloadBtn) return;
-
-            function updateSelectionState() {
-                const checkedBoxes = document.querySelectorAll('.dataset-checkbox:checked');
-                const totalBoxes = document.querySelectorAll('.dataset-checkbox');
-                
-                selectedCountSpan.textContent = `${checkedBoxes.length} selected`;
-                downloadBtn.disabled = checkedBoxes.length === 0;
-                
-                if (totalBoxes.length > 0) {
-                    selectAllCheckbox.indeterminate = checkedBoxes.length > 0 && checkedBoxes.length < totalBoxes.length;
-                    selectAllCheckbox.checked = checkedBoxes.length === totalBoxes.length;
-                }
-            }
-
-            // Select all functionality
-            selectAllCheckbox.addEventListener('change', function() {
-                datasetCheckboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
-                });
-                updateSelectionState();
-            });
-
-            // Individual checkbox handlers
-            datasetCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', updateSelectionState);
-            });
-
-            // Download button handler
-            downloadBtn.addEventListener('click', function() {
-                const selectedCount = document.querySelectorAll('.dataset-checkbox:checked').length;
-                if (selectedCount === 0) {
-                    alert('Please select at least one dataset to download.');
-                    return;
-                }
-
-                if (confirm(`Are you sure you want to download ${selectedCount} dataset(s)? This may take some time.`)) {
-                    downloadForm.submit();
-                }
-            });
-
-            // Initialize state
-            updateSelectionState();
-        }
-    });
-
-    // Existing table functionality (fallback for server-rendered content)
     document.addEventListener('DOMContentLoaded', function() {
         const selectAllCheckbox = document.getElementById('selectAll');
         const datasetCheckboxes = document.querySelectorAll('.dataset-checkbox');
