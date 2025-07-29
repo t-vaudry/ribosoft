@@ -134,6 +134,66 @@
     </div>
 </div>
 
+<!-- Cancel Download Modal -->
+<div class="modal fade" id="cancelDownloadModal" tabindex="-1" aria-labelledby="cancelDownloadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="cancelDownloadModalLabel">
+                    <i class="fas fa-times me-2"></i>Cancel Download
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-start">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="mb-2">Cancel Active Download</h6>
+                        <p class="mb-3">
+                            Are you sure you want to cancel the download for 
+                            <strong id="cancelAccessionId"></strong> 
+                            (<span id="cancelOrganismName"></span>)?
+                        </p>
+                        
+                        <div class="alert alert-warning mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <div>
+                                    <strong>Warning:</strong> This action cannot be undone. Any progress made will be lost.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <div>
+                                    <strong>Note:</strong> You can restart the download later using the "Browse Datasets" page.
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-muted small mb-0">
+                            <i class="fas fa-clock me-1"></i>
+                            The cancellation will take effect immediately and stop the background job.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-arrow-left me-1"></i>Keep Download
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmCancelBtn">
+                    <i class="fas fa-times me-1"></i>Cancel Download
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Retry Download Modal -->
 <div class="modal fade" id="retryDownloadModal" tabindex="-1" aria-labelledby="retryDownloadModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -328,6 +388,7 @@
         let autoRefreshInterval = null;
         let isAutoRefreshEnabled = false;
         let currentRetryDownloadId = null;
+        let currentCancelDownloadId = null;
 
         $(document).ready(function() {
             // Initial status refresh for active downloads
@@ -425,6 +486,49 @@
                     .fail(function() {
                         showAlert('danger', 'Failed to cancel download');
                     });
+            }
+        }
+
+        function showCancelModal(downloadId, accessionId, organismName) {
+            currentCancelDownloadId = downloadId;
+            $('#cancelAccessionId').text(accessionId);
+            $('#cancelOrganismName').text(organismName);
+            
+            const modal = new bootstrap.Modal(document.getElementById('cancelDownloadModal'));
+            modal.show();
+        }
+
+        // Handle cancel confirmation
+        $('#confirmCancelBtn').click(function() {
+            if (currentCancelDownloadId) {
+                $.post('@Url.Action("CancelDownload")', { id: currentCancelDownloadId })
+                    .done(function(response) {
+                        if (response.success) {
+                            refreshStatus(currentCancelDownloadId);
+                            showAlert('success', response.message);
+                        } else {
+                            showAlert('danger', response.message);
+                        }
+                    })
+                    .fail(function() {
+                        showAlert('danger', 'Failed to cancel download');
+                    });
+                
+                // Hide modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('cancelDownloadModal'));
+                modal.hide();
+                currentCancelDownloadId = null;
+            }
+        });
+
+        function cancelDownload(downloadId) {
+            // This function is kept for backward compatibility but now redirects to modal
+            // Find the download row to get accession and organism info
+            const row = $('#download-' + downloadId);
+            if (row.length > 0) {
+                const accessionId = row.find('code').text();
+                const organismName = row.find('td:nth-child(2) strong').text();
+                showCancelModal(downloadId, accessionId, organismName);
             }
         }
 
@@ -528,7 +632,7 @@
                 const downloadId = row.attr('id').replace('download-', '');
                 buttonsHtml += `
                     <button class="btn btn-outline-danger" 
-                            onclick="cancelDownload(${downloadId})"
+                            onclick="showCancelModal(${downloadId}, '${accessionId}', '${organismName}')"
                             title="Cancel Download">
                         <i class="fas fa-times"></i>
                     </button>

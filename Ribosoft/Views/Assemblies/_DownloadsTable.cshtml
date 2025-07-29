@@ -98,7 +98,7 @@
                                      download.Status == DatasetDownloadStatus.Processing)
                                 {
                                     <button class="btn btn-outline-danger" 
-                                            onclick="cancelDownload(@download.Id)"
+                                            onclick="showCancelModal(@download.Id, '@download.AccessionId', '@Html.Raw(Html.Encode(download.OrganismName))')"
                                             title="Cancel Download">
                                         <i class="fas fa-times"></i>
                                     </button>
