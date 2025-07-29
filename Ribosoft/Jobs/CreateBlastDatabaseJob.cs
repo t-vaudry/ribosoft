@@ -132,10 +132,38 @@ namespace Ribosoft.Jobs
                 // Step 4: Create Assembly record for integration with existing system
                 await CreateAssemblyRecord(download, blastDbPath);
 
-                // Step 5: Clean up extracted files (optional)
-                if (_configuration.GetValue<bool>("DatasetDownloads:CleanupAfterProcessing", true))
+                // Step 5: Clean up extracted files and ZIP file
+                var cleanupExtracted = _configuration.GetValue<bool>("DatasetDownloads:CleanupAfterProcessing", true);
+                var cleanupZip = _configuration.GetValue<bool>("DatasetDownloads:CleanupZipFiles", true);
+                
+                if (cleanupExtracted)
                 {
-                    Directory.Delete(extractPath, true);
+                    try
+                    {
+                        Directory.Delete(extractPath, true);
+                        _logger.LogInformation("Cleaned up extracted files at {ExtractPath}", extractPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "Failed to clean up extracted files at {ExtractPath}", extractPath);
+                    }
+                }
+                
+                if (cleanupZip && !string.IsNullOrEmpty(download.LocalPath) && File.Exists(download.LocalPath))
+                {
+                    try
+                    {
+                        File.Delete(download.LocalPath);
+                        _logger.LogInformation("Cleaned up ZIP file at {ZipPath}", download.LocalPath);
+                        
+                        // Clear the local path since file is deleted
+                        download.LocalPath = null!;
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "Failed to clean up ZIP file at {ZipPath}", download.LocalPath);
+                    }
                 }
 
                 // Step 6: Complete
@@ -279,14 +307,19 @@ namespace Ribosoft.Jobs
         {
             var fileName = Path.GetFileNameWithoutExtension(fastaFile);
             var dbName = $"{accessionId}_{fileName}";
-            var dbPath = Path.Combine(blastDbPath, dbName);
+            
+            // Create accession-specific directory for better organization
+            var accessionDbPath = Path.Combine(blastDbPath, accessionId);
+            Directory.CreateDirectory(accessionDbPath);
+            
+            var dbPath = Path.Combine(accessionDbPath, dbName);
 
             // Get file size for progress estimation
             var fileInfo = new FileInfo(fastaFile);
             var fileSizeMB = fileInfo.Length / (1024.0 * 1024.0);
             
-            _logger.LogInformation("Creating BLAST database {DbName} from {FastaFile} ({SizeMB:F1} MB)", 
-                dbName, Path.GetFileName(fastaFile), fileSizeMB);
+            _logger.LogInformation("Creating BLAST database {DbName} from {FastaFile} ({SizeMB:F1} MB) in {AccessionDbPath}", 
+                dbName, Path.GetFileName(fastaFile), fileSizeMB, accessionDbPath);
 
             // Check if database already exists
             if (File.Exists($"{dbPath}.nhr") && File.Exists($"{dbPath}.nin") && File.Exists($"{dbPath}.nsq"))
@@ -348,8 +381,8 @@ namespace Ribosoft.Jobs
                         $"Error: {error}. Output: {output}");
                 }
 
-                _logger.LogInformation("Successfully created BLAST database {DbName} in {Duration:mm\\:ss}", 
-                    dbName, duration);
+                _logger.LogInformation("Successfully created BLAST database {DbName} in {Duration:mm\\:ss} at {DbPath}", 
+                    dbName, duration, accessionDbPath);
             }
             catch (OperationCanceledException) when (cancellationToken?.ShutdownToken.IsCancellationRequested == true)
             {
@@ -439,6 +472,9 @@ namespace Ribosoft.Jobs
             var existingAssembly = await _context.Assemblies
                 .FirstOrDefaultAsync(a => a.TaxonomyId == download.TaxonomyId);
 
+            // Use organized path structure (accession-specific directory)
+            var assemblyPath = Path.Combine(blastDbPath, download.AccessionId);
+
             if (existingAssembly != null)
             {
                 _logger.LogInformation("Assembly record already exists for taxonomy {TaxonomyId}, updating", 
@@ -450,32 +486,36 @@ namespace Ribosoft.Jobs
                 existingAssembly.OrganismName = download.OrganismName;
                 existingAssembly.SpeciesId = download.SpeciesId;
                 existingAssembly.Type = "Downloaded";
-                existingAssembly.Path = Path.Combine(blastDbPath, download.AccessionId);
+                existingAssembly.Path = assemblyPath;
                 existingAssembly.IsEnabled = true;
                 existingAssembly.UpdatedAt = DateTime.UtcNow;
             }
             else
             {
-                _logger.LogInformation("Creating new Assembly record for taxonomy {TaxonomyId}", 
+                _logger.LogInformation("Creating new assembly record for taxonomy {TaxonomyId}", 
                     download.TaxonomyId);
                 
                 // Create new assembly record
                 var assembly = new Assembly
                 {
-                    TaxonomyId = download.TaxonomyId,
                     AccessionId = download.AccessionId,
-                    AssemblyName = download.AssemblyName,
-                    OrganismName = download.OrganismName,
+                    AssemblyName = download.AssemblyName ?? download.AccessionId,
+                    OrganismName = download.OrganismName ?? "Unknown organism",
                     SpeciesId = download.SpeciesId,
+                    TaxonomyId = download.TaxonomyId,
                     Type = "Downloaded",
-                    Path = Path.Combine(blastDbPath, download.AccessionId),
-                    IsEnabled = true
+                    Path = assemblyPath,
+                    IsEnabled = true,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
                 };
 
                 _context.Assemblies.Add(assembly);
             }
 
             await _context.SaveChangesAsync();
+            _logger.LogInformation("Assembly record updated for {AccessionId} with path {AssemblyPath}", 
+                download.AccessionId, assemblyPath);
         }
     }
 }
