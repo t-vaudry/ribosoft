@@ -68,7 +68,7 @@
                 </h6>
             </div>
             <div class="card-body">
-                <form id="searchForm">
+                <form method="get" asp-action="BrowseDatasets">
                     <div class="row g-3">
                         <!-- Search input takes more space -->
                         <div class="col-md-8">
@@ -106,7 +106,7 @@
                             </label>
                             <div class="d-grid">
                                 <div class="btn-group" role="group">
-                                    <button type="submit" class="btn btn-primary" id="searchBtn">
+                                    <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-search me-1"></i>Search
                                     </button>
                                     <a asp-action="BrowseDatasets" class="btn btn-outline-secondary">
@@ -210,11 +210,8 @@
                 </div>
             </div>
 
-            <!-- Results Container -->
-            <div id="resultsContainer" class="card-body p-0">
-                @await Html.PartialAsync("_DatasetResults", Model)
-            </div>
-        </div>
+            <div class="card-body p-0">
+                @if (Model.Any())
                 {
                     <form id="downloadForm" asp-action="DownloadDatasets" method="post">
                         <div class="table-responsive">
@@ -560,144 +557,20 @@
 </style>
 
 <script>
-    // AJAX Search functionality
+    // Loading state for search
     document.addEventListener('DOMContentLoaded', function() {
-        const searchForm = document.getElementById('searchForm');
-        const searchInput = document.getElementById('searchTerm');
-        const limitSelect = document.getElementById('limit');
-        const searchBtn = document.getElementById('searchBtn');
-        const clearBtn = document.getElementById('clearBtn');
+        const searchForm = document.querySelector('form[action*="BrowseDatasets"]');
         const loadingIndicator = document.getElementById('loadingIndicator');
-        const resultsContainer = document.getElementById('resultsContainer');
-        const resultsTitle = document.getElementById('resultsTitle');
-        const resultsCount = document.getElementById('resultsCount');
-
-        // Handle form submission
-        if (searchForm) {
-            searchForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                performSearch();
-            });
-        }
-
-        // Handle clear button
-        if (clearBtn) {
-            clearBtn.addEventListener('click', function() {
-                searchInput.value = '';
-                limitSelect.value = '50';
-                performSearch();
-            });
-        }
-
-        // Handle limit change
-        if (limitSelect) {
-            limitSelect.addEventListener('change', function() {
-                performSearch();
-            });
-        }
-
-        // Handle Enter key in search input
-        if (searchInput) {
-            searchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    performSearch();
+        const resultsContainer = document.querySelector('.card-body.p-0');
+        
+        if (searchForm && loadingIndicator) {
+            searchForm.addEventListener('submit', function() {
+                // Show loading indicator
+                loadingIndicator.style.display = 'block';
+                if (resultsContainer) {
+                    resultsContainer.style.display = 'none';
                 }
             });
-        }
-
-        function performSearch() {
-            const searchTerm = searchInput.value.trim();
-            const limit = parseInt(limitSelect.value);
-
-            // Show loading indicator
-            showLoading();
-
-            // Disable search button
-            searchBtn.disabled = true;
-            searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Searching...';
-
-            // Make AJAX request
-            fetch('@Url.Action("SearchDatasets", "Assemblies")', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
-                },
-                body: JSON.stringify({
-                    searchTerm: searchTerm,
-                    limit: limit
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                hideLoading();
-                
-                if (data.success) {
-                    updateResults(data.datasets, data.searchTerm, data.count);
-                } else {
-                    showError(data.error || 'An error occurred while searching.');
-                }
-            })
-            .catch(error => {
-                hideLoading();
-                console.error('Search error:', error);
-                showError('Network error occurred. Please try again.');
-            })
-            .finally(() => {
-                // Re-enable search button
-                searchBtn.disabled = false;
-                searchBtn.innerHTML = '<i class="fas fa-search me-1"></i>Search';
-            });
-        }
-
-        function showLoading() {
-            if (loadingIndicator) loadingIndicator.style.display = 'block';
-            if (resultsContainer) resultsContainer.style.display = 'none';
-        }
-
-        function hideLoading() {
-            if (loadingIndicator) loadingIndicator.style.display = 'none';
-            if (resultsContainer) resultsContainer.style.display = 'block';
-        }
-
-        function updateResults(datasets, searchTerm, count) {
-            // Update title and count
-            if (resultsTitle) resultsTitle.textContent = searchTerm ? 'Search Results' : 'Popular Datasets';
-            if (resultsCount) resultsCount.textContent = `${count} dataset(s) found`;
-
-            if (datasets.length === 0) {
-                resultsContainer.innerHTML = `
-                    <div class="text-center py-5">
-                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                        <h5 class="text-muted">No Datasets Found</h5>
-                        <p class="text-muted">Try adjusting your search terms or check the examples below the search box.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // For now, just reload the page with the search results
-            // This maintains the existing functionality while providing loading feedback
-            const url = new URL(window.location);
-            url.searchParams.set('searchTerm', searchTerm);
-            url.searchParams.set('limit', count);
-            window.location.href = url.toString();
-        }
-
-        function showError(message) {
-            if (resultsContainer) {
-                resultsContainer.innerHTML = `
-                    <div class="text-center py-5">
-                        <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
-                        <h5 class="text-danger">Error</h5>
-                        <p class="text-muted">${message}</p>
-                        <button class="btn btn-outline-primary" onclick="location.reload()">
-                            <i class="fas fa-refresh me-1"></i>Refresh Page
-                        </button>
-                    </div>
-                `;
-            }
         }
     });
 
