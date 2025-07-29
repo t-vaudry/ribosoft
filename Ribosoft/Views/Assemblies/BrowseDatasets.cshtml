@@ -440,6 +440,86 @@
     </div>
 </div>
 
+<!-- Download Confirmation Modal -->
+<div class="modal fade" id="downloadConfirmModal" tabindex="-1" aria-labelledby="downloadConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="downloadConfirmModalLabel">
+                    <i class="fas fa-download me-2"></i>Confirm Dataset Download
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-start">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-info-circle fa-2x text-info"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="mb-2">Download Summary</h6>
+                        <p class="mb-3">You are about to download <strong id="selectedDatasetCount">0</strong> dataset(s) from NCBI.</p>
+                        
+                        <div class="alert alert-info mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-clock me-2"></i>
+                                <div>
+                                    <strong>Processing Time:</strong> Downloads may take several minutes to complete depending on dataset size.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-cog me-2"></i>
+                                <div>
+                                    <strong>Background Processing:</strong> Downloads will be processed in the background and converted to BLAST databases automatically.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <h6 class="mb-2">Download Options:</h6>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="modalIncludeAnnotations" checked disabled>
+                                        <label class="form-check-label" for="modalIncludeAnnotations">
+                                            <i class="fas fa-file-alt me-1 text-primary"></i>Annotations
+                                        </label>
+                                        <div class="form-text small">GFF/GBFF files</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="modalIncludeSequence" checked disabled>
+                                        <label class="form-check-label" for="modalIncludeSequence">
+                                            <i class="fas fa-dna me-1 text-success"></i>Sequences
+                                        </label>
+                                        <div class="form-text small">FASTA files</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-muted small mb-0">
+                            <i class="fas fa-info-circle me-1"></i>
+                            You can monitor download progress on the <a asp-action="Downloads">Downloads</a> page.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-success" id="confirmDownloadBtn">
+                    <i class="fas fa-download me-1"></i>Start Download
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     .assemblies-content {
         max-width: 1400px;
@@ -619,14 +699,62 @@
         downloadBtn.addEventListener('click', function() {
             const selectedCount = document.querySelectorAll('.dataset-checkbox:checked').length;
             if (selectedCount === 0) {
-                alert('Please select at least one dataset to download.');
+                showAlert('warning', 'Please select at least one dataset to download.');
                 return;
             }
 
-            if (confirm(`Are you sure you want to download ${selectedCount} dataset(s)? This may take some time.`)) {
-                downloadForm.submit();
-            }
+            // Update modal with selected count
+            document.getElementById('selectedDatasetCount').textContent = selectedCount;
+            
+            // Update modal checkboxes to match form state
+            const includeAnnotations = document.getElementById('includeAnnotations');
+            const includeSequence = document.getElementById('includeSequence');
+            const modalIncludeAnnotations = document.getElementById('modalIncludeAnnotations');
+            const modalIncludeSequence = document.getElementById('modalIncludeSequence');
+            
+            if (includeAnnotations) modalIncludeAnnotations.checked = includeAnnotations.checked;
+            if (includeSequence) modalIncludeSequence.checked = includeSequence.checked;
+            
+            // Show the modal
+            const modal = new bootstrap.Modal(document.getElementById('downloadConfirmModal'));
+            modal.show();
         });
+
+        // Handle modal confirm button
+        document.getElementById('confirmDownloadBtn').addEventListener('click', function() {
+            // Hide the modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('downloadConfirmModal'));
+            modal.hide();
+            
+            // Submit the form
+            downloadForm.submit();
+        });
+
+        // Helper function to show alerts
+        function showAlert(type, message) {
+            const alertHtml = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-${type === 'warning' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            
+            // Insert alert after page header
+            const pageHeader = document.querySelector('.page-header');
+            if (pageHeader) {
+                pageHeader.insertAdjacentHTML('afterend', alertHtml);
+                
+                // Auto-dismiss after 5 seconds
+                setTimeout(function() {
+                    const alert = document.querySelector('.alert');
+                    if (alert) {
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
+                    }
+                }, 5000);
+            }
+        }
 
         // Initialize state
         updateSelectionState();
