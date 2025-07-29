@@ -103,12 +103,12 @@
                     <a asp-action="Downloads" class="btn btn-info">
                         <i class="fas fa-download me-1"></i>View Downloads
                     </a>
-                    <form asp-action="Rescan" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-sync me-1"></i>Rescan Local
-                        </button>
-                    </form>
+                    <button type="button" class="btn btn-primary" onclick="document.getElementById('rescanForm').submit();">
+                        <i class="fas fa-sync me-1"></i>Rescan Local
+                    </button>
                 </div>
+                <!-- Hidden form for rescan action -->
+                <form id="rescanForm" asp-action="Rescan" method="post" style="display: none;"></form>
             </div>
         </div>
 
