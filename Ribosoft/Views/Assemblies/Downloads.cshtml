@@ -70,7 +70,7 @@
             </div>
             <div class="card-body">
                 <div class="row g-3">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <i class="fas fa-cloud-download-alt fa-2x text-success"></i>
@@ -84,7 +84,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <i class="fas fa-sync fa-2x text-info"></i>
@@ -98,7 +98,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <i class="fas fa-clock fa-2x text-warning"></i>
@@ -109,6 +109,20 @@
                                 <button class="btn btn-outline-warning btn-sm" onclick="toggleAutoRefresh()">
                                     <i class="fas fa-clock me-1"></i>
                                     <span id="autoRefreshText">Enable Auto-Refresh</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-microscope fa-2x text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Fix Organisms</h6>
+                                <p class="text-muted small mb-2">Update records with unknown organisms</p>
+                                <button class="btn btn-primary btn-sm" onclick="updateUnknownOrganisms()">
+                                    <i class="fas fa-microscope me-1"></i>Update Organisms
                                 </button>
                             </div>
                         </div>
@@ -469,6 +483,37 @@
                 autoRefreshInterval = setInterval(refreshActiveDownloads, 5000); // Refresh every 5 seconds
                 isAutoRefreshEnabled = true;
                 $('#autoRefreshText').text('Disable Auto-Refresh');
+            }
+        }
+
+        function updateUnknownOrganisms() {
+            if (confirm('This will update all records with "Unknown organism" by fetching data from NCBI. This may take a few minutes. Continue?')) {
+                // Show loading state
+                const btn = event.target.closest('button');
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Updating...';
+                btn.disabled = true;
+                
+                $.post('@Url.Action("UpdateUnknownOrganisms")')
+                    .done(function(response) {
+                        if (response.success) {
+                            showAlert('success', response.message);
+                            // Refresh the current page to show updated data
+                            setTimeout(() => {
+                                location.reload();
+                            }, 2000);
+                        } else {
+                            showAlert('danger', response.message);
+                        }
+                    })
+                    .fail(function() {
+                        showAlert('danger', 'Failed to update organism information');
+                    })
+                    .always(function() {
+                        // Restore button state
+                        btn.innerHTML = originalHtml;
+                        btn.disabled = false;
+                    });
             }
         }
 

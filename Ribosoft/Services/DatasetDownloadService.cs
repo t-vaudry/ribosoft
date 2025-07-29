@@ -29,6 +29,7 @@ namespace Ribosoft.Services
         Task<DatasetDownload?> GetDownloadStatusAsync(int downloadId);
         Task CancelDownloadAsync(int downloadId);
         Task RetryDownloadAsync(int downloadId);
+        Task<int> UpdateUnknownOrganismsAsync();
     }
 
     /*! \class DatasetDownloadService
@@ -322,6 +323,49 @@ namespace Ribosoft.Services
             }
         }
 
+        /*! \fn GetOrganismInfoByAccessionAsync
+         * \brief Get organism information for a specific accession ID
+         * \param accessionId Assembly accession ID
+         * \return Organism information or null if not found
+         */
+        private async Task<(string OrganismName, string AssemblyName, int TaxonomyId)?> GetOrganismInfoByAccessionAsync(string accessionId)
+        {
+            try
+            {
+                _logger.LogInformation("Getting organism info for accession: {AccessionId}", accessionId);
+                
+                var response = await _ncbiClient.GetAssemblyDatasetReportsAsync(
+                    new List<string> { accessionId },
+                    pageSize: 1
+                );
+
+                if (response?.Data?.Reports?.Any() == true)
+                {
+                    var report = response.Data.Reports.First();
+                    var organismName = !string.IsNullOrEmpty(report.OrganismName) ? 
+                        report.OrganismName : 
+                        "Unknown Organism";
+                    var assemblyName = !string.IsNullOrEmpty(report.AssemblyName) ? 
+                        report.AssemblyName : 
+                        $"Assembly {accessionId}";
+                    var taxonomyId = report.Taxid > 0 ? report.Taxid : 0;
+
+                    _logger.LogInformation("Found organism info for {AccessionId}: {OrganismName}", accessionId, organismName);
+                    return (organismName, assemblyName, taxonomyId);
+                }
+                else
+                {
+                    _logger.LogWarning("No assembly report found for accession: {AccessionId}", accessionId);
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting organism info for accession: {AccessionId}", accessionId);
+                return null;
+            }
+        }
+
         /*! \fn RequestDownloadAsync
          * \brief Request download of selected datasets
          * \param request Download request details
@@ -354,11 +398,35 @@ namespace Ribosoft.Services
                         continue;
                     }
 
-                    // Get dataset details from available datasets first
+                    // Get dataset details from available datasets first (for quick lookup)
                     var availableDatasets = await GetAvailableDatasetsAsync(accessionId, 1);
                     var datasetInfo = availableDatasets.FirstOrDefault(d => d.AccessionId == accessionId);
                     
-                    // Get additional details from NCBI
+                    // If not found in available datasets, get detailed info directly from NCBI
+                    string organismName = "Unknown organism";
+                    string assemblyName = $"Assembly {accessionId}";
+                    int taxonomyId = 0;
+                    
+                    if (datasetInfo != null)
+                    {
+                        // Use data from available datasets if found
+                        organismName = datasetInfo.OrganismName;
+                        assemblyName = datasetInfo.AssemblyName;
+                        taxonomyId = datasetInfo.TaxonomyId;
+                    }
+                    else
+                    {
+                        // Get detailed organism info directly from NCBI API
+                        var organismInfo = await GetOrganismInfoByAccessionAsync(accessionId);
+                        if (organismInfo.HasValue)
+                        {
+                            organismName = organismInfo.Value.OrganismName;
+                            assemblyName = organismInfo.Value.AssemblyName;
+                            taxonomyId = organismInfo.Value.TaxonomyId;
+                        }
+                    }
+                    
+                    // Get additional details from NCBI for file size estimation
                     var genomeRequest = new GenomeDownloadSummaryRequest 
                     { 
                         Accessions = new List<string> { accessionId } 
@@ -369,10 +437,10 @@ namespace Ribosoft.Services
                     var download = new DatasetDownload
                     {
                         AccessionId = accessionId,
-                        AssemblyName = datasetInfo?.AssemblyName ?? $"Assembly {accessionId}",
-                        OrganismName = datasetInfo?.OrganismName ?? "Unknown organism",
-                        TaxonomyId = datasetInfo?.TaxonomyId ?? 0,
-                        SpeciesId = datasetInfo?.TaxonomyId ?? 0,
+                        AssemblyName = assemblyName,
+                        OrganismName = organismName,
+                        TaxonomyId = taxonomyId,
+                        SpeciesId = taxonomyId,
                         Status = DatasetDownloadStatus.Queued,
                         Progress = 0,
                         IncludeAnnotations = request.IncludeAnnotations,
@@ -425,6 +493,51 @@ namespace Ribosoft.Services
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
+        }
+
+        /*! \fn UpdateUnknownOrganismsAsync
+         * \brief Update existing DatasetDownload records that have "Unknown organism"
+         * \return Number of records updated
+         */
+        public async Task<int> UpdateUnknownOrganismsAsync()
+        {
+            try
+            {
+                var unknownDownloads = await _context.DatasetDownloads
+                    .Where(d => d.OrganismName == "Unknown organism" || d.OrganismName == "Unknown Organism")
+                    .ToListAsync();
+
+                int updatedCount = 0;
+
+                foreach (var download in unknownDownloads)
+                {
+                    var organismInfo = await GetOrganismInfoByAccessionAsync(download.AccessionId);
+                    if (organismInfo.HasValue)
+                    {
+                        download.OrganismName = organismInfo.Value.OrganismName;
+                        download.AssemblyName = organismInfo.Value.AssemblyName;
+                        download.TaxonomyId = organismInfo.Value.TaxonomyId;
+                        download.SpeciesId = organismInfo.Value.TaxonomyId;
+                        updatedCount++;
+                        
+                        _logger.LogInformation("Updated organism info for {AccessionId}: {OrganismName}", 
+                            download.AccessionId, organismInfo.Value.OrganismName);
+                    }
+                }
+
+                if (updatedCount > 0)
+                {
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation("Updated {Count} DatasetDownload records with proper organism information", updatedCount);
+                }
+
+                return updatedCount;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating unknown organisms");
+                return 0;
+            }
         }
 
         /*! \fn GetDownloadCountAsync

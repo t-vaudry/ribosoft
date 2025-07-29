@@ -333,6 +333,36 @@ namespace Ribosoft.Controllers
             }
         }
 
+        /*! \fn UpdateUnknownOrganisms
+         * \brief HTTP POST for updating existing records with unknown organisms
+         * \return JSON result with update count
+         */
+        [HttpPost]
+        public async Task<IActionResult> UpdateUnknownOrganisms()
+        {
+            try
+            {
+                var updatedCount = await _datasetDownloadService.UpdateUnknownOrganismsAsync();
+                
+                _logger.LogInformation("User {User} updated {Count} unknown organism records", 
+                    User.Identity?.Name, updatedCount);
+                
+                return Json(new { 
+                    success = true, 
+                    message = $"Updated {updatedCount} records with proper organism information",
+                    updatedCount = updatedCount
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating unknown organisms");
+                return Json(new { 
+                    success = false, 
+                    message = "Error updating organism information" 
+                });
+            }
+        }
+
         /*! \fn Rescan
          * \brief HTTP POST for rescanning the assemblies
          * \return View of assemblies index
