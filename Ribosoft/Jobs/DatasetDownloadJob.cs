@@ -101,7 +101,7 @@ namespace Ribosoft.Jobs
                 await UpdateProgress(download, 20, "Starting file download...");
 
                 var downloadPath = GetDownloadPath(download.AccessionId);
-                Directory.CreateDirectory(Path.GetDirectoryName(downloadPath)!);
+                // Directory creation and permission checking is now handled in GetDownloadPath
 
                 await DownloadFileWithProgress(download, downloadSummary.Data.Hydrated.Url, downloadPath, cancellationToken);
 
@@ -202,14 +202,124 @@ namespace Ribosoft.Jobs
         }
 
         /*! \fn GetDownloadPath
-         * \brief Get local download path for dataset
+         * \brief Get local download path for dataset with enhanced error handling
          */
         private string GetDownloadPath(string accessionId)
         {
             var downloadDir = _configuration["DatasetDownloads:Path"] ?? 
                              Path.Combine(Directory.GetCurrentDirectory(), "Downloads", "Datasets");
             
-            return Path.Combine(downloadDir, $"{accessionId}.zip");
+            try
+            {
+                // Ensure the directory exists and is accessible
+                if (!Directory.Exists(downloadDir))
+                {
+                    _logger.LogInformation("Creating download directory: {DownloadDir}", downloadDir);
+                    Directory.CreateDirectory(downloadDir);
+                }
+                
+                // Test write permissions by creating a temporary file
+                var testFile = Path.Combine(downloadDir, $".test_{Guid.NewGuid()}.tmp");
+                try
+                {
+                    File.WriteAllText(testFile, "test");
+                    File.Delete(testFile);
+                    _logger.LogDebug("Download directory permissions verified: {DownloadDir}", downloadDir);
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    _logger.LogError(ex, "Permission denied accessing download directory: {DownloadDir}", downloadDir);
+                    throw new InvalidOperationException(
+                        $"Permission denied accessing download directory '{downloadDir}'. " +
+                        $"Please ensure the application has read/write permissions to this directory. " +
+                        $"You may need to run: sudo chown -R $USER:$USER {downloadDir} && sudo chmod -R 755 {downloadDir}");
+                }
+                catch (DirectoryNotFoundException ex)
+                {
+                    _logger.LogError(ex, "Download directory path not found: {DownloadDir}", downloadDir);
+                    throw new InvalidOperationException(
+                        $"Download directory path '{downloadDir}' not found. " +
+                        $"Please ensure the parent directories exist and are accessible.");
+                }
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogError(ex, "Cannot create download directory due to permissions: {DownloadDir}", downloadDir);
+                throw new InvalidOperationException(
+                    $"Cannot create download directory '{downloadDir}' due to insufficient permissions. " +
+                    $"Please ensure the application has permissions to create directories in the parent path.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error accessing download directory: {DownloadDir}", downloadDir);
+                throw new InvalidOperationException(
+                    $"Error accessing download directory '{downloadDir}': {ex.Message}");
+            }
+            
+            var filePath = Path.Combine(downloadDir, $"{accessionId}.zip");
+            _logger.LogDebug("Download path for {AccessionId}: {FilePath}", accessionId, filePath);
+            
+            return filePath;
+        }
+
+        /*! \fn ValidateDownloadConfiguration
+         * \brief Validate download directory configuration and permissions
+         * \return Validation result with any issues found
+         */
+        public static (bool IsValid, string ErrorMessage) ValidateDownloadConfiguration(IConfiguration configuration)
+        {
+            try
+            {
+                var downloadDir = configuration["DatasetDownloads:Path"] ?? 
+                                 Path.Combine(Directory.GetCurrentDirectory(), "Downloads", "Datasets");
+                
+                // Check if path is absolute and valid
+                if (!Path.IsPathRooted(downloadDir))
+                {
+                    return (false, $"Download path '{downloadDir}' must be an absolute path");
+                }
+                
+                // Try to create directory if it doesn't exist
+                if (!Directory.Exists(downloadDir))
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(downloadDir);
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        return (false, $"Permission denied creating download directory '{downloadDir}'. " +
+                                      $"Run: sudo mkdir -p {downloadDir} && sudo chown -R $USER:$USER {downloadDir}");
+                    }
+                    catch (Exception ex)
+                    {
+                        return (false, $"Cannot create download directory '{downloadDir}': {ex.Message}");
+                    }
+                }
+                
+                // Test write permissions
+                var testFile = Path.Combine(downloadDir, $".permission_test_{Guid.NewGuid()}.tmp");
+                try
+                {
+                    File.WriteAllText(testFile, "permission test");
+                    File.Delete(testFile);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    return (false, $"No write permission to download directory '{downloadDir}'. " +
+                                  $"Run: sudo chmod -R 755 {downloadDir} && sudo chown -R $USER:$USER {downloadDir}");
+                }
+                catch (Exception ex)
+                {
+                    return (false, $"Cannot write to download directory '{downloadDir}': {ex.Message}");
+                }
+                
+                return (true, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error validating download configuration: {ex.Message}");
+            }
         }
 
         /*! \fn ShouldCreateBlastDatabase

@@ -268,5 +268,20 @@ public class Program
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
+        
+        // Validate download directory configuration
+        var (isValid, errorMessage) = Ribosoft.Jobs.DatasetDownloadJob.ValidateDownloadConfiguration(app.Configuration);
+        if (!isValid)
+        {
+            Console.WriteLine($"FATAL: Download directory configuration error: {errorMessage}");
+            Console.WriteLine("Application cannot start. Please fix the download directory permissions and try again.");
+            throw new InvalidOperationException($"Download directory configuration error: {errorMessage}");
+        }
+        else
+        {
+            var downloadDir = app.Configuration["DatasetDownloads:Path"] ?? 
+                             Path.Combine(Directory.GetCurrentDirectory(), "Downloads", "Datasets");
+            Console.WriteLine($"INFO: Download directory validated successfully: {downloadDir}");
+        }
     }
 }
