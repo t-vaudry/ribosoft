@@ -127,142 +127,59 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body p-0">
-                @if (Model.Any())
-                {
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Accession</th>
-                                    <th>Organism</th>
-                                    <th>Status</th>
-                                    <th>Progress</th>
-                                    <th>Size</th>
-                                    <th>Requested By</th>
-                                    <th>Started</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var download in Model)
-                                {
-                                    <tr id="download-@download.Id" class="download-row">
-                                        <td>
-                                            <code>@download.AccessionId</code>
-                                        </td>
-                                        <td>
-                                            <div>
-                                                <strong>@download.OrganismName</strong>
-                                                <br><small class="text-muted">@download.AssemblyName</small>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="status-badge" data-status="@download.Status">
-                                                @GetStatusBadge(download.Status, download.ErrorMessage)
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="progress-container">
-                                                @if (download.Status == DatasetDownloadStatus.Downloading || 
-                                                     download.Status == DatasetDownloadStatus.Processing)
-                                                {
-                                                    <div class="progress mb-1" style="height: 20px;">
-                                                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                                                             role="progressbar" 
-                                                             style="width: @download.Progress%"
-                                                             aria-valuenow="@download.Progress" 
-                                                             aria-valuemin="0" 
-                                                             aria-valuemax="100">
-                                                            @download.Progress%
-                                                        </div>
-                                                    </div>
-                                                }
-                                                else if (download.Status == DatasetDownloadStatus.Completed || 
-                                                         download.Status == DatasetDownloadStatus.ReadyForBlast)
-                                                {
-                                                    <div class="progress mb-1" style="height: 20px;">
-                                                        <div class="progress-bar bg-success" 
-                                                             role="progressbar" 
-                                                             style="width: 100%">
-                                                            Complete
-                                                        </div>
-                                                    </div>
-                                                }
-                                                else
-                                                {
-                                                    <small class="text-muted">@download.Progress%</small>
-                                                }
-                                            </div>
-                                        </td>
-                                        <td>
-                                            @if (download.FileSize > 0)
-                                            {
-                                                <div>
-                                                    @FormatBytes(download.DownloadedBytes) / @FormatBytes(download.FileSize)
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <small class="text-muted">Unknown</small>
-                                            }
-                                        </td>
-                                        <td>@download.RequestedBy</td>
-                                        <td>
-                                            @if (download.StartedAt.HasValue)
-                                            {
-                                                @download.StartedAt.Value.ToString("MMM dd, HH:mm")
-                                            }
-                                            else
-                                            {
-                                                <small class="text-muted">Not started</small>
-                                            }
-                                        </td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm" role="group">
-                                                @if (download.Status == DatasetDownloadStatus.Queued || 
-                                                     download.Status == DatasetDownloadStatus.Downloading || 
-                                                     download.Status == DatasetDownloadStatus.Processing)
-                                                {
-                                                    <button class="btn btn-outline-danger" 
-                                                            onclick="cancelDownload(@download.Id)"
-                                                            title="Cancel Download">
-                                                        <i class="fas fa-times"></i>
-                                                    </button>
-                                                }
-                                                else if (download.Status == DatasetDownloadStatus.Failed)
-                                                {
-                                                    <button class="btn btn-outline-warning" 
-                                                            onclick="retryDownload(@download.Id)"
-                                                            title="Retry Download">
-                                                        <i class="fas fa-redo"></i>
-                                                    </button>
-                                                }
-                                                
-                                                <button class="btn btn-outline-primary" 
-                                                        onclick="refreshStatus(@download.Id)"
-                                                        title="Refresh Status">
-                                                    <i class="fas fa-sync"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+            <div class="card-body p-0" id="downloadsTableContainer">
+                @await Html.PartialAsync("_DownloadsTable", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Retry Download Modal -->
+<div class="modal fade" id="retryDownloadModal" tabindex="-1" aria-labelledby="retryDownloadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="retryDownloadModalLabel">
+                    <i class="fas fa-redo me-2"></i>Retry Download
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-start">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle fa-2x text-warning"></i>
                     </div>
-                }
-                else
-                {
-                    <div class="text-center py-5">
-                        <i class="fas fa-download fa-3x text-muted mb-3"></i>
-                        <h5>No downloads yet</h5>
-                        <p class="text-muted">Start by browsing available datasets from NCBI.</p>
-                        <a asp-action="BrowseDatasets" class="btn btn-primary">
-                            <i class="fas fa-search me-1"></i>Browse Datasets
-                        </a>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="mb-2">Retry Failed Download</h6>
+                        <p class="mb-3">
+                            Are you sure you want to retry the download for 
+                            <strong id="retryAccessionId"></strong> 
+                            (<span id="retryOrganismName"></span>)?
+                        </p>
+                        
+                        <div class="alert alert-info mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <div>
+                                    <strong>Note:</strong> This will create a new download job and attempt to download the dataset again.
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-muted small mb-0">
+                            <i class="fas fa-clock me-1"></i>
+                            The retry process may take several minutes depending on the dataset size.
+                        </p>
                     </div>
-                }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-warning" id="confirmRetryBtn">
+                    <i class="fas fa-redo me-1"></i>Retry Download
+                </button>
             </div>
         </div>
     </div>
@@ -410,11 +327,48 @@
     <script>
         let autoRefreshInterval = null;
         let isAutoRefreshEnabled = false;
+        let currentRetryDownloadId = null;
 
         $(document).ready(function() {
             // Initial status refresh for active downloads
             refreshActiveDownloads();
         });
+
+        // AJAX Pagination
+        function loadPage(page) {
+            if (page < 1) return;
+            
+            // Show loading indicator
+            $('#downloadsTableContainer').html(`
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div class="mt-3">
+                        <h6 class="text-muted">Loading downloads...</h6>
+                    </div>
+                </div>
+            `);
+            
+            $.get('@Url.Action("GetDownloadsPage")', { page: page })
+                .done(function(data) {
+                    $('#downloadsTableContainer').html(data);
+                    // Refresh active downloads on the new page
+                    refreshActiveDownloads();
+                })
+                .fail(function() {
+                    $('#downloadsTableContainer').html(`
+                        <div class="text-center py-5">
+                            <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                            <h5 class="text-danger">Error Loading Downloads</h5>
+                            <p class="text-muted">Failed to load downloads. Please try again.</p>
+                            <button class="btn btn-primary" onclick="location.reload()">
+                                <i class="fas fa-refresh me-1"></i>Refresh Page
+                            </button>
+                        </div>
+                    `);
+                });
+        }
 
         function refreshStatus(downloadId) {
             $.get('@Url.Action("GetDownloadStatus")', { id: downloadId })
@@ -474,12 +428,22 @@
             }
         }
 
-        function retryDownload(downloadId) {
-            if (confirm('Are you sure you want to retry this download?')) {
-                $.post('@Url.Action("RetryDownload")', { id: downloadId })
+        function showRetryModal(downloadId, accessionId, organismName) {
+            currentRetryDownloadId = downloadId;
+            $('#retryAccessionId').text(accessionId);
+            $('#retryOrganismName').text(organismName);
+            
+            const modal = new bootstrap.Modal(document.getElementById('retryDownloadModal'));
+            modal.show();
+        }
+
+        // Handle retry confirmation
+        $('#confirmRetryBtn').click(function() {
+            if (currentRetryDownloadId) {
+                $.post('@Url.Action("RetryDownload")', { id: currentRetryDownloadId })
                     .done(function(response) {
                         if (response.success) {
-                            refreshStatus(downloadId);
+                            refreshStatus(currentRetryDownloadId);
                             showAlert('success', response.message);
                         } else {
                             showAlert('danger', response.message);
@@ -488,8 +452,13 @@
                     .fail(function() {
                         showAlert('danger', 'Failed to retry download');
                     });
+                
+                // Hide modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('retryDownloadModal'));
+                modal.hide();
+                currentRetryDownloadId = null;
             }
-        }
+        });
 
         function updateDownloadRow(data) {
             const row = $('#download-' + data.id);
@@ -534,7 +503,7 @@
             }
 
             // Update action buttons
-            updateActionButtons(row, data.status);
+            updateActionButtons(row, data.status, data.accessionId, data.organismName);
         }
 
         function getStatusBadgeHtml(status, errorMessage) {
@@ -551,7 +520,7 @@
             return badges[status] || '<span class="badge bg-light text-dark">Unknown</span>';
         }
 
-        function updateActionButtons(row, status) {
+        function updateActionButtons(row, status, accessionId, organismName) {
             const actionsCell = row.find('td:last-child .btn-group');
             let buttonsHtml = '';
 
@@ -568,7 +537,7 @@
                 const downloadId = row.attr('id').replace('download-', '');
                 buttonsHtml += `
                     <button class="btn btn-outline-warning" 
-                            onclick="retryDownload(${downloadId})"
+                            onclick="showRetryModal(${downloadId}, '${accessionId}', '${organismName}')"
                             title="Retry Download">
                         <i class="fas fa-redo"></i>
                     </button>

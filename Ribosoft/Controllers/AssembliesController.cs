@@ -196,14 +196,23 @@ namespace Ribosoft.Controllers
         }
 
         /*! \fn Downloads
-         * \brief HTTP GET for viewing download history and status
-         * \return View with download history
+         * \brief HTTP GET for viewing download history and status with pagination
+         * \param page Current page number
+         * \return View with paginated download history
          */
-        public async Task<IActionResult> Downloads()
+        public async Task<IActionResult> Downloads(int page = 1)
         {
             try
             {
-                var downloads = await _datasetDownloadService.GetDownloadHistoryAsync();
+                const int pageSize = 10;
+                var downloads = await _datasetDownloadService.GetDownloadHistoryAsync(page, pageSize);
+                var totalCount = await _datasetDownloadService.GetDownloadCountAsync();
+                
+                ViewBag.CurrentPage = page;
+                ViewBag.PageSize = pageSize;
+                ViewBag.TotalCount = totalCount;
+                ViewBag.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+                
                 return View(downloads);
             }
             catch (Exception ex)
@@ -211,6 +220,34 @@ namespace Ribosoft.Controllers
                 _logger.LogError(ex, "Error loading download history");
                 TempData["Error"] = "Error loading download history.";
                 return RedirectToAction(nameof(Index));
+            }
+        }
+
+        /*! \fn GetDownloadsPage
+         * \brief HTTP GET for getting paginated downloads via AJAX
+         * \param page Current page number
+         * \return Partial view with downloads
+         */
+        [HttpGet]
+        public async Task<IActionResult> GetDownloadsPage(int page = 1)
+        {
+            try
+            {
+                const int pageSize = 10;
+                var downloads = await _datasetDownloadService.GetDownloadHistoryAsync(page, pageSize);
+                var totalCount = await _datasetDownloadService.GetDownloadCountAsync();
+                
+                ViewBag.CurrentPage = page;
+                ViewBag.PageSize = pageSize;
+                ViewBag.TotalCount = totalCount;
+                ViewBag.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+                
+                return PartialView("_DownloadsTable", downloads);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading downloads page {Page}", page);
+                return Json(new { success = false, message = "Error loading downloads" });
             }
         }
 

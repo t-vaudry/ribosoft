@@ -1,0 +1,31 @@
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+#!genome-build nCoV-SH01
+#!genome-build-accession NCBI_Assembly:GCA_011545035.1
+##sequence-region MT121215.1 1 29945
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=2697049
+MT121215.1	Genbank	region	1	29945	.	+	.	ID=MT121215.1:1..29945;Dbxref=taxon:2697049;collection-date=02-Feb-2020;country=China: Shanghai;gb-acronym=SARS-CoV-2;gbkey=Src;genome=genomic;isolate=SARS-CoV-2/human/CHN/SH01/2020;isolation-source=throat swab;mol_type=genomic RNA;nat-host=Homo sapiens;note=passage details: Vero
+MT121215.1	Genbank	CDS	266	13468	.	+	0	ID=cds-QII57165.1;Dbxref=NCBI_GP:QII57165.1;Name=QII57165.1;exception=ribosomal slippage;gbkey=CDS;product=ORF1ab polyprotein;protein_id=QII57165.1
+MT121215.1	Genbank	CDS	13468	21555	.	+	0	ID=cds-QII57165.1;Dbxref=NCBI_GP:QII57165.1;Name=QII57165.1;exception=ribosomal slippage;gbkey=CDS;product=ORF1ab polyprotein;protein_id=QII57165.1
+MT121215.1	Genbank	mature_protein_region_of_CDS	266	805	.	+	.	ID=id-QII57165.1:1..180;Parent=cds-QII57165.1;gbkey=Prot;product=nsp1
+MT121215.1	Genbank	mature_protein_region_of_CDS	806	2719	.	+	.	ID=id-QII57165.1:181..818;Parent=cds-QII57165.1;gbkey=Prot;product=nsp2
+MT121215.1	Genbank	mature_protein_region_of_CDS	2720	8554	.	+	.	ID=id-QII57165.1:819..2763;Parent=cds-QII57165.1;gbkey=Prot;product=nsp3
+MT121215.1	Genbank	mature_protein_region_of_CDS	8555	10054	.	+	.	ID=id-QII57165.1:2764..3263;Parent=cds-QII57165.1;gbkey=Prot;product=nsp4
+MT121215.1	Genbank	mature_protein_region_of_CDS	10055	10972	.	+	.	ID=id-QII57165.1:3264..3569;Parent=cds-QII57165.1;gbkey=Prot;product=nsp5
+MT121215.1	Genbank	mature_protein_region_of_CDS	10973	11842	.	+	.	ID=id-QII57165.1:3570..3859;Parent=cds-QII57165.1;gbkey=Prot;product=nsp6
+MT121215.1	Genbank	mature_protein_region_of_CDS	11843	12091	.	+	.	ID=id-QII57165.1:3860..3942;Parent=cds-QII57165.1;gbkey=Prot;product=nsp7
+MT121215.1	Genbank	mature_protein_region_of_CDS	12092	12685	.	+	.	ID=id-QII57165.1:3943..4140;Parent=cds-QII57165.1;gbkey=Prot;product=nsp8
+MT121215.1	Genbank	mature_protein_region_of_CDS	12686	13024	.	+	.	ID=id-QII57165.1:4141..4253;Parent=cds-QII57165.1;gbkey=Prot;product=nsp9
+MT121215.1	Genbank	mature_protein_region_of_CDS	13025	13441	.	+	.	ID=id-QII57165.1:4254..4392;Parent=cds-QII57165.1;gbkey=Prot;product=nsp10
+MT121215.1	Genbank	mature_protein_region_of_CDS	13442	13468	.	+	.	ID=id-QII57165.1:4393..5324;Parent=cds-QII57165.1;gbkey=Prot;product=nsp12
+MT121215.1	Genbank	mature_protein_region_of_CDS	13468	16236	.	+	.	ID=id-QII57165.1:4393..5324;Parent=cds-QII57165.1;gbkey=Prot;product=nsp12
+MT121215.1	Genbank	mature_protein_region_of_CDS	16237	18039	.	+	.	ID=id-QII57165.1:5325..5925;Parent=cds-QII57165.1;gbkey=Prot;product=nsp13
+MT121215.1	Genbank	mature_protein_region_of_CDS	18040	19620	.	+	.	ID=id-QII57165.1:5926..6452;Parent=cds-QII57165.1;gbkey=Prot;product=nsp14
+MT121215.1	Genbank	mature_protein_region_of_CDS	19621	20658	.	+	.	ID=id-QII57165.1:6453..6798;Parent=cds-QII57165.1;gbkey=Prot;product=nsp15
+MT121215.1	Genbank	mature_protein_region_of_CDS	20659	21552	.	+	.	ID=id-QII57165.1:6799..7096;Parent=cds-QII57165.1;gbkey=Prot;product=nsp16
+MT121215.1	Genbank	CDS	21563	25384	.	+	0	ID=cds-QII57161.1;Dbxref=NCBI_GP:QII57161.1;Name=QII57161.1;gbkey=CDS;product=S protein;protein_id=QII57161.1
+MT121215.1	Genbank	CDS	26245	26472	.	+	0	ID=cds-QII57162.1;Dbxref=NCBI_GP:QII57162.1;Name=QII57162.1;gbkey=CDS;product=E protein;protein_id=QII57162.1
+MT121215.1	Genbank	CDS	26523	27191	.	+	0	ID=cds-QII57163.1;Dbxref=NCBI_GP:QII57163.1;Name=QII57163.1;gbkey=CDS;product=M protein;protein_id=QII57163.1
+MT121215.1	Genbank	CDS	28274	29533	.	+	0	ID=cds-QII57164.1;Dbxref=NCBI_GP:QII57164.1;Name=QII57164.1;gbkey=CDS;product=N protein;protein_id=QII57164.1
+###

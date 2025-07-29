@@ -24,7 +24,8 @@ namespace Ribosoft.Services
     {
         Task<List<AvailableDatasetViewModel>> GetAvailableDatasetsAsync(string? searchTerm = null, int limit = 100);
         Task<string> RequestDownloadAsync(DatasetDownloadRequestViewModel request, string requestedBy);
-        Task<List<DatasetDownload>> GetDownloadHistoryAsync();
+        Task<List<DatasetDownload>> GetDownloadHistoryAsync(int page = 1, int pageSize = 10);
+        Task<int> GetDownloadCountAsync();
         Task<DatasetDownload?> GetDownloadStatusAsync(int downloadId);
         Task CancelDownloadAsync(int downloadId);
         Task RetryDownloadAsync(int downloadId);
@@ -353,21 +354,25 @@ namespace Ribosoft.Services
                         continue;
                     }
 
-                    // Get dataset details from NCBI (simplified for now)
+                    // Get dataset details from available datasets first
+                    var availableDatasets = await GetAvailableDatasetsAsync(accessionId, 1);
+                    var datasetInfo = availableDatasets.FirstOrDefault(d => d.AccessionId == accessionId);
+                    
+                    // Get additional details from NCBI
                     var genomeRequest = new GenomeDownloadSummaryRequest 
                     { 
                         Accessions = new List<string> { accessionId } 
                     };
                     var genomeResponse = await _ncbiClient.GetGenomeDownloadSummaryAsync(genomeRequest);
                     
-                    // For now, create a basic record since we don't have full genome reports
+                    // Create download record with proper organism information
                     var download = new DatasetDownload
                     {
                         AccessionId = accessionId,
-                        AssemblyName = $"Assembly {accessionId}",
-                        OrganismName = "Unknown organism",
-                        TaxonomyId = 0,
-                        SpeciesId = 0,
+                        AssemblyName = datasetInfo?.AssemblyName ?? $"Assembly {accessionId}",
+                        OrganismName = datasetInfo?.OrganismName ?? "Unknown organism",
+                        TaxonomyId = datasetInfo?.TaxonomyId ?? 0,
+                        SpeciesId = datasetInfo?.TaxonomyId ?? 0,
                         Status = DatasetDownloadStatus.Queued,
                         Progress = 0,
                         IncludeAnnotations = request.IncludeAnnotations,
@@ -408,14 +413,27 @@ namespace Ribosoft.Services
         }
 
         /*! \fn GetDownloadHistoryAsync
-         * \brief Get download history
-         * \return List of downloads
+         * \brief Get paginated download history
+         * \param page Page number (1-based)
+         * \param pageSize Number of items per page
+         * \return List of downloads for the specified page
          */
-        public async Task<List<DatasetDownload>> GetDownloadHistoryAsync()
+        public async Task<List<DatasetDownload>> GetDownloadHistoryAsync(int page = 1, int pageSize = 10)
         {
             return await _context.DatasetDownloads
                 .OrderByDescending(d => d.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+        }
+
+        /*! \fn GetDownloadCountAsync
+         * \brief Get total count of downloads
+         * \return Total number of downloads
+         */
+        public async Task<int> GetDownloadCountAsync()
+        {
+            return await _context.DatasetDownloads.CountAsync();
         }
 
         /*! \fn GetDownloadStatusAsync
