@@ -80,6 +80,7 @@ namespace Ribosoft.Jobs
                 // Step 3: Create BLAST database for each FASTA file (if enabled)
                 var blastDbPath = _configuration["Blast:BLASTDB"] ?? 
                                  Path.Combine(Directory.GetCurrentDirectory(), "BlastDatabases");
+                blastDbPath = ExpandPath(blastDbPath);
                 Directory.CreateDirectory(blastDbPath);
                 
                 var createBlastDb = _configuration.GetValue<bool>("DatasetDownloads:CreateBlastDatabase", true);
@@ -390,6 +391,27 @@ namespace Ribosoft.Jobs
             
             _logger.LogInformation("Download {DownloadId} progress: {Progress}% - {Message}", 
                 download.Id, progress, message);
+        }
+
+        /*! \fn ExpandPath
+         * \brief Expand ~ and environment variables in path
+         */
+        private static string ExpandPath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return path;
+
+            // Expand ~ to home directory
+            if (path.StartsWith("~/") || path == "~")
+            {
+                var homeDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                if (path == "~")
+                    return homeDir;
+                return Path.Combine(homeDir, path.Substring(2));
+            }
+
+            // Expand environment variables
+            return Environment.ExpandEnvironmentVariables(path);
         }
 
         /*! \fn DetermineDbType

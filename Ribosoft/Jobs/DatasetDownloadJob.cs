@@ -232,6 +232,9 @@ namespace Ribosoft.Jobs
             var downloadDir = _configuration["DatasetDownloads:Path"] ?? 
                              Path.Combine(Directory.GetCurrentDirectory(), "Downloads", "Datasets");
             
+            // Expand ~ to home directory if present
+            downloadDir = ExpandPath(downloadDir);
+            
             try
             {
                 // Check if directory exists first
@@ -314,6 +317,27 @@ namespace Ribosoft.Jobs
             return filePath;
         }
 
+        /*! \fn ExpandPath
+         * \brief Expand ~ and environment variables in path
+         */
+        private static string ExpandPath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return path;
+
+            // Expand ~ to home directory
+            if (path.StartsWith("~/") || path == "~")
+            {
+                var homeDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                if (path == "~")
+                    return homeDir;
+                return Path.Combine(homeDir, path.Substring(2));
+            }
+
+            // Expand environment variables
+            return Environment.ExpandEnvironmentVariables(path);
+        }
+
         /*! \fn ValidateDownloadConfiguration
          * \brief Validate download directory configuration and permissions
          * \return Validation result with any issues found
@@ -324,6 +348,9 @@ namespace Ribosoft.Jobs
             {
                 var downloadDir = configuration["DatasetDownloads:Path"] ?? 
                                  Path.Combine(Directory.GetCurrentDirectory(), "Downloads", "Datasets");
+                
+                // Expand ~ to home directory if present
+                downloadDir = ExpandPath(downloadDir);
                 
                 // Check if path is absolute and valid
                 if (!Path.IsPathRooted(downloadDir))
@@ -378,6 +405,7 @@ namespace Ribosoft.Jobs
             {
                 var downloadDir = configuration["DatasetDownloads:Path"] ?? 
                                  Path.Combine(Directory.GetCurrentDirectory(), "Downloads", "Datasets");
+                downloadDir = ExpandPath(downloadDir);
                 return (false, $"Permission denied accessing download directory '{downloadDir}'. " +
                               $"Run: sudo chmod 755 {downloadDir}");
             }
