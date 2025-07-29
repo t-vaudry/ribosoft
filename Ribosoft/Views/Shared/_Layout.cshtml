@@ -147,6 +147,8 @@
     <environment include="Development">
         <!-- CSS is injected inline by webpack style-loader in development mode -->
     </environment>
+    
+    @RenderSection("Styles", required: false)
 </head>
 <body class="bg-light">
     <div class="main-wrapper" id="mainWrapper">
