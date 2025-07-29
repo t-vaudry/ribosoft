@@ -25,10 +25,20 @@
 
         <!-- Navigation -->
         <nav aria-label="breadcrumb" class="mb-3">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a asp-action="Index">Assembly Databases</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Browse Datasets</li>
-            </ol>
+            <div class="d-flex justify-content-between align-items-center">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a asp-action="Index">Assembly Databases</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Browse Datasets</li>
+                </ol>
+                <div class="d-flex gap-2">
+                    <a asp-action="Index" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-arrow-left me-1"></i>Back to Assemblies
+                    </a>
+                    <a asp-action="Downloads" class="btn btn-info btn-sm">
+                        <i class="fas fa-download me-1"></i>Downloads
+                    </a>
+                </div>
+            </div>
         </nav>
 
         <!-- Alert Messages -->
@@ -59,8 +69,9 @@
             </div>
             <div class="card-body">
                 <form method="get" asp-action="BrowseDatasets">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-5">
+                    <div class="row g-3">
+                        <!-- Search input takes more space -->
+                        <div class="col-md-8">
                             <label for="searchTerm" class="form-label fw-semibold">
                                 <i class="fas fa-microscope me-1 text-muted"></i>Search Term
                             </label>
@@ -71,11 +82,8 @@
                                    value="@ViewBag.SearchTerm" 
                                    placeholder="Enter organism name, accession ID, or taxonomy..."
                                    autocomplete="off">
-                            <div class="form-text">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Examples: "Escherichia coli", "GCF_000005825.2", "511145", "human", "mouse", "yeast"
-                            </div>
                         </div>
+                        <!-- Results limit -->
                         <div class="col-md-2">
                             <label for="limit" class="form-label fw-semibold">
                                 <i class="fas fa-list-ol me-1 text-muted"></i>Results Limit
@@ -90,24 +98,79 @@
                                 <option value="200" selected="@(currentLimit.Equals(200))">200</option>
                             </select>
                         </div>
-                        <div class="col-md-5">
-                            <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-search me-1"></i>Search
-                                </button>
-                                <a asp-action="BrowseDatasets" class="btn btn-outline-secondary">
-                                    <i class="fas fa-times me-1"></i>Clear
-                                </a>
-                                <a asp-action="Index" class="btn btn-outline-primary">
-                                    <i class="fas fa-arrow-left me-1"></i>Back to Assemblies
-                                </a>
-                                <a asp-action="Downloads" class="btn btn-info">
-                                    <i class="fas fa-download me-1"></i>Downloads
-                                </a>
+                        <!-- Search actions -->
+                        <div class="col-md-2">
+                            <label class="form-label fw-semibold text-transparent">
+                                <!-- Invisible label for alignment -->
+                                &nbsp;
+                            </label>
+                            <div class="d-grid">
+                                <div class="btn-group" role="group">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-search me-1"></i>Search
+                                    </button>
+                                    <a asp-action="BrowseDatasets" class="btn btn-outline-secondary">
+                                        <i class="fas fa-times me-1"></i>Clear
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Help text row -->
+                    <div class="row g-3 mt-1">
+                        <div class="col-12">
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Examples: "Escherichia coli", "GCF_000005825.2", "511145", "human", "mouse", "yeast"
                             </div>
                         </div>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <!-- Download Options Card -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-light border-bottom">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-cogs me-2 text-primary"></i>Download Options
+                </h6>
+            </div>
+            <div class="card-body py-3">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-6">
+                        <div class="form-check form-check-inline me-4">
+                            <input class="form-check-input" type="checkbox" id="includeAnnotations" name="IncludeAnnotations" checked>
+                            <label class="form-check-label fw-semibold" for="includeAnnotations">
+                                <i class="fas fa-file-alt me-1 text-primary"></i>Include Annotations
+                            </label>
+                            <div class="form-text small">GFF/GBFF annotation files</div>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="includeSequence" name="IncludeSequence" checked>
+                            <label class="form-check-label fw-semibold" for="includeSequence">
+                                <i class="fas fa-dna me-1 text-success"></i>Include Sequence
+                            </label>
+                            <div class="form-text small">FASTA sequence files</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="priority" class="form-label fw-semibold small">Download Priority</label>
+                        <select class="form-select form-select-sm" id="priority" name="Priority">
+                            <option value="Normal">Normal</option>
+                            <option value="High">High</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-end">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Options apply to all selected datasets
+                            </small>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -276,33 +339,18 @@
                             </table>
                         </div>
 
-                        <!-- Download Options -->
+                        <!-- Download Actions -->
                         <div class="card-footer bg-light border-top">
-                            <div class="row g-3 align-items-center">
-                                <div class="col-md-6">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" id="includeAnnotations" name="IncludeAnnotations" checked>
-                                        <label class="form-check-label" for="includeAnnotations">
-                                            <i class="fas fa-file-alt me-1"></i>Include Annotations
-                                        </label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" id="includeSequence" name="IncludeSequence" checked>
-                                        <label class="form-check-label" for="includeSequence">
-                                            <i class="fas fa-dna me-1"></i>Include Sequence
-                                        </label>
-                                    </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-muted small">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Select datasets above and click "Download Selected" to begin processing
                                 </div>
-                                <div class="col-md-3">
-                                    <label for="priority" class="form-label fw-semibold">Priority</label>
-                                    <select class="form-select" id="priority" name="Priority">
-                                        <option value="Normal">Normal</option>
-                                        <option value="High">High</option>
-                                        <option value="Low">Low</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3 text-end">
-                                    <span id="selectedCount" class="text-muted me-3">0 selected</span>
+                                <div class="d-flex align-items-center gap-3">
+                                    <span id="selectedCount" class="text-muted">0 selected</span>
+                                    <button type="button" class="btn btn-success" id="downloadSelectedBtn" disabled>
+                                        <i class="fas fa-download me-1"></i>Download Selected
+                                    </button>
                                 </div>
                             </div>
                         </div>
