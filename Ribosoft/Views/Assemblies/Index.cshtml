@@ -96,19 +96,19 @@
                     <h5 class="card-title mb-1">Available Databases</h5>
                     <small class="text-muted">@Model.Count() database(s) found</small>
                 </div>
-                <div class="btn-group" role="group">
+                <div class="d-flex gap-2">
                     <a asp-action="BrowseDatasets" class="btn btn-success">
                         <i class="fas fa-cloud-download-alt me-1"></i>Browse NCBI Datasets
                     </a>
                     <a asp-action="Downloads" class="btn btn-info">
                         <i class="fas fa-download me-1"></i>View Downloads
                     </a>
-                    <button type="button" class="btn btn-primary" onclick="document.getElementById('rescanForm').submit();">
-                        <i class="fas fa-sync me-1"></i>Rescan Local
-                    </button>
+                    <form asp-action="Rescan" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sync me-1"></i>Rescan Local
+                        </button>
+                    </form>
                 </div>
-                <!-- Hidden form for rescan action -->
-                <form id="rescanForm" asp-action="Rescan" method="post" style="display: none;"></form>
             </div>
         </div>
 
