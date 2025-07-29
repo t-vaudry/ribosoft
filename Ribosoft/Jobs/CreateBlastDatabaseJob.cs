@@ -157,7 +157,7 @@ namespace Ribosoft.Jobs
                         _logger.LogInformation("Cleaned up ZIP file at {ZipPath}", download.LocalPath);
                         
                         // Clear the local path since file is deleted
-                        download.LocalPath = null!;
+                        download.LocalPath = null;
                         await _context.SaveChangesAsync();
                     }
                     catch (Exception ex)

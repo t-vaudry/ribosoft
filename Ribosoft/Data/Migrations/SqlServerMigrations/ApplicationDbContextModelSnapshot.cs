@@ -400,7 +400,6 @@ namespace Ribosoft.Data.Migrations.SqlServerMigrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LocalPath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrganismName")

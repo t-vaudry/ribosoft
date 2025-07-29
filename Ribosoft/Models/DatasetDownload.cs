@@ -68,9 +68,9 @@ namespace Ribosoft.Models
         public string DownloadUrl { get; set; } = string.Empty;
 
         /*! \property LocalPath
-         * \brief Local file path after download
+         * \brief Local file path after download (nullable after cleanup)
          */
-        public string LocalPath { get; set; } = string.Empty;
+        public string? LocalPath { get; set; }
 
         /*! \property FileSize
          * \brief File size in bytes
