@@ -1,0 +1,557 @@
+@model IEnumerable<Ribosoft.Models.ViewModels.AvailableDatasetViewModel>
+
+@{
+    ViewData["Title"] = "Browse NCBI Datasets";
+}
+
+<div class="container-fluid px-3 px-md-4">
+    <div class="assemblies-content">
+        <!-- Page Header -->
+        <div class="page-header mb-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-cloud-download-alt me-2 text-primary"></i>Browse NCBI Datasets
+                    </h1>
+                    <p class="text-muted mb-0">Search and download genomic datasets from NCBI for BLAST database creation</p>
+                </div>
+                <div class="admin-badge-container">
+                    <span class="badge bg-warning text-dark">
+                        <i class="fas fa-crown me-1"></i>Admin Only
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Assembly Databases</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Browse Datasets</li>
+            </ol>
+        </nav>
+
+        <!-- Alert Messages -->
+        @if (TempData.ContainsKey("Alert"))
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                @TempData["Alert"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (TempData.ContainsKey("Error"))
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <!-- Search and Filter Card -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-light border-bottom">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-search me-2 text-primary"></i>Search NCBI Datasets
+                </h6>
+            </div>
+            <div class="card-body">
+                <form method="get" asp-action="BrowseDatasets">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-5">
+                            <label for="searchTerm" class="form-label fw-semibold">
+                                <i class="fas fa-microscope me-1 text-muted"></i>Search Term
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="searchTerm" 
+                                   name="searchTerm" 
+                                   value="@ViewBag.SearchTerm" 
+                                   placeholder="Enter organism name, accession ID, or taxonomy..."
+                                   autocomplete="off">
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Examples: "Escherichia coli", "GCF_000005825.2", "511145", "human", "mouse", "yeast"
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="limit" class="form-label fw-semibold">
+                                <i class="fas fa-list-ol me-1 text-muted"></i>Results Limit
+                            </label>
+                            <select class="form-select" id="limit" name="limit">
+                                @{
+                                    var currentLimit = ViewBag.Limit ?? 50;
+                                }
+                                <option value="25" selected="@(currentLimit.Equals(25))">25</option>
+                                <option value="50" selected="@(currentLimit.Equals(50))">50</option>
+                                <option value="100" selected="@(currentLimit.Equals(100))">100</option>
+                                <option value="200" selected="@(currentLimit.Equals(200))">200</option>
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search me-1"></i>Search
+                                </button>
+                                <a asp-action="BrowseDatasets" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times me-1"></i>Clear
+                                </a>
+                                <a asp-action="Index" class="btn btn-outline-primary">
+                                    <i class="fas fa-arrow-left me-1"></i>Back to Assemblies
+                                </a>
+                                <a asp-action="Downloads" class="btn btn-info">
+                                    <i class="fas fa-download me-1"></i>Downloads
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Results Card -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="card-title mb-1">
+                            @if (string.IsNullOrEmpty(ViewBag.SearchTerm as string))
+                            {
+                                <text>Popular Datasets</text>
+                            }
+                            else
+                            {
+                                <text>Search Results</text>
+                            }
+                        </h5>
+                        <small class="text-muted">@Model.Count() dataset(s) found</small>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-success" id="downloadSelectedBtn" disabled>
+                            <i class="fas fa-download me-1"></i>Download Selected
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                @if (Model.Any())
+                {
+                    <form id="downloadForm" asp-action="DownloadDatasets" method="post">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="border-0 fw-semibold" style="width: 50px;">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="selectAll">
+                                                <label class="form-check-label" for="selectAll">
+                                                    <span class="visually-hidden">Select All</span>
+                                                </label>
+                                            </div>
+                                        </th>
+                                        <th class="border-0 fw-semibold">
+                                            <i class="fas fa-barcode me-1 text-muted"></i>
+                                            Accession ID
+                                        </th>
+                                        <th class="border-0 fw-semibold">
+                                            <i class="fas fa-microscope me-1 text-muted"></i>
+                                            Organism
+                                        </th>
+                                        <th class="border-0 fw-semibold">
+                                            <i class="fas fa-tag me-1 text-muted"></i>
+                                            Assembly Name
+                                        </th>
+                                        <th class="border-0 fw-semibold">
+                                            <i class="fas fa-layer-group me-1 text-muted"></i>
+                                            Level
+                                        </th>
+                                        <th class="border-0 fw-semibold">
+                                            <i class="fas fa-hdd me-1 text-muted"></i>
+                                            Size
+                                        </th>
+                                        <th class="border-0 fw-semibold">
+                                            <i class="fas fa-calendar me-1 text-muted"></i>
+                                            Submitted
+                                        </th>
+                                        <th class="border-0 fw-semibold text-center">
+                                            <i class="fas fa-info-circle me-1 text-muted"></i>
+                                            Status
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var dataset in Model)
+                                    {
+                                        <tr class="@(dataset.IsAlreadyDownloaded ? "table-success" : dataset.IsCurrentlyDownloading ? "table-warning" : "")">
+                                            <td class="align-middle">
+                                                @if (!dataset.IsAlreadyDownloaded && !dataset.IsCurrentlyDownloading)
+                                                {
+                                                    <div class="form-check">
+                                                        <input class="form-check-input dataset-checkbox" 
+                                                               type="checkbox" 
+                                                               name="AccessionIds" 
+                                                               value="@dataset.AccessionId" 
+                                                               id="dataset-@dataset.AccessionId">
+                                                        <label class="form-check-label" for="dataset-@dataset.AccessionId">
+                                                            <span class="visually-hidden">Select @dataset.AccessionId</span>
+                                                        </label>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="text-center">
+                                                        @if (dataset.IsAlreadyDownloaded)
+                                                        {
+                                                            <i class="fas fa-check-circle text-success" title="Already downloaded"></i>
+                                                        }
+                                                        else if (dataset.IsCurrentlyDownloading)
+                                                        {
+                                                            <i class="fas fa-spinner fa-spin text-warning" title="Currently downloading"></i>
+                                                        }
+                                                    </div>
+                                                }
+                                            </td>
+                                            <td class="align-middle">
+                                                <code class="text-primary">@dataset.AccessionId</code>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="organism-info">
+                                                    <strong>@dataset.OrganismName</strong>
+                                                    @if (dataset.TaxonomyId > 0)
+                                                    {
+                                                        <br><small class="text-muted">Tax ID: @dataset.TaxonomyId</small>
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="assembly-name">
+                                                    @dataset.AssemblyName
+                                                </div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <span class="badge bg-secondary">
+                                                    @dataset.AssemblyLevel
+                                                </span>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="size-info">
+                                                    <strong>@((dataset.EstimatedSize / 1024.0 / 1024.0).ToString("F1")) MB</strong>
+                                                    @if (dataset.ContigCount > 0)
+                                                    {
+                                                        <br><small class="text-muted">@dataset.ContigCount contigs</small>
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <small class="text-muted">
+                                                    @(dataset.SubmissionDate?.ToString("MMM dd, yyyy") ?? "Unknown")
+                                                </small>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                @if (dataset.IsAlreadyDownloaded)
+                                                {
+                                                    <span class="badge bg-success">
+                                                        <i class="fas fa-check me-1"></i>Downloaded
+                                                    </span>
+                                                }
+                                                else if (dataset.IsCurrentlyDownloading)
+                                                {
+                                                    <span class="badge bg-warning text-dark">
+                                                        <i class="fas fa-spinner fa-spin me-1"></i>Downloading
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-light text-dark border">
+                                                        <i class="fas fa-cloud me-1"></i>Available
+                                                    </span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Download Options -->
+                        <div class="card-footer bg-light border-top">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-md-6">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="includeAnnotations" name="IncludeAnnotations" checked>
+                                        <label class="form-check-label" for="includeAnnotations">
+                                            <i class="fas fa-file-alt me-1"></i>Include Annotations
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="includeSequence" name="IncludeSequence" checked>
+                                        <label class="form-check-label" for="includeSequence">
+                                            <i class="fas fa-dna me-1"></i>Include Sequence
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="priority" class="form-label fw-semibold">Priority</label>
+                                    <select class="form-select" id="priority" name="Priority">
+                                        <option value="Normal">Normal</option>
+                                        <option value="High">High</option>
+                                        <option value="Low">Low</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span id="selectedCount" class="text-muted me-3">0 selected</span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-cloud-download-alt fa-3x text-muted mb-3"></i>
+                        @if (string.IsNullOrEmpty(ViewBag.SearchTerm as string))
+                        {
+                            <h5 class="text-muted">No Datasets Available</h5>
+                            <p class="text-muted mb-3">Unable to retrieve datasets from NCBI at this time. Please check your API configuration or try again later.</p>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Note:</strong> This page shows real data from the NCBI Datasets API. If no results appear, it may be due to:
+                                <ul class="mt-2 mb-0 text-start">
+                                    <li>Missing or invalid API key configuration</li>
+                                    <li>Network connectivity issues</li>
+                                    <li>NCBI API service unavailability</li>
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <h5 class="text-muted">No Datasets Found</h5>
+                            <p class="text-muted mb-3">No datasets found matching your search criteria: "<strong>@ViewBag.SearchTerm</strong>"</p>
+                            <p class="text-muted mb-3">Try searching for:</p>
+                            <div class="row justify-content-center">
+                                <div class="col-md-8">
+                                    <ul class="list-unstyled text-muted small">
+                                        <li><i class="fas fa-search me-2"></i>Common organism names: "escherichia coli", "human", "mouse"</li>
+                                        <li><i class="fas fa-hashtag me-2"></i>Taxonomy IDs: "511145", "9606", "10090"</li>
+                                        <li><i class="fas fa-barcode me-2"></i>Accession IDs: "GCF_000005825.2"</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        }
+                        <a asp-action="BrowseDatasets" class="btn btn-primary">
+                            <i class="fas fa-search me-1"></i>Try Different Search
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Information Section -->
+        <div class="info-section mt-4">
+            <h6 class="mb-3">
+                <i class="fas fa-info-circle me-2 text-info"></i>NCBI Dataset Information
+            </h6>
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="info-item">
+                        <h6 class="small fw-semibold"><i class="fas fa-cloud-download-alt me-2"></i>Dataset Downloads</h6>
+                        <p class="small text-muted mb-0">Download genomic datasets directly from NCBI's servers. These will be automatically processed into BLAST databases for use in ribozyme design workflows.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="info-item">
+                        <h6 class="small fw-semibold"><i class="fas fa-search me-2"></i>Search Functionality</h6>
+                        <p class="small text-muted mb-0">Search by organism name (e.g., "E. coli", "human"), accession ID (e.g., "GCF_000005825.2"), taxonomy ID, or assembly name. The search covers bacteria, archaea, fungi, plants, animals, and viruses.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="info-item">
+                        <h6 class="small fw-semibold"><i class="fas fa-cogs me-2"></i>Processing Options</h6>
+                        <p class="small text-muted mb-0">Choose to include annotations (GFF/GBFF files) and sequence data. Downloads are processed in the background and converted to BLAST databases automatically.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .assemblies-content {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .admin-badge-container .badge {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    .table th {
+        font-size: 0.875rem;
+        padding: 1rem 0.75rem;
+        vertical-align: middle;
+    }
+
+    .table td {
+        padding: 0.75rem;
+        vertical-align: middle;
+    }
+
+    .organism-info {
+        font-size: 0.9rem;
+    }
+
+    .assembly-name {
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .size-info {
+        font-size: 0.9rem;
+    }
+
+    .info-section {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 0.375rem;
+    }
+
+    .info-item {
+        padding: 1rem;
+        background: white;
+        border-radius: 0.375rem;
+        height: 100%;
+        border: 1px solid #e9ecef;
+    }
+
+    /* Mobile responsiveness */
+    @@media (max-width: 768px) {
+        .page-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .admin-badge-container {
+            margin-top: 0.5rem;
+        }
+
+        .card-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .card-header .btn-group {
+            margin-top: 0.5rem;
+        }
+
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+
+        .info-item {
+            padding: 0.75rem;
+        }
+
+        .card-body .row .col-md-5:first-child {
+            margin-bottom: 1rem;
+        }
+    }
+
+    /* Checkbox styling */
+    .dataset-checkbox {
+        cursor: pointer;
+        transform: scale(1.1);
+    }
+
+    .dataset-checkbox:checked {
+        background-color: #198754;
+        border-color: #198754;
+    }
+
+    /* Row highlighting */
+    .table-success {
+        background-color: rgba(25, 135, 84, 0.1) !important;
+    }
+
+    .table-warning {
+        background-color: rgba(255, 193, 7, 0.1) !important;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectAllCheckbox = document.getElementById('selectAll');
+        const datasetCheckboxes = document.querySelectorAll('.dataset-checkbox');
+        const downloadBtn = document.getElementById('downloadSelectedBtn');
+        const selectedCountSpan = document.getElementById('selectedCount');
+        const downloadForm = document.getElementById('downloadForm');
+
+        // Update selected count and button state
+        function updateSelectionState() {
+            const selectedCount = document.querySelectorAll('.dataset-checkbox:checked').length;
+            selectedCountSpan.textContent = selectedCount + ' selected';
+            downloadBtn.disabled = selectedCount === 0;
+            
+            // Update select all checkbox state
+            if (selectedCount === 0) {
+                selectAllCheckbox.indeterminate = false;
+                selectAllCheckbox.checked = false;
+            } else if (selectedCount === datasetCheckboxes.length) {
+                selectAllCheckbox.indeterminate = false;
+                selectAllCheckbox.checked = true;
+            } else {
+                selectAllCheckbox.indeterminate = true;
+                selectAllCheckbox.checked = false;
+            }
+        }
+
+        // Handle select all checkbox
+        selectAllCheckbox.addEventListener('change', function() {
+            const isChecked = this.checked;
+            datasetCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+            updateSelectionState();
+        });
+
+        // Handle individual checkboxes
+        datasetCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateSelectionState);
+        });
+
+        // Handle download button
+        downloadBtn.addEventListener('click', function() {
+            const selectedCount = document.querySelectorAll('.dataset-checkbox:checked').length;
+            if (selectedCount === 0) {
+                alert('Please select at least one dataset to download.');
+                return;
+            }
+
+            if (confirm(`Are you sure you want to download ${selectedCount} dataset(s)? This may take some time.`)) {
+                downloadForm.submit();
+            }
+        });
+
+        // Initialize state
+        updateSelectionState();
+    });
+</script>

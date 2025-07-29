@@ -1,6 +1,7 @@
 using NCBI.Datasets.API.Models.Common;
 using NCBI.Datasets.API.Models.Download;
 using NCBI.Datasets.API.Models.Genome;
+using NCBI.Datasets.API.Models.Responses;
 
 namespace NCBI.Datasets.API;
 
@@ -65,5 +66,45 @@ public interface INCBIDatasetsClient : IDisposable
         IEnumerable<string> accessions,
         IEnumerable<string>? chromosomes = null,
         IEnumerable<Models.Enums.AnnotationForAssemblyType>? annotationTypes = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets taxonomy suggestions for a search query
+    /// </summary>
+    /// <param name="taxonQuery">Search query (organism name, etc.)</param>
+    /// <param name="limit">Maximum number of suggestions</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Taxonomy suggestions</returns>
+    Task<ApiResponse<TaxonomySuggestionResponse>> GetTaxonomySuggestionsAsync(
+        string taxonQuery,
+        int? limit = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets assembly dataset reports by taxonomy IDs
+    /// </summary>
+    /// <param name="taxons">Taxonomy IDs</param>
+    /// <param name="pageSize">Number of results per page</param>
+    /// <param name="returnedContent">Content type to return</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Assembly dataset reports</returns>
+    Task<ApiResponse<AssemblyDatasetReport>> GetAssemblyDatasetReportsByTaxonAsync(
+        IEnumerable<int> taxons,
+        int? pageSize = null,
+        Models.Enums.AssemblyDatasetReportsRequestContentType? returnedContent = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets assembly dataset reports by accession IDs
+    /// </summary>
+    /// <param name="accessions">Assembly accession IDs</param>
+    /// <param name="pageSize">Number of results per page</param>
+    /// <param name="returnedContent">Content type to return</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Assembly dataset reports</returns>
+    Task<ApiResponse<AssemblyDatasetReport>> GetAssemblyDatasetReportsAsync(
+        IEnumerable<string> accessions,
+        int? pageSize = null,
+        Models.Enums.AssemblyDatasetReportsRequestContentType? returnedContent = null,
         CancellationToken cancellationToken = default);
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using NCBI.Datasets.API.Models.Common;
 using NCBI.Datasets.API.Models.Enums;
 
@@ -175,8 +176,9 @@ namespace NCBI.Datasets.API.Models.Responses
     public class TaxonomySuggestionResponse
     {
         /// <summary>
-        /// List of taxonomy suggestions
+        /// List of taxonomy suggestions (matches API field name)
         /// </summary>
+        [JsonPropertyName("sci_name_and_ids")]
         public List<TaxonomySuggestion> Suggestions { get; set; } = new List<TaxonomySuggestion>();
 
         /// <summary>
@@ -191,33 +193,51 @@ namespace NCBI.Datasets.API.Models.Responses
     public class TaxonomySuggestion
     {
         /// <summary>
-        /// Taxonomy ID
+        /// Taxonomy ID as string (matches API field name)
         /// </summary>
-        public int TaxId { get; set; }
+        [JsonPropertyName("tax_id")]
+        public string TaxIdString { get; set; } = string.Empty;
 
         /// <summary>
-        /// Scientific name
+        /// Taxonomy ID as integer
         /// </summary>
+        [JsonIgnore]
+        public int TaxId => int.TryParse(TaxIdString, out var id) ? id : 0;
+
+        /// <summary>
+        /// Scientific name (matches API field name)
+        /// </summary>
+        [JsonPropertyName("sci_name")]
         public string? ScientificName { get; set; }
 
         /// <summary>
-        /// Common name
+        /// Common name (matches API field name)
         /// </summary>
+        [JsonPropertyName("common_name")]
         public string? CommonName { get; set; }
 
         /// <summary>
-        /// Taxonomic rank
+        /// Matched term (matches API field name)
         /// </summary>
-        public RankType Rank { get; set; }
+        [JsonPropertyName("matched_term")]
+        public string? MatchedTerm { get; set; }
+
+        /// <summary>
+        /// Taxonomic rank (matches API field name)
+        /// </summary>
+        [JsonPropertyName("rank")]
+        public string? Rank { get; set; }
 
         /// <summary>
         /// Match score for the suggestion
         /// </summary>
+        [JsonIgnore]
         public double? Score { get; set; }
 
         /// <summary>
         /// Highlighted portions of the match
         /// </summary>
+        [JsonIgnore]
         public List<string> Highlights { get; set; } = new List<string>();
     }
 

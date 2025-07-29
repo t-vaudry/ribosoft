@@ -14,6 +14,7 @@ using Ribosoft.Services;
 using Ribosoft.Middleware;
 using Hangfire.Logging.LogProviders;
 using System.Diagnostics.CodeAnalysis;
+using NCBI.Datasets.API.Extensions;
 
 [ExcludeFromCodeCoverage]
 public class Program
@@ -97,6 +98,7 @@ public class Program
                 
                 // Add database logging rules (targeted and efficient)
                 config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, databaseTarget, "Ribosoft.*");
+                config.AddRule(NLog.LogLevel.Warn, NLog.LogLevel.Fatal, databaseTarget, "NCBI.Datasets.API.*");
                 
                 // Hangfire - specific rules only (no broad "Hangfire.*" to avoid duplicates)
                 config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, databaseTarget, "Hangfire.PostgreSql.*");
@@ -204,6 +206,10 @@ public class Program
         services.AddTransient<ISecureEmailTemplateService, SecureEmailTemplateService>();
         services.AddScoped<IOneTimeCodeService, OneTimeCodeService>();
         services.AddScoped<IActivityLogService, ActivityLogService>();
+        
+        // NCBI Datasets API services
+        services.AddNCBIDatasetsApi(configuration);
+        services.AddScoped<IDatasetDownloadService, DatasetDownloadService>();
 
         // Localization
         services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -227,7 +233,7 @@ public class Program
         // Hangfire server
         services.AddHangfireServer(options =>
         {
-            options.Queues = new[] { "default", "blast" };
+            options.Queues = new[] { "default", "blast", "downloads", "downloads-high", "downloads-low" };
         });
     }
     

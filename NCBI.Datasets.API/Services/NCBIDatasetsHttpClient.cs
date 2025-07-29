@@ -41,26 +41,9 @@ public class NCBIDatasetsHttpClient : INCBIDatasetsHttpClient
             PropertyNameCaseInsensitive = true
         };
 
-        ConfigureHttpClient();
-    }
-
-    /// <summary>
-    /// Configures the HTTP client with base settings
-    /// </summary>
-    private void ConfigureHttpClient()
-    {
-        _httpClient.BaseAddress = new Uri(_options.BaseUrl);
-        _httpClient.Timeout = TimeSpan.FromSeconds(_options.TimeoutSeconds);
-        
-        // Add API key header
-        if (!string.IsNullOrWhiteSpace(_options.ApiKey))
-        {
-            _httpClient.DefaultRequestHeaders.Add("api-key", _options.ApiKey);
-        }
-
-        // Add common headers
-        _httpClient.DefaultRequestHeaders.Add("User-Agent", "NCBI.Datasets.API.Client/1.0.0");
-        _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+        // Log the configuration for debugging
+        _logger.LogDebug("NCBIDatasetsHttpClient initialized with BaseUrl: {BaseUrl}, Timeout: {Timeout}s", 
+            _options.BaseUrl, _options.TimeoutSeconds);
     }
 
     /// <summary>
@@ -74,8 +57,13 @@ public class NCBIDatasetsHttpClient : INCBIDatasetsHttpClient
     {
         return await ExecuteWithRetryAsync(async () =>
         {
-            _logger.LogDebug("Making GET request to: {Endpoint}", endpoint);
+            var fullUrl = _httpClient.BaseAddress != null 
+                ? new Uri(_httpClient.BaseAddress, endpoint).ToString()
+                : endpoint;
+            _logger.LogDebug("Making GET request to: {Endpoint} (Full URL: {FullUrl})", endpoint, fullUrl);
             
+            // Use the endpoint directly since HttpClient.BaseAddress is already set
+            // The HttpClient will automatically combine BaseAddress + endpoint
             var response = await _httpClient.GetAsync(endpoint, cancellationToken);
             return await ProcessResponseAsync<T>(response);
         });

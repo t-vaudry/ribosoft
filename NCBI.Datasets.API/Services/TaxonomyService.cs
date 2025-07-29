@@ -481,7 +481,7 @@ namespace NCBI.Datasets.API.Services
                 {
                     var result = JsonSerializer.Deserialize<TaxonomySuggestionResponse>(content, new JsonSerializerOptions
                     {
-                        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+                        PropertyNameCaseInsensitive = true
                     });
                     return ApiResponse<TaxonomySuggestionResponse>.Success(result!);
                 }

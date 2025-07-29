@@ -1,0 +1,241 @@
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using Hangfire;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using NCBI.Datasets.API;
+using NCBI.Datasets.API.Models.Genome;
+using NCBI.Datasets.API.Services;
+using Ribosoft.Data;
+using Ribosoft.Models;
+
+namespace Ribosoft.Jobs
+{
+    /*! \class DatasetDownloadJob
+     * \brief Hangfire job for downloading NCBI datasets
+     */
+    public class DatasetDownloadJob
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly INCBIDatasetsClient _ncbiClient;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<DatasetDownloadJob> _logger;
+
+        /*! \fn DatasetDownloadJob
+         * \brief Constructor
+         */
+        public DatasetDownloadJob(
+            DbContextOptions<ApplicationDbContext> dbOptions,
+            INCBIDatasetsClient ncbiClient,
+            IConfiguration configuration,
+            ILogger<DatasetDownloadJob> logger)
+        {
+            _context = new ApplicationDbContext(dbOptions);
+            _ncbiClient = ncbiClient;
+            _configuration = configuration;
+            _logger = logger;
+        }
+
+        /*! \fn DownloadDatasetAsync
+         * \brief Download a dataset from NCBI
+         * \param downloadId Database ID of the download record
+         * \param cancellationToken Cancellation token
+         */
+        [Queue("downloads")]
+        [AutomaticRetry(Attempts = 3, DelaysInSeconds = new[] { 60, 300, 900 })]
+        public async Task DownloadDatasetAsync(int downloadId, IJobCancellationToken cancellationToken)
+        {
+            var download = await _context.DatasetDownloads.FindAsync(downloadId);
+            if (download == null)
+            {
+                _logger.LogError("Download record {DownloadId} not found", downloadId);
+                return;
+            }
+
+            try
+            {
+                _logger.LogInformation("Starting download for dataset {AccessionId} (ID: {DownloadId})", 
+                    download.AccessionId, downloadId);
+
+                // Update status to downloading
+                download.Status = DatasetDownloadStatus.Downloading;
+                download.StartedAt = DateTime.UtcNow;
+                download.Progress = 0;
+                await _context.SaveChangesAsync();
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                // Step 1: Get download summary to get the download URL
+                await UpdateProgress(download, 10, "Getting download information...");
+                
+                var request = new GenomeDownloadSummaryRequest
+                {
+                    Accessions = new List<string> { download.AccessionId }
+                };
+
+                if (download.IncludeAnnotations)
+                {
+                    // Add annotation types if needed
+                    request.IncludeAnnotationTypes = new List<NCBI.Datasets.API.Models.Enums.AnnotationForAssemblyType>
+                    {
+                        NCBI.Datasets.API.Models.Enums.AnnotationForAssemblyType.GENOME_GFF,
+                        NCBI.Datasets.API.Models.Enums.AnnotationForAssemblyType.GENOME_GBFF
+                    };
+                }
+
+                var downloadSummary = await _ncbiClient.GetGenomeDownloadSummaryAsync(request);
+                if (downloadSummary?.Data?.Hydrated?.Url == null)
+                {
+                    throw new InvalidOperationException($"Could not get download URL for {download.AccessionId}");
+                }
+
+                download.DownloadUrl = downloadSummary.Data.Hydrated.Url;
+                download.FileSize = downloadSummary.Data.Hydrated.EstimatedFileSizeMb * 1024 * 1024;
+                await _context.SaveChangesAsync();
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                // Step 2: Download the dataset file
+                await UpdateProgress(download, 20, "Starting file download...");
+
+                var downloadPath = GetDownloadPath(download.AccessionId);
+                Directory.CreateDirectory(Path.GetDirectoryName(downloadPath)!);
+
+                await DownloadFileWithProgress(download, downloadSummary.Data.Hydrated.Url, downloadPath, cancellationToken);
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                // Step 3: Verify download
+                await UpdateProgress(download, 90, "Verifying download...");
+                
+                if (!File.Exists(downloadPath))
+                {
+                    throw new FileNotFoundException($"Downloaded file not found at {downloadPath}");
+                }
+
+                var fileInfo = new FileInfo(downloadPath);
+                download.LocalPath = downloadPath;
+                download.DownloadedBytes = fileInfo.Length;
+
+                // Step 4: Complete
+                await UpdateProgress(download, 100, "Download completed");
+                
+                download.Status = DatasetDownloadStatus.Completed;
+                download.CompletedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Successfully downloaded dataset {AccessionId} to {Path}", 
+                    download.AccessionId, downloadPath);
+
+                // Optionally trigger BLAST database creation
+                if (ShouldCreateBlastDatabase())
+                {
+                    BackgroundJob.Enqueue<CreateBlastDatabaseJob>(
+                        job => job.CreateBlastDatabaseAsync(downloadId, JobCancellationToken.Null));
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogInformation("Download cancelled for dataset {AccessionId}", download.AccessionId);
+                download.Status = DatasetDownloadStatus.Cancelled;
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error downloading dataset {AccessionId}", download.AccessionId);
+                
+                download.Status = DatasetDownloadStatus.Failed;
+                download.ErrorMessage = ex.Message;
+                download.CompletedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                
+                throw; // Re-throw for Hangfire retry mechanism
+            }
+        }
+
+        /*! \fn DownloadFileWithProgress
+         * \brief Download file with progress tracking
+         */
+        private async Task DownloadFileWithProgress(DatasetDownload download, string url, string filePath, 
+            IJobCancellationToken cancellationToken)
+        {
+            const int bufferSize = 8192;
+            var buffer = new byte[bufferSize];
+            long totalBytesRead = 0;
+
+            var response = await _ncbiClient.DownloadGenomeDatasetAsync(url);
+            if (response?.Data == null)
+            {
+                throw new InvalidOperationException("Failed to download dataset");
+            }
+
+            using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, true);
+
+            var contentLength = response.Data.Length;
+            
+            // Write the byte array to file
+            await fileStream.WriteAsync(response.Data, 0, response.Data.Length);
+            totalBytesRead = response.Data.Length;
+
+            // Update progress
+            var progress = contentLength > 0 ? (int)((totalBytesRead * 70) / contentLength) + 20 : 90;
+            await UpdateProgress(download, Math.Min(progress, 89), 
+                $"Downloaded {FormatBytes(totalBytesRead)} of {FormatBytes(contentLength)}");
+
+            download.DownloadedBytes = totalBytesRead;
+            await _context.SaveChangesAsync();
+        }
+
+        /*! \fn UpdateProgress
+         * \brief Update download progress
+         */
+        private async Task UpdateProgress(DatasetDownload download, int progress, string message)
+        {
+            download.Progress = progress;
+            // You could add a StatusMessage property to track current operation
+            await _context.SaveChangesAsync();
+            
+            _logger.LogDebug("Download {DownloadId} progress: {Progress}% - {Message}", 
+                download.Id, progress, message);
+        }
+
+        /*! \fn GetDownloadPath
+         * \brief Get local download path for dataset
+         */
+        private string GetDownloadPath(string accessionId)
+        {
+            var downloadDir = _configuration["DatasetDownloads:Path"] ?? 
+                             Path.Combine(Directory.GetCurrentDirectory(), "Downloads", "Datasets");
+            
+            return Path.Combine(downloadDir, $"{accessionId}.zip");
+        }
+
+        /*! \fn ShouldCreateBlastDatabase
+         * \brief Check if BLAST database should be created automatically
+         */
+        private bool ShouldCreateBlastDatabase()
+        {
+            return _configuration.GetValue<bool>("DatasetDownloads:AutoCreateBlastDatabase", true);
+        }
+
+        /*! \fn FormatBytes
+         * \brief Format bytes for display
+         */
+        private static string FormatBytes(long bytes)
+        {
+            string[] suffixes = { "B", "KB", "MB", "GB", "TB" };
+            int counter = 0;
+            decimal number = bytes;
+            
+            while (Math.Round(number / 1024) >= 1)
+            {
+                number /= 1024;
+                counter++;
+            }
+            
+            return $"{number:n1} {suffixes[counter]}";
+        }
+    }
+}

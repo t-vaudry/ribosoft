@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NCBI.Datasets.API.Configuration;
 using NCBI.Datasets.API.Services;
@@ -28,8 +29,27 @@ public static class ServiceCollectionExtensions
         // Validate configuration
         services.AddSingleton<IValidateOptions<NCBIDatasetsApiOptions>, NCBIDatasetsApiOptionsValidator>();
 
-        // Add HTTP client and register interface
-        services.AddHttpClient<NCBIDatasetsHttpClient>();
+        // Add HTTP client with proper configuration
+        services.AddHttpClient<NCBIDatasetsHttpClient>((serviceProvider, httpClient) =>
+        {
+            var options = serviceProvider.GetRequiredService<IOptions<NCBIDatasetsApiOptions>>().Value;
+            
+            // Ensure BaseUrl ends with a trailing slash for proper URL combination
+            var baseUrl = options.BaseUrl.TrimEnd('/') + "/";
+            httpClient.BaseAddress = new Uri(baseUrl);
+            httpClient.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
+            
+            // Add API key header
+            if (!string.IsNullOrWhiteSpace(options.ApiKey))
+            {
+                httpClient.DefaultRequestHeaders.Add("api-key", options.ApiKey);
+            }
+
+            // Add common headers
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "NCBI.Datasets.API.Client/1.0.0");
+            httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+        });
+        
         services.AddScoped<INCBIDatasetsHttpClient>(provider => provider.GetRequiredService<NCBIDatasetsHttpClient>());
 
         // Add regular HTTP client for newer services
@@ -66,8 +86,27 @@ public static class ServiceCollectionExtensions
         // Validate configuration
         services.AddSingleton<IValidateOptions<NCBIDatasetsApiOptions>, NCBIDatasetsApiOptionsValidator>();
 
-        // Add HTTP client and register interface
-        services.AddHttpClient<NCBIDatasetsHttpClient>();
+        // Add HTTP client with proper configuration
+        services.AddHttpClient<NCBIDatasetsHttpClient>((serviceProvider, httpClient) =>
+        {
+            var options = serviceProvider.GetRequiredService<IOptions<NCBIDatasetsApiOptions>>().Value;
+            
+            // Ensure BaseUrl ends with a trailing slash for proper URL combination
+            var baseUrl = options.BaseUrl.TrimEnd('/') + "/";
+            httpClient.BaseAddress = new Uri(baseUrl);
+            httpClient.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
+            
+            // Add API key header
+            if (!string.IsNullOrWhiteSpace(options.ApiKey))
+            {
+                httpClient.DefaultRequestHeaders.Add("api-key", options.ApiKey);
+            }
+
+            // Add common headers
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "NCBI.Datasets.API.Client/1.0.0");
+            httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+        });
+        
         services.AddScoped<INCBIDatasetsHttpClient>(provider => provider.GetRequiredService<NCBIDatasetsHttpClient>());
 
         // Add regular HTTP client for newer services
@@ -118,10 +157,11 @@ public class NCBIDatasetsApiOptionsValidator : IValidateOptions<NCBIDatasetsApiO
             errors.Add("BaseUrl must be a valid absolute URI");
         }
 
-        if (string.IsNullOrWhiteSpace(options.ApiKey))
-        {
-            errors.Add("ApiKey is required");
-        }
+        // API key is optional for NCBI Datasets API
+        // if (string.IsNullOrWhiteSpace(options.ApiKey))
+        // {
+        //     errors.Add("ApiKey is required");
+        // }
 
         if (options.TimeoutSeconds <= 0)
         {

@@ -1,0 +1,509 @@
+@using Microsoft.AspNetCore.Html
+@model IEnumerable<Ribosoft.Models.DatasetDownload>
+
+@{
+    ViewData["Title"] = "Dataset Downloads";
+}
+
+<div class="container-fluid px-3 px-md-4">
+    <div class="assemblies-content">
+        <!-- Page Header -->
+        <div class="page-header mb-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-download me-2 text-primary"></i>Dataset Downloads
+                    </h1>
+                    <p class="text-muted mb-0">Monitor and manage dataset download progress</p>
+                </div>
+                <div class="admin-badge-container">
+                    <span class="badge bg-warning text-dark">
+                        <i class="fas fa-crown me-1"></i>Admin Only
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Assembly Databases</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Downloads</li>
+            </ol>
+        </nav>
+
+        <!-- Alert Messages -->
+        @if (TempData.ContainsKey("Success"))
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (TempData.ContainsKey("Error"))
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-cloud-download-alt fa-2x text-primary mb-2"></i>
+                        <h6>Browse More Datasets</h6>
+                        <a asp-action="BrowseDatasets" class="btn btn-primary btn-sm">
+                            <i class="fas fa-search me-1"></i>Browse NCBI
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-sync fa-2x text-success mb-2"></i>
+                        <h6>Refresh Status</h6>
+                        <button class="btn btn-success btn-sm" onclick="refreshAllStatus()">
+                            <i class="fas fa-sync me-1"></i>Refresh All
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Downloads Table -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="card-title mb-1">Download History</h5>
+                        <small class="text-muted">@Model.Count() download(s) total</small>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="toggleAutoRefresh()">
+                            <i class="fas fa-clock me-1"></i>
+                            <span id="autoRefreshText">Enable Auto-Refresh</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Accession</th>
+                                    <th>Organism</th>
+                                    <th>Status</th>
+                                    <th>Progress</th>
+                                    <th>Size</th>
+                                    <th>Requested By</th>
+                                    <th>Started</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var download in Model)
+                                {
+                                    <tr id="download-@download.Id" class="download-row">
+                                        <td>
+                                            <code>@download.AccessionId</code>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <strong>@download.OrganismName</strong>
+                                                <br><small class="text-muted">@download.AssemblyName</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge" data-status="@download.Status">
+                                                @GetStatusBadge(download.Status, download.ErrorMessage)
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="progress-container">
+                                                @if (download.Status == DatasetDownloadStatus.Downloading || 
+                                                     download.Status == DatasetDownloadStatus.Processing)
+                                                {
+                                                    <div class="progress mb-1" style="height: 20px;">
+                                                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                                             role="progressbar" 
+                                                             style="width: @download.Progress%"
+                                                             aria-valuenow="@download.Progress" 
+                                                             aria-valuemin="0" 
+                                                             aria-valuemax="100">
+                                                            @download.Progress%
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else if (download.Status == DatasetDownloadStatus.Completed || 
+                                                         download.Status == DatasetDownloadStatus.ReadyForBlast)
+                                                {
+                                                    <div class="progress mb-1" style="height: 20px;">
+                                                        <div class="progress-bar bg-success" 
+                                                             role="progressbar" 
+                                                             style="width: 100%">
+                                                            Complete
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <small class="text-muted">@download.Progress%</small>
+                                                }
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if (download.FileSize > 0)
+                                            {
+                                                <div>
+                                                    @FormatBytes(download.DownloadedBytes) / @FormatBytes(download.FileSize)
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <small class="text-muted">Unknown</small>
+                                            }
+                                        </td>
+                                        <td>@download.RequestedBy</td>
+                                        <td>
+                                            @if (download.StartedAt.HasValue)
+                                            {
+                                                @download.StartedAt.Value.ToString("MMM dd, HH:mm")
+                                            }
+                                            else
+                                            {
+                                                <small class="text-muted">Not started</small>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                @if (download.Status == DatasetDownloadStatus.Queued || 
+                                                     download.Status == DatasetDownloadStatus.Downloading || 
+                                                     download.Status == DatasetDownloadStatus.Processing)
+                                                {
+                                                    <button class="btn btn-outline-danger" 
+                                                            onclick="cancelDownload(@download.Id)"
+                                                            title="Cancel Download">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                }
+                                                else if (download.Status == DatasetDownloadStatus.Failed)
+                                                {
+                                                    <button class="btn btn-outline-warning" 
+                                                            onclick="retryDownload(@download.Id)"
+                                                            title="Retry Download">
+                                                        <i class="fas fa-redo"></i>
+                                                    </button>
+                                                }
+                                                
+                                                <button class="btn btn-outline-primary" 
+                                                        onclick="refreshStatus(@download.Id)"
+                                                        title="Refresh Status">
+                                                    <i class="fas fa-sync"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-download fa-3x text-muted mb-3"></i>
+                        <h5>No downloads yet</h5>
+                        <p class="text-muted">Start by browsing available datasets from NCBI.</p>
+                        <a asp-action="BrowseDatasets" class="btn btn-primary">
+                            <i class="fas fa-search me-1"></i>Browse Datasets
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string FormatBytes(long bytes)
+    {
+        if (bytes == 0) return "0 B";
+        
+        string[] suffixes = { "B", "KB", "MB", "GB", "TB" };
+        int counter = 0;
+        decimal number = bytes;
+        
+        while (Math.Round(number / 1024) >= 1)
+        {
+            number /= 1024;
+            counter++;
+        }
+        
+        return $"{number:n1} {suffixes[counter]}";
+    }
+
+    private IHtmlContent GetStatusBadge(DatasetDownloadStatus status, string errorMessage)
+    {
+        return status switch
+        {
+            DatasetDownloadStatus.Queued => Html.Raw("<span class=\"badge bg-secondary\"><i class=\"fas fa-clock me-1\"></i>Queued</span>"),
+            DatasetDownloadStatus.Downloading => Html.Raw("<span class=\"badge bg-primary\"><i class=\"fas fa-download me-1\"></i>Downloading</span>"),
+            DatasetDownloadStatus.Processing => Html.Raw("<span class=\"badge bg-info\"><i class=\"fas fa-cog fa-spin me-1\"></i>Processing</span>"),
+            DatasetDownloadStatus.Completed => Html.Raw("<span class=\"badge bg-success\"><i class=\"fas fa-check me-1\"></i>Completed</span>"),
+            DatasetDownloadStatus.ReadyForBlast => Html.Raw("<span class=\"badge bg-success\"><i class=\"fas fa-database me-1\"></i>Ready</span>"),
+            DatasetDownloadStatus.Failed => Html.Raw($"<span class=\"badge bg-danger\" title=\"{Html.Encode(errorMessage)}\"><i class=\"fas fa-exclamation-triangle me-1\"></i>Failed</span>"),
+            DatasetDownloadStatus.Cancelled => Html.Raw("<span class=\"badge bg-warning\"><i class=\"fas fa-ban me-1\"></i>Cancelled</span>"),
+            _ => Html.Raw("<span class=\"badge bg-light text-dark\">Unknown</span>")
+        };
+    }
+}
+
+@section Scripts {
+    <script>
+        let autoRefreshInterval = null;
+        let isAutoRefreshEnabled = false;
+
+        $(document).ready(function() {
+            // Initial status refresh for active downloads
+            refreshActiveDownloads();
+        });
+
+        function refreshStatus(downloadId) {
+            $.get('@Url.Action("GetDownloadStatus")', { id: downloadId })
+                .done(function(data) {
+                    updateDownloadRow(data);
+                })
+                .fail(function() {
+                    console.error('Failed to refresh status for download ' + downloadId);
+                });
+        }
+
+        function refreshAllStatus() {
+            $('.download-row').each(function() {
+                const downloadId = $(this).attr('id').replace('download-', '');
+                refreshStatus(downloadId);
+            });
+        }
+
+        function refreshActiveDownloads() {
+            $('.download-row').each(function() {
+                const statusBadge = $(this).find('.status-badge');
+                const status = statusBadge.data('status');
+                
+                if (status === 'Queued' || status === 'Downloading' || status === 'Processing') {
+                    const downloadId = $(this).attr('id').replace('download-', '');
+                    refreshStatus(downloadId);
+                }
+            });
+        }
+
+        function toggleAutoRefresh() {
+            if (isAutoRefreshEnabled) {
+                clearInterval(autoRefreshInterval);
+                isAutoRefreshEnabled = false;
+                $('#autoRefreshText').text('Enable Auto-Refresh');
+            } else {
+                autoRefreshInterval = setInterval(refreshActiveDownloads, 5000); // Refresh every 5 seconds
+                isAutoRefreshEnabled = true;
+                $('#autoRefreshText').text('Disable Auto-Refresh');
+            }
+        }
+
+        function cancelDownload(downloadId) {
+            if (confirm('Are you sure you want to cancel this download?')) {
+                $.post('@Url.Action("CancelDownload")', { id: downloadId })
+                    .done(function(response) {
+                        if (response.success) {
+                            refreshStatus(downloadId);
+                            showAlert('success', response.message);
+                        } else {
+                            showAlert('danger', response.message);
+                        }
+                    })
+                    .fail(function() {
+                        showAlert('danger', 'Failed to cancel download');
+                    });
+            }
+        }
+
+        function retryDownload(downloadId) {
+            if (confirm('Are you sure you want to retry this download?')) {
+                $.post('@Url.Action("RetryDownload")', { id: downloadId })
+                    .done(function(response) {
+                        if (response.success) {
+                            refreshStatus(downloadId);
+                            showAlert('success', response.message);
+                        } else {
+                            showAlert('danger', response.message);
+                        }
+                    })
+                    .fail(function() {
+                        showAlert('danger', 'Failed to retry download');
+                    });
+            }
+        }
+
+        function updateDownloadRow(data) {
+            const row = $('#download-' + data.id);
+            if (row.length === 0) return;
+
+            // Update status badge
+            const statusBadge = row.find('.status-badge');
+            statusBadge.data('status', data.status);
+            statusBadge.html(getStatusBadgeHtml(data.status, data.errorMessage));
+
+            // Update progress
+            const progressContainer = row.find('.progress-container');
+            if (data.status === 'Downloading' || data.status === 'Processing') {
+                progressContainer.html(`
+                    <div class="progress mb-1" style="height: 20px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                             role="progressbar" 
+                             style="width: ${data.progress}%"
+                             aria-valuenow="${data.progress}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                            ${data.progress}%
+                        </div>
+                    </div>
+                `);
+            } else if (data.status === 'Completed' || data.status === 'ReadyForBlast') {
+                progressContainer.html(`
+                    <div class="progress mb-1" style="height: 20px;">
+                        <div class="progress-bar bg-success" 
+                             role="progressbar" 
+                             style="width: 100%">
+                            Complete
+                        </div>
+                    </div>
+                `);
+            }
+
+            // Update file size info
+            if (data.fileSize > 0) {
+                const sizeCell = row.find('td:nth-child(5)');
+                sizeCell.html(`<div>${formatBytes(data.downloadedBytes)} / ${formatBytes(data.fileSize)}</div>`);
+            }
+
+            // Update action buttons
+            updateActionButtons(row, data.status);
+        }
+
+        function getStatusBadgeHtml(status, errorMessage) {
+            const badges = {
+                'Queued': '<span class="badge bg-secondary"><i class="fas fa-clock me-1"></i>Queued</span>',
+                'Downloading': '<span class="badge bg-primary"><i class="fas fa-download me-1"></i>Downloading</span>',
+                'Processing': '<span class="badge bg-info"><i class="fas fa-cog fa-spin me-1"></i>Processing</span>',
+                'Completed': '<span class="badge bg-success"><i class="fas fa-check me-1"></i>Completed</span>',
+                'ReadyForBlast': '<span class="badge bg-success"><i class="fas fa-database me-1"></i>Ready</span>',
+                'Failed': `<span class="badge bg-danger" title="${errorMessage || ''}"><i class="fas fa-exclamation-triangle me-1"></i>Failed</span>`,
+                'Cancelled': '<span class="badge bg-warning"><i class="fas fa-ban me-1"></i>Cancelled</span>'
+            };
+            
+            return badges[status] || '<span class="badge bg-light text-dark">Unknown</span>';
+        }
+
+        function updateActionButtons(row, status) {
+            const actionsCell = row.find('td:last-child .btn-group');
+            let buttonsHtml = '';
+
+            if (status === 'Queued' || status === 'Downloading' || status === 'Processing') {
+                const downloadId = row.attr('id').replace('download-', '');
+                buttonsHtml += `
+                    <button class="btn btn-outline-danger" 
+                            onclick="cancelDownload(${downloadId})"
+                            title="Cancel Download">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+            } else if (status === 'Failed') {
+                const downloadId = row.attr('id').replace('download-', '');
+                buttonsHtml += `
+                    <button class="btn btn-outline-warning" 
+                            onclick="retryDownload(${downloadId})"
+                            title="Retry Download">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                `;
+            }
+
+            const downloadId = row.attr('id').replace('download-', '');
+            buttonsHtml += `
+                <button class="btn btn-outline-primary" 
+                        onclick="refreshStatus(${downloadId})"
+                        title="Refresh Status">
+                    <i class="fas fa-sync"></i>
+                </button>
+            `;
+
+            actionsCell.html(buttonsHtml);
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            
+            const suffixes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            let counter = 0;
+            let number = bytes;
+            
+            while (Math.round(number / 1024) >= 1) {
+                number /= 1024;
+                counter++;
+            }
+            
+            return number.toFixed(1) + ' ' + suffixes[counter];
+        }
+
+        function showAlert(type, message) {
+            const alertHtml = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            
+            $('.page-header').after(alertHtml);
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(function() {
+                $('.alert').alert('close');
+            }, 5000);
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        .progress {
+            background-color: #e9ecef;
+        }
+        
+        .progress-bar-animated {
+            animation: progress-bar-stripes 1s linear infinite;
+        }
+        
+        @@keyframes progress-bar-stripes {
+            0% { background-position: 1rem 0; }
+            100% { background-position: 0 0; }
+        }
+        
+        .download-row:hover {
+            background-color: rgba(0,0,0,.075);
+        }
+        
+        .btn-group-sm > .btn, .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+    </style>
+}

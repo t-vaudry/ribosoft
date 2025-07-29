@@ -53,7 +53,7 @@ public class GenomeService
         try
         {
             var accessionsParam = string.Join(",", accessions);
-            var endpoint = $"/genome/dataset/{accessionsParam}";
+            var endpoint = $"genome/dataset/{accessionsParam}";
             _logger.LogDebug("Checking assembly dataset availability for accessions: {Accessions}", accessionsParam);
             
             return await _httpClient.GetAsync<AssemblyDatasetAvailability>(endpoint, cancellationToken);
@@ -82,7 +82,7 @@ public class GenomeService
 
         try
         {
-            const string endpoint = "/genome/dataset";
+            const string endpoint = "genome/dataset";
             _logger.LogDebug("Checking assembly dataset availability via POST");
             
             return await _httpClient.PostAsync<AssemblyDatasetRequest, AssemblyDatasetAvailability>(
@@ -133,7 +133,7 @@ public class GenomeService
                 queryParams.Add($"returned_content={returnedContent.Value}");
 
             var query = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : "";
-            var endpoint = $"/genome/dataset_report/{accessionsParam}{query}";
+            var endpoint = $"genome/accession/{accessionsParam}/dataset_report{query}";
             
             _logger.LogDebug("Getting assembly dataset reports for accessions: {Accessions}", accessionsParam);
             
@@ -163,7 +163,7 @@ public class GenomeService
 
         try
         {
-            const string endpoint = "/genome/dataset_report";
+            const string endpoint = "genome/dataset_report";
             _logger.LogDebug("Getting assembly dataset reports via POST");
             
             return await _httpClient.PostAsync<AssemblyDatasetRequest, AssemblyDatasetReport>(
@@ -173,6 +173,52 @@ public class GenomeService
         {
             _logger.LogError(ex, "Error getting assembly dataset reports via POST");
             return ApiResponse<AssemblyDatasetReport>.Error($"Unexpected error: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Get assembly dataset reports by taxonomy IDs (GET)
+    /// </summary>
+    /// <param name="taxons">List of taxonomy IDs</param>
+    /// <param name="pageSize">Number of results per page</param>
+    /// <param name="pageToken">Token for pagination</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Assembly dataset reports</returns>
+    public async Task<ApiResponse<AssemblyDatasetReport>> GetAssemblyDatasetReportsByTaxonAsync(
+        IEnumerable<int> taxons,
+        int? pageSize = null,
+        string? pageToken = null,
+        AssemblyDatasetReportsRequestContentType? returnedContent = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (taxons == null || !taxons.Any())
+        {
+            return ApiResponse<AssemblyDatasetReport>.Error("Taxons cannot be null or empty", 400);
+        }
+
+        try
+        {
+            var taxonList = string.Join(",", taxons);
+            var queryParams = new List<string>();
+
+            if (pageSize.HasValue)
+                queryParams.Add($"page_size={pageSize.Value}");
+            if (!string.IsNullOrEmpty(pageToken))
+                queryParams.Add($"page_token={Uri.EscapeDataString(pageToken)}");
+            if (returnedContent.HasValue)
+                queryParams.Add($"returned_content={returnedContent.Value}");
+
+            var queryString = queryParams.Any() ? "?" + string.Join("&", queryParams) : "";
+            var endpoint = $"genome/taxon/{taxonList}/dataset_report{queryString}";
+
+            _logger.LogDebug("Getting assembly dataset reports for taxons: {Taxons} with content type: {ContentType}", 
+                taxonList, returnedContent?.ToString() ?? "default");
+            return await _httpClient.GetAsync<AssemblyDatasetReport>(endpoint, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting assembly dataset reports for taxons: {Taxons}", string.Join(",", taxons));
+            return ApiResponse<AssemblyDatasetReport>.Error($"Error getting assembly dataset reports: {ex.Message}");
         }
     }
 
@@ -217,7 +263,7 @@ public class GenomeService
                 queryParams.Add($"filename={Uri.EscapeDataString(filename)}");
 
             var query = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : "";
-            var endpoint = $"/genome/accession/{accessionsParam}/download{query}";
+            var endpoint = $"genome/accession/{accessionsParam}/download{query}";
             
             _logger.LogDebug("Downloading genome dataset for accessions: {Accessions}", accessionsParam);
             
@@ -247,7 +293,7 @@ public class GenomeService
 
         try
         {
-            const string endpoint = "/genome/accession/download";
+            const string endpoint = "genome/accession/download";
             _logger.LogDebug("Downloading genome dataset via POST");
             
             return await _httpClient.PostDownloadAsync(endpoint, request, cancellationToken);
@@ -336,7 +382,7 @@ public class GenomeService
                 IncludeAnnotationTypes = request.IncludeAnnotationTypes
             };
 
-            const string endpoint = "/genome/download_summary";
+            const string endpoint = "genome/download_summary";
             _logger.LogDebug("Getting download summary via POST for {Count} accessions", request.Accessions.Count);
             
             return await _httpClient.PostAsync<GenomeDownloadSummaryPostRequest, DownloadSummary>(
@@ -375,7 +421,7 @@ public class GenomeService
         {
             var accessionsParam = string.Join(",", accessions);
             var query = linkType.HasValue ? $"?link_type={linkType.Value}" : "";
-            var endpoint = $"/genome/accession/{accessionsParam}/links{query}";
+            var endpoint = $"genome/accession/{accessionsParam}/links{query}";
             
             _logger.LogDebug("Getting assembly links for accessions: {Accessions}", accessionsParam);
             
@@ -410,7 +456,7 @@ public class GenomeService
         try
         {
             var accessionsParam = string.Join(",", sequenceAccessions);
-            var endpoint = $"/genome/sequence/{accessionsParam}/assemblies";
+            var endpoint = $"genome/sequence/{accessionsParam}/assemblies";
             
             _logger.LogDebug("Getting sequence assemblies for accessions: {Accessions}", accessionsParam);
             
@@ -441,7 +487,7 @@ public class GenomeService
         try
         {
             var accessionsParam = string.Join(",", sequenceAccessions);
-            var endpoint = $"/genome/sequence/{accessionsParam}/reports";
+            var endpoint = $"genome/sequence/{accessionsParam}/reports";
             
             _logger.LogDebug("Getting sequence reports for accessions: {Accessions}", accessionsParam);
             
@@ -475,7 +521,7 @@ public class GenomeService
 
         try
         {
-            var endpoint = $"/genome/taxon/{Uri.EscapeDataString(speciesTaxon)}/checkm_histogram";
+            var endpoint = $"genome/taxon/{Uri.EscapeDataString(speciesTaxon)}/checkm_histogram";
             
             _logger.LogDebug("Getting CheckM histogram for species taxon: {SpeciesTaxon}", speciesTaxon);
             
@@ -510,7 +556,7 @@ public class GenomeService
         try
         {
             var accessionsParam = string.Join(",", accessions);
-            var endpoint = $"/genome/accession/{accessionsParam}/check";
+            var endpoint = $"genome/accession/{accessionsParam}/check";
             
             _logger.LogDebug("Checking genome dataset for accessions: {Accessions}", accessionsParam);
             
@@ -540,7 +586,7 @@ public class GenomeService
 
         try
         {
-            const string endpoint = "/genome/accession/check";
+            const string endpoint = "genome/accession/check";
             _logger.LogDebug("Checking genome dataset via POST");
             
             return await _httpClient.PostAsync<GenomeCheckRequest, CheckResult>(
@@ -596,7 +642,7 @@ public class GenomeService
     private string BuildGetEndpoint(GenomeDownloadSummaryRequest request)
     {
         var accession = request.Accessions[0];
-        var endpoint = new StringBuilder($"/genome/accession/{accession}/download_summary");
+        var endpoint = new StringBuilder($"genome/accession/{accession}/download_summary");
         
         var queryParams = new List<string>();
 

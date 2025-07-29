@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using NCBI.Datasets.API.Converters;
 
 namespace NCBI.Datasets.API.Models.Genome;
 
@@ -65,6 +66,7 @@ public class AssemblyDatasetReport
     /// Total count of assemblies
     /// </summary>
     [JsonPropertyName("total_count")]
+    [JsonConverter(typeof(FlexibleIntConverter))]
     public int TotalCount { get; set; }
 
     /// <summary>
@@ -92,10 +94,108 @@ public class AssemblyReport
     public string Accession { get; set; } = string.Empty;
 
     /// <summary>
-    /// Assembly name
+    /// Current accession
     /// </summary>
-    [JsonPropertyName("assembly_name")]
-    public string AssemblyName { get; set; } = string.Empty;
+    [JsonPropertyName("current_accession")]
+    public string CurrentAccession { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Paired accession
+    /// </summary>
+    [JsonPropertyName("paired_accession")]
+    public string PairedAccession { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Source database
+    /// </summary>
+    [JsonPropertyName("source_database")]
+    public string SourceDatabase { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Organism information
+    /// </summary>
+    [JsonPropertyName("organism")]
+    public OrganismInfo? Organism { get; set; }
+
+    /// <summary>
+    /// Assembly information
+    /// </summary>
+    [JsonPropertyName("assembly_info")]
+    public AssemblyInfo? AssemblyInfo { get; set; }
+
+    /// <summary>
+    /// Assembly statistics
+    /// </summary>
+    [JsonPropertyName("assembly_stats")]
+    public AssemblyStats? AssemblyStats { get; set; }
+
+    // Legacy properties for backward compatibility
+    /// <summary>
+    /// Assembly name (legacy - use AssemblyInfo.AssemblyName)
+    /// </summary>
+    [JsonIgnore]
+    public string AssemblyName => AssemblyInfo?.AssemblyName ?? string.Empty;
+
+    /// <summary>
+    /// Organism name (legacy - use Organism.OrganismName)
+    /// </summary>
+    [JsonIgnore]
+    public string OrganismName => Organism?.OrganismName ?? string.Empty;
+
+    /// <summary>
+    /// Taxon ID (legacy - use Organism.TaxId)
+    /// </summary>
+    [JsonIgnore]
+    public int Taxid => Organism?.TaxId ?? 0;
+
+    /// <summary>
+    /// Assembly level (legacy - use AssemblyInfo.AssemblyLevel)
+    /// </summary>
+    [JsonIgnore]
+    public string AssemblyLevel => AssemblyInfo?.AssemblyLevel ?? string.Empty;
+
+    /// <summary>
+    /// Assembly status (legacy - use AssemblyInfo.AssemblyStatus)
+    /// </summary>
+    [JsonIgnore]
+    public string AssemblyStatus => AssemblyInfo?.AssemblyStatus ?? string.Empty;
+
+    /// <summary>
+    /// Release date (legacy - use AssemblyInfo.ReleaseDate)
+    /// </summary>
+    [JsonIgnore]
+    public DateTime? ReleaseDate => AssemblyInfo?.ReleaseDate;
+
+    /// <summary>
+    /// Submission date (legacy - not available in new structure)
+    /// </summary>
+    [JsonIgnore]
+    public DateTime? SubmissionDate => null;
+
+    /// <summary>
+    /// BioProject accession (legacy - use AssemblyInfo.BioprojectAccession)
+    /// </summary>
+    [JsonIgnore]
+    public string? BioprojectAccession => AssemblyInfo?.BioprojectAccession;
+
+    /// <summary>
+    /// BioSample accession (legacy - not available in new structure)
+    /// </summary>
+    [JsonIgnore]
+    public string? BiosampleAccession => null;
+}
+
+/// <summary>
+/// Organism information
+/// </summary>
+public class OrganismInfo
+{
+    /// <summary>
+    /// Taxonomy ID
+    /// </summary>
+    [JsonPropertyName("tax_id")]
+    [JsonConverter(typeof(FlexibleIntConverter))]
+    public int TaxId { get; set; }
 
     /// <summary>
     /// Organism name
@@ -104,11 +204,17 @@ public class AssemblyReport
     public string OrganismName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Taxon ID
+    /// Common name
     /// </summary>
-    [JsonPropertyName("taxid")]
-    public int Taxid { get; set; }
+    [JsonPropertyName("common_name")]
+    public string CommonName { get; set; } = string.Empty;
+}
 
+/// <summary>
+/// Assembly information
+/// </summary>
+public class AssemblyInfo
+{
     /// <summary>
     /// Assembly level
     /// </summary>
@@ -122,34 +228,52 @@ public class AssemblyReport
     public string AssemblyStatus { get; set; } = string.Empty;
 
     /// <summary>
+    /// Assembly name
+    /// </summary>
+    [JsonPropertyName("assembly_name")]
+    public string AssemblyName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Assembly type
+    /// </summary>
+    [JsonPropertyName("assembly_type")]
+    public string AssemblyType { get; set; } = string.Empty;
+
+    /// <summary>
+    /// BioProject accession
+    /// </summary>
+    [JsonPropertyName("bioproject_accession")]
+    public string BioprojectAccession { get; set; } = string.Empty;
+
+    /// <summary>
     /// Release date
     /// </summary>
     [JsonPropertyName("release_date")]
     public DateTime? ReleaseDate { get; set; }
 
     /// <summary>
-    /// Submission date
+    /// Description
     /// </summary>
-    [JsonPropertyName("submission_date")]
-    public DateTime? SubmissionDate { get; set; }
+    [JsonPropertyName("description")]
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
-    /// BioProject accession
+    /// Submitter
     /// </summary>
-    [JsonPropertyName("bioproject_accession")]
-    public string? BioprojectAccession { get; set; }
+    [JsonPropertyName("submitter")]
+    public string Submitter { get; set; } = string.Empty;
 
     /// <summary>
-    /// BioSample accession
+    /// RefSeq category
     /// </summary>
-    [JsonPropertyName("biosample_accession")]
-    public string? BiosampleAccession { get; set; }
+    [JsonPropertyName("refseq_category")]
+    public string RefseqCategory { get; set; } = string.Empty;
 
     /// <summary>
-    /// Assembly statistics
+    /// Synonym
     /// </summary>
-    [JsonPropertyName("assembly_stats")]
-    public AssemblyStats? AssemblyStats { get; set; }
+    [JsonPropertyName("synonym")]
+    public string Synonym { get; set; } = string.Empty;
 }
 
 /// <summary>
@@ -161,42 +285,49 @@ public class AssemblyStats
     /// Total sequence length
     /// </summary>
     [JsonPropertyName("total_sequence_length")]
+    [JsonConverter(typeof(FlexibleLongConverter))]
     public long TotalSequenceLength { get; set; }
 
     /// <summary>
     /// Total ungapped length
     /// </summary>
     [JsonPropertyName("total_ungapped_length")]
+    [JsonConverter(typeof(FlexibleLongConverter))]
     public long TotalUngappedLength { get; set; }
 
     /// <summary>
     /// Number of contigs
     /// </summary>
     [JsonPropertyName("number_of_contigs")]
+    [JsonConverter(typeof(FlexibleIntConverter))]
     public int NumberOfContigs { get; set; }
 
     /// <summary>
     /// Number of scaffolds
     /// </summary>
     [JsonPropertyName("number_of_scaffolds")]
+    [JsonConverter(typeof(FlexibleIntConverter))]
     public int NumberOfScaffolds { get; set; }
 
     /// <summary>
     /// Contig N50
     /// </summary>
     [JsonPropertyName("contig_n50")]
+    [JsonConverter(typeof(FlexibleLongConverter))]
     public long ContigN50 { get; set; }
 
     /// <summary>
     /// Scaffold N50
     /// </summary>
     [JsonPropertyName("scaffold_n50")]
+    [JsonConverter(typeof(FlexibleLongConverter))]
     public long ScaffoldN50 { get; set; }
 
     /// <summary>
     /// GC percent
     /// </summary>
     [JsonPropertyName("gc_percent")]
+    [JsonConverter(typeof(FlexibleFloatConverter))]
     public float GcPercent { get; set; }
 }
 
@@ -209,6 +340,7 @@ public class AssemblyCheckMHistogramReply
     /// Species taxon ID
     /// </summary>
     [JsonPropertyName("species_taxid")]
+    [JsonConverter(typeof(FlexibleIntConverter))]
     public int SpeciesTaxid { get; set; }
 
     /// <summary>
@@ -227,18 +359,21 @@ public class AssemblyCheckMHistogramInterval
     /// Starting position for this interval
     /// </summary>
     [JsonPropertyName("start_pos")]
+    [JsonConverter(typeof(FlexibleFloatConverter))]
     public float StartPos { get; set; }
 
     /// <summary>
     /// Ending position for this interval
     /// </summary>
     [JsonPropertyName("stop_pos")]
+    [JsonConverter(typeof(FlexibleFloatConverter))]
     public float StopPos { get; set; }
 
     /// <summary>
     /// Number of elements in this interval
     /// </summary>
     [JsonPropertyName("count")]
+    [JsonConverter(typeof(FlexibleFloatConverter))]
     public float Count { get; set; }
 }
 
@@ -275,6 +410,7 @@ public class SequenceAssembly
     /// Sequence length
     /// </summary>
     [JsonPropertyName("sequence_length")]
+    [JsonConverter(typeof(FlexibleLongConverter))]
     public long SequenceLength { get; set; }
 
     /// <summary>
@@ -311,6 +447,7 @@ public class SequenceReport
     /// Sequence length
     /// </summary>
     [JsonPropertyName("length")]
+    [JsonConverter(typeof(FlexibleLongConverter))]
     public long Length { get; set; }
 
     /// <summary>

@@ -3,6 +3,7 @@ using NCBI.Datasets.API.Models.Common;
 using NCBI.Datasets.API.Models.Download;
 using NCBI.Datasets.API.Models.Enums;
 using NCBI.Datasets.API.Models.Genome;
+using NCBI.Datasets.API.Models.Responses;
 using NCBI.Datasets.API.Services;
 
 namespace NCBI.Datasets.API;
@@ -13,6 +14,7 @@ namespace NCBI.Datasets.API;
 public class NCBIDatasetsClient : INCBIDatasetsClient
 {
     private readonly GenomeService _genomeService;
+    private readonly TaxonomyService _taxonomyService;
     private readonly NCBIDatasetsHttpClient _httpClient;
     private readonly ILogger<NCBIDatasetsClient> _logger;
     private bool _disposed = false;
@@ -21,14 +23,17 @@ public class NCBIDatasetsClient : INCBIDatasetsClient
     /// Initializes a new instance of the NCBIDatasetsClient
     /// </summary>
     /// <param name="genomeService">Genome service</param>
+    /// <param name="taxonomyService">Taxonomy service</param>
     /// <param name="httpClient">HTTP client</param>
     /// <param name="logger">Logger instance</param>
     public NCBIDatasetsClient(
         GenomeService genomeService,
+        TaxonomyService taxonomyService,
         NCBIDatasetsHttpClient httpClient,
         ILogger<NCBIDatasetsClient> logger)
     {
         _genomeService = genomeService ?? throw new ArgumentNullException(nameof(genomeService));
+        _taxonomyService = taxonomyService ?? throw new ArgumentNullException(nameof(taxonomyService));
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
@@ -118,6 +123,67 @@ public class NCBIDatasetsClient : INCBIDatasetsClient
         };
 
         return await GetGenomeDownloadSummaryAsync(request, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<ApiResponse<TaxonomySuggestionResponse>> GetTaxonomySuggestionsAsync(
+        string taxonQuery,
+        int? limit = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(taxonQuery))
+        {
+            return ApiResponse<TaxonomySuggestionResponse>.Error("Taxon query cannot be null or empty", 400);
+        }
+
+        _logger.LogDebug("Getting taxonomy suggestions for query: {Query}", taxonQuery);
+        return await _taxonomyService.GetTaxonomySuggestionsByQueryAsync(taxonQuery, limit);
+    }
+
+    /// <inheritdoc />
+    public async Task<ApiResponse<AssemblyDatasetReport>> GetAssemblyDatasetReportsByTaxonAsync(
+        IEnumerable<int> taxons,
+        int? pageSize = null,
+        Models.Enums.AssemblyDatasetReportsRequestContentType? returnedContent = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (taxons == null)
+        {
+            return ApiResponse<AssemblyDatasetReport>.Error("Taxons cannot be null", 400);
+        }
+
+        var taxonList = taxons.ToList();
+        if (taxonList.Count == 0)
+        {
+            return ApiResponse<AssemblyDatasetReport>.Error("At least one taxon is required", 400);
+        }
+
+        _logger.LogDebug("Getting assembly dataset reports for {Count} taxons with content type: {ContentType}", 
+            taxonList.Count, returnedContent?.ToString() ?? "default");
+        return await _genomeService.GetAssemblyDatasetReportsByTaxonAsync(taxonList, pageSize, null, returnedContent, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<ApiResponse<AssemblyDatasetReport>> GetAssemblyDatasetReportsAsync(
+        IEnumerable<string> accessions,
+        int? pageSize = null,
+        Models.Enums.AssemblyDatasetReportsRequestContentType? returnedContent = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (accessions == null)
+        {
+            return ApiResponse<AssemblyDatasetReport>.Error("Accessions cannot be null", 400);
+        }
+
+        var accessionList = accessions.ToList();
+        if (accessionList.Count == 0)
+        {
+            return ApiResponse<AssemblyDatasetReport>.Error("At least one accession is required", 400);
+        }
+
+        _logger.LogDebug("Getting assembly dataset reports for {Count} accessions with content type: {ContentType}", 
+            accessionList.Count, returnedContent?.ToString() ?? "default");
+        return await _genomeService.GetAssemblyDatasetReportsAsync(accessionList, pageSize, null, returnedContent, cancellationToken);
     }
 
     /// <summary>
