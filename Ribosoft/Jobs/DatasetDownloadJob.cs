@@ -75,14 +75,37 @@ namespace Ribosoft.Jobs
                     Accessions = new List<string> { download.AccessionId }
                 };
 
+                // Build list of annotation types to include
+                var annotationTypes = new List<NCBI.Datasets.API.Models.Enums.AnnotationForAssemblyType>();
+
+                if (download.IncludeSequence)
+                {
+                    // Include FASTA sequence files
+                    annotationTypes.Add(NCBI.Datasets.API.Models.Enums.AnnotationForAssemblyType.GENOME_FASTA);
+                    annotationTypes.Add(NCBI.Datasets.API.Models.Enums.AnnotationForAssemblyType.RNA_FASTA);
+                    annotationTypes.Add(NCBI.Datasets.API.Models.Enums.AnnotationForAssemblyType.PROT_FASTA);
+                    annotationTypes.Add(NCBI.Datasets.API.Models.Enums.AnnotationForAssemblyType.CDS_FASTA);
+                    
+                    _logger.LogInformation("Including sequence data (FASTA files) for {AccessionId}", download.AccessionId);
+                }
+
                 if (download.IncludeAnnotations)
                 {
-                    // Add annotation types if needed
-                    request.IncludeAnnotationTypes = new List<NCBI.Datasets.API.Models.Enums.AnnotationForAssemblyType>
-                    {
-                        NCBI.Datasets.API.Models.Enums.AnnotationForAssemblyType.GENOME_GFF,
-                        NCBI.Datasets.API.Models.Enums.AnnotationForAssemblyType.GENOME_GBFF
-                    };
+                    // Include annotation files
+                    annotationTypes.Add(NCBI.Datasets.API.Models.Enums.AnnotationForAssemblyType.GENOME_GFF);
+                    annotationTypes.Add(NCBI.Datasets.API.Models.Enums.AnnotationForAssemblyType.GENOME_GBFF);
+                    annotationTypes.Add(NCBI.Datasets.API.Models.Enums.AnnotationForAssemblyType.GENOME_GTF);
+                    
+                    _logger.LogInformation("Including annotation data (GFF/GBFF/GTF files) for {AccessionId}", download.AccessionId);
+                }
+
+                if (annotationTypes.Count > 0)
+                {
+                    request.IncludeAnnotationTypes = annotationTypes;
+                }
+                else
+                {
+                    _logger.LogWarning("No sequence or annotation data requested for {AccessionId} - download will only contain metadata", download.AccessionId);
                 }
 
                 var downloadSummary = await _ncbiClient.GetGenomeDownloadSummaryAsync(request);

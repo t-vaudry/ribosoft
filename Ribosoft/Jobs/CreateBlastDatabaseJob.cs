@@ -177,7 +177,8 @@ namespace Ribosoft.Jobs
         private List<string> FindFastaFiles(string extractPath)
         {
             var fastaFiles = new List<string>();
-            var fastaExtensions = new[] { ".fna", ".fasta", ".fa", ".fas" };
+            // Include all common FASTA extensions used by NCBI
+            var fastaExtensions = new[] { ".fna", ".fasta", ".fa", ".fas", ".faa" };
 
             foreach (var file in Directory.GetFiles(extractPath, "*", SearchOption.AllDirectories))
             {
@@ -185,11 +186,50 @@ namespace Ribosoft.Jobs
                 if (fastaExtensions.Contains(extension))
                 {
                     fastaFiles.Add(file);
+                    _logger.LogDebug("Found FASTA file: {FilePath}", file);
                 }
             }
 
-            _logger.LogInformation("Found {Count} FASTA files in dataset", fastaFiles.Count);
+            _logger.LogInformation("Found {Count} FASTA files in dataset {ExtractPath}", fastaFiles.Count, extractPath);
+            
+            if (fastaFiles.Count == 0)
+            {
+                // Log directory contents for debugging
+                _logger.LogWarning("No FASTA files found. Directory contents:");
+                LogDirectoryContents(extractPath);
+            }
+            
             return fastaFiles;
+        }
+
+        /*! \fn LogDirectoryContents
+         * \brief Log directory contents for debugging
+         */
+        private void LogDirectoryContents(string path, int maxDepth = 3, int currentDepth = 0)
+        {
+            if (currentDepth >= maxDepth) return;
+            
+            try
+            {
+                var indent = new string(' ', currentDepth * 2);
+                
+                foreach (var dir in Directory.GetDirectories(path))
+                {
+                    _logger.LogWarning("{Indent}DIR: {DirName}", indent, Path.GetFileName(dir));
+                    LogDirectoryContents(dir, maxDepth, currentDepth + 1);
+                }
+                
+                foreach (var file in Directory.GetFiles(path))
+                {
+                    var fileInfo = new FileInfo(file);
+                    _logger.LogWarning("{Indent}FILE: {FileName} ({Size} bytes)", 
+                        indent, Path.GetFileName(file), fileInfo.Length);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error logging directory contents for {Path}", path);
+            }
         }
 
         /*! \fn CreateBlastDatabase
