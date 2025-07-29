@@ -52,7 +52,22 @@ Add to `appsettings.json`:
 
 ## 🚨 **Common Permission Errors**
 
-### **Error: "Permission denied accessing download directory"**
+### **Error: "Permission denied creating download directory" (Directory Already Exists)**
+**Cause:** Application tries to create a directory that already exists, but lacks permissions to the parent directory.
+
+**Solution:**
+```bash
+# The directory exists, so just fix permissions on the existing directory
+sudo chown -R $USER:$USER /path/to/downloads
+sudo chmod -R 755 /path/to/downloads
+
+# Verify the directory is accessible
+ls -la /path/to/downloads
+```
+
+**Note:** Even when a directory exists, `Directory.CreateDirectory()` may fail if the application doesn't have read permissions to check if the directory exists.
+
+### **Error: "Permission denied accessing existing download directory"**
 **Cause:** Application user doesn't have write permissions to the directory.
 
 **Solution:**

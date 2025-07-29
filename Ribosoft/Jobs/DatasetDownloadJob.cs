@@ -211,11 +211,40 @@ namespace Ribosoft.Jobs
             
             try
             {
-                // Ensure the directory exists and is accessible
+                // Check if directory exists first
                 if (!Directory.Exists(downloadDir))
                 {
                     _logger.LogInformation("Creating download directory: {DownloadDir}", downloadDir);
-                    Directory.CreateDirectory(downloadDir);
+                    try
+                    {
+                        Directory.CreateDirectory(downloadDir);
+                    }
+                    catch (UnauthorizedAccessException ex)
+                    {
+                        _logger.LogError(ex, "Permission denied creating download directory: {DownloadDir}", downloadDir);
+                        throw new InvalidOperationException(
+                            $"Permission denied creating download directory '{downloadDir}'. " +
+                            $"Please ensure the application has permissions to create directories in the parent path. " +
+                            $"You may need to run: sudo mkdir -p {downloadDir} && sudo chown -R $USER:$USER {downloadDir} && sudo chmod -R 755 {downloadDir}");
+                    }
+                    catch (DirectoryNotFoundException ex)
+                    {
+                        _logger.LogError(ex, "Parent directory path not found: {DownloadDir}", downloadDir);
+                        throw new InvalidOperationException(
+                            $"Parent directory path for '{downloadDir}' not found. " +
+                            $"Please ensure the parent directories exist and are accessible. " +
+                            $"You may need to run: sudo mkdir -p {Path.GetDirectoryName(downloadDir)} && sudo chmod 755 {Path.GetDirectoryName(downloadDir)}");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Unexpected error creating download directory: {DownloadDir}", downloadDir);
+                        throw new InvalidOperationException(
+                            $"Error creating download directory '{downloadDir}': {ex.Message}");
+                    }
+                }
+                else
+                {
+                    _logger.LogDebug("Download directory already exists: {DownloadDir}", downloadDir);
                 }
                 
                 // Test write permissions by creating a temporary file
@@ -228,28 +257,28 @@ namespace Ribosoft.Jobs
                 }
                 catch (UnauthorizedAccessException ex)
                 {
-                    _logger.LogError(ex, "Permission denied accessing download directory: {DownloadDir}", downloadDir);
+                    _logger.LogError(ex, "Permission denied accessing existing download directory: {DownloadDir}", downloadDir);
                     throw new InvalidOperationException(
                         $"Permission denied accessing download directory '{downloadDir}'. " +
-                        $"Please ensure the application has read/write permissions to this directory. " +
-                        $"You may need to run: sudo chown -R $USER:$USER {downloadDir} && sudo chmod -R 755 {downloadDir}");
+                        $"The directory exists but the application cannot write to it. " +
+                        $"Please fix permissions: sudo chown -R $USER:$USER {downloadDir} && sudo chmod -R 755 {downloadDir}");
                 }
-                catch (DirectoryNotFoundException ex)
+                catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Download directory path not found: {DownloadDir}", downloadDir);
+                    _logger.LogError(ex, "Cannot write to download directory: {DownloadDir}", downloadDir);
                     throw new InvalidOperationException(
-                        $"Download directory path '{downloadDir}' not found. " +
-                        $"Please ensure the parent directories exist and are accessible.");
+                        $"Cannot write to download directory '{downloadDir}': {ex.Message}");
                 }
             }
             catch (UnauthorizedAccessException ex)
             {
-                _logger.LogError(ex, "Cannot create download directory due to permissions: {DownloadDir}", downloadDir);
+                _logger.LogError(ex, "Permission denied accessing download directory path: {DownloadDir}", downloadDir);
                 throw new InvalidOperationException(
-                    $"Cannot create download directory '{downloadDir}' due to insufficient permissions. " +
-                    $"Please ensure the application has permissions to create directories in the parent path.");
+                    $"Permission denied accessing download directory '{downloadDir}'. " +
+                    $"Please ensure the application has read access to check if the directory exists. " +
+                    $"You may need to run: sudo chmod 755 {downloadDir}");
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!(ex is InvalidOperationException))
             {
                 _logger.LogError(ex, "Unexpected error accessing download directory: {DownloadDir}", downloadDir);
                 throw new InvalidOperationException(
@@ -279,9 +308,10 @@ namespace Ribosoft.Jobs
                     return (false, $"Download path '{downloadDir}' must be an absolute path");
                 }
                 
-                // Try to create directory if it doesn't exist
+                // Check if directory exists first
                 if (!Directory.Exists(downloadDir))
                 {
+                    // Try to create directory if it doesn't exist
                     try
                     {
                         Directory.CreateDirectory(downloadDir);
@@ -289,7 +319,12 @@ namespace Ribosoft.Jobs
                     catch (UnauthorizedAccessException)
                     {
                         return (false, $"Permission denied creating download directory '{downloadDir}'. " +
-                                      $"Run: sudo mkdir -p {downloadDir} && sudo chown -R $USER:$USER {downloadDir}");
+                                      $"Run: sudo mkdir -p {downloadDir} && sudo chown -R $USER:$USER {downloadDir} && sudo chmod -R 755 {downloadDir}");
+                    }
+                    catch (DirectoryNotFoundException)
+                    {
+                        return (false, $"Parent directory path for '{downloadDir}' not found. " +
+                                      $"Run: sudo mkdir -p {Path.GetDirectoryName(downloadDir)} && sudo chmod 755 {Path.GetDirectoryName(downloadDir)}");
                     }
                     catch (Exception ex)
                     {
@@ -297,7 +332,7 @@ namespace Ribosoft.Jobs
                     }
                 }
                 
-                // Test write permissions
+                // Test write permissions on existing directory
                 var testFile = Path.Combine(downloadDir, $".permission_test_{Guid.NewGuid()}.tmp");
                 try
                 {
@@ -306,8 +341,8 @@ namespace Ribosoft.Jobs
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    return (false, $"No write permission to download directory '{downloadDir}'. " +
-                                  $"Run: sudo chmod -R 755 {downloadDir} && sudo chown -R $USER:$USER {downloadDir}");
+                    return (false, $"No write permission to existing download directory '{downloadDir}'. " +
+                                  $"Run: sudo chown -R $USER:$USER {downloadDir} && sudo chmod -R 755 {downloadDir}");
                 }
                 catch (Exception ex)
                 {
@@ -315,6 +350,13 @@ namespace Ribosoft.Jobs
                 }
                 
                 return (true, string.Empty);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                var downloadDir = configuration["DatasetDownloads:Path"] ?? 
+                                 Path.Combine(Directory.GetCurrentDirectory(), "Downloads", "Datasets");
+                return (false, $"Permission denied accessing download directory '{downloadDir}'. " +
+                              $"Run: sudo chmod 755 {downloadDir}");
             }
             catch (Exception ex)
             {
