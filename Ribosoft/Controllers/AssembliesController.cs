@@ -113,6 +113,52 @@ namespace Ribosoft.Controllers
             }
         }
 
+        /*! \fn SearchDatasets
+         * \brief AJAX endpoint for searching datasets without page refresh
+         * \param searchTerm Optional search term
+         * \param limit Maximum results to return
+         * \return JSON response with datasets
+         */
+        [HttpPost]
+        public async Task<IActionResult> SearchDatasets([FromBody] SearchDatasetsRequest request)
+        {
+            try
+            {
+                _logger.LogInformation("AJAX SearchDatasets called with searchTerm: {SearchTerm}, limit: {Limit}", 
+                    request.SearchTerm, request.Limit);
+                
+                var datasets = await _datasetDownloadService.GetAvailableDatasetsAsync(request.SearchTerm, request.Limit);
+                
+                _logger.LogInformation("Retrieved {Count} datasets from service via AJAX", datasets.Count);
+                
+                return Json(new { 
+                    success = true, 
+                    datasets = datasets,
+                    searchTerm = request.SearchTerm,
+                    count = datasets.Count
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in AJAX search with term: {SearchTerm}", request.SearchTerm);
+                return Json(new { 
+                    success = false, 
+                    error = "Error loading datasets. Please try again later.",
+                    datasets = new List<object>(),
+                    count = 0
+                });
+            }
+        }
+
+        /*! \class SearchDatasetsRequest
+         * \brief Request model for AJAX dataset search
+         */
+        public class SearchDatasetsRequest
+        {
+            public string? SearchTerm { get; set; }
+            public int Limit { get; set; } = 50;
+        }
+
         /*! \fn DownloadDatasets
          * \brief HTTP POST for requesting dataset downloads
          * \param request Download request
