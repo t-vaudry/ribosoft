@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -70,6 +71,7 @@ namespace Ribosoft.Models
          * \brief Assembly database size in bytes (calculated, not stored)
          */
         [Display(Name = "Size")]
+        [NotMapped]
         public long Size { get; set; }
 
         /*! \property Jobs
