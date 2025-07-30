@@ -639,6 +639,7 @@
 <script>
     // Loading state for search
     document.addEventListener('DOMContentLoaded', function() {
+        // Loading state for search
         const searchForm = document.querySelector('form[action*="BrowseDatasets"]');
         const loadingIndicator = document.getElementById('loadingIndicator');
         const resultsContainer = document.querySelector('.card-body.p-0');
@@ -652,10 +653,8 @@
                 }
             });
         }
-    });
 
-    // Existing table functionality
-    document.addEventListener('DOMContentLoaded', function() {
+        // Table functionality - Download Selected buttons
         const selectAllCheckbox = document.getElementById('selectAll');
         const datasetCheckboxes = document.querySelectorAll('.dataset-checkbox');
         const downloadBtnTop = document.getElementById('downloadSelectedBtnTop');
@@ -735,10 +734,6 @@
             });
         });
 
-        // Initial state update
-        console.log('Debug - Calling initial updateSelectionState');
-        updateSelectionState();
-
         // Handle download button clicks (both buttons)
         function handleDownloadClick() {
             const selectedCount = document.querySelectorAll('.dataset-checkbox:checked').length;
@@ -756,8 +751,12 @@
             const modalIncludeAnnotations = document.getElementById('modalIncludeAnnotations');
             const modalIncludeSequence = document.getElementById('modalIncludeSequence');
             
-            modalIncludeAnnotations.checked = includeAnnotations.checked;
-            modalIncludeSequence.checked = includeSequence.checked;
+            if (includeAnnotations && modalIncludeAnnotations) {
+                modalIncludeAnnotations.checked = includeAnnotations.checked;
+            }
+            if (includeSequence && modalIncludeSequence) {
+                modalIncludeSequence.checked = includeSequence.checked;
+            }
             
             // Show the modal
             const modal = new bootstrap.Modal(document.getElementById('downloadModal'));
@@ -765,26 +764,29 @@
         }
 
         // Add click handlers to both buttons
-        downloadBtnTop.addEventListener('click', handleDownloadClick);
-        downloadBtnBottom.addEventListener('click', handleDownloadClick);
-            
-            if (includeAnnotations) modalIncludeAnnotations.checked = includeAnnotations.checked;
-            if (includeSequence) modalIncludeSequence.checked = includeSequence.checked;
-            
-            // Show the modal
-            const modal = new bootstrap.Modal(document.getElementById('downloadConfirmModal'));
-            modal.show();
-        });
+        if (downloadBtnTop) {
+            downloadBtnTop.addEventListener('click', handleDownloadClick);
+        }
+        if (downloadBtnBottom) {
+            downloadBtnBottom.addEventListener('click', handleDownloadClick);
+        }
 
         // Handle modal confirm button
-        document.getElementById('confirmDownloadBtn').addEventListener('click', function() {
-            // Hide the modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('downloadConfirmModal'));
-            modal.hide();
-            
-            // Submit the form
-            downloadForm.submit();
-        });
+        const confirmDownloadBtn = document.getElementById('confirmDownloadBtn');
+        if (confirmDownloadBtn) {
+            confirmDownloadBtn.addEventListener('click', function() {
+                // Hide the modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('downloadConfirmModal'));
+                if (modal) {
+                    modal.hide();
+                }
+                
+                // Submit the form
+                if (downloadForm) {
+                    downloadForm.submit();
+                }
+            });
+        }
 
         // Helper function to show alerts
         function showAlert(type, message) {
@@ -812,7 +814,8 @@
             }
         }
 
-        // Initialize state
+        // Initial state update
+        console.log('Debug - Calling initial updateSelectionState');
         updateSelectionState();
     });
 </script>
