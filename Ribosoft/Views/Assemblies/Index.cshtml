@@ -236,6 +236,7 @@
                                         <button class="btn btn-sm btn-outline-danger delete-assembly" 
                                                 data-taxonomy-id="@item.TaxonomyId"
                                                 data-organism-name="@item.OrganismName"
+                                                data-accession-id="@item.AccessionId"
                                                 data-assembly-size="@item.Size"
                                                 title="Delete assembly and all files">
                                             <i class="fas fa-trash-alt"></i>
@@ -292,6 +293,64 @@
                 </div>
             </div>
         </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Assembly Modal -->
+<div class="modal fade" id="deleteAssemblyModal" tabindex="-1" aria-labelledby="deleteAssemblyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteAssemblyModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Delete Assembly
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning" role="alert">
+                    <i class="fas fa-warning me-2"></i>
+                    <strong>Warning:</strong> This action cannot be undone!
+                </div>
+                
+                <p class="mb-3">Are you sure you want to delete the assembly for:</p>
+                
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h6 class="card-title mb-2">
+                            <i class="fas fa-microscope me-2 text-primary"></i>
+                            <span id="modal-organism-name"></span>
+                        </h6>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <small class="text-muted">Accession ID:</small><br>
+                                <code id="modal-accession-id" class="text-primary"></code>
+                            </div>
+                            <div class="col-sm-6">
+                                <small class="text-muted">Assembly Size:</small><br>
+                                <span class="badge bg-info" id="modal-assembly-size"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-3">
+                    <h6 class="text-danger">This will:</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-times text-danger me-2"></i>Remove the assembly from the database</li>
+                        <li><i class="fas fa-times text-danger me-2"></i>Delete all BLAST database files</li>
+                        <li><i class="fas fa-times text-danger me-2"></i>Free up <span id="modal-size-to-free" class="fw-bold"></span> of disk space</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash-alt me-1"></i>Delete Assembly
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -477,42 +536,59 @@
             button.addEventListener('click', function() {
                 const taxonomyId = this.dataset.taxonomyId;
                 const organismName = this.dataset.organismName;
+                const accessionId = this.dataset.accessionId || 'Unknown';
                 const assemblySize = parseInt(this.dataset.assemblySize) || 0;
                 const formattedSize = formatFileSize(assemblySize);
                 
-                // Confirm deletion
-                const confirmMessage = `Are you sure you want to delete the assembly for "${organismName}"?\n\n` +
-                    `This will:\n` +
-                    `• Remove the assembly from the database\n` +
-                    `• Delete all BLAST database files (${formattedSize})\n` +
-                    `• Free up disk space\n\n` +
-                    `This action cannot be undone.`;
+                // Populate modal with assembly information
+                document.getElementById('modal-organism-name').textContent = organismName;
+                document.getElementById('modal-accession-id').textContent = accessionId;
+                document.getElementById('modal-assembly-size').textContent = formattedSize;
+                document.getElementById('modal-size-to-free').textContent = formattedSize;
                 
-                if (!confirm(confirmMessage)) {
-                    return;
-                }
+                // Store data for deletion
+                const modal = document.getElementById('deleteAssemblyModal');
+                modal.dataset.taxonomyId = taxonomyId;
+                modal.dataset.organismName = organismName;
                 
-                // Disable the button while processing
-                this.disabled = true;
-                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                this.title = 'Deleting...';
-                
-                fetch('/Assemblies/Delete', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
-                    },
-                    body: 'id=' + encodeURIComponent(taxonomyId)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Show success message
-                        alert('Success: ' + data.message);
-                        
-                        // Remove the row from the table
-                        const row = this.closest('tr');
+                // Show the modal
+                const bootstrapModal = new bootstrap.Modal(modal);
+                bootstrapModal.show();
+            });
+        });
+
+        // Handle confirm delete button in modal
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            const modal = document.getElementById('deleteAssemblyModal');
+            const taxonomyId = modal.dataset.taxonomyId;
+            const organismName = modal.dataset.organismName;
+            
+            // Disable the button while processing
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Deleting...';
+            
+            fetch('/Assemblies/Delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                },
+                body: 'id=' + encodeURIComponent(taxonomyId)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Hide the modal
+                    const bootstrapModal = bootstrap.Modal.getInstance(modal);
+                    bootstrapModal.hide();
+                    
+                    // Show success message
+                    showAlert('success', data.message);
+                    
+                    // Remove the row from the table
+                    const deleteButton = document.querySelector(`[data-taxonomy-id="${taxonomyId}"]`);
+                    if (deleteButton) {
+                        const row = deleteButton.closest('tr');
                         row.style.transition = 'opacity 0.3s ease';
                         row.style.opacity = '0';
                         setTimeout(() => {
@@ -524,24 +600,30 @@
                                 location.reload(); // Reload to show "no databases" message
                             }
                         }, 300);
-                    } else {
-                        alert('Error: ' + (data.message || 'Failed to delete assembly'));
-                        
-                        // Re-enable the button
-                        this.disabled = false;
-                        this.innerHTML = '<i class="fas fa-trash-alt"></i>';
-                        this.title = 'Delete assembly and all files';
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred while deleting the assembly');
+                } else {
+                    // Hide the modal
+                    const bootstrapModal = bootstrap.Modal.getInstance(modal);
+                    bootstrapModal.hide();
                     
-                    // Re-enable the button
-                    this.disabled = false;
-                    this.innerHTML = '<i class="fas fa-trash-alt"></i>';
-                    this.title = 'Delete assembly and all files';
-                });
+                    // Show error message
+                    showAlert('danger', data.message || 'Failed to delete assembly');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                
+                // Hide the modal
+                const bootstrapModal = bootstrap.Modal.getInstance(modal);
+                bootstrapModal.hide();
+                
+                // Show error message
+                showAlert('danger', 'An error occurred while deleting the assembly');
+            })
+            .finally(() => {
+                // Re-enable the button
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-trash-alt me-1"></i>Delete Assembly';
             });
         });
 
@@ -559,6 +641,34 @@
             }
             
             return size.toFixed(2) + ' ' + sizes[order];
+        }
+
+        // Helper function to show alert messages
+        function showAlert(type, message) {
+            // Remove existing alerts
+            const existingAlerts = document.querySelectorAll('.alert:not(.alert-warning)');
+            existingAlerts.forEach(alert => alert.remove());
+            
+            // Create new alert
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.setAttribute('role', 'alert');
+            alertDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            // Insert at the top of the page content
+            const pageHeader = document.querySelector('.page-header');
+            pageHeader.parentNode.insertBefore(alertDiv, pageHeader.nextSibling);
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
         }
     });
 </script>

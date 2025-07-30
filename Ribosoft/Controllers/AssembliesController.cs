@@ -79,9 +79,27 @@ namespace Ribosoft.Controllers
                 .Take(10)
                 .ToListAsync();
 
-            // Calculate sizes for assemblies
+            // Process assemblies to fix missing data and calculate sizes
             foreach (var assembly in assemblies)
             {
+                // Fix missing Type
+                if (string.IsNullOrEmpty(assembly.Type))
+                {
+                    assembly.Type = "Downloaded"; // Default for existing assemblies
+                }
+
+                // Fix missing or incorrect Path
+                if (string.IsNullOrEmpty(assembly.Path) || assembly.Path.StartsWith("~/"))
+                {
+                    var blastDbPath = _configuration["Blast:BLASTDB"] ?? 
+                                     Path.Combine(Directory.GetCurrentDirectory(), "BlastDatabases");
+                    blastDbPath = ExpandPath(blastDbPath);
+                    
+                    // Use organized path structure
+                    assembly.Path = Path.Combine(blastDbPath, assembly.AccessionId);
+                }
+
+                // Calculate size
                 assembly.Size = CalculateAssemblySize(assembly.Path);
             }
 
@@ -551,6 +569,29 @@ namespace Ribosoft.Controllers
             }
             
             return $"{size:0.##} {sizes[order]}";
+        }
+
+        /*! \fn ExpandPath
+         * \brief Expand ~ and environment variables in path
+         * \param path Path to expand
+         * \return Expanded path
+         */
+        private static string ExpandPath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return path;
+
+            // Expand ~ to home directory
+            if (path.StartsWith("~/") || path == "~")
+            {
+                var homeDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                if (path == "~")
+                    return homeDir;
+                return Path.Combine(homeDir, path.Substring(2));
+            }
+
+            // Expand environment variables
+            return Environment.ExpandEnvironmentVariables(path);
         }
     }
 }
