@@ -485,7 +485,7 @@ namespace Ribosoft.Jobs
                 existingAssembly.AssemblyName = download.AssemblyName;
                 existingAssembly.OrganismName = download.OrganismName;
                 existingAssembly.SpeciesId = download.SpeciesId;
-                existingAssembly.Type = "Downloaded";
+                existingAssembly.Type = DetermineAssemblyTypeFromFiles(assemblyPath);
                 existingAssembly.Path = assemblyPath;
                 existingAssembly.IsEnabled = true;
                 existingAssembly.UpdatedAt = DateTime.UtcNow;
@@ -503,7 +503,7 @@ namespace Ribosoft.Jobs
                     OrganismName = download.OrganismName ?? "Unknown organism",
                     SpeciesId = download.SpeciesId,
                     TaxonomyId = download.TaxonomyId,
-                    Type = "Downloaded",
+                    Type = DetermineAssemblyTypeFromFiles(assemblyPath),
                     Path = assemblyPath,
                     IsEnabled = true,
                     CreatedAt = DateTime.UtcNow,
@@ -516,6 +516,69 @@ namespace Ribosoft.Jobs
             await _context.SaveChangesAsync();
             _logger.LogInformation("Assembly record updated for {AccessionId} with path {AssemblyPath}", 
                 download.AccessionId, assemblyPath);
+        }
+
+        /*! \fn DetermineAssemblyTypeFromFiles
+         * \brief Determine assembly type based on the BLAST database files created
+         * \param assemblyPath Path to the assembly directory
+         * \return Assembly type string
+         */
+        private string DetermineAssemblyTypeFromFiles(string assemblyPath)
+        {
+            if (string.IsNullOrEmpty(assemblyPath) || !Directory.Exists(assemblyPath))
+            {
+                return "Unknown";
+            }
+
+            try
+            {
+                var files = Directory.GetFiles(assemblyPath, "*", SearchOption.TopDirectoryOnly)
+                    .Select(f => Path.GetFileName(f).ToLowerInvariant())
+                    .ToList();
+
+                // Count different types of BLAST databases
+                var hasGenome = files.Any(f => f.Contains("genomic") && (f.EndsWith(".nhr") || f.EndsWith(".phr")));
+                var hasProtein = files.Any(f => f.Contains("protein") && f.EndsWith(".phr"));
+                var hasRNA = files.Any(f => f.Contains("rna") && f.EndsWith(".nhr"));
+                var hasCDS = files.Any(f => f.Contains("cds") && f.EndsWith(".nhr"));
+
+                // Determine primary type based on available databases
+                var types = new List<string>();
+                
+                if (hasGenome) types.Add("Genome");
+                if (hasProtein) types.Add("Proteome");
+                if (hasRNA) types.Add("Transcriptome");
+                if (hasCDS) types.Add("CDS");
+
+                if (types.Count == 0)
+                {
+                    // Fallback: check for any BLAST database files
+                    var hasAnyBlastDb = files.Any(f => f.EndsWith(".nhr") || f.EndsWith(".phr") || 
+                                                      f.EndsWith(".nin") || f.EndsWith(".pin"));
+                    return hasAnyBlastDb ? "Assembly" : "Unknown";
+                }
+
+                // Return combined type or primary type
+                if (types.Count == 1)
+                {
+                    return types[0];
+                }
+                else if (types.Contains("Genome"))
+                {
+                    // If genome is present with others, it's likely a complete genome assembly
+                    return "Complete Genome";
+                }
+                else
+                {
+                    // Multiple types without genome
+                    return string.Join(" + ", types);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to determine assembly type for path: {Path}", assemblyPath);
+                return "Unknown";
+            }
         }
     }
 }
