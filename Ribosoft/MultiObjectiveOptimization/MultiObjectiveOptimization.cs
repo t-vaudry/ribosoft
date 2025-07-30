@@ -232,7 +232,9 @@ namespace Ribosoft.MultiObjectiveOptimization
 
                     var d = dominatorEnumerator.Current;
 
-                    if (d.Value == v.Value)
+                    // Use epsilon comparison for floating point values instead of direct equality
+                    const double epsilon = 1e-10;
+                    if (Math.Abs(d.Value - v.Value) < epsilon)
                         continue;
 
                     if (((d.Type == OptimizeType.MIN) && (d.Value < v.Value)) || (((d.Type == OptimizeType.MAX)) && (d.Value > v.Value)))

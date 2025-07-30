@@ -127,7 +127,8 @@ namespace Ribosoft.Controllers
         {
             try
             {
-                _logger.LogInformation("BrowseDatasets called with searchTerm: {SearchTerm}, limit: {Limit}", searchTerm, limit);
+                _logger.LogInformation("BrowseDatasets called with searchTerm: {SearchTerm}, limit: {Limit}", 
+                    SanitizeForLogging(searchTerm), limit);
                 
                 var datasets = await _datasetDownloadService.GetAvailableDatasetsAsync(searchTerm, limit);
                 
@@ -158,7 +159,7 @@ namespace Ribosoft.Controllers
             try
             {
                 _logger.LogInformation("AJAX SearchDatasets called with searchTerm: {SearchTerm}, limit: {Limit}", 
-                    request.SearchTerm, request.Limit);
+                    SanitizeForLogging(request.SearchTerm), request.Limit);
                 
                 var datasets = await _datasetDownloadService.GetAvailableDatasetsAsync(request.SearchTerm, request.Limit);
                 
@@ -743,6 +744,24 @@ namespace Ribosoft.Controllers
             }
             
             return "Assembly";
+        }
+
+        /*! \fn SanitizeForLogging
+         * \brief Sanitize user input for safe logging to prevent log injection attacks
+         * \param input User-provided input that may contain malicious content
+         * \return Sanitized string safe for logging
+         */
+        private static string? SanitizeForLogging(string? input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+            
+            // Remove or replace characters that could be used for log injection
+            return input
+                .Replace('\r', ' ')  // Remove carriage returns
+                .Replace('\n', ' ')  // Remove line feeds
+                .Replace('\t', ' ')  // Replace tabs with spaces
+                .Trim();             // Remove leading/trailing whitespace
         }
     }
 }

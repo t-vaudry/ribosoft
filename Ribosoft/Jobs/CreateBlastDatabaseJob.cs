@@ -267,6 +267,19 @@ namespace Ribosoft.Jobs
                     if (!string.IsNullOrEmpty(entry.Name))
                     {
                         var destinationPath = Path.Combine(extractPath, entry.FullName);
+                        
+                        // Security: Prevent Zip Slip attacks by validating the destination path
+                        var fullExtractPath = Path.GetFullPath(extractPath);
+                        var fullDestinationPath = Path.GetFullPath(destinationPath);
+                        
+                        if (!fullDestinationPath.StartsWith(fullExtractPath + Path.DirectorySeparatorChar) &&
+                            !fullDestinationPath.Equals(fullExtractPath, StringComparison.OrdinalIgnoreCase))
+                        {
+                            _logger.LogWarning("Skipping potentially malicious archive entry: {EntryName} -> {DestinationPath}", 
+                                entry.FullName, destinationPath);
+                            continue;
+                        }
+                        
                         var destinationDir = Path.GetDirectoryName(destinationPath);
                         
                         if (!string.IsNullOrEmpty(destinationDir))

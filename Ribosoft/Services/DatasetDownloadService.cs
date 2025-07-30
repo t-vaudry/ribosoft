@@ -67,7 +67,8 @@ namespace Ribosoft.Services
         {
             try
             {
-                _logger.LogInformation("Fetching available datasets from NCBI. Search term: {SearchTerm}, Limit: {Limit}", searchTerm, limit);
+                _logger.LogInformation("Fetching available datasets from NCBI. Search term: {SearchTerm}, Limit: {Limit}", 
+                    SanitizeForLogging(searchTerm), limit);
 
                 // Get existing downloads to mark already downloaded datasets
                 var existingDownloads = await _context.DatasetDownloads
@@ -87,7 +88,7 @@ namespace Ribosoft.Services
                 if (!string.IsNullOrEmpty(searchTerm))
                 {
                     // Use NCBI API to search for organisms
-                    _logger.LogDebug("Searching NCBI taxonomy for: {SearchTerm}", searchTerm);
+                    _logger.LogDebug("Searching NCBI taxonomy for: {SearchTerm}", SanitizeForLogging(searchTerm));
                     
                     var taxonomyResponse = await _ncbiClient.GetTaxonomySuggestionsAsync(searchTerm, 20);
                     if (!taxonomyResponse.IsSuccess)
@@ -99,7 +100,7 @@ namespace Ribosoft.Services
 
                     if (taxonomyResponse.Data?.Suggestions == null || !taxonomyResponse.Data.Suggestions.Any())
                     {
-                        _logger.LogInformation("No taxonomy suggestions found for: {SearchTerm}", searchTerm);
+                        _logger.LogInformation("No taxonomy suggestions found for: {SearchTerm}", SanitizeForLogging(searchTerm));
                         return datasets; // Return empty list if no suggestions
                     }
 
@@ -600,6 +601,24 @@ namespace Ribosoft.Services
 
                 _logger.LogInformation("Retrying download {DownloadId} with new job {JobId}", downloadId, jobId);
             }
+        }
+
+        /*! \fn SanitizeForLogging
+         * \brief Sanitize user input for safe logging to prevent log injection attacks
+         * \param input User-provided input that may contain malicious content
+         * \return Sanitized string safe for logging
+         */
+        private static string? SanitizeForLogging(string? input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+            
+            // Remove or replace characters that could be used for log injection
+            return input
+                .Replace('\r', ' ')  // Remove carriage returns
+                .Replace('\n', ' ')  // Remove line feeds
+                .Replace('\t', ' ')  // Replace tabs with spaces
+                .Trim();             // Remove leading/trailing whitespace
         }
     }
 }

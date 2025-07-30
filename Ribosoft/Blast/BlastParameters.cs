@@ -141,5 +141,16 @@ namespace Ribosoft.Blast
          * \brief Use lower case filtering in query and subject sequence(s).
          */
         public bool LowercaseMasking { get; set; } = false;
+
+        /*! \fn ToString
+         * \brief Returns a string representation of the BLAST parameters
+         * \return String representation of the parameters
+         */
+        public override string ToString()
+        {
+            return $"BlastParameters {{ Task: {Task}, Database: {Database}, Query: {Query}, " +
+                   $"MaxTargetSequences: {MaxTargetSequences}, NumThreads: {NumThreads}, " +
+                   $"BlastDbPath: {BlastDbPath}, LowercaseMasking: {LowercaseMasking} }}";
+        }
     }
 }

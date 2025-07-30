@@ -889,7 +889,7 @@ namespace Ribosoft.Controllers
                     extension = "csv";
                     foreach (Design d in designs)
                     {
-                        if (obj == null || obj.ContainsKey(d.JobId.ToString() + '-' + d.Id.ToString()))
+                        if (obj == null || obj.ContainsKey(d.JobId + "-" + d.Id))
                         {
                             payload += String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}\n", d.Rank, d.CutsiteIndex, d.DesiredTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
                         }
@@ -904,7 +904,7 @@ namespace Ribosoft.Controllers
                     ZipOutputStream zipStream = new ZipOutputStream(stream);
                     foreach (Design d in designs)
                     {
-                        if (obj == null || obj.ContainsKey(d.JobId.ToString() + '-' + d.Id.ToString()))
+                        if (obj == null || obj.ContainsKey(d.JobId + "-" + d.Id))
                         {
                             AddToZip(ref zipStream, d);
                         }
@@ -918,7 +918,7 @@ namespace Ribosoft.Controllers
                     extension = "fasta";
                     foreach (Design d in designs)
                     {
-                        if (obj == null || obj.ContainsKey(d.JobId.ToString() + '-' + d.Id.ToString()))
+                        if (obj == null || obj.ContainsKey(d.JobId + "-" + d.Id))
                         {
                             payload += String.Format(">Rank {0} | CutsiteIndex {1} | DesiredTemperatureScore {2} | SpecificityScore {3} | AccessibilityScore {4} | StructureScore {5} | CreatedAt {6} | UpdatedAt {7}\n{8}\n\n", d.Rank, d.CutsiteIndex, d.DesiredTemperatureScore, d.SpecificityScore, d.AccessibilityScore, d.StructureScore, d.CreatedAt, d.UpdatedAt, d.Sequence);
                         }

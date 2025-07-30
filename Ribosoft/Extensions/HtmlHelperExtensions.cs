@@ -94,7 +94,7 @@ namespace Ribosoft.Extensions
             {
                 output.Attributes.SetAttribute("class", classAttr.Value == null
                     ? "active"
-                    : classAttr.Value.ToString() + " active");
+                    : classAttr.Value + " active");
             }
         }
     }
