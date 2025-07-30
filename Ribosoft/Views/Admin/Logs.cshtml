@@ -356,7 +356,7 @@
             <div class="card-body p-0">
                 @if (Model.LogEntries.Any())
                 {
-                    <div class="table-responsive">
+                    <div class="logs-table-wrapper">
                         <table class="table table-hover mb-0">
                             <thead class="table-light">
                                 <tr>
@@ -587,11 +587,42 @@
         background-color: rgba(0, 0, 0, 0.025);
     }
 
-    /* Log message styling */
+    /* Log message styling - improved truncation */
     .log-message {
         word-wrap: break-word;
         overflow-wrap: break-word;
-        max-width: 400px;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: block;
+    }
+
+    /* Table wrapper to prevent horizontal scrolling */
+    .logs-table-wrapper {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    /* Ensure table fits container */
+    .logs-table-wrapper .table {
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    /* Column width constraints */
+    .logs-table-wrapper .table th,
+    .logs-table-wrapper .table td {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Allow message column to wrap if needed */
+    .logs-table-wrapper .table td .log-message {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     /* Badge improvements */
@@ -645,12 +676,12 @@
             padding: 1rem;
         }
 
-        .table-responsive {
+        .logs-table-wrapper {
             font-size: 0.875rem;
         }
         
         .log-message {
-            max-width: 200px;
+            max-width: 150px;
         }
 
         .admin-badge-container {
@@ -804,7 +835,7 @@
 
             if (logs.length > 0) {
                 html += `
-                    <div class="table-responsive">
+                    <div class="logs-table-wrapper">
                         <table class="table table-hover mb-0">
                             <thead class="table-light">
                                 <tr>
