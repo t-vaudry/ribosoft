@@ -9,6 +9,8 @@ var searchData=
   ['desiredtemperaturetolerance_6',['DesiredTemperatureTolerance',['../d4/d20/classRibosoft_1_1Models_1_1RequestViewModels_1_1RequestViewModel.html#a27f15804cf649122164d17dacbe25568',1,'Ribosoft::Models::RequestViewModels::RequestViewModel']]],
   ['desiredtemptolerance_7',['DesiredTempTolerance',['../d8/dc9/classRibosoft_1_1Models_1_1Job.html#a74c2e6514b419bf99ae6d69eb3670958',1,'Ribosoft::Models::Job']]],
   ['displayname_8',['DisplayName',['../df/de8/classRibosoft_1_1Models_1_1AdminViewModels_1_1EditUserRolesViewModel.html#a5cf178cf5271153db2e74fc74b1347f3',1,'Ribosoft.Models.AdminViewModels.EditUserRolesViewModel.DisplayName'],['../d2/d7a/classRibosoft_1_1Models_1_1AdminViewModels_1_1UserDetailsViewModel.html#a8a12c7dcc8e2328fe5f0e318c5d2343d',1,'Ribosoft.Models.AdminViewModels.UserDetailsViewModel.DisplayName'],['../df/d63/classRibosoft_1_1Models_1_1AdminViewModels_1_1UserListItemViewModel.html#aedf6d0e3ef739bfb1ab7cf6d8c13a590',1,'Ribosoft.Models.AdminViewModels.UserListItemViewModel.DisplayName']]],
-  ['duration_9',['Duration',['../d0/d45/classRibosoft_1_1Models_1_1ActivityLog.html#a2c838a8d68fd21a67ef56bcc4c437ee9',1,'Ribosoft::Models::ActivityLog']]],
-  ['dust_10',['Dust',['../d7/d7c/classRibosoft_1_1Blast_1_1BlastParameters.html#a28a0533e4f94027534c9bd2fe4934804',1,'Ribosoft::Blast::BlastParameters']]]
+  ['downloadedbytes_9',['DownloadedBytes',['../d7/d35/classRibosoft_1_1Models_1_1DatasetDownload.html#a7079de6fb24d4391d9aec0e45cf400ad',1,'Ribosoft::Models::DatasetDownload']]],
+  ['downloadurl_10',['DownloadUrl',['../d7/d35/classRibosoft_1_1Models_1_1DatasetDownload.html#a65c7d41efda09c50829b2683d9af008f',1,'Ribosoft::Models::DatasetDownload']]],
+  ['duration_11',['Duration',['../d0/d45/classRibosoft_1_1Models_1_1ActivityLog.html#a2c838a8d68fd21a67ef56bcc4c437ee9',1,'Ribosoft::Models::ActivityLog']]],
+  ['dust_12',['Dust',['../d7/d7c/classRibosoft_1_1Blast_1_1BlastParameters.html#a28a0533e4f94027534c9bd2fe4934804',1,'Ribosoft::Blast::BlastParameters']]]
 ];

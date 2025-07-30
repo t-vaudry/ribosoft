@@ -15,6 +15,7 @@ var searchData=
   ['ribosoft_3a_3amodels_3a_3amanageviewmodels_12',['ManageViewModels',['../d8/d5c/namespaceRibosoft_1_1Models_1_1ManageViewModels.html',1,'Ribosoft::Models']]],
   ['ribosoft_3a_3amodels_3a_3arequestviewmodels_13',['RequestViewModels',['../d9/dd8/namespaceRibosoft_1_1Models_1_1RequestViewModels.html',1,'Ribosoft::Models']]],
   ['ribosoft_3a_3amodels_3a_3aribozymeviewmodel_14',['RibozymeViewModel',['../d4/d66/namespaceRibosoft_1_1Models_1_1RibozymeViewModel.html',1,'Ribosoft::Models']]],
-  ['ribosoft_3a_3amultiobjectiveoptimization_15',['MultiObjectiveOptimization',['../d1/dd5/namespaceRibosoft_1_1MultiObjectiveOptimization.html',1,'Ribosoft']]],
-  ['ribosoft_3a_3avalidationattributes_16',['ValidationAttributes',['../de/de1/namespaceRibosoft_1_1ValidationAttributes.html',1,'Ribosoft']]]
+  ['ribosoft_3a_3amodels_3a_3aviewmodels_15',['ViewModels',['../d9/ddd/namespaceRibosoft_1_1Models_1_1ViewModels.html',1,'Ribosoft::Models']]],
+  ['ribosoft_3a_3amultiobjectiveoptimization_16',['MultiObjectiveOptimization',['../d1/dd5/namespaceRibosoft_1_1MultiObjectiveOptimization.html',1,'Ribosoft']]],
+  ['ribosoft_3a_3avalidationattributes_17',['ValidationAttributes',['../de/de1/namespaceRibosoft_1_1ValidationAttributes.html',1,'Ribosoft']]]
 ];

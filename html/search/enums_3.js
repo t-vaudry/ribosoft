@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['r_5fstatus_0',['R_STATUS',['../dc/d09/namespaceRibosoft.html#a11a8b2776269231d22837082e4449183',1,'Ribosoft']]]
+  ['optimizetype_0',['OptimizeType',['../d1/dd5/namespaceRibosoft_1_1MultiObjectiveOptimization.html#a4d7beea50811dadf34590c80472442b6',1,'Ribosoft::MultiObjectiveOptimization']]]
 ];

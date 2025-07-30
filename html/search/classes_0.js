@@ -7,5 +7,6 @@ var searchData=
   ['admincontroller_4',['AdminController',['../d6/dda/classRibosoft_1_1Controllers_1_1AdminController.html',1,'Ribosoft::Controllers']]],
   ['applicationuser_5',['ApplicationUser',['../d7/d9c/classRibosoft_1_1Models_1_1ApplicationUser.html',1,'Ribosoft::Models']]],
   ['assembliescontroller_6',['AssembliesController',['../dc/da6/classRibosoft_1_1Controllers_1_1AssembliesController.html',1,'Ribosoft::Controllers']]],
-  ['assembly_7',['Assembly',['../d4/d1a/classRibosoft_1_1Models_1_1Assembly.html',1,'Ribosoft::Models']]]
+  ['assembly_7',['Assembly',['../d4/d1a/classRibosoft_1_1Models_1_1Assembly.html',1,'Ribosoft::Models']]],
+  ['availabledatasetviewmodel_8',['AvailableDatasetViewModel',['../d0/d10/classRibosoft_1_1Models_1_1ViewModels_1_1AvailableDatasetViewModel.html',1,'Ribosoft::Models::ViewModels']]]
 ];

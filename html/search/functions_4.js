@@ -6,6 +6,8 @@ var searchData=
   ['equalto_3',['EqualTo',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#af8d68bce22da034337835ab0e4e5d4d5',1,'Ribosoft::Controllers::JobsController']]],
   ['error_4',['Error',['../d7/d6c/classRibosoft_1_1Controllers_1_1HomeController.html#ab179ee353963b3712f94541efa83ff7a',1,'Ribosoft::Controllers::HomeController']]],
   ['exceededmaxrequests_5',['ExceededMaxRequests',['../d5/df2/classRibosoft_1_1Controllers_1_1RequestController.html#a6da8aef3fe61b705bacd2ee7bf029891',1,'Ribosoft::Controllers::RequestController']]],
-  ['export_6',['Export',['../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a8b88e6ce79bf0cf7ec8447f0a074da9a',1,'Ribosoft::Controllers::DesignsController']]],
-  ['externallogins_7',['ExternalLogins',['../dd/d56/classRibosoft_1_1Controllers_1_1ManageController.html#a743ce79139fd3d73e80dcf00ca7558d1',1,'Ribosoft::Controllers::ManageController']]]
+  ['expandpath_6',['ExpandPath',['../dc/da6/classRibosoft_1_1Controllers_1_1AssembliesController.html#a1c23e8551ce5ef982c44ce4900bffc94',1,'Ribosoft.Controllers.AssembliesController.ExpandPath()'],['../de/d62/classRibosoft_1_1Jobs_1_1CreateBlastDatabaseJob.html#a4198c880ebf10c25318ea5364818ce9d',1,'Ribosoft.Jobs.CreateBlastDatabaseJob.ExpandPath()'],['../d3/d5b/classRibosoft_1_1Jobs_1_1DatasetDownloadJob.html#adda3a9fe838b151aa2ace361d70d58a2',1,'Ribosoft.Jobs.DatasetDownloadJob.ExpandPath()']]],
+  ['export_7',['Export',['../d1/d88/classRibosoft_1_1Controllers_1_1DesignsController.html#a8b88e6ce79bf0cf7ec8447f0a074da9a',1,'Ribosoft::Controllers::DesignsController']]],
+  ['externallogins_8',['ExternalLogins',['../dd/d56/classRibosoft_1_1Controllers_1_1ManageController.html#a743ce79139fd3d73e80dcf00ca7558d1',1,'Ribosoft::Controllers::ManageController']]],
+  ['extractdataset_9',['ExtractDataset',['../de/d62/classRibosoft_1_1Jobs_1_1CreateBlastDatabaseJob.html#adeca4c8dcadde191ff993c6d8eee2de9',1,'Ribosoft::Jobs::CreateBlastDatabaseJob']]]
 ];

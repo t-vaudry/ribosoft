@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['specificitymethod_0',['SpecificityMethod',['../d2/d21/namespaceRibosoft_1_1Models.html#aacab0fe3dbe681c0c3972d885fcedfa3',1,'Ribosoft::Models']]]
+  ['r_5fstatus_0',['R_STATUS',['../dc/d09/namespaceRibosoft.html#a11a8b2776269231d22837082e4449183',1,'Ribosoft']]]
 ];

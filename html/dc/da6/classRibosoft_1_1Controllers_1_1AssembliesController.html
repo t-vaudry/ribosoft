@@ -114,7 +114,10 @@ $(function(){ initResizable(false); });
 <div id="doc-content">
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-static-methods">Static Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="../../d7/de5/classRibosoft_1_1Controllers_1_1AssembliesController-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">Ribosoft.Controllers.AssembliesController Class Reference</div></div>
@@ -130,20 +133,80 @@ Inheritance diagram for Ribosoft.Controllers.AssembliesController:</div>
   <img src="../../dc/da6/classRibosoft_1_1Controllers_1_1AssembliesController.png" alt=""/>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dc2/classRibosoft_1_1Controllers_1_1AssembliesController_1_1SearchDatasetsRequest.html">SearchDatasetsRequest</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request model for AJAX dataset search.  <a href="../../da/dc2/classRibosoft_1_1Controllers_1_1AssembliesController_1_1SearchDatasetsRequest.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae4ce5f2cc6ed247a011967305625b2b6" id="r_ae4ce5f2cc6ed247a011967305625b2b6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae4ce5f2cc6ed247a011967305625b2b6">AssembliesController</a> (ApplicationDbContext context, IConfiguration configuration, ILogger&lt; <a class="el" href="../../dc/da6/classRibosoft_1_1Controllers_1_1AssembliesController.html">AssembliesController</a> &gt; logger)</td></tr>
-<tr class="memdesc:ae4ce5f2cc6ed247a011967305625b2b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <br /></td></tr>
-<tr class="separator:ae4ce5f2cc6ed247a011967305625b2b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3aaed14fbdc8aaaed5f9b88b6cc80019" id="r_a3aaed14fbdc8aaaed5f9b88b6cc80019"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3aaed14fbdc8aaaed5f9b88b6cc80019">AssembliesController</a> (ApplicationDbContext context, IConfiguration configuration, ILogger&lt; <a class="el" href="../../dc/da6/classRibosoft_1_1Controllers_1_1AssembliesController.html">AssembliesController</a> &gt; logger, IDatasetDownloadService datasetDownloadService)</td></tr>
+<tr class="memdesc:a3aaed14fbdc8aaaed5f9b88b6cc80019"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <br /></td></tr>
+<tr class="separator:a3aaed14fbdc8aaaed5f9b88b6cc80019"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a237a7ace133fb4a08ea8a64506821a72" id="r_a237a7ace133fb4a08ea8a64506821a72"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a237a7ace133fb4a08ea8a64506821a72">BrowseDatasets</a> (string? searchTerm=null, int limit=50)</td></tr>
+<tr class="memdesc:a237a7ace133fb4a08ea8a64506821a72"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET for browsing available NCBI datasets.  <br /></td></tr>
+<tr class="separator:a237a7ace133fb4a08ea8a64506821a72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8df9ae3599a1355e3bfd1120a18b736e" id="r_a8df9ae3599a1355e3bfd1120a18b736e"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8df9ae3599a1355e3bfd1120a18b736e">CancelDownload</a> (int id)</td></tr>
+<tr class="memdesc:a8df9ae3599a1355e3bfd1120a18b736e"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST for cancelling a download.  <br /></td></tr>
+<tr class="separator:a8df9ae3599a1355e3bfd1120a18b736e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1617056f73a9d42f1c7521aea0adb828" id="r_a1617056f73a9d42f1c7521aea0adb828"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1617056f73a9d42f1c7521aea0adb828">Delete</a> (int id)</td></tr>
+<tr class="memdesc:a1617056f73a9d42f1c7521aea0adb828"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST to delete an assembly and its files.  <br /></td></tr>
+<tr class="separator:a1617056f73a9d42f1c7521aea0adb828"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a50da52fdac42e1ce97bf7af10e61fc" id="r_a8a50da52fdac42e1ce97bf7af10e61fc"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a50da52fdac42e1ce97bf7af10e61fc">DownloadDatasets</a> (<a class="el" href="../../d3/d72/classRibosoft_1_1Models_1_1ViewModels_1_1DatasetDownloadRequestViewModel.html">DatasetDownloadRequestViewModel</a> request)</td></tr>
+<tr class="memdesc:a8a50da52fdac42e1ce97bf7af10e61fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST for requesting dataset downloads.  <br /></td></tr>
+<tr class="separator:a8a50da52fdac42e1ce97bf7af10e61fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2969a79761cb60dcd133ca614b52c391" id="r_a2969a79761cb60dcd133ca614b52c391"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2969a79761cb60dcd133ca614b52c391">Downloads</a> (int page=1)</td></tr>
+<tr class="memdesc:a2969a79761cb60dcd133ca614b52c391"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET for viewing download history and status with pagination.  <br /></td></tr>
+<tr class="separator:a2969a79761cb60dcd133ca614b52c391"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5a0effa273ce17007d5749659ee0c2b" id="r_ad5a0effa273ce17007d5749659ee0c2b"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad5a0effa273ce17007d5749659ee0c2b">GetDownloadsPage</a> (int page=1)</td></tr>
+<tr class="memdesc:ad5a0effa273ce17007d5749659ee0c2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET for getting paginated downloads via AJAX.  <br /></td></tr>
+<tr class="separator:ad5a0effa273ce17007d5749659ee0c2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5afad7d1c7101cb5af5e3ad7b3d91f5" id="r_af5afad7d1c7101cb5af5e3ad7b3d91f5"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af5afad7d1c7101cb5af5e3ad7b3d91f5">GetDownloadStatus</a> (int id)</td></tr>
+<tr class="memdesc:af5afad7d1c7101cb5af5e3ad7b3d91f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET for getting download status (AJAX)  <br /></td></tr>
+<tr class="separator:af5afad7d1c7101cb5af5e3ad7b3d91f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53cc47bff3a5de09b990b30eeb4b572c" id="r_a53cc47bff3a5de09b990b30eeb4b572c"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a53cc47bff3a5de09b990b30eeb4b572c">Index</a> ()</td></tr>
 <tr class="memdesc:a53cc47bff3a5de09b990b30eeb4b572c"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP GET assemblies index.  <br /></td></tr>
 <tr class="separator:a53cc47bff3a5de09b990b30eeb4b572c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1ac540924f5108c0f5f88169102f2c2" id="r_ae1ac540924f5108c0f5f88169102f2c2"><td class="memItemLeft" align="right" valign="top">IActionResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae1ac540924f5108c0f5f88169102f2c2">Rescan</a> ()</td></tr>
 <tr class="memdesc:ae1ac540924f5108c0f5f88169102f2c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST for rescanning the assemblies.  <br /></td></tr>
 <tr class="separator:ae1ac540924f5108c0f5f88169102f2c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa35f67ed1b14f936ea20d2f6452f537" id="r_afa35f67ed1b14f936ea20d2f6452f537"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afa35f67ed1b14f936ea20d2f6452f537">RetryDownload</a> (int id)</td></tr>
+<tr class="memdesc:afa35f67ed1b14f936ea20d2f6452f537"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST for retrying a failed download.  <br /></td></tr>
+<tr class="separator:afa35f67ed1b14f936ea20d2f6452f537"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc1581bc61fe44c802213eab2690d53d" id="r_abc1581bc61fe44c802213eab2690d53d"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abc1581bc61fe44c802213eab2690d53d">SearchDatasets</a> ([FromBody] <a class="el" href="../../da/dc2/classRibosoft_1_1Controllers_1_1AssembliesController_1_1SearchDatasetsRequest.html">SearchDatasetsRequest</a> request)</td></tr>
+<tr class="memdesc:abc1581bc61fe44c802213eab2690d53d"><td class="mdescLeft">&#160;</td><td class="mdescRight">AJAX endpoint for searching datasets without page refresh.  <br /></td></tr>
+<tr class="separator:abc1581bc61fe44c802213eab2690d53d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a365f1984f6791b176e4e23f3cd2988f3" id="r_a365f1984f6791b176e4e23f3cd2988f3"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a365f1984f6791b176e4e23f3cd2988f3">ToggleEnabled</a> (int id)</td></tr>
 <tr class="memdesc:a365f1984f6791b176e4e23f3cd2988f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST to toggle the enabled status of an assembly.  <br /></td></tr>
 <tr class="separator:a365f1984f6791b176e4e23f3cd2988f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50094be94513777f5283d64df17cda40" id="r_a50094be94513777f5283d64df17cda40"><td class="memItemLeft" align="right" valign="top">async Task&lt; IActionResult &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a50094be94513777f5283d64df17cda40">UpdateUnknownOrganisms</a> ()</td></tr>
+<tr class="memdesc:a50094be94513777f5283d64df17cda40"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP POST for updating existing records with unknown organisms.  <br /></td></tr>
+<tr class="separator:a50094be94513777f5283d64df17cda40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a4202cebdc5a71f07e3dd4db4c489a89a" id="r_a4202cebdc5a71f07e3dd4db4c489a89a"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4202cebdc5a71f07e3dd4db4c489a89a">CalculateAssemblySize</a> (string path)</td></tr>
+<tr class="memdesc:a4202cebdc5a71f07e3dd4db4c489a89a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate the total size of an assembly directory.  <br /></td></tr>
+<tr class="separator:a4202cebdc5a71f07e3dd4db4c489a89a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae94adec7d7e5162491561bf334f8ce10" id="r_ae94adec7d7e5162491561bf334f8ce10"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae94adec7d7e5162491561bf334f8ce10">DetermineAssemblyType</a> (string assemblyPath, string accessionId)</td></tr>
+<tr class="memdesc:ae94adec7d7e5162491561bf334f8ce10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine the actual assembly type based on available files.  <br /></td></tr>
+<tr class="separator:ae94adec7d7e5162491561bf334f8ce10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46857d463c3e7c30c033f1b9d05ab718" id="r_a46857d463c3e7c30c033f1b9d05ab718"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a46857d463c3e7c30c033f1b9d05ab718">DetermineTypeFromAccession</a> (string accessionId)</td></tr>
+<tr class="memdesc:a46857d463c3e7c30c033f1b9d05ab718"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine assembly type from accession ID pattern when files aren't available.  <br /></td></tr>
+<tr class="separator:a46857d463c3e7c30c033f1b9d05ab718"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
+Static Private Member Functions</h2></td></tr>
+<tr class="memitem:a1c23e8551ce5ef982c44ce4900bffc94" id="r_a1c23e8551ce5ef982c44ce4900bffc94"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1c23e8551ce5ef982c44ce4900bffc94">ExpandPath</a> (string path)</td></tr>
+<tr class="memdesc:a1c23e8551ce5ef982c44ce4900bffc94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Expand ~ and environment variables in path.  <br /></td></tr>
+<tr class="separator:a1c23e8551ce5ef982c44ce4900bffc94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab19c327faa4d886887aa0f0fdeac596" id="r_aab19c327faa4d886887aa0f0fdeac596"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aab19c327faa4d886887aa0f0fdeac596">FormatFileSize</a> (long bytes)</td></tr>
+<tr class="memdesc:aab19c327faa4d886887aa0f0fdeac596"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format file size in human-readable format.  <br /></td></tr>
+<tr class="separator:aab19c327faa4d886887aa0f0fdeac596"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f5e60de4246bd87fe52095ab397ddb7" id="r_a9f5e60de4246bd87fe52095ab397ddb7"><td class="memItemLeft" align="right" valign="top">static ? string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9f5e60de4246bd87fe52095ab397ddb7">SanitizeForLogging</a> (string? input)</td></tr>
+<tr class="memdesc:a9f5e60de4246bd87fe52095ab397ddb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sanitize user input for safe logging to prevent log injection attacks.  <br /></td></tr>
+<tr class="separator:a9f5e60de4246bd87fe52095ab397ddb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -153,6 +216,9 @@ Private Attributes</h2></td></tr>
 <tr class="memitem:a1c6dc3d9b8c6bb17241dfe17d5f1b5c3" id="r_a1c6dc3d9b8c6bb17241dfe17d5f1b5c3"><td class="memItemLeft" align="right" valign="top">readonly ApplicationDbContext&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1c6dc3d9b8c6bb17241dfe17d5f1b5c3">_context</a></td></tr>
 <tr class="memdesc:a1c6dc3d9b8c6bb17241dfe17d5f1b5c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Local database context.  <br /></td></tr>
 <tr class="separator:a1c6dc3d9b8c6bb17241dfe17d5f1b5c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52f9f23bb5b0c0bdc58d362e6397ea16" id="r_a52f9f23bb5b0c0bdc58d362e6397ea16"><td class="memItemLeft" align="right" valign="top">readonly IDatasetDownloadService&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a52f9f23bb5b0c0bdc58d362e6397ea16">_datasetDownloadService</a></td></tr>
+<tr class="memdesc:a52f9f23bb5b0c0bdc58d362e6397ea16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dataset download service.  <br /></td></tr>
+<tr class="separator:a52f9f23bb5b0c0bdc58d362e6397ea16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e69fb4c84ce1cc2f50d00e4482f5658" id="r_a0e69fb4c84ce1cc2f50d00e4482f5658"><td class="memItemLeft" align="right" valign="top">readonly ILogger&lt; <a class="el" href="../../dc/da6/classRibosoft_1_1Controllers_1_1AssembliesController.html">AssembliesController</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0e69fb4c84ce1cc2f50d00e4482f5658">_logger</a></td></tr>
 <tr class="memdesc:a0e69fb4c84ce1cc2f50d00e4482f5658"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logger instance.  <br /></td></tr>
 <tr class="separator:a0e69fb4c84ce1cc2f50d00e4482f5658"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -160,10 +226,10 @@ Private Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Controller class for the assemblies in the application. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00024">24</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00026">26</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ae4ce5f2cc6ed247a011967305625b2b6" name="ae4ce5f2cc6ed247a011967305625b2b6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae4ce5f2cc6ed247a011967305625b2b6">&#9670;&#160;</a></span>AssembliesController()</h2>
+<a id="a3aaed14fbdc8aaaed5f9b88b6cc80019" name="a3aaed14fbdc8aaaed5f9b88b6cc80019"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3aaed14fbdc8aaaed5f9b88b6cc80019">&#9670;&#160;</a></span>AssembliesController()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -184,7 +250,12 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">ILogger&lt; <a class="el" href="../../dc/da6/classRibosoft_1_1Controllers_1_1AssembliesController.html">AssembliesController</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>logger</em></span>&#160;)</td>
+          <td class="paramtype">ILogger&lt; <a class="el" href="../../dc/da6/classRibosoft_1_1Controllers_1_1AssembliesController.html">AssembliesController</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>logger</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">IDatasetDownloadService</td>          <td class="paramname"><span class="paramname"><em>datasetDownloadService</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -200,15 +271,458 @@ Private Attributes</h2></td></tr>
     <tr><td class="paramname">context</td><td>Database context information </td></tr>
     <tr><td class="paramname">configuration</td><td>Configuration of the application </td></tr>
     <tr><td class="paramname">logger</td><td>Logger instance </td></tr>
+    <tr><td class="paramname">datasetDownloadService</td><td>Dataset download service </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00047">47</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00055">55</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a237a7ace133fb4a08ea8a64506821a72" name="a237a7ace133fb4a08ea8a64506821a72"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a237a7ace133fb4a08ea8a64506821a72">&#9670;&#160;</a></span>BrowseDatasets()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.AssembliesController.BrowseDatasets </td>
+          <td>(</td>
+          <td class="paramtype">string?</td>          <td class="paramname"><span class="paramname"><em>searchTerm</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>limit</em></span><span class="paramdefsep"> = </span><span class="paramdefval">50</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>HTTP GET for browsing available NCBI datasets. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">searchTerm</td><td>Optional search term </td></tr>
+    <tr><td class="paramname">limit</td><td>Maximum results to return </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>View with available datasets </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00126">126</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+
+</div>
+</div>
+<a id="a4202cebdc5a71f07e3dd4db4c489a89a" name="a4202cebdc5a71f07e3dd4db4c489a89a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4202cebdc5a71f07e3dd4db4c489a89a">&#9670;&#160;</a></span>CalculateAssemblySize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long Ribosoft.Controllers.AssembliesController.CalculateAssemblySize </td>
+          <td>(</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>path</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Calculate the total size of an assembly directory. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Directory path to calculate </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Total size in bytes </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00560">560</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+
+</div>
+</div>
+<a id="a8df9ae3599a1355e3bfd1120a18b736e" name="a8df9ae3599a1355e3bfd1120a18b736e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8df9ae3599a1355e3bfd1120a18b736e">&#9670;&#160;</a></span>CancelDownload()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.AssembliesController.CancelDownload </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>HTTP POST for cancelling a download. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>Download ID </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>JSON result </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00328">328</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+
+</div>
+</div>
+<a id="a1617056f73a9d42f1c7521aea0adb828" name="a1617056f73a9d42f1c7521aea0adb828"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1617056f73a9d42f1c7521aea0adb828">&#9670;&#160;</a></span>Delete()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.AssembliesController.Delete </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>HTTP POST to delete an assembly and its files. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>The taxonomy ID of the assembly to delete </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>JSON result with success status </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00468">468</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+
+</div>
+</div>
+<a id="ae94adec7d7e5162491561bf334f8ce10" name="ae94adec7d7e5162491561bf334f8ce10"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae94adec7d7e5162491561bf334f8ce10">&#9670;&#160;</a></span>DetermineAssemblyType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string Ribosoft.Controllers.AssembliesController.DetermineAssemblyType </td>
+          <td>(</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>assemblyPath</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>accessionId</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Determine the actual assembly type based on available files. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">assemblyPath</td><td>Path to the assembly directory </td></tr>
+    <tr><td class="paramname">accessionId</td><td>Accession ID for pattern matching </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Assembly type string </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00629">629</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+
+</div>
+</div>
+<a id="a46857d463c3e7c30c033f1b9d05ab718" name="a46857d463c3e7c30c033f1b9d05ab718"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46857d463c3e7c30c033f1b9d05ab718">&#9670;&#160;</a></span>DetermineTypeFromAccession()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string Ribosoft.Controllers.AssembliesController.DetermineTypeFromAccession </td>
+          <td>(</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>accessionId</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Determine assembly type from accession ID pattern when files aren't available. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">accessionId</td><td>Accession ID to analyze </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Assembly type string </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00719">719</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+
+</div>
+</div>
+<a id="a8a50da52fdac42e1ce97bf7af10e61fc" name="a8a50da52fdac42e1ce97bf7af10e61fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a50da52fdac42e1ce97bf7af10e61fc">&#9670;&#160;</a></span>DownloadDatasets()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.AssembliesController.DownloadDatasets </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d3/d72/classRibosoft_1_1Models_1_1ViewModels_1_1DatasetDownloadRequestViewModel.html">DatasetDownloadRequestViewModel</a></td>          <td class="paramname"><span class="paramname"><em>request</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>HTTP POST for requesting dataset downloads. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">request</td><td>Download request </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Redirect to downloads page </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00201">201</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+
+</div>
+</div>
+<a id="a2969a79761cb60dcd133ca614b52c391" name="a2969a79761cb60dcd133ca614b52c391"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2969a79761cb60dcd133ca614b52c391">&#9670;&#160;</a></span>Downloads()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.AssembliesController.Downloads </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>page</em></span><span class="paramdefsep"> = </span><span class="paramdefval">1</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>HTTP GET for viewing download history and status with pagination. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">page</td><td>Current page number </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>View with paginated download history </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00235">235</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+
+</div>
+</div>
+<a id="a1c23e8551ce5ef982c44ce4900bffc94" name="a1c23e8551ce5ef982c44ce4900bffc94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c23e8551ce5ef982c44ce4900bffc94">&#9670;&#160;</a></span>ExpandPath()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static string Ribosoft.Controllers.AssembliesController.ExpandPath </td>
+          <td>(</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>path</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Expand ~ and environment variables in path. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Path to expand </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Expanded path </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00605">605</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+
+</div>
+</div>
+<a id="aab19c327faa4d886887aa0f0fdeac596" name="aab19c327faa4d886887aa0f0fdeac596"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab19c327faa4d886887aa0f0fdeac596">&#9670;&#160;</a></span>FormatFileSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static string Ribosoft.Controllers.AssembliesController.FormatFileSize </td>
+          <td>(</td>
+          <td class="paramtype">long</td>          <td class="paramname"><span class="paramname"><em>bytes</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Format file size in human-readable format. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bytes</td><td>Size in bytes </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Formatted size string </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00583">583</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+
+</div>
+</div>
+<a id="ad5a0effa273ce17007d5749659ee0c2b" name="ad5a0effa273ce17007d5749659ee0c2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad5a0effa273ce17007d5749659ee0c2b">&#9670;&#160;</a></span>GetDownloadsPage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.AssembliesController.GetDownloadsPage </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>page</em></span><span class="paramdefsep"> = </span><span class="paramdefval">1</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>HTTP GET for getting paginated downloads via AJAX. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">page</td><td>Current page number </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Partial view with downloads </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00264">264</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+
+</div>
+</div>
+<a id="af5afad7d1c7101cb5af5e3ad7b3d91f5" name="af5afad7d1c7101cb5af5e3ad7b3d91f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5afad7d1c7101cb5af5e3ad7b3d91f5">&#9670;&#160;</a></span>GetDownloadStatus()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.AssembliesController.GetDownloadStatus </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>HTTP GET for getting download status (AJAX) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>Download ID </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>JSON with download status </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00292">292</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+
+</div>
+</div>
 <a id="a53cc47bff3a5de09b990b30eeb4b572c" name="a53cc47bff3a5de09b990b30eeb4b572c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a53cc47bff3a5de09b990b30eeb4b572c">&#9670;&#160;</a></span>Index()</h2>
 
@@ -235,7 +749,7 @@ Private Attributes</h2></td></tr>
 <p>HTTP GET assemblies index. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of assemblies index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00058">58</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00071">71</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
 
 </div>
 </div>
@@ -265,7 +779,116 @@ Private Attributes</h2></td></tr>
 <p>HTTP POST for rescanning the assemblies. </p>
 <dl class="section return"><dt>Returns</dt><dd>View of assemblies index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00069">69</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00403">403</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+
+</div>
+</div>
+<a id="afa35f67ed1b14f936ea20d2f6452f537" name="afa35f67ed1b14f936ea20d2f6452f537"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa35f67ed1b14f936ea20d2f6452f537">&#9670;&#160;</a></span>RetryDownload()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.AssembliesController.RetryDownload </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>HTTP POST for retrying a failed download. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>Download ID </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>JSON result </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00351">351</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+
+</div>
+</div>
+<a id="a9f5e60de4246bd87fe52095ab397ddb7" name="a9f5e60de4246bd87fe52095ab397ddb7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f5e60de4246bd87fe52095ab397ddb7">&#9670;&#160;</a></span>SanitizeForLogging()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static ? string Ribosoft.Controllers.AssembliesController.SanitizeForLogging </td>
+          <td>(</td>
+          <td class="paramtype">string?</td>          <td class="paramname"><span class="paramname"><em>input</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sanitize user input for safe logging to prevent log injection attacks. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">input</td><td>User-provided input that may contain malicious content </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Sanitized string safe for logging </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00752">752</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+
+</div>
+</div>
+<a id="abc1581bc61fe44c802213eab2690d53d" name="abc1581bc61fe44c802213eab2690d53d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc1581bc61fe44c802213eab2690d53d">&#9670;&#160;</a></span>SearchDatasets()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.AssembliesController.SearchDatasets </td>
+          <td>(</td>
+          <td class="paramtype">[FromBody] <a class="el" href="../../da/dc2/classRibosoft_1_1Controllers_1_1AssembliesController_1_1SearchDatasetsRequest.html">SearchDatasetsRequest</a></td>          <td class="paramname"><span class="paramname"><em>request</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>AJAX endpoint for searching datasets without page refresh. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">searchTerm</td><td>Optional search term </td></tr>
+    <tr><td class="paramname">limit</td><td>Maximum results to return </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>JSON response with datasets </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00156">156</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
 
 </div>
 </div>
@@ -301,7 +924,37 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>JSON result with success status </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00098">98</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00432">432</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+
+</div>
+</div>
+<a id="a50094be94513777f5283d64df17cda40" name="a50094be94513777f5283d64df17cda40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a50094be94513777f5283d64df17cda40">&#9670;&#160;</a></span>UpdateUnknownOrganisms()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">async Task&lt; IActionResult &gt; Ribosoft.Controllers.AssembliesController.UpdateUnknownOrganisms </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>HTTP POST for updating existing records with unknown organisms. </p>
+<dl class="section return"><dt>Returns</dt><dd>JSON result with update count </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00373">373</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
 
 </div>
 </div>
@@ -328,7 +981,7 @@ Private Attributes</h2></td></tr>
 
 <p>Local application configuration. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00034">34</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00036">36</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
 
 </div>
 </div>
@@ -354,7 +1007,33 @@ Private Attributes</h2></td></tr>
 
 <p>Local database context. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00029">29</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00031">31</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+
+</div>
+</div>
+<a id="a52f9f23bb5b0c0bdc58d362e6397ea16" name="a52f9f23bb5b0c0bdc58d362e6397ea16"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52f9f23bb5b0c0bdc58d362e6397ea16">&#9670;&#160;</a></span>_datasetDownloadService</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">readonly IDatasetDownloadService Ribosoft.Controllers.AssembliesController._datasetDownloadService</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Dataset download service. </p>
+
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00046">46</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
 
 </div>
 </div>
@@ -380,7 +1059,7 @@ Private Attributes</h2></td></tr>
 
 <p>Logger instance. </p>
 
-<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00039">39</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html#l00041">41</a> of file <a class="el" href="../../d0/d84/AssembliesController_8cs_source.html">AssembliesController.cs</a>.</p>
 
 </div>
 </div>

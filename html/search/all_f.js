@@ -12,5 +12,6 @@ var searchData=
   ['hasrequestinfo_9',['HasRequestInfo',['../d0/d45/classRibosoft_1_1Models_1_1ActivityLog.html#abe5af96345824b0bc7fc59092df2fbac',1,'Ribosoft::Models::ActivityLog']]],
   ['hasribozymeinfo_10',['HasRibozymeInfo',['../d0/d45/classRibosoft_1_1Models_1_1ActivityLog.html#a2bba94b20e914433be8e8427bdb58893',1,'Ribosoft::Models::ActivityLog']]],
   ['hasuserinfo_11',['HasUserInfo',['../d0/d45/classRibosoft_1_1Models_1_1ActivityLog.html#af51a44bf710e9da6ada224495c56a5da',1,'Ribosoft::Models::ActivityLog']]],
-  ['homecontroller_12',['HomeController',['../d7/d6c/classRibosoft_1_1Controllers_1_1HomeController.html',1,'Ribosoft::Controllers']]]
+  ['high_12',['High',['../d9/ddd/namespaceRibosoft_1_1Models_1_1ViewModels.html#ab0582ebddef9d16c7132d454f146142fa655d20c1ca69519ca647684edbb2db35',1,'Ribosoft::Models::ViewModels']]],
+  ['homecontroller_13',['HomeController',['../d7/d6c/classRibosoft_1_1Controllers_1_1HomeController.html',1,'Ribosoft::Controllers']]]
 ];

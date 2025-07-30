@@ -19,12 +19,15 @@ var searchData=
   ['postprocess_16',['PostProcess',['../d4/de8/classRibosoft_1_1Models_1_1RibozymeStructure.html#ac6f3829bda9b6cde81ebec8a6745ccd7',1,'Ribosoft::Models::RibozymeStructure']]],
   ['prerequisites_17',['Prerequisites',['../index.html#autotoc_md6',1,'']]],
   ['primaryrole_18',['PrimaryRole',['../df/d63/classRibosoft_1_1Models_1_1AdminViewModels_1_1UserListItemViewModel.html#a7bd0dead617f630a5171c8e665b21e04',1,'Ribosoft::Models::AdminViewModels::UserListItemViewModel']]],
-  ['probability_19',['Probability',['../df/d7c/structRibosoft_1_1FoldOutput.html#a823ac22c9ea006f94d9d207ad2bc847f',1,'Ribosoft::FoldOutput']]],
-  ['probability_20',['probability',['../da/db7/structribosoft_1_1fold__output.html#af11b7d46e29cd27db3af26d39918f4ab',1,'ribosoft::fold_output']]],
-  ['probe_21',['Probe',['../d8/dc9/classRibosoft_1_1Models_1_1Job.html#ac47c8bf600a781670fc3f7c461a47ab6',1,'Ribosoft.Models.Job.Probe'],['../d4/d20/classRibosoft_1_1Models_1_1RequestViewModels_1_1RequestViewModel.html#ace2d024bd0e816fbd96bbea19fcdb2dc',1,'Ribosoft.Models.RequestViewModels.RequestViewModel.Probe']]],
-  ['program_22',['Program',['../dc/db5/classProgram.html',1,'']]],
-  ['project_20structure_23',['Project Structure',['../index.html#autotoc_md28',1,'']]],
-  ['properties_24',['Properties',['../d0/d45/classRibosoft_1_1Models_1_1ActivityLog.html#abb92018b6ecbc2cf3ff208c37a206019',1,'Ribosoft::Models::ActivityLog']]],
-  ['providerkey_25',['ProviderKey',['../d5/d10/classRibosoft_1_1Models_1_1ManageViewModels_1_1RemoveLoginViewModel.html#a6a59d4d78f1e95ddec23c251a372d4a1',1,'Ribosoft::Models::ManageViewModels::RemoveLoginViewModel']]],
-  ['purpose_26',['Purpose',['../dc/d91/classRibosoft_1_1Models_1_1OneTimeCode.html#ae9d195e6a6c17580aa8d1c8014ab3977',1,'Ribosoft::Models::OneTimeCode']]]
+  ['priority_19',['Priority',['../d3/d72/classRibosoft_1_1Models_1_1ViewModels_1_1DatasetDownloadRequestViewModel.html#a6931ead29a09aa6b39238d0ecaf12012',1,'Ribosoft::Models::ViewModels::DatasetDownloadRequestViewModel']]],
+  ['probability_20',['Probability',['../df/d7c/structRibosoft_1_1FoldOutput.html#a823ac22c9ea006f94d9d207ad2bc847f',1,'Ribosoft::FoldOutput']]],
+  ['probability_21',['probability',['../da/db7/structribosoft_1_1fold__output.html#af11b7d46e29cd27db3af26d39918f4ab',1,'ribosoft::fold_output']]],
+  ['probe_22',['Probe',['../d8/dc9/classRibosoft_1_1Models_1_1Job.html#ac47c8bf600a781670fc3f7c461a47ab6',1,'Ribosoft.Models.Job.Probe'],['../d4/d20/classRibosoft_1_1Models_1_1RequestViewModels_1_1RequestViewModel.html#ace2d024bd0e816fbd96bbea19fcdb2dc',1,'Ribosoft.Models.RequestViewModels.RequestViewModel.Probe']]],
+  ['processing_23',['Processing',['../d2/d21/namespaceRibosoft_1_1Models.html#a8708ea7595451ede6b19ca64d9fa303ba643562a9ae7099c8aabfdc93478db117',1,'Ribosoft::Models']]],
+  ['program_24',['Program',['../dc/db5/classProgram.html',1,'']]],
+  ['progress_25',['Progress',['../d7/d35/classRibosoft_1_1Models_1_1DatasetDownload.html#a029ebf6d7e44c522ba36abbb1b451012',1,'Ribosoft::Models::DatasetDownload']]],
+  ['project_20structure_26',['Project Structure',['../index.html#autotoc_md28',1,'']]],
+  ['properties_27',['Properties',['../d0/d45/classRibosoft_1_1Models_1_1ActivityLog.html#abb92018b6ecbc2cf3ff208c37a206019',1,'Ribosoft::Models::ActivityLog']]],
+  ['providerkey_28',['ProviderKey',['../d5/d10/classRibosoft_1_1Models_1_1ManageViewModels_1_1RemoveLoginViewModel.html#a6a59d4d78f1e95ddec23c251a372d4a1',1,'Ribosoft::Models::ManageViewModels::RemoveLoginViewModel']]],
+  ['purpose_29',['Purpose',['../dc/d91/classRibosoft_1_1Models_1_1OneTimeCode.html#ae9d195e6a6c17580aa8d1c8014ab3977',1,'Ribosoft::Models::OneTimeCode']]]
 ];
