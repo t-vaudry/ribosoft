@@ -368,7 +368,7 @@
                                         <i class="fas fa-layer-group me-1 text-muted"></i>
                                         Level
                                     </th>
-                                    <th class="border-0 fw-semibold" style="width: 130px; min-width: 130px;">
+                                    <th class="border-0 fw-semibold" style="width: 160px; min-width: 160px;">
                                         <i class="fas fa-tag me-1 text-muted"></i>
                                         Category
                                     </th>
@@ -608,13 +608,23 @@
     .logs-table-wrapper .table {
         table-layout: fixed;
         width: 100%;
-        min-width: 800px; /* Minimum width to accommodate all fixed columns */
+        min-width: 850px; /* Increased to accommodate larger Category column */
     }
 
     /* Only truncate the message column, not others */
     .logs-table-wrapper .table th,
     .logs-table-wrapper .table td {
-        overflow: visible; /* Allow other columns to show full content */
+        overflow: visible; /* Allow most columns to show full content */
+        padding: 0.75rem 0.5rem; /* Tighter padding to maximize space */
+    }
+
+    /* Category column - truncate if necessary to prevent overflow */
+    .logs-table-wrapper .table th:nth-child(3),
+    .logs-table-wrapper .table td:nth-child(3) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 160px;
     }
 
     /* Message column specific styling */
@@ -623,6 +633,9 @@
         width: auto; /* Takes remaining space */
         min-width: 200px; /* Minimum space for readability */
         max-width: none; /* No maximum, uses available space */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     /* Specifically truncate only message column content */
@@ -631,6 +644,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         width: 100%;
+        display: block;
     }
 
     /* Badge improvements */
@@ -849,7 +863,7 @@
                                 <tr>
                                     <th style="width: 140px; min-width: 140px;">Timestamp</th>
                                     <th style="width: 90px; min-width: 90px;">Level</th>
-                                    <th style="width: 130px; min-width: 130px;">Category</th>
+                                    <th style="width: 160px; min-width: 160px;">Category</th>
                                     <th style="width: auto;">Message</th>
                                     <th style="width: 150px; min-width: 150px;">User</th>
                                     <th style="width: 80px; min-width: 80px;">Actions</th>
