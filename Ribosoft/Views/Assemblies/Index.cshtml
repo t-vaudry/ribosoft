@@ -4,6 +4,25 @@
     ViewData["Title"] = "Assembly Databases";
 }
 
+@functions {
+    private string FormatFileSize(long bytes)
+    {
+        if (bytes == 0) return "0 B";
+        
+        string[] sizes = { "B", "KB", "MB", "GB", "TB" };
+        int order = 0;
+        double size = bytes;
+        
+        while (size >= 1024 && order < sizes.Length - 1)
+        {
+            order++;
+            size /= 1024;
+        }
+        
+        return $"{size:0.##} {sizes[order]}";
+    }
+}
+
 <div class="container-fluid px-3 px-md-4">
     <div class="assemblies-content">
         <!-- Page Header -->
@@ -33,6 +52,61 @@
         </div>
     }
 
+    <!-- Quick Actions Row -->
+    @if (ViewBag.RecentDownloads != null && ((List<Ribosoft.Models.DatasetDownload>)ViewBag.RecentDownloads).Any())
+    {
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-light border-bottom">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h6 class="card-title mb-0">
+                                <i class="fas fa-clock me-2 text-primary"></i>Recent Downloads
+                            </h6>
+                            <a asp-action="Downloads" class="btn btn-sm btn-outline-primary">
+                                View All <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body p-2">
+                        <div class="row g-2">
+                            @foreach (var download in ((List<Ribosoft.Models.DatasetDownload>)ViewBag.RecentDownloads).Take(3))
+                            {
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center p-2 border rounded">
+                                        <div class="me-2">
+                                            @if (download.Status == Ribosoft.Models.DatasetDownloadStatus.Completed || download.Status == Ribosoft.Models.DatasetDownloadStatus.ReadyForBlast)
+                                            {
+                                                <i class="fas fa-check-circle text-success"></i>
+                                            }
+                                            else if (download.Status == Ribosoft.Models.DatasetDownloadStatus.Downloading)
+                                            {
+                                                <i class="fas fa-spinner fa-spin text-primary"></i>
+                                            }
+                                            else if (download.Status == Ribosoft.Models.DatasetDownloadStatus.Failed)
+                                            {
+                                                <i class="fas fa-exclamation-triangle text-danger"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-clock text-secondary"></i>
+                                            }
+                                        </div>
+                                        <div class="flex-grow-1 min-w-0">
+                                            <div class="fw-semibold text-truncate">@download.AccessionId</div>
+                                            <small class="text-muted text-truncate d-block">@download.OrganismName</small>
+                                            <small class="badge bg-light text-dark">@download.Status</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
     <!-- Main Content Card -->
     <div class="card border-0 shadow-sm">
         <div class="card-header bg-white border-bottom">
@@ -41,10 +115,16 @@
                     <h5 class="card-title mb-1">Available Databases</h5>
                     <small class="text-muted">@Model.Count() database(s) found</small>
                 </div>
-                <div>
+                <div class="d-flex gap-2">
+                    <a asp-action="BrowseDatasets" class="btn btn-success">
+                        <i class="fas fa-cloud-download-alt me-1"></i>Browse NCBI Datasets
+                    </a>
+                    <a asp-action="Downloads" class="btn btn-info">
+                        <i class="fas fa-download me-1"></i>View Downloads
+                    </a>
                     <form asp-action="Rescan" method="post" class="d-inline">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-sync me-1"></i>Rescan Databases
+                            <i class="fas fa-sync me-1"></i>Rescan Local
                         </button>
                     </form>
                 </div>
@@ -86,9 +166,17 @@
                                     <i class="fas fa-folder me-1 text-muted"></i>
                                     @Html.DisplayNameFor(model => model.Path)
                                 </th>
+                                <th class="border-0 fw-semibold">
+                                    <i class="fas fa-hdd me-1 text-muted"></i>
+                                    @Html.DisplayNameFor(model => model.Size)
+                                </th>
                                 <th class="border-0 fw-semibold text-center">
                                     <i class="fas fa-toggle-on me-1 text-muted"></i>
                                     @Html.DisplayNameFor(model => model.IsEnabled)
+                                </th>
+                                <th class="border-0 fw-semibold text-center">
+                                    <i class="fas fa-cogs me-1 text-muted"></i>
+                                    Actions
                                 </th>
                             </tr>
                         </thead>
@@ -129,6 +217,11 @@
                                             @Html.DisplayFor(modelItem => item.Path)
                                         </small>
                                     </td>
+                                    <td class="align-middle">
+                                        <span class="badge bg-light text-dark border">
+                                            @(item.Size > 0 ? FormatFileSize(item.Size) : "Unknown")
+                                        </span>
+                                    </td>
                                     <td class="align-middle text-center">
                                         <div class="form-check form-switch d-flex justify-content-center">
                                             <input class="form-check-input assembly-toggle" 
@@ -138,6 +231,16 @@
                                                    id="toggle-@item.TaxonomyId"
                                                    title="@(item.IsEnabled ? "Click to disable" : "Click to enable")">
                                         </div>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <button class="btn btn-sm btn-outline-danger delete-assembly" 
+                                                data-taxonomy-id="@item.TaxonomyId"
+                                                data-organism-name="@item.OrganismName"
+                                                data-accession-id="@item.AccessionId"
+                                                data-assembly-size="@item.Size"
+                                                title="Delete assembly and all files">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             }
@@ -190,6 +293,65 @@
                 </div>
             </div>
         </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Assembly Modal -->
+<div class="modal fade" id="deleteAssemblyModal" tabindex="-1" aria-labelledby="deleteAssemblyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteAssemblyModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Delete Assembly
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning" role="alert">
+                    <i class="fas fa-warning me-2"></i>
+                    <strong>Warning:</strong> This action cannot be undone!
+                </div>
+                
+                <p class="mb-3">Are you sure you want to delete the assembly for:</p>
+                
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h6 class="card-title mb-2">
+                            <i class="fas fa-microscope me-2 text-primary"></i>
+                            <span id="modal-organism-name"></span>
+                        </h6>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <small class="text-muted">Accession ID:</small><br>
+                                <code id="modal-accession-id" class="text-primary"></code>
+                            </div>
+                            <div class="col-sm-6">
+                                <small class="text-muted">Assembly Size:</small><br>
+                                <span class="badge bg-info" id="modal-assembly-size"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-3">
+                    <h6 class="text-danger">This will:</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-times text-danger me-2"></i>Remove the assembly from the database</li>
+                        <li><i class="fas fa-times text-danger me-2"></i>Delete all BLAST database files</li>
+                        <li><i class="fas fa-times text-danger me-2"></i>Free up <span id="modal-size-to-free" class="fw-bold"></span> of disk space</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Allow the dataset to be re-downloaded if needed</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash-alt me-1"></i>Delete Assembly
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -306,6 +468,20 @@
     .assembly-toggle:focus {
         box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
     }
+
+    /* Delete button styling */
+    .delete-assembly {
+        transition: all 0.2s ease;
+    }
+
+    .delete-assembly:hover {
+        transform: scale(1.05);
+    }
+
+    .delete-assembly:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
 </style>
 
 <script>
@@ -355,5 +531,145 @@
                 });
             });
         });
+
+        // Handle assembly delete buttons
+        document.querySelectorAll('.delete-assembly').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const taxonomyId = this.dataset.taxonomyId;
+                const organismName = this.dataset.organismName;
+                const accessionId = this.dataset.accessionId || 'Unknown';
+                const assemblySize = parseInt(this.dataset.assemblySize) || 0;
+                const formattedSize = formatFileSize(assemblySize);
+                
+                // Populate modal with assembly information
+                document.getElementById('modal-organism-name').textContent = organismName;
+                document.getElementById('modal-accession-id').textContent = accessionId;
+                document.getElementById('modal-assembly-size').textContent = formattedSize;
+                document.getElementById('modal-size-to-free').textContent = formattedSize;
+                
+                // Store data for deletion
+                const modal = document.getElementById('deleteAssemblyModal');
+                modal.dataset.taxonomyId = taxonomyId;
+                modal.dataset.organismName = organismName;
+                
+                // Show the modal
+                const bootstrapModal = new bootstrap.Modal(modal);
+                bootstrapModal.show();
+            });
+        });
+
+        // Handle confirm delete button in modal
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            const modal = document.getElementById('deleteAssemblyModal');
+            const taxonomyId = modal.dataset.taxonomyId;
+            const organismName = modal.dataset.organismName;
+            
+            // Disable the button while processing
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Deleting...';
+            
+            fetch('/Assemblies/Delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                },
+                body: 'id=' + encodeURIComponent(taxonomyId)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Hide the modal
+                    const bootstrapModal = bootstrap.Modal.getInstance(modal);
+                    bootstrapModal.hide();
+                    
+                    // Show success message
+                    showAlert('success', data.message);
+                    
+                    // Remove the row from the table
+                    const deleteButton = document.querySelector(`[data-taxonomy-id="${taxonomyId}"]`);
+                    if (deleteButton) {
+                        const row = deleteButton.closest('tr');
+                        row.style.transition = 'opacity 0.3s ease';
+                        row.style.opacity = '0';
+                        setTimeout(() => {
+                            row.remove();
+                            
+                            // Check if table is now empty
+                            const tbody = document.querySelector('tbody');
+                            if (tbody && tbody.children.length === 0) {
+                                location.reload(); // Reload to show "no databases" message
+                            }
+                        }, 300);
+                    }
+                } else {
+                    // Hide the modal
+                    const bootstrapModal = bootstrap.Modal.getInstance(modal);
+                    bootstrapModal.hide();
+                    
+                    // Show error message
+                    showAlert('danger', data.message || 'Failed to delete assembly');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                
+                // Hide the modal
+                const bootstrapModal = bootstrap.Modal.getInstance(modal);
+                bootstrapModal.hide();
+                
+                // Show error message
+                showAlert('danger', 'An error occurred while deleting the assembly');
+            })
+            .finally(() => {
+                // Re-enable the button
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-trash-alt me-1"></i>Delete Assembly';
+            });
+        });
+
+        // Helper function to format file sizes
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            let order = 0;
+            let size = bytes;
+            
+            while (size >= 1024 && order < sizes.length - 1) {
+                order++;
+                size /= 1024;
+            }
+            
+            return size.toFixed(2) + ' ' + sizes[order];
+        }
+
+        // Helper function to show alert messages
+        function showAlert(type, message) {
+            // Remove existing alerts
+            const existingAlerts = document.querySelectorAll('.alert:not(.alert-warning)');
+            existingAlerts.forEach(alert => alert.remove());
+            
+            // Create new alert
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.setAttribute('role', 'alert');
+            alertDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            // Insert at the top of the page content
+            const pageHeader = document.querySelector('.page-header');
+            pageHeader.parentNode.insertBefore(alertDiv, pageHeader.nextSibling);
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
     });
 </script>

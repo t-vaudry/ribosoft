@@ -12,6 +12,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RibosoftAlgo.Tests", "Ribos
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{3889A8F2-7004-4585-BE15-FC9EA7F06F53}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NCBI.Datasets.API", "NCBI.Datasets.API\NCBI.Datasets.API.csproj", "{D0H5F6G4-3C7E-4D8F-AF9B-1E2F3G4H5I6J}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NCBI.Datasets.API.Tests", "NCBI.Datasets.API.Tests\NCBI.Datasets.API.Tests.csproj", "{E1I6G7H5-4D8F-4E9G-BG0C-2F3G4H5I6J7K}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,6 +86,30 @@ Global
 		{3889A8F2-7004-4585-BE15-FC9EA7F06F53}.Release|x64.Build.0 = Release|Any CPU
 		{3889A8F2-7004-4585-BE15-FC9EA7F06F53}.Release|x86.ActiveCfg = Release|Any CPU
 		{3889A8F2-7004-4585-BE15-FC9EA7F06F53}.Release|x86.Build.0 = Release|Any CPU
+		{D0H5F6G4-3C7E-4D8F-AF9B-1E2F3G4H5I6J}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0H5F6G4-3C7E-4D8F-AF9B-1E2F3G4H5I6J}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0H5F6G4-3C7E-4D8F-AF9B-1E2F3G4H5I6J}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D0H5F6G4-3C7E-4D8F-AF9B-1E2F3G4H5I6J}.Debug|x64.Build.0 = Debug|Any CPU
+		{D0H5F6G4-3C7E-4D8F-AF9B-1E2F3G4H5I6J}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D0H5F6G4-3C7E-4D8F-AF9B-1E2F3G4H5I6J}.Debug|x86.Build.0 = Debug|Any CPU
+		{D0H5F6G4-3C7E-4D8F-AF9B-1E2F3G4H5I6J}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0H5F6G4-3C7E-4D8F-AF9B-1E2F3G4H5I6J}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0H5F6G4-3C7E-4D8F-AF9B-1E2F3G4H5I6J}.Release|x64.ActiveCfg = Release|Any CPU
+		{D0H5F6G4-3C7E-4D8F-AF9B-1E2F3G4H5I6J}.Release|x64.Build.0 = Release|Any CPU
+		{D0H5F6G4-3C7E-4D8F-AF9B-1E2F3G4H5I6J}.Release|x86.ActiveCfg = Release|Any CPU
+		{D0H5F6G4-3C7E-4D8F-AF9B-1E2F3G4H5I6J}.Release|x86.Build.0 = Release|Any CPU
+		{E1I6G7H5-4D8F-4E9G-BG0C-2F3G4H5I6J7K}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1I6G7H5-4D8F-4E9G-BG0C-2F3G4H5I6J7K}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1I6G7H5-4D8F-4E9G-BG0C-2F3G4H5I6J7K}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E1I6G7H5-4D8F-4E9G-BG0C-2F3G4H5I6J7K}.Debug|x64.Build.0 = Debug|Any CPU
+		{E1I6G7H5-4D8F-4E9G-BG0C-2F3G4H5I6J7K}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E1I6G7H5-4D8F-4E9G-BG0C-2F3G4H5I6J7K}.Debug|x86.Build.0 = Debug|Any CPU
+		{E1I6G7H5-4D8F-4E9G-BG0C-2F3G4H5I6J7K}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1I6G7H5-4D8F-4E9G-BG0C-2F3G4H5I6J7K}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1I6G7H5-4D8F-4E9G-BG0C-2F3G4H5I6J7K}.Release|x64.ActiveCfg = Release|Any CPU
+		{E1I6G7H5-4D8F-4E9G-BG0C-2F3G4H5I6J7K}.Release|x64.Build.0 = Release|Any CPU
+		{E1I6G7H5-4D8F-4E9G-BG0C-2F3G4H5I6J7K}.Release|x86.ActiveCfg = Release|Any CPU
+		{E1I6G7H5-4D8F-4E9G-BG0C-2F3G4H5I6J7K}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +14,8 @@ using Microsoft.Extensions.Logging;
 using Ribosoft.Data;
 using Ribosoft.Jobs;
 using Ribosoft.Models;
+using Ribosoft.Models.ViewModels;
+using Ribosoft.Services;
 
 namespace Ribosoft.Controllers
 {
@@ -38,17 +40,28 @@ namespace Ribosoft.Controllers
          */
         private readonly ILogger<AssembliesController> _logger;
 
+        /*! \property _datasetDownloadService
+         * \brief Dataset download service
+         */
+        private readonly IDatasetDownloadService _datasetDownloadService;
+
         /*! \fn AssembliesController
          * \brief Default constructor
          * \param context Database context information
          * \param configuration Configuration of the application
          * \param logger Logger instance
+         * \param datasetDownloadService Dataset download service
          */
-        public AssembliesController(ApplicationDbContext context, IConfiguration configuration, ILogger<AssembliesController> logger)
+        public AssembliesController(
+            ApplicationDbContext context, 
+            IConfiguration configuration, 
+            ILogger<AssembliesController> logger,
+            IDatasetDownloadService datasetDownloadService)
         {
             _context = context;
             _configuration = configuration;
             _logger = logger;
+            _datasetDownloadService = datasetDownloadService;
         }
 
         /*! \fn Index
@@ -57,8 +70,329 @@ namespace Ribosoft.Controllers
          */
         public async Task<IActionResult> Index()
         {
-            ViewBag.BlastDbPath = _configuration["Blast:BLASTDB"] ?? "Not configured";
-            return View(await _context.Assemblies.ToListAsync());
+            ViewBag.BlastDbPath = _configuration["Assemblies:Path"] ?? "Not configured";
+            
+            // Get current assemblies and recent downloads
+            var assemblies = await _context.Assemblies.ToListAsync();
+            var recentDownloads = await _context.DatasetDownloads
+                .OrderByDescending(d => d.CreatedAt)
+                .Take(10)
+                .ToListAsync();
+
+            // Process assemblies to fix missing data and calculate sizes
+            foreach (var assembly in assemblies)
+            {
+                _logger.LogInformation("Processing assembly {AccessionId}: Type='{Type}', Path='{Path}'", 
+                    assembly.AccessionId, assembly.Type, assembly.Path);
+
+                // Fix missing or incorrect Path FIRST
+                var originalPath = assembly.Path;
+                if (string.IsNullOrEmpty(assembly.Path) || assembly.Path.StartsWith("~/"))
+                {
+                    var blastDbPath = _configuration["Assemblies:Path"] ?? 
+                                     Path.Combine(Directory.GetCurrentDirectory(), "BlastDatabases");
+                    blastDbPath = ExpandPath(blastDbPath);
+                    
+                    // Use organized path structure
+                    assembly.Path = Path.Combine(blastDbPath, assembly.AccessionId);
+                    _logger.LogInformation("Updated path for {AccessionId}: '{OldPath}' -> '{NewPath}'", 
+                        assembly.AccessionId, originalPath, assembly.Path);
+                }
+
+                // Fix missing Type - determine actual assembly type (now with correct path)
+                if (string.IsNullOrEmpty(assembly.Type) || assembly.Type == "Downloaded")
+                {
+                    assembly.Type = DetermineAssemblyType(assembly.Path, assembly.AccessionId);
+                    _logger.LogInformation("Determined type for {AccessionId}: {Type}", assembly.AccessionId, assembly.Type);
+                }
+
+                // Calculate size
+                assembly.Size = CalculateAssemblySize(assembly.Path);
+                _logger.LogInformation("Assembly {AccessionId} final: Type='{Type}', Path='{Path}', Size={Size}", 
+                    assembly.AccessionId, assembly.Type, assembly.Path, assembly.Size);
+            }
+
+            ViewBag.RecentDownloads = recentDownloads;
+            
+            return View(assemblies);
+        }
+
+        /*! \fn BrowseDatasets
+         * \brief HTTP GET for browsing available NCBI datasets
+         * \param searchTerm Optional search term
+         * \param limit Maximum results to return
+         * \return View with available datasets
+         */
+        public async Task<IActionResult> BrowseDatasets(string? searchTerm = null, int limit = 50)
+        {
+            try
+            {
+                _logger.LogInformation("BrowseDatasets called with search parameters, limit: {Limit}", limit);
+                
+                var datasets = await _datasetDownloadService.GetAvailableDatasetsAsync(searchTerm, limit);
+                
+                _logger.LogInformation("Retrieved {Count} datasets from service", datasets.Count);
+                
+                ViewBag.SearchTerm = searchTerm;
+                ViewBag.Limit = limit;
+                
+                return View(datasets);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error browsing datasets with search parameters");
+                TempData["Error"] = "Error loading available datasets. Please try again later.";
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        /*! \fn SearchDatasets
+         * \brief AJAX endpoint for searching datasets without page refresh
+         * \param searchTerm Optional search term
+         * \param limit Maximum results to return
+         * \return JSON response with datasets
+         */
+        [HttpPost]
+        public async Task<IActionResult> SearchDatasets([FromBody] SearchDatasetsRequest request)
+        {
+            try
+            {
+                _logger.LogInformation("AJAX SearchDatasets called with search parameters, limit: {Limit}", request.Limit);
+                
+                var datasets = await _datasetDownloadService.GetAvailableDatasetsAsync(request.SearchTerm, request.Limit);
+                
+                _logger.LogInformation("Retrieved {Count} datasets from service via AJAX", datasets.Count);
+                
+                return Json(new { 
+                    success = true, 
+                    datasets = datasets,
+                    searchTerm = request.SearchTerm,
+                    count = datasets.Count
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in AJAX search with search parameters");
+                return Json(new { 
+                    success = false, 
+                    error = "Error loading datasets. Please try again later.",
+                    datasets = new List<object>(),
+                    count = 0
+                });
+            }
+        }
+
+        /*! \class SearchDatasetsRequest
+         * \brief Request model for AJAX dataset search
+         */
+        public class SearchDatasetsRequest
+        {
+            public string? SearchTerm { get; set; }
+            public int Limit { get; set; } = 50;
+        }
+
+        /*! \fn DownloadDatasets
+         * \brief HTTP POST for requesting dataset downloads
+         * \param request Download request
+         * \return Redirect to downloads page
+         */
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DownloadDatasets(DatasetDownloadRequestViewModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = "Invalid download request.";
+                return RedirectToAction(nameof(BrowseDatasets));
+            }
+
+            try
+            {
+                var userName = User.Identity?.Name ?? "Unknown";
+                var jobIds = await _datasetDownloadService.RequestDownloadAsync(request, userName);
+                
+                _logger.LogInformation("User {User} requested download of {Count} datasets. Job IDs: {JobIds}", 
+                    userName, request.AccessionIds.Count, jobIds);
+                
+                TempData["Success"] = $"Download request submitted for {request.AccessionIds.Count} dataset(s). " +
+                                     "You can monitor progress on the Downloads page.";
+                
+                return RedirectToAction(nameof(Downloads));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing download request for user {User}", User.Identity?.Name);
+                TempData["Error"] = "Error processing download request. Please try again.";
+                return RedirectToAction(nameof(BrowseDatasets));
+            }
+        }
+
+        /*! \fn Downloads
+         * \brief HTTP GET for viewing download history and status with pagination
+         * \param page Current page number
+         * \return View with paginated download history
+         */
+        public async Task<IActionResult> Downloads(int page = 1)
+        {
+            try
+            {
+                const int pageSize = 10;
+                var downloads = await _datasetDownloadService.GetDownloadHistoryAsync(page, pageSize);
+                var totalCount = await _datasetDownloadService.GetDownloadCountAsync();
+                
+                ViewBag.CurrentPage = page;
+                ViewBag.PageSize = pageSize;
+                ViewBag.TotalCount = totalCount;
+                ViewBag.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+                
+                return View(downloads);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading download history");
+                TempData["Error"] = "Error loading download history.";
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        /*! \fn GetDownloadsPage
+         * \brief HTTP GET for getting paginated downloads via AJAX
+         * \param page Current page number
+         * \return Partial view with downloads
+         */
+        [HttpGet]
+        public async Task<IActionResult> GetDownloadsPage(int page = 1)
+        {
+            try
+            {
+                const int pageSize = 10;
+                var downloads = await _datasetDownloadService.GetDownloadHistoryAsync(page, pageSize);
+                var totalCount = await _datasetDownloadService.GetDownloadCountAsync();
+                
+                ViewBag.CurrentPage = page;
+                ViewBag.PageSize = pageSize;
+                ViewBag.TotalCount = totalCount;
+                ViewBag.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+                
+                return PartialView("_DownloadsTable", downloads);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading downloads page {Page}", page);
+                return Json(new { success = false, message = "Error loading downloads" });
+            }
+        }
+
+        /*! \fn GetDownloadStatus
+         * \brief HTTP GET for getting download status (AJAX)
+         * \param id Download ID
+         * \return JSON with download status
+         */
+        [HttpGet]
+        public async Task<IActionResult> GetDownloadStatus(int id)
+        {
+            try
+            {
+                var download = await _datasetDownloadService.GetDownloadStatusAsync(id);
+                if (download == null)
+                {
+                    return NotFound();
+                }
+
+                return Json(new
+                {
+                    id = download.Id,
+                    accessionId = download.AccessionId,
+                    status = download.Status.ToString(),
+                    progress = download.Progress,
+                    errorMessage = download.ErrorMessage,
+                    startedAt = download.StartedAt,
+                    completedAt = download.CompletedAt,
+                    fileSize = download.FileSize,
+                    downloadedBytes = download.DownloadedBytes
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting download status for ID {DownloadId}", id);
+                return StatusCode(500, new { error = "Error retrieving download status" });
+            }
+        }
+
+        /*! \fn CancelDownload
+         * \brief HTTP POST for cancelling a download
+         * \param id Download ID
+         * \return JSON result
+         */
+        [HttpPost]
+        public async Task<IActionResult> CancelDownload(int id)
+        {
+            try
+            {
+                await _datasetDownloadService.CancelDownloadAsync(id);
+                
+                _logger.LogInformation("User {User} cancelled download {DownloadId}", User.Identity?.Name, id);
+                
+                return Json(new { success = true, message = "Download cancelled successfully" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error cancelling download {DownloadId}", id);
+                return Json(new { success = false, message = "Error cancelling download" });
+            }
+        }
+
+        /*! \fn RetryDownload
+         * \brief HTTP POST for retrying a failed download
+         * \param id Download ID
+         * \return JSON result
+         */
+        [HttpPost]
+        public async Task<IActionResult> RetryDownload(int id)
+        {
+            try
+            {
+                await _datasetDownloadService.RetryDownloadAsync(id);
+                
+                _logger.LogInformation("User {User} retried download {DownloadId}", User.Identity?.Name, id);
+                
+                return Json(new { success = true, message = "Download retry initiated" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrying download {DownloadId}", id);
+                return Json(new { success = false, message = "Error retrying download" });
+            }
+        }
+
+        /*! \fn UpdateUnknownOrganisms
+         * \brief HTTP POST for updating existing records with unknown organisms
+         * \return JSON result with update count
+         */
+        [HttpPost]
+        public async Task<IActionResult> UpdateUnknownOrganisms()
+        {
+            try
+            {
+                var updatedCount = await _datasetDownloadService.UpdateUnknownOrganismsAsync();
+                
+                _logger.LogInformation("User {User} updated {Count} unknown organism records", 
+                    User.Identity?.Name, updatedCount);
+                
+                return Json(new { 
+                    success = true, 
+                    message = $"Updated {updatedCount} records with proper organism information",
+                    updatedCount = updatedCount
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating unknown organisms");
+                return Json(new { 
+                    success = false, 
+                    message = "Error updating organism information" 
+                });
+            }
         }
 
         /*! \fn Rescan
@@ -72,7 +406,7 @@ namespace Ribosoft.Controllers
             
             try
             {
-                var blastDbPath = _configuration["Blast:BLASTDB"];
+                var blastDbPath = _configuration["Assemblies:Path"];
                 _logger.LogInformation("BLAST database path configured as: {BlastDbPath}", blastDbPath);
                 
                 BackgroundJob.Enqueue<UpdateAssemblyDatabase>(x => x.Rescan(JobCancellationToken.Null));
@@ -123,6 +457,309 @@ namespace Ribosoft.Controllers
                 _logger.LogError(ex, "Error occurred while toggling assembly enabled status for ID: {TaxonomyId}", id);
                 return Json(new { success = false, message = "An error occurred while updating the assembly status" });
             }
+        }
+
+        /*! \fn Delete
+         * \brief HTTP POST to delete an assembly and its files
+         * \param id The taxonomy ID of the assembly to delete
+         * \return JSON result with success status
+         */
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            _logger.LogInformation("Delete assembly with taxonomy ID: {TaxonomyId} by user: {User}", id, User.Identity?.Name);
+            
+            try
+            {
+                var assembly = await _context.Assemblies.FirstOrDefaultAsync(a => a.TaxonomyId == id);
+                if (assembly == null)
+                {
+                    return Json(new { success = false, message = "Assembly not found" });
+                }
+
+                // Check if assembly is being used by any active jobs
+                var activeJobsCount = await _context.Jobs
+                    .Where(j => j.AssemblyId == id && 
+                               (j.JobState == JobState.New || j.JobState == JobState.Started ||
+                                j.JobState == JobState.CandidateGenerator || j.JobState == JobState.Structure ||
+                                j.JobState == JobState.MultiObjectiveOptimization || j.JobState == JobState.Specificity ||
+                                j.JobState == JobState.QueuedPhase2 || j.JobState == JobState.QueuedPhase3))
+                    .CountAsync();
+
+                if (activeJobsCount > 0)
+                {
+                    return Json(new { 
+                        success = false, 
+                        message = $"Cannot delete assembly. It is currently being used by {activeJobsCount} active job(s)." 
+                    });
+                }
+
+                // Delete files from filesystem
+                var deletedSize = 0L;
+                if (!string.IsNullOrEmpty(assembly.Path) && Directory.Exists(assembly.Path))
+                {
+                    try
+                    {
+                        deletedSize = CalculateAssemblySize(assembly.Path);
+                        Directory.Delete(assembly.Path, true);
+                        _logger.LogInformation("Deleted assembly directory: {Path} ({Size} bytes)", assembly.Path, deletedSize);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "Failed to delete assembly directory: {Path}", assembly.Path);
+                        return Json(new { 
+                            success = false, 
+                            message = $"Failed to delete assembly files from filesystem: {ex.Message}" 
+                        });
+                    }
+                }
+
+                // Clean up related DatasetDownload records to allow re-downloading
+                var relatedDownloads = await _context.DatasetDownloads
+                    .Where(d => d.TaxonomyId == id || d.AccessionId == assembly.AccessionId)
+                    .ToListAsync();
+
+                var removedDownloadCount = 0;
+                if (relatedDownloads.Any())
+                {
+                    removedDownloadCount = relatedDownloads.Count;
+                    _logger.LogInformation("Found {Count} related download records for assembly {AccessionId}", 
+                        removedDownloadCount, assembly.AccessionId);
+                    
+                    _context.DatasetDownloads.RemoveRange(relatedDownloads);
+                    _logger.LogInformation("Removed {Count} DatasetDownload records to allow re-downloading", 
+                        removedDownloadCount);
+                }
+
+                // Remove from database
+                _context.Assemblies.Remove(assembly);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Assembly {TaxonomyId} ({OrganismName}) deleted successfully. Freed {Size} bytes. Removed {DownloadCount} download records.", 
+                    id, assembly.OrganismName, deletedSize, removedDownloadCount);
+
+                return Json(new { 
+                    success = true, 
+                    message = $"Assembly '{assembly.OrganismName}' deleted successfully. Freed {FormatFileSize(deletedSize)}. Dataset can now be re-downloaded if needed.",
+                    deletedSize = deletedSize,
+                    removedDownloads = removedDownloadCount
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting assembly with ID: {TaxonomyId}", id);
+                return Json(new { success = false, message = "An error occurred while deleting the assembly" });
+            }
+        }
+
+        /*! \fn CalculateAssemblySize
+         * \brief Calculate the total size of an assembly directory
+         * \param path Directory path to calculate
+         * \return Total size in bytes
+         */
+        private long CalculateAssemblySize(string path)
+        {
+            if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
+                return 0;
+
+            try
+            {
+                var directoryInfo = new DirectoryInfo(path);
+                return directoryInfo.GetFiles("*", SearchOption.AllDirectories)
+                    .Sum(file => file.Length);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to calculate size for directory: {Path}", path);
+                return 0;
+            }
+        }
+
+        /*! \fn FormatFileSize
+         * \brief Format file size in human-readable format
+         * \param bytes Size in bytes
+         * \return Formatted size string
+         */
+        private static string FormatFileSize(long bytes)
+        {
+            if (bytes == 0) return "0 B";
+            
+            string[] sizes = { "B", "KB", "MB", "GB", "TB" };
+            int order = 0;
+            double size = bytes;
+            
+            while (size >= 1024 && order < sizes.Length - 1)
+            {
+                order++;
+                size /= 1024;
+            }
+            
+            return $"{size:0.##} {sizes[order]}";
+        }
+
+        /*! \fn ExpandPath
+         * \brief Expand ~ and environment variables in path
+         * \param path Path to expand
+         * \return Expanded path
+         */
+        private static string ExpandPath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return path;
+
+            // Expand ~ to home directory
+            if (path.StartsWith("~/") || path == "~")
+            {
+                var homeDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                if (path == "~")
+                    return homeDir;
+                return Path.Combine(homeDir, path.Substring(2));
+            }
+
+            // Expand environment variables
+            return Environment.ExpandEnvironmentVariables(path);
+        }
+
+        /*! \fn DetermineAssemblyType
+         * \brief Determine the actual assembly type based on available files
+         * \param assemblyPath Path to the assembly directory
+         * \param accessionId Accession ID for pattern matching
+         * \return Assembly type string
+         */
+        private string DetermineAssemblyType(string assemblyPath, string accessionId)
+        {
+            if (string.IsNullOrEmpty(assemblyPath))
+            {
+                return "Unknown";
+            }
+
+            try
+            {
+                // If directory doesn't exist, try to infer from accession pattern
+                if (!Directory.Exists(assemblyPath))
+                {
+                    _logger.LogDebug("Assembly directory does not exist: {Path}, using accession-based detection", assemblyPath);
+                    return DetermineTypeFromAccession(accessionId);
+                }
+
+                var files = Directory.GetFiles(assemblyPath, "*", SearchOption.TopDirectoryOnly)
+                    .Select(f => Path.GetFileName(f).ToLowerInvariant())
+                    .ToList();
+
+                _logger.LogDebug("Found {FileCount} files in {Path}: {Files}", 
+                    files.Count, assemblyPath, string.Join(", ", files.Take(5)));
+
+                if (files.Count == 0)
+                {
+                    return "Empty";
+                }
+
+                // Check for different types of BLAST databases
+                var hasGenome = files.Any(f => f.Contains("genomic") && (f.EndsWith(".nhr") || f.EndsWith(".phr")));
+                var hasProtein = files.Any(f => f.Contains("protein") && f.EndsWith(".phr"));
+                var hasRNA = files.Any(f => f.Contains("rna") && f.EndsWith(".nhr"));
+                var hasCDS = files.Any(f => f.Contains("cds") && f.EndsWith(".nhr"));
+
+                _logger.LogDebug("Assembly type detection for {AccessionId}: Genome={Genome}, Protein={Protein}, RNA={RNA}, CDS={CDS}", 
+                    accessionId, hasGenome, hasProtein, hasRNA, hasCDS);
+
+                // Determine primary type based on available databases
+                var types = new List<string>();
+                
+                if (hasGenome) types.Add("Genome");
+                if (hasProtein) types.Add("Proteome");
+                if (hasRNA) types.Add("Transcriptome");
+                if (hasCDS) types.Add("CDS");
+
+                if (types.Count == 0)
+                {
+                    // Fallback: check for any BLAST database files
+                    var hasAnyBlastDb = files.Any(f => f.EndsWith(".nhr") || f.EndsWith(".phr") || 
+                                                      f.EndsWith(".nin") || f.EndsWith(".pin"));
+                    
+                    if (hasAnyBlastDb)
+                    {
+                        return "Assembly";
+                    }
+                    
+                    // Check for FASTA files as another fallback
+                    var hasFasta = files.Any(f => f.EndsWith(".fna") || f.EndsWith(".faa") || 
+                                                 f.EndsWith(".fasta") || f.EndsWith(".fa"));
+                    return hasFasta ? "FASTA" : "Unknown";
+                }
+
+                // Return combined type or primary type
+                if (types.Count == 1)
+                {
+                    return types[0];
+                }
+                else if (types.Contains("Genome"))
+                {
+                    // If genome is present with others, it's likely a complete genome assembly
+                    return "Complete Genome";
+                }
+                else
+                {
+                    // Multiple types without genome
+                    return string.Join(" + ", types);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to determine assembly type for path: {Path}", assemblyPath);
+                return "Error";
+            }
+        }
+
+        /*! \fn DetermineTypeFromAccession
+         * \brief Determine assembly type from accession ID pattern when files aren't available
+         * \param accessionId Accession ID to analyze
+         * \return Assembly type string
+         */
+        private string DetermineTypeFromAccession(string accessionId)
+        {
+            if (string.IsNullOrEmpty(accessionId))
+            {
+                return "Unknown";
+            }
+
+            // NCBI accession patterns
+            if (accessionId.StartsWith("GCF_") || accessionId.StartsWith("GCA_"))
+            {
+                return "Genome Assembly";
+            }
+            else if (accessionId.StartsWith("NC_"))
+            {
+                return "RefSeq Chromosome";
+            }
+            else if (accessionId.StartsWith("NM_"))
+            {
+                return "mRNA";
+            }
+            else if (accessionId.StartsWith("NP_"))
+            {
+                return "Protein";
+            }
+            
+            return "Assembly";
+        }
+
+        /*! \fn SanitizeForLogging
+         * \brief Sanitize user input for safe logging to prevent log injection attacks
+         * \param input User-provided input that may contain malicious content
+         * \return Sanitized string safe for logging
+         */
+        private static string? SanitizeForLogging(string? input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+            
+            // Remove or replace characters that could be used for log injection
+            return input
+                .Replace('\r', ' ')  // Remove carriage returns
+                .Replace('\n', ' ')  // Remove line feeds
+                .Replace('\t', ' ')  // Replace tabs with spaces
+                .Trim();             // Remove leading/trailing whitespace
         }
     }
 }

@@ -60,7 +60,7 @@ namespace Ribosoft.Tests
         {
             RibosoftAlgo sdc = new RibosoftAlgo();
 
-            Exception ex = Assert.Throws<RibosoftAlgoException>(() => sdc.MFEFold("AUGUXWQD"));
+            Assert.Throws<RibosoftAlgoException>(() => sdc.MFEFold("AUGUXWQD"));
         }
 
         [Fact]
@@ -68,7 +68,7 @@ namespace Ribosoft.Tests
         {
             RibosoftAlgo sdc = new RibosoftAlgo();
 
-            Exception ex = Assert.Throws<RibosoftAlgoException>(() => sdc.Fold("AUGUXWQD"));
+            Assert.Throws<RibosoftAlgoException>(() => sdc.Fold("AUGUXWQD"));
         }
 
         [Fact]

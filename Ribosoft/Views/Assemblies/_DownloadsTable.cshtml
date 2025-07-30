@@ -1,0 +1,203 @@
+@model IEnumerable<Ribosoft.Models.DatasetDownload>
+@using Microsoft.AspNetCore.Html
+
+@if (Model.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Accession</th>
+                    <th>Organism</th>
+                    <th>Status</th>
+                    <th>Progress</th>
+                    <th>Size</th>
+                    <th>Requested By</th>
+                    <th>Started</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var download in Model)
+                {
+                    <tr id="download-@download.Id" class="download-row">
+                        <td>
+                            <code>@download.AccessionId</code>
+                        </td>
+                        <td>
+                            <div>
+                                <strong>@download.OrganismName</strong>
+                                <br><small class="text-muted">@download.AssemblyName</small>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge" data-status="@download.Status">
+                                @GetStatusBadge(download.Status, download.ErrorMessage)
+                            </span>
+                        </td>
+                        <td>
+                            <div class="progress-container">
+                                @if (download.Status == DatasetDownloadStatus.Downloading || 
+                                     download.Status == DatasetDownloadStatus.Processing)
+                                {
+                                    <div class="progress mb-1" style="height: 20px;">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                             role="progressbar" 
+                                             style="width: @download.Progress%"
+                                             aria-valuenow="@download.Progress" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100">
+                                            @download.Progress%
+                                        </div>
+                                    </div>
+                                }
+                                else if (download.Status == DatasetDownloadStatus.Completed || 
+                                         download.Status == DatasetDownloadStatus.ReadyForBlast)
+                                {
+                                    <div class="progress mb-1" style="height: 20px;">
+                                        <div class="progress-bar bg-success" 
+                                             role="progressbar" 
+                                             style="width: 100%">
+                                            Complete
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <small class="text-muted">@download.Progress%</small>
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            @if (download.FileSize > 0)
+                            {
+                                <div>
+                                    @FormatBytes(download.DownloadedBytes) / @FormatBytes(download.FileSize)
+                                </div>
+                            }
+                            else
+                            {
+                                <small class="text-muted">Unknown</small>
+                            }
+                        </td>
+                        <td>@download.RequestedBy</td>
+                        <td>
+                            @if (download.StartedAt.HasValue)
+                            {
+                                @download.StartedAt.Value.ToString("MMM dd, HH:mm")
+                            }
+                            else
+                            {
+                                <small class="text-muted">Not started</small>
+                            }
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group">
+                                @if (download.Status == DatasetDownloadStatus.Queued || 
+                                     download.Status == DatasetDownloadStatus.Downloading || 
+                                     download.Status == DatasetDownloadStatus.Processing)
+                                {
+                                    <button class="btn btn-outline-danger" 
+                                            onclick="showCancelModal(@download.Id, '@download.AccessionId', '@Html.Raw(Html.Encode(download.OrganismName))')"
+                                            title="Cancel Download">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                }
+                                else if (download.Status == DatasetDownloadStatus.Failed)
+                                {
+                                    <button class="btn btn-outline-warning" 
+                                            onclick="showRetryModal(@download.Id, '@download.AccessionId', '@Html.Raw(Html.Encode(download.OrganismName))')"
+                                            title="Retry Download">
+                                        <i class="fas fa-redo"></i>
+                                    </button>
+                                }
+                                
+                                <button class="btn btn-outline-primary" 
+                                        onclick="refreshStatus(@download.Id)"
+                                        title="Refresh Status">
+                                    <i class="fas fa-sync"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="card-footer bg-light border-top">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="text-muted small">
+                Showing @((ViewBag.CurrentPage - 1) * ViewBag.PageSize + 1) to @Math.Min(ViewBag.CurrentPage * ViewBag.PageSize, ViewBag.TotalCount) of @ViewBag.TotalCount downloads
+            </div>
+            <nav aria-label="Downloads pagination">
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item @(ViewBag.CurrentPage <= 1 ? "disabled" : "")">
+                        <button class="page-link" onclick="loadPage(@(ViewBag.CurrentPage - 1))" @(ViewBag.CurrentPage <= 1 ? "disabled" : "")>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                    </li>
+                    
+                    @for (int i = Math.Max(1, ViewBag.CurrentPage - 2); i <= Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2); i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <button class="page-link" onclick="loadPage(@i)">@i</button>
+                        </li>
+                    }
+                    
+                    <li class="page-item @(ViewBag.CurrentPage >= ViewBag.TotalPages ? "disabled" : "")">
+                        <button class="page-link" onclick="loadPage(@(ViewBag.CurrentPage + 1))" @(ViewBag.CurrentPage >= ViewBag.TotalPages ? "disabled" : "")>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+}
+else
+{
+    <div class="text-center py-5">
+        <i class="fas fa-download fa-3x text-muted mb-3"></i>
+        <h5>No downloads yet</h5>
+        <p class="text-muted">Start by browsing available datasets from NCBI.</p>
+        <a asp-action="BrowseDatasets" class="btn btn-primary">
+            <i class="fas fa-search me-1"></i>Browse Datasets
+        </a>
+    </div>
+}
+
+@functions {
+    private string FormatBytes(long bytes)
+    {
+        if (bytes == 0) return "0 B";
+        
+        string[] suffixes = { "B", "KB", "MB", "GB", "TB" };
+        int counter = 0;
+        decimal number = bytes;
+        
+        while (Math.Round(number / 1024) >= 1)
+        {
+            number /= 1024;
+            counter++;
+        }
+        
+        return $"{number:n1} {suffixes[counter]}";
+    }
+
+    private IHtmlContent GetStatusBadge(DatasetDownloadStatus status, string errorMessage)
+    {
+        return status switch
+        {
+            DatasetDownloadStatus.Queued => Html.Raw("<span class=\"badge bg-secondary\"><i class=\"fas fa-clock me-1\"></i>Queued</span>"),
+            DatasetDownloadStatus.Downloading => Html.Raw("<span class=\"badge bg-primary\"><i class=\"fas fa-download me-1\"></i>Downloading</span>"),
+            DatasetDownloadStatus.Processing => Html.Raw("<span class=\"badge bg-info\"><i class=\"fas fa-cog fa-spin me-1\"></i>Processing</span>"),
+            DatasetDownloadStatus.Completed => Html.Raw("<span class=\"badge bg-success\"><i class=\"fas fa-check me-1\"></i>Completed</span>"),
+            DatasetDownloadStatus.ReadyForBlast => Html.Raw("<span class=\"badge bg-success\"><i class=\"fas fa-database me-1\"></i>Ready</span>"),
+            DatasetDownloadStatus.Failed => Html.Raw($"<span class=\"badge bg-danger\" title=\"{Html.Encode(errorMessage)}\"><i class=\"fas fa-exclamation-triangle me-1\"></i>Failed</span>"),
+            DatasetDownloadStatus.Cancelled => Html.Raw("<span class=\"badge bg-warning\"><i class=\"fas fa-ban me-1\"></i>Cancelled</span>"),
+            _ => Html.Raw("<span class=\"badge bg-light text-dark\">Unknown</span>")
+        };
+    }
+}

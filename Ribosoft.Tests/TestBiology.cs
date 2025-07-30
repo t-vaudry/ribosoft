@@ -10,7 +10,6 @@ namespace Ribosoft.Tests
         public void TestNucleotideEdgeCases()
         {
             Nucleotide defNucleo = new Nucleotide();
-            Nucleotide cpNucleo = new Nucleotide(defNucleo);
             Nucleotide nucleotide = new Nucleotide('T');
 
             Exception ex = Assert.Throws<RibosoftException>(() => nucleotide.GetComplement());

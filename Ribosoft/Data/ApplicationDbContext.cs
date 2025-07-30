@@ -77,5 +77,6 @@ namespace Ribosoft.Data
         public DbSet<Assembly> Assemblies { get; set; }
         public DbSet<OneTimeCode> OneTimeCodes { get; set; }
         public DbSet<ActivityLog> ActivityLogs { get; set; }
+        public DbSet<DatasetDownload> DatasetDownloads { get; set; }
     }
 }

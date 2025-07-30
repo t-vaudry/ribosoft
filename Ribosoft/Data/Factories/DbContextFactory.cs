@@ -35,6 +35,12 @@ namespace Ribosoft.Data.Factories
                 .AddJsonFile($"appsettings.{environmentName}.json", true)
                 .AddEnvironmentVariables();
 
+            // Add user secrets support for development environment
+            if (environmentName == "Development")
+            {
+                builder.AddUserSecrets<Program>();
+            }
+
             var config = builder.Build();
 
             var providerName = config.GetValue("EntityFrameworkProvider", "SqlServer");

@@ -1,0 +1,174 @@
+@model IEnumerable<Ribosoft.Models.ViewModels.AvailableDatasetViewModel>
+
+@if (Model.Any())
+{
+    <form id="downloadForm" asp-action="DownloadDatasets" method="post">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="border-0 fw-semibold" style="width: 50px;">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="selectAll">
+                                <label class="form-check-label" for="selectAll">
+                                    <span class="visually-hidden">Select All</span>
+                                </label>
+                            </div>
+                        </th>
+                        <th class="border-0 fw-semibold">
+                            <i class="fas fa-barcode me-1 text-muted"></i>Accession ID
+                        </th>
+                        <th class="border-0 fw-semibold">
+                            <i class="fas fa-microscope me-1 text-muted"></i>Organism
+                        </th>
+                        <th class="border-0 fw-semibold">
+                            <i class="fas fa-tag me-1 text-muted"></i>Assembly Name
+                        </th>
+                        <th class="border-0 fw-semibold">
+                            <i class="fas fa-layer-group me-1 text-muted"></i>Level
+                        </th>
+                        <th class="border-0 fw-semibold">
+                            <i class="fas fa-hdd me-1 text-muted"></i>Size
+                        </th>
+                        <th class="border-0 fw-semibold">
+                            <i class="fas fa-calendar me-1 text-muted"></i>Submitted
+                        </th>
+                        <th class="border-0 fw-semibold text-center">
+                            <i class="fas fa-info-circle me-1 text-muted"></i>Status
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var dataset in Model)
+                    {
+                        var rowClass = dataset.IsAlreadyDownloaded ? "table-success" : 
+                                      dataset.IsCurrentlyDownloading ? "table-warning" : "";
+                        
+                        <tr class="@rowClass">
+                            <td class="align-middle">
+                                @if (!dataset.IsAlreadyDownloaded && !dataset.IsCurrentlyDownloading)
+                                {
+                                    <div class="form-check">
+                                        <input class="form-check-input dataset-checkbox" 
+                                               type="checkbox" 
+                                               name="AccessionIds" 
+                                               value="@dataset.AccessionId" 
+                                               id="dataset-@dataset.AccessionId">
+                                        <label class="form-check-label" for="dataset-@dataset.AccessionId">
+                                            <span class="visually-hidden">Select @dataset.AccessionId</span>
+                                        </label>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="text-center">
+                                        @if (dataset.IsAlreadyDownloaded)
+                                        {
+                                            <i class="fas fa-check-circle text-success" title="Already downloaded"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-spinner fa-spin text-warning" title="Currently downloading"></i>
+                                        }
+                                    </div>
+                                }
+                            </td>
+                            <td class="align-middle">
+                                <code class="text-primary">@dataset.AccessionId</code>
+                            </td>
+                            <td class="align-middle">
+                                <div class="organism-info">
+                                    <strong>@dataset.OrganismName</strong>
+                                    @if (dataset.TaxonomyId > 0)
+                                    {
+                                        <br><small class="text-muted">Tax ID: @dataset.TaxonomyId</small>
+                                    }
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <div class="assembly-name">@dataset.AssemblyName</div>
+                            </td>
+                            <td class="align-middle">
+                                <span class="badge bg-secondary">@dataset.AssemblyLevel</span>
+                            </td>
+                            <td class="align-middle">
+                                <div class="size-info">
+                                    <strong>
+                                        @if (dataset.EstimatedSize > 0)
+                                        {
+                                            @($"{dataset.EstimatedSize / 1024.0 / 1024.0:F1} MB")
+                                        }
+                                        else
+                                        {
+                                            <text>Unknown</text>
+                                        }
+                                    </strong>
+                                    @if (dataset.ContigCount > 0)
+                                    {
+                                        <br><small class="text-muted">@dataset.ContigCount contigs</small>
+                                    }
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <small class="text-muted">
+                                    @if (dataset.SubmissionDate.HasValue)
+                                    {
+                                        @dataset.SubmissionDate.Value.ToString("MMM dd, yyyy")
+                                    }
+                                    else
+                                    {
+                                        <text>Unknown</text>
+                                    }
+                                </small>
+                            </td>
+                            <td class="align-middle text-center">
+                                @if (dataset.IsAlreadyDownloaded)
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check me-1"></i>Downloaded
+                                    </span>
+                                }
+                                else if (dataset.IsCurrentlyDownloading)
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-spinner fa-spin me-1"></i>Downloading
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-light text-dark border">
+                                        <i class="fas fa-cloud me-1"></i>Available
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Download Actions -->
+        <div class="card-footer bg-light border-top">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="text-muted small">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Select datasets above and click "Download Selected" to begin processing
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <span id="selectedCount" class="text-muted">0 selected</span>
+                    <button type="button" class="btn btn-success" id="downloadSelectedBtn" disabled>
+                        <i class="fas fa-download me-1"></i>Download Selected
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+}
+else
+{
+    <div class="text-center py-5">
+        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+        <h5 class="text-muted">No Datasets Found</h5>
+        <p class="text-muted">Try adjusting your search terms or check the examples below the search box.</p>
+    </div>
+}

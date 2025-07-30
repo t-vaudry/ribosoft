@@ -98,6 +98,10 @@
     <Content Update="nlog.config" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NCBI.Datasets.API\NCBI.Datasets.API.csproj" />
+  </ItemGroup>
+
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <RestoreSources>$(RestoreSources);../RibosoftAlgo/bin/Debug;https://api.nuget.org/v3/index.json</RestoreSources>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>

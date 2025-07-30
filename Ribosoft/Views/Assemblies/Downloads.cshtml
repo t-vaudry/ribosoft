@@ -1,0 +1,720 @@
+@using Microsoft.AspNetCore.Html
+@model IEnumerable<Ribosoft.Models.DatasetDownload>
+
+@{
+    ViewData["Title"] = "Dataset Downloads";
+}
+
+<div class="container-fluid px-3 px-md-4">
+    <div class="assemblies-content">
+        <!-- Page Header -->
+        <div class="page-header mb-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-download me-2 text-primary"></i>Dataset Downloads
+                    </h1>
+                    <p class="text-muted mb-0">Monitor and manage dataset download progress and history</p>
+                </div>
+                <div class="admin-badge-container">
+                    <span class="badge bg-warning text-dark">
+                        <i class="fas fa-crown me-1"></i>Admin Only
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a asp-action="Index">Assembly Databases</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Downloads</li>
+                </ol>
+                <div class="d-flex gap-2">
+                    <a asp-action="Index" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-arrow-left me-1"></i>Back to Assemblies
+                    </a>
+                    <a asp-action="BrowseDatasets" class="btn btn-success btn-sm">
+                        <i class="fas fa-cloud-download-alt me-1"></i>Browse Datasets
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Alert Messages -->
+        @if (TempData.ContainsKey("Success"))
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (TempData.ContainsKey("Error"))
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <!-- Quick Actions Card -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-light border-bottom">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-bolt me-2 text-primary"></i>Quick Actions
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-cloud-download-alt fa-2x text-success"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Browse More Datasets</h6>
+                                <p class="text-muted small mb-2">Search and download new datasets from NCBI</p>
+                                <a asp-action="BrowseDatasets" class="btn btn-success btn-sm">
+                                    <i class="fas fa-search me-1"></i>Browse NCBI
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-sync fa-2x text-info"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Refresh Status</h6>
+                                <p class="text-muted small mb-2">Update all download statuses manually</p>
+                                <button class="btn btn-info btn-sm" onclick="refreshAllStatus()">
+                                    <i class="fas fa-sync me-1"></i>Refresh All
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-clock fa-2x text-warning"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Auto-Refresh</h6>
+                                <p class="text-muted small mb-2">Toggle automatic status updates</p>
+                                <button class="btn btn-outline-warning btn-sm" onclick="toggleAutoRefresh()">
+                                    <i class="fas fa-clock me-1"></i>
+                                    <span id="autoRefreshText">Enable Auto-Refresh</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Downloads Table Card -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="card-title mb-1">Download History</h5>
+                        <small class="text-muted">@Model.Count() download(s) total</small>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0" id="downloadsTableContainer">
+                @await Html.PartialAsync("_DownloadsTable", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Download Modal -->
+<div class="modal fade" id="cancelDownloadModal" tabindex="-1" aria-labelledby="cancelDownloadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="cancelDownloadModalLabel">
+                    <i class="fas fa-times me-2"></i>Cancel Download
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-start">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="mb-2">Cancel Active Download</h6>
+                        <p class="mb-3">
+                            Are you sure you want to cancel the download for 
+                            <strong id="cancelAccessionId"></strong> 
+                            (<span id="cancelOrganismName"></span>)?
+                        </p>
+                        
+                        <div class="alert alert-warning mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <div>
+                                    <strong>Warning:</strong> This action cannot be undone. Any progress made will be lost.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <div>
+                                    <strong>Note:</strong> You can restart the download later using the "Browse Datasets" page.
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-muted small mb-0">
+                            <i class="fas fa-clock me-1"></i>
+                            The cancellation will take effect immediately and stop the background job.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-arrow-left me-1"></i>Keep Download
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmCancelBtn">
+                    <i class="fas fa-times me-1"></i>Cancel Download
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Retry Download Modal -->
+<div class="modal fade" id="retryDownloadModal" tabindex="-1" aria-labelledby="retryDownloadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="retryDownloadModalLabel">
+                    <i class="fas fa-redo me-2"></i>Retry Download
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-start">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle fa-2x text-warning"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="mb-2">Retry Failed Download</h6>
+                        <p class="mb-3">
+                            Are you sure you want to retry the download for 
+                            <strong id="retryAccessionId"></strong> 
+                            (<span id="retryOrganismName"></span>)?
+                        </p>
+                        
+                        <div class="alert alert-info mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <div>
+                                    <strong>Note:</strong> This will create a new download job and attempt to download the dataset again.
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-muted small mb-0">
+                            <i class="fas fa-clock me-1"></i>
+                            The retry process may take several minutes depending on the dataset size.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-warning" id="confirmRetryBtn">
+                    <i class="fas fa-redo me-1"></i>Retry Download
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .assemblies-content {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .admin-badge-container .badge {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    .table th {
+        font-size: 0.875rem;
+        padding: 1rem 0.75rem;
+        font-weight: 600;
+        color: #495057;
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .table td {
+        padding: 1rem 0.75rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .table tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+
+    .progress {
+        background-color: #e9ecef;
+    }
+    
+    .progress-bar-animated {
+        animation: progress-bar-stripes 1s linear infinite;
+    }
+    
+    @@keyframes progress-bar-stripes {
+        0% { background-position: 1rem 0; }
+        100% { background-position: 0 0; }
+    }
+    
+    .download-row:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    .btn-group-sm > .btn, .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .info-item {
+        padding: 1rem;
+        border-left: 3px solid #007bff;
+        background-color: #f8f9fa;
+        border-radius: 0.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .info-item h6 {
+        color: #495057;
+        margin-bottom: 0.5rem;
+    }
+
+    .breadcrumb {
+        background-color: transparent;
+        padding: 0;
+        margin-bottom: 0;
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: ">";
+        color: #6c757d;
+    }
+
+    .breadcrumb-item a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .breadcrumb-item a:hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+
+    .breadcrumb-item.active {
+        color: #6c757d;
+    }
+</style>
+
+@functions {
+    private string FormatBytes(long bytes)
+    {
+        if (bytes == 0) return "0 B";
+        
+        string[] suffixes = { "B", "KB", "MB", "GB", "TB" };
+        int counter = 0;
+        decimal number = bytes;
+        
+        while (Math.Round(number / 1024) >= 1)
+        {
+            number /= 1024;
+            counter++;
+        }
+        
+        return $"{number:n1} {suffixes[counter]}";
+    }
+
+    private IHtmlContent GetStatusBadge(DatasetDownloadStatus status, string errorMessage)
+    {
+        return status switch
+        {
+            DatasetDownloadStatus.Queued => Html.Raw("<span class=\"badge bg-secondary\"><i class=\"fas fa-clock me-1\"></i>Queued</span>"),
+            DatasetDownloadStatus.Downloading => Html.Raw("<span class=\"badge bg-primary\"><i class=\"fas fa-download me-1\"></i>Downloading</span>"),
+            DatasetDownloadStatus.Processing => Html.Raw("<span class=\"badge bg-info\"><i class=\"fas fa-cog fa-spin me-1\"></i>Processing</span>"),
+            DatasetDownloadStatus.Completed => Html.Raw("<span class=\"badge bg-success\"><i class=\"fas fa-check me-1\"></i>Completed</span>"),
+            DatasetDownloadStatus.ReadyForBlast => Html.Raw("<span class=\"badge bg-success\"><i class=\"fas fa-database me-1\"></i>Ready</span>"),
+            DatasetDownloadStatus.Failed => Html.Raw($"<span class=\"badge bg-danger\" title=\"{Html.Encode(errorMessage)}\"><i class=\"fas fa-exclamation-triangle me-1\"></i>Failed</span>"),
+            DatasetDownloadStatus.Cancelled => Html.Raw("<span class=\"badge bg-warning\"><i class=\"fas fa-ban me-1\"></i>Cancelled</span>"),
+            _ => Html.Raw("<span class=\"badge bg-light text-dark\">Unknown</span>")
+        };
+    }
+}
+
+@section Scripts {
+    <script>
+        let autoRefreshInterval = null;
+        let isAutoRefreshEnabled = false;
+        let currentRetryDownloadId = null;
+        let currentCancelDownloadId = null;
+
+        $(document).ready(function() {
+            // Initial status refresh for active downloads
+            refreshActiveDownloads();
+        });
+
+        // AJAX Pagination
+        function loadPage(page) {
+            if (page < 1) return;
+            
+            // Show loading indicator
+            $('#downloadsTableContainer').html(`
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div class="mt-3">
+                        <h6 class="text-muted">Loading downloads...</h6>
+                    </div>
+                </div>
+            `);
+            
+            $.get('@Url.Action("GetDownloadsPage")', { page: page })
+                .done(function(data) {
+                    $('#downloadsTableContainer').html(data);
+                    // Refresh active downloads on the new page
+                    refreshActiveDownloads();
+                })
+                .fail(function() {
+                    $('#downloadsTableContainer').html(`
+                        <div class="text-center py-5">
+                            <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                            <h5 class="text-danger">Error Loading Downloads</h5>
+                            <p class="text-muted">Failed to load downloads. Please try again.</p>
+                            <button class="btn btn-primary" onclick="location.reload()">
+                                <i class="fas fa-refresh me-1"></i>Refresh Page
+                            </button>
+                        </div>
+                    `);
+                });
+        }
+
+        function refreshStatus(downloadId) {
+            $.get('@Url.Action("GetDownloadStatus")', { id: downloadId })
+                .done(function(data) {
+                    updateDownloadRow(data);
+                })
+                .fail(function() {
+                    console.error('Failed to refresh status for download ' + downloadId);
+                });
+        }
+
+        function refreshAllStatus() {
+            $('.download-row').each(function() {
+                const downloadId = $(this).attr('id').replace('download-', '');
+                refreshStatus(downloadId);
+            });
+        }
+
+        function refreshActiveDownloads() {
+            $('.download-row').each(function() {
+                const statusBadge = $(this).find('.status-badge');
+                const status = statusBadge.data('status');
+                
+                if (status === 'Queued' || status === 'Downloading' || status === 'Processing') {
+                    const downloadId = $(this).attr('id').replace('download-', '');
+                    refreshStatus(downloadId);
+                }
+            });
+        }
+
+        function toggleAutoRefresh() {
+            if (isAutoRefreshEnabled) {
+                clearInterval(autoRefreshInterval);
+                isAutoRefreshEnabled = false;
+                $('#autoRefreshText').text('Enable Auto-Refresh');
+            } else {
+                autoRefreshInterval = setInterval(refreshActiveDownloads, 5000); // Refresh every 5 seconds
+                isAutoRefreshEnabled = true;
+                $('#autoRefreshText').text('Disable Auto-Refresh');
+            }
+        }
+
+        function cancelDownload(downloadId) {
+            if (confirm('Are you sure you want to cancel this download?')) {
+                $.post('@Url.Action("CancelDownload")', { id: downloadId })
+                    .done(function(response) {
+                        if (response.success) {
+                            refreshStatus(downloadId);
+                            showAlert('success', response.message);
+                        } else {
+                            showAlert('danger', response.message);
+                        }
+                    })
+                    .fail(function() {
+                        showAlert('danger', 'Failed to cancel download');
+                    });
+            }
+        }
+
+        function showCancelModal(downloadId, accessionId, organismName) {
+            currentCancelDownloadId = downloadId;
+            $('#cancelAccessionId').text(accessionId);
+            $('#cancelOrganismName').text(organismName);
+            
+            const modal = new bootstrap.Modal(document.getElementById('cancelDownloadModal'));
+            modal.show();
+        }
+
+        // Handle cancel confirmation
+        $('#confirmCancelBtn').click(function() {
+            if (currentCancelDownloadId) {
+                $.post('@Url.Action("CancelDownload")', { id: currentCancelDownloadId })
+                    .done(function(response) {
+                        if (response.success) {
+                            refreshStatus(currentCancelDownloadId);
+                            showAlert('success', response.message);
+                        } else {
+                            showAlert('danger', response.message);
+                        }
+                    })
+                    .fail(function() {
+                        showAlert('danger', 'Failed to cancel download');
+                    });
+                
+                // Hide modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('cancelDownloadModal'));
+                modal.hide();
+                currentCancelDownloadId = null;
+            }
+        });
+
+        function cancelDownload(downloadId) {
+            // This function is kept for backward compatibility but now redirects to modal
+            // Find the download row to get accession and organism info
+            const row = $('#download-' + downloadId);
+            if (row.length > 0) {
+                const accessionId = row.find('code').text();
+                const organismName = row.find('td:nth-child(2) strong').text();
+                showCancelModal(downloadId, accessionId, organismName);
+            }
+        }
+
+        function showRetryModal(downloadId, accessionId, organismName) {
+            currentRetryDownloadId = downloadId;
+            $('#retryAccessionId').text(accessionId);
+            $('#retryOrganismName').text(organismName);
+            
+            const modal = new bootstrap.Modal(document.getElementById('retryDownloadModal'));
+            modal.show();
+        }
+
+        // Handle retry confirmation
+        $('#confirmRetryBtn').click(function() {
+            if (currentRetryDownloadId) {
+                $.post('@Url.Action("RetryDownload")', { id: currentRetryDownloadId })
+                    .done(function(response) {
+                        if (response.success) {
+                            refreshStatus(currentRetryDownloadId);
+                            showAlert('success', response.message);
+                        } else {
+                            showAlert('danger', response.message);
+                        }
+                    })
+                    .fail(function() {
+                        showAlert('danger', 'Failed to retry download');
+                    });
+                
+                // Hide modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('retryDownloadModal'));
+                modal.hide();
+                currentRetryDownloadId = null;
+            }
+        });
+
+        function updateDownloadRow(data) {
+            const row = $('#download-' + data.id);
+            if (row.length === 0) return;
+
+            // Update status badge
+            const statusBadge = row.find('.status-badge');
+            statusBadge.data('status', data.status);
+            statusBadge.html(getStatusBadgeHtml(data.status, data.errorMessage));
+
+            // Update progress
+            const progressContainer = row.find('.progress-container');
+            if (data.status === 'Downloading' || data.status === 'Processing') {
+                progressContainer.html(`
+                    <div class="progress mb-1" style="height: 20px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                             role="progressbar" 
+                             style="width: ${data.progress}%"
+                             aria-valuenow="${data.progress}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                            ${data.progress}%
+                        </div>
+                    </div>
+                `);
+            } else if (data.status === 'Completed' || data.status === 'ReadyForBlast') {
+                progressContainer.html(`
+                    <div class="progress mb-1" style="height: 20px;">
+                        <div class="progress-bar bg-success" 
+                             role="progressbar" 
+                             style="width: 100%">
+                            Complete
+                        </div>
+                    </div>
+                `);
+            }
+
+            // Update file size info
+            if (data.fileSize > 0) {
+                const sizeCell = row.find('td:nth-child(5)');
+                sizeCell.html(`<div>${formatBytes(data.downloadedBytes)} / ${formatBytes(data.fileSize)}</div>`);
+            }
+
+            // Update action buttons
+            updateActionButtons(row, data.status, data.accessionId, data.organismName);
+        }
+
+        function getStatusBadgeHtml(status, errorMessage) {
+            const badges = {
+                'Queued': '<span class="badge bg-secondary"><i class="fas fa-clock me-1"></i>Queued</span>',
+                'Downloading': '<span class="badge bg-primary"><i class="fas fa-download me-1"></i>Downloading</span>',
+                'Processing': '<span class="badge bg-info"><i class="fas fa-cog fa-spin me-1"></i>Processing</span>',
+                'Completed': '<span class="badge bg-success"><i class="fas fa-check me-1"></i>Completed</span>',
+                'ReadyForBlast': '<span class="badge bg-success"><i class="fas fa-database me-1"></i>Ready</span>',
+                'Failed': `<span class="badge bg-danger" title="${errorMessage || ''}"><i class="fas fa-exclamation-triangle me-1"></i>Failed</span>`,
+                'Cancelled': '<span class="badge bg-warning"><i class="fas fa-ban me-1"></i>Cancelled</span>'
+            };
+            
+            return badges[status] || '<span class="badge bg-light text-dark">Unknown</span>';
+        }
+
+        function updateActionButtons(row, status, accessionId, organismName) {
+            const actionsCell = row.find('td:last-child .btn-group');
+            let buttonsHtml = '';
+
+            if (status === 'Queued' || status === 'Downloading' || status === 'Processing') {
+                const downloadId = row.attr('id').replace('download-', '');
+                buttonsHtml += `
+                    <button class="btn btn-outline-danger" 
+                            onclick="showCancelModal(${downloadId}, '${accessionId}', '${organismName}')"
+                            title="Cancel Download">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+            } else if (status === 'Failed') {
+                const downloadId = row.attr('id').replace('download-', '');
+                buttonsHtml += `
+                    <button class="btn btn-outline-warning" 
+                            onclick="showRetryModal(${downloadId}, '${accessionId}', '${organismName}')"
+                            title="Retry Download">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                `;
+            }
+
+            const downloadId = row.attr('id').replace('download-', '');
+            buttonsHtml += `
+                <button class="btn btn-outline-primary" 
+                        onclick="refreshStatus(${downloadId})"
+                        title="Refresh Status">
+                    <i class="fas fa-sync"></i>
+                </button>
+            `;
+
+            actionsCell.html(buttonsHtml);
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            
+            const suffixes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            let counter = 0;
+            let number = bytes;
+            
+            while (Math.round(number / 1024) >= 1) {
+                number /= 1024;
+                counter++;
+            }
+            
+            return number.toFixed(1) + ' ' + suffixes[counter];
+        }
+
+        function showAlert(type, message) {
+            const alertHtml = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            
+            $('.page-header').after(alertHtml);
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(function() {
+                $('.alert').alert('close');
+            }, 5000);
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        .progress {
+            background-color: #e9ecef;
+        }
+        
+        .progress-bar-animated {
+            animation: progress-bar-stripes 1s linear infinite;
+        }
+        
+        @@keyframes progress-bar-stripes {
+            0% { background-position: 1rem 0; }
+            100% { background-position: 0 0; }
+        }
+        
+        .download-row:hover {
+            background-color: rgba(0,0,0,.075);
+        }
+        
+        .btn-group-sm > .btn, .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+    </style>
+}

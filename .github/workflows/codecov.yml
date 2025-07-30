@@ -101,6 +101,8 @@ jobs:
           --collect:"XPlat Code Coverage" \
           --results-directory ./TestResults \
           --settings coverlet.runsettings
+      env:
+        NCBIDatasets__ApiKey: ${{ secrets.NCBI_API_KEY }}
 
     - name: Find and prepare coverage files
       run: |
@@ -183,6 +185,8 @@ jobs:
           --collect:"XPlat Code Coverage" \
           --results-directory ./TestResults \
           --settings coverlet.runsettings
+      env:
+        NCBIDatasets__ApiKey: ${{ secrets.NCBI_API_KEY }}
 
     - name: Find and prepare coverage files
       run: |

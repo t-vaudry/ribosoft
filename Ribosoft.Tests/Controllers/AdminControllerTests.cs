@@ -301,7 +301,7 @@ namespace Ribosoft.Tests.Controllers
         public async Task GetUserDetails_WithInvalidId_ReturnsNotFound()
         {
             // Arrange
-            _userManagerMock.Setup(x => x.FindByIdAsync("invalid")).ReturnsAsync((ApplicationUser?)null);
+            _userManagerMock.Setup(x => x.FindByIdAsync("invalid")).ReturnsAsync((ApplicationUser)null!);
 
             // Act
             var result = await _controller.GetUserDetails("invalid");
@@ -424,7 +424,7 @@ namespace Ribosoft.Tests.Controllers
         public async Task ResetUserPassword_WithInvalidUser_ReturnsJsonError()
         {
             // Arrange
-            _userManagerMock.Setup(x => x.FindByIdAsync("invalid")).ReturnsAsync((ApplicationUser?)null);
+            _userManagerMock.Setup(x => x.FindByIdAsync("invalid")).ReturnsAsync((ApplicationUser)null!);
 
             // Act
             var result = await _controller.ResetUserPassword("invalid");

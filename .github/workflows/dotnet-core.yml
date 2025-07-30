@@ -89,6 +89,8 @@ jobs:
         # Test main Ribosoft project
         echo "Running Ribosoft.Tests..."
         dotnet test Ribosoft.Tests/Ribosoft.Tests.csproj --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" || echo "⚠️ Some Ribosoft.Tests failed - continuing"
+      env:
+        NCBIDatasets__ApiKey: ${{ secrets.NCBI_API_KEY }}
       
     - name: Upload coverage reports
       uses: codecov/codecov-action@v4
