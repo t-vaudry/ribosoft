@@ -132,7 +132,7 @@ namespace Ribosoft.Jobs
                 // Step 4: Create Assembly record for integration with existing system
                 await CreateAssemblyRecord(download, blastDbPath);
 
-                // Step 5: Clean up extracted files and ZIP file
+                // Step 5: Clean up temporary files (preserve BLAST databases)
                 var cleanupExtracted = _configuration.GetValue<bool>("Assemblies:CleanupAfterProcessing", true);
                 var cleanupZip = _configuration.GetValue<bool>("Assemblies:CleanupZipFiles", true);
                 
@@ -140,8 +140,22 @@ namespace Ribosoft.Jobs
                 {
                     try
                     {
-                        Directory.Delete(extractPath, true);
-                        _logger.LogInformation("Cleaned up extracted files at {ExtractPath}", extractPath);
+                        // Verify that extractPath is different from blastDbPath to prevent accidental deletion
+                        var normalizedExtractPath = Path.GetFullPath(extractPath);
+                        var normalizedBlastDbPath = Path.GetFullPath(Path.Combine(blastDbPath, download.AccessionId));
+                        
+                        if (normalizedExtractPath.Equals(normalizedBlastDbPath, StringComparison.OrdinalIgnoreCase))
+                        {
+                            _logger.LogWarning("Skipping cleanup: Extract path and BLAST DB path are the same: {Path}", normalizedExtractPath);
+                        }
+                        else
+                        {
+                            _logger.LogInformation("Cleaning up temporary extracted files at {ExtractPath} (BLAST DBs preserved at {BlastDbPath})", 
+                                extractPath, normalizedBlastDbPath);
+                            
+                            Directory.Delete(extractPath, true);
+                            _logger.LogInformation("Successfully cleaned up extracted files at {ExtractPath}", extractPath);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -153,8 +167,9 @@ namespace Ribosoft.Jobs
                 {
                     try
                     {
-                        File.Delete(download.LocalPath);
-                        _logger.LogInformation("Cleaned up ZIP file at {ZipPath}", download.LocalPath);
+                        var zipPath = download.LocalPath;
+                        File.Delete(zipPath);
+                        _logger.LogInformation("Cleaned up original ZIP file at {ZipPath}", zipPath);
                         
                         // Clear the local path since file is deleted
                         download.LocalPath = null;
@@ -166,7 +181,19 @@ namespace Ribosoft.Jobs
                     }
                 }
 
-                // Step 6: Complete
+                // Step 6: Log processing summary
+                var finalBlastDbPath = Path.Combine(blastDbPath, download.AccessionId);
+                var blastDbFiles = Directory.Exists(finalBlastDbPath) ? 
+                    Directory.GetFiles(finalBlastDbPath, "*", SearchOption.AllDirectories).Length : 0;
+                
+                _logger.LogInformation("Dataset processing completed for {AccessionId}:", download.AccessionId);
+                _logger.LogInformation("  ✅ BLAST databases preserved: {BlastDbPath} ({FileCount} files)", finalBlastDbPath, blastDbFiles);
+                _logger.LogInformation("  🗑️ Temporary files cleaned: {ExtractPath} (removed)", extractPath);
+                _logger.LogInformation("  🗑️ Original ZIP cleaned: {ZipPath} ({Status})", 
+                    download.LocalPath ?? "N/A", 
+                    cleanupZip ? "removed" : "preserved");
+
+                // Step 7: Complete
                 download.Status = DatasetDownloadStatus.ReadyForBlast;
                 await _context.SaveChangesAsync();
 
