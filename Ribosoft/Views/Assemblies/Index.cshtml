@@ -4,6 +4,25 @@
     ViewData["Title"] = "Assembly Databases";
 }
 
+@functions {
+    private string FormatFileSize(long bytes)
+    {
+        if (bytes == 0) return "0 B";
+        
+        string[] sizes = { "B", "KB", "MB", "GB", "TB" };
+        int order = 0;
+        double size = bytes;
+        
+        while (size >= 1024 && order < sizes.Length - 1)
+        {
+            order++;
+            size /= 1024;
+        }
+        
+        return $"{size:0.##} {sizes[order]}";
+    }
+}
+
 <div class="container-fluid px-3 px-md-4">
     <div class="assemblies-content">
         <!-- Page Header -->
@@ -147,9 +166,17 @@
                                     <i class="fas fa-folder me-1 text-muted"></i>
                                     @Html.DisplayNameFor(model => model.Path)
                                 </th>
+                                <th class="border-0 fw-semibold">
+                                    <i class="fas fa-hdd me-1 text-muted"></i>
+                                    @Html.DisplayNameFor(model => model.Size)
+                                </th>
                                 <th class="border-0 fw-semibold text-center">
                                     <i class="fas fa-toggle-on me-1 text-muted"></i>
                                     @Html.DisplayNameFor(model => model.IsEnabled)
+                                </th>
+                                <th class="border-0 fw-semibold text-center">
+                                    <i class="fas fa-cogs me-1 text-muted"></i>
+                                    Actions
                                 </th>
                             </tr>
                         </thead>
@@ -190,6 +217,11 @@
                                             @Html.DisplayFor(modelItem => item.Path)
                                         </small>
                                     </td>
+                                    <td class="align-middle">
+                                        <span class="badge bg-light text-dark border">
+                                            @(item.Size > 0 ? FormatFileSize(item.Size) : "Unknown")
+                                        </span>
+                                    </td>
                                     <td class="align-middle text-center">
                                         <div class="form-check form-switch d-flex justify-content-center">
                                             <input class="form-check-input assembly-toggle" 
@@ -199,6 +231,15 @@
                                                    id="toggle-@item.TaxonomyId"
                                                    title="@(item.IsEnabled ? "Click to disable" : "Click to enable")">
                                         </div>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <button class="btn btn-sm btn-outline-danger delete-assembly" 
+                                                data-taxonomy-id="@item.TaxonomyId"
+                                                data-organism-name="@item.OrganismName"
+                                                data-assembly-size="@item.Size"
+                                                title="Delete assembly and all files">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             }
@@ -367,6 +408,20 @@
     .assembly-toggle:focus {
         box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
     }
+
+    /* Delete button styling */
+    .delete-assembly {
+        transition: all 0.2s ease;
+    }
+
+    .delete-assembly:hover {
+        transform: scale(1.05);
+    }
+
+    .delete-assembly:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
 </style>
 
 <script>
@@ -416,5 +471,94 @@
                 });
             });
         });
+
+        // Handle assembly delete buttons
+        document.querySelectorAll('.delete-assembly').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const taxonomyId = this.dataset.taxonomyId;
+                const organismName = this.dataset.organismName;
+                const assemblySize = parseInt(this.dataset.assemblySize) || 0;
+                const formattedSize = formatFileSize(assemblySize);
+                
+                // Confirm deletion
+                const confirmMessage = `Are you sure you want to delete the assembly for "${organismName}"?\n\n` +
+                    `This will:\n` +
+                    `• Remove the assembly from the database\n` +
+                    `• Delete all BLAST database files (${formattedSize})\n` +
+                    `• Free up disk space\n\n` +
+                    `This action cannot be undone.`;
+                
+                if (!confirm(confirmMessage)) {
+                    return;
+                }
+                
+                // Disable the button while processing
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                this.title = 'Deleting...';
+                
+                fetch('/Assemblies/Delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                    },
+                    body: 'id=' + encodeURIComponent(taxonomyId)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success message
+                        alert('Success: ' + data.message);
+                        
+                        // Remove the row from the table
+                        const row = this.closest('tr');
+                        row.style.transition = 'opacity 0.3s ease';
+                        row.style.opacity = '0';
+                        setTimeout(() => {
+                            row.remove();
+                            
+                            // Check if table is now empty
+                            const tbody = document.querySelector('tbody');
+                            if (tbody && tbody.children.length === 0) {
+                                location.reload(); // Reload to show "no databases" message
+                            }
+                        }, 300);
+                    } else {
+                        alert('Error: ' + (data.message || 'Failed to delete assembly'));
+                        
+                        // Re-enable the button
+                        this.disabled = false;
+                        this.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                        this.title = 'Delete assembly and all files';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the assembly');
+                    
+                    // Re-enable the button
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                    this.title = 'Delete assembly and all files';
+                });
+            });
+        });
+
+        // Helper function to format file sizes
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            let order = 0;
+            let size = bytes;
+            
+            while (size >= 1024 && order < sizes.length - 1) {
+                order++;
+                size /= 1024;
+            }
+            
+            return size.toFixed(2) + ' ' + sizes[order];
+        }
     });
 </script>

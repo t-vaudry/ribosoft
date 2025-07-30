@@ -66,6 +66,12 @@ namespace Ribosoft.Models
         [Display(Name = "Enabled?")]
         public bool IsEnabled { get; set; }
 
+        /*! \property Size
+         * \brief Assembly database size in bytes (calculated, not stored)
+         */
+        [Display(Name = "Size")]
+        public long Size { get; set; }
+
         /*! \property Jobs
          * \brief Collection of jobs
          */

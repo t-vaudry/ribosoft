@@ -79,6 +79,12 @@ namespace Ribosoft.Controllers
                 .Take(10)
                 .ToListAsync();
 
+            // Calculate sizes for assemblies
+            foreach (var assembly in assemblies)
+            {
+                assembly.Size = CalculateAssemblySize(assembly.Path);
+            }
+
             ViewBag.RecentDownloads = recentDownloads;
             
             return View(assemblies);
@@ -425,6 +431,126 @@ namespace Ribosoft.Controllers
                 _logger.LogError(ex, "Error occurred while toggling assembly enabled status for ID: {TaxonomyId}", id);
                 return Json(new { success = false, message = "An error occurred while updating the assembly status" });
             }
+        }
+
+        /*! \fn Delete
+         * \brief HTTP POST to delete an assembly and its files
+         * \param id The taxonomy ID of the assembly to delete
+         * \return JSON result with success status
+         */
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            _logger.LogInformation("Delete assembly with taxonomy ID: {TaxonomyId} by user: {User}", id, User.Identity?.Name);
+            
+            try
+            {
+                var assembly = await _context.Assemblies.FirstOrDefaultAsync(a => a.TaxonomyId == id);
+                if (assembly == null)
+                {
+                    return Json(new { success = false, message = "Assembly not found" });
+                }
+
+                // Check if assembly is being used by any active jobs
+                var activeJobsCount = await _context.Jobs
+                    .Where(j => j.AssemblyId == id && 
+                               (j.JobState == JobState.New || j.JobState == JobState.Started ||
+                                j.JobState == JobState.CandidateGenerator || j.JobState == JobState.Structure ||
+                                j.JobState == JobState.MultiObjectiveOptimization || j.JobState == JobState.Specificity ||
+                                j.JobState == JobState.QueuedPhase2 || j.JobState == JobState.QueuedPhase3))
+                    .CountAsync();
+
+                if (activeJobsCount > 0)
+                {
+                    return Json(new { 
+                        success = false, 
+                        message = $"Cannot delete assembly. It is currently being used by {activeJobsCount} active job(s)." 
+                    });
+                }
+
+                // Delete files from filesystem
+                var deletedSize = 0L;
+                if (!string.IsNullOrEmpty(assembly.Path) && Directory.Exists(assembly.Path))
+                {
+                    try
+                    {
+                        deletedSize = CalculateAssemblySize(assembly.Path);
+                        Directory.Delete(assembly.Path, true);
+                        _logger.LogInformation("Deleted assembly directory: {Path} ({Size} bytes)", assembly.Path, deletedSize);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "Failed to delete assembly directory: {Path}", assembly.Path);
+                        return Json(new { 
+                            success = false, 
+                            message = $"Failed to delete assembly files from filesystem: {ex.Message}" 
+                        });
+                    }
+                }
+
+                // Remove from database
+                _context.Assemblies.Remove(assembly);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Assembly {TaxonomyId} ({OrganismName}) deleted successfully. Freed {Size} bytes.", 
+                    id, assembly.OrganismName, deletedSize);
+
+                return Json(new { 
+                    success = true, 
+                    message = $"Assembly '{assembly.OrganismName}' deleted successfully. Freed {FormatFileSize(deletedSize)}.",
+                    deletedSize = deletedSize
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting assembly with ID: {TaxonomyId}", id);
+                return Json(new { success = false, message = "An error occurred while deleting the assembly" });
+            }
+        }
+
+        /*! \fn CalculateAssemblySize
+         * \brief Calculate the total size of an assembly directory
+         * \param path Directory path to calculate
+         * \return Total size in bytes
+         */
+        private long CalculateAssemblySize(string path)
+        {
+            if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
+                return 0;
+
+            try
+            {
+                var directoryInfo = new DirectoryInfo(path);
+                return directoryInfo.GetFiles("*", SearchOption.AllDirectories)
+                    .Sum(file => file.Length);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to calculate size for directory: {Path}", path);
+                return 0;
+            }
+        }
+
+        /*! \fn FormatFileSize
+         * \brief Format file size in human-readable format
+         * \param bytes Size in bytes
+         * \return Formatted size string
+         */
+        private static string FormatFileSize(long bytes)
+        {
+            if (bytes == 0) return "0 B";
+            
+            string[] sizes = { "B", "KB", "MB", "GB", "TB" };
+            int order = 0;
+            double size = bytes;
+            
+            while (size >= 1024 && order < sizes.Length - 1)
+            {
+                order++;
+                size /= 1024;
+            }
+            
+            return $"{size:0.##} {sizes[order]}";
         }
     }
 }
