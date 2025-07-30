@@ -743,7 +743,10 @@
             }
 
             // Update modal with selected count
-            document.getElementById('selectedDatasetCount').textContent = selectedCount;
+            const selectedDatasetCountElement = document.getElementById('selectedDatasetCount');
+            if (selectedDatasetCountElement) {
+                selectedDatasetCountElement.textContent = selectedCount;
+            }
             
             // Update modal checkboxes to match form state
             const includeAnnotations = document.getElementById('includeAnnotations');
@@ -758,9 +761,14 @@
                 modalIncludeSequence.checked = includeSequence.checked;
             }
             
-            // Show the modal
-            const modal = new bootstrap.Modal(document.getElementById('downloadModal'));
-            modal.show();
+            // Show the modal with correct ID
+            const modalElement = document.getElementById('downloadConfirmModal');
+            if (modalElement) {
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+            } else {
+                console.error('Modal element not found: downloadConfirmModal');
+            }
         }
 
         // Add click handlers to both buttons
