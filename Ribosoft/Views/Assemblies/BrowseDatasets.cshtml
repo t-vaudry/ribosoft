@@ -663,42 +663,81 @@
         const selectedCountSpan = document.getElementById('selectedCount');
         const downloadForm = document.getElementById('downloadForm');
 
+        // Debug: Log what we found
+        console.log('Debug - Elements found:');
+        console.log('selectAllCheckbox:', selectAllCheckbox);
+        console.log('datasetCheckboxes count:', datasetCheckboxes.length);
+        console.log('downloadBtnTop:', downloadBtnTop);
+        console.log('downloadBtnBottom:', downloadBtnBottom);
+        console.log('selectedCountSpan:', selectedCountSpan);
+
         // Update selected count and button state
         function updateSelectionState() {
-            const selectedCount = document.querySelectorAll('.dataset-checkbox:checked').length;
-            selectedCountSpan.textContent = selectedCount + ' selected';
+            const selectedCheckboxes = document.querySelectorAll('.dataset-checkbox:checked');
+            const selectedCount = selectedCheckboxes.length;
+            
+            console.log('Debug - updateSelectionState called:');
+            console.log('selectedCount:', selectedCount);
+            console.log('selectedCheckboxes:', selectedCheckboxes);
+            
+            if (selectedCountSpan) {
+                selectedCountSpan.textContent = selectedCount + ' selected';
+            }
             
             // Update both buttons
             const isDisabled = selectedCount === 0;
-            downloadBtnTop.disabled = isDisabled;
-            downloadBtnBottom.disabled = isDisabled;
+            console.log('Setting buttons disabled to:', isDisabled);
+            
+            if (downloadBtnTop) {
+                downloadBtnTop.disabled = isDisabled;
+                console.log('Top button disabled:', downloadBtnTop.disabled);
+            }
+            if (downloadBtnBottom) {
+                downloadBtnBottom.disabled = isDisabled;
+                console.log('Bottom button disabled:', downloadBtnBottom.disabled);
+            }
             
             // Update select all checkbox state
-            if (selectedCount === 0) {
-                selectAllCheckbox.indeterminate = false;
-                selectAllCheckbox.checked = false;
-            } else if (selectedCount === datasetCheckboxes.length) {
-                selectAllCheckbox.indeterminate = false;
-                selectAllCheckbox.checked = true;
-            } else {
-                selectAllCheckbox.indeterminate = true;
-                selectAllCheckbox.checked = false;
+            if (selectAllCheckbox) {
+                if (selectedCount === 0) {
+                    selectAllCheckbox.indeterminate = false;
+                    selectAllCheckbox.checked = false;
+                } else if (selectedCount === datasetCheckboxes.length) {
+                    selectAllCheckbox.indeterminate = false;
+                    selectAllCheckbox.checked = true;
+                } else {
+                    selectAllCheckbox.indeterminate = true;
+                    selectAllCheckbox.checked = false;
+                }
             }
         }
 
         // Handle select all checkbox
-        selectAllCheckbox.addEventListener('change', function() {
-            const isChecked = this.checked;
-            datasetCheckboxes.forEach(checkbox => {
-                checkbox.checked = isChecked;
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', function() {
+                console.log('Debug - Select all checkbox changed:', this.checked);
+                const isChecked = this.checked;
+                datasetCheckboxes.forEach(checkbox => {
+                    checkbox.checked = isChecked;
+                    console.log('Setting checkbox', checkbox.value, 'to', isChecked);
+                });
+                updateSelectionState();
             });
-            updateSelectionState();
-        });
+        }
 
         // Handle individual checkboxes
-        datasetCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', updateSelectionState);
+        console.log('Debug - Adding event listeners to', datasetCheckboxes.length, 'checkboxes');
+        datasetCheckboxes.forEach((checkbox, index) => {
+            console.log('Debug - Adding listener to checkbox', index, checkbox.value);
+            checkbox.addEventListener('change', function() {
+                console.log('Debug - Individual checkbox changed:', this.value, 'checked:', this.checked);
+                updateSelectionState();
+            });
         });
+
+        // Initial state update
+        console.log('Debug - Calling initial updateSelectionState');
+        updateSelectionState();
 
         // Handle download button clicks (both buttons)
         function handleDownloadClick() {
