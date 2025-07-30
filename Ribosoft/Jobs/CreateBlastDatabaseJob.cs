@@ -78,12 +78,12 @@ namespace Ribosoft.Jobs
                 }
 
                 // Step 3: Create BLAST database for each FASTA file (if enabled)
-                var blastDbPath = _configuration["Blast:BLASTDB"] ?? 
+                var blastDbPath = _configuration["Assemblies:Path"] ?? 
                                  Path.Combine(Directory.GetCurrentDirectory(), "BlastDatabases");
                 blastDbPath = ExpandPath(blastDbPath);
                 Directory.CreateDirectory(blastDbPath);
                 
-                var createBlastDb = _configuration.GetValue<bool>("DatasetDownloads:CreateBlastDatabase", true);
+                var createBlastDb = _configuration.GetValue<bool>("Assemblies:AutoCreateBlastDatabase", true);
                 
                 if (!createBlastDb)
                 {
@@ -92,8 +92,8 @@ namespace Ribosoft.Jobs
                 else
                 {
                     // Check if BLAST database creation should be skipped for large files
-                    var maxFileSizeMB = _configuration.GetValue<double>("DatasetDownloads:MaxBlastDbFileSizeMB", 500);
-                    var skipLargeFiles = _configuration.GetValue<bool>("DatasetDownloads:SkipBlastDbForLargeFiles", false);
+                    var maxFileSizeMB = _configuration.GetValue<double>("Assemblies:MaxBlastDbFileSizeMB", 500);
+                    var skipLargeFiles = _configuration.GetValue<bool>("Assemblies:SkipBlastDbForLargeFiles", false);
 
                     var processedFiles = 0;
                     var skippedFiles = 0;
@@ -133,8 +133,8 @@ namespace Ribosoft.Jobs
                 await CreateAssemblyRecord(download, blastDbPath);
 
                 // Step 5: Clean up extracted files and ZIP file
-                var cleanupExtracted = _configuration.GetValue<bool>("DatasetDownloads:CleanupAfterProcessing", true);
-                var cleanupZip = _configuration.GetValue<bool>("DatasetDownloads:CleanupZipFiles", true);
+                var cleanupExtracted = _configuration.GetValue<bool>("Assemblies:CleanupAfterProcessing", true);
+                var cleanupZip = _configuration.GetValue<bool>("Assemblies:CleanupZipFiles", true);
                 
                 if (cleanupExtracted)
                 {
@@ -344,7 +344,7 @@ namespace Ribosoft.Jobs
                 return;
             }
 
-            var makeblastdbPath = _configuration["Blast:MakeBlastDbPath"] ?? "makeblastdb";
+            var makeblastdbPath = _configuration["Assemblies:MakeBlastDbPath"] ?? "makeblastdb";
             
             // Determine database type based on file content/name
             var dbType = DetermineDbType(fastaFile, fileName);

@@ -70,7 +70,7 @@ namespace Ribosoft.Controllers
          */
         public async Task<IActionResult> Index()
         {
-            ViewBag.BlastDbPath = _configuration["Blast:BLASTDB"] ?? "Not configured";
+            ViewBag.BlastDbPath = _configuration["Assemblies:Path"] ?? "Not configured";
             
             // Get current assemblies and recent downloads
             var assemblies = await _context.Assemblies.ToListAsync();
@@ -89,8 +89,7 @@ namespace Ribosoft.Controllers
                 var originalPath = assembly.Path;
                 if (string.IsNullOrEmpty(assembly.Path) || assembly.Path.StartsWith("~/"))
                 {
-                    var blastDbPath = _configuration["Blast:BLASTDB"] ?? 
-                                     _configuration["DatasetDownloads:Path"] ??
+                    var blastDbPath = _configuration["Assemblies:Path"] ?? 
                                      Path.Combine(Directory.GetCurrentDirectory(), "BlastDatabases");
                     blastDbPath = ExpandPath(blastDbPath);
                     
@@ -408,7 +407,7 @@ namespace Ribosoft.Controllers
             
             try
             {
-                var blastDbPath = _configuration["Blast:BLASTDB"];
+                var blastDbPath = _configuration["Assemblies:Path"];
                 _logger.LogInformation("BLAST database path configured as: {BlastDbPath}", blastDbPath);
                 
                 BackgroundJob.Enqueue<UpdateAssemblyDatabase>(x => x.Rescan(JobCancellationToken.Null));

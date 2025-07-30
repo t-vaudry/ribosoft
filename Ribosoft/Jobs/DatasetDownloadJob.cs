@@ -229,7 +229,7 @@ namespace Ribosoft.Jobs
          */
         private string GetDownloadPath(string accessionId)
         {
-            var downloadDir = _configuration["DatasetDownloads:Path"] ?? 
+            var downloadDir = _configuration["Assemblies:Path"] ?? 
                              Path.Combine(Directory.GetCurrentDirectory(), "Downloads", "Datasets");
             
             // Expand ~ to home directory if present
@@ -346,7 +346,7 @@ namespace Ribosoft.Jobs
         {
             try
             {
-                var downloadDir = configuration["DatasetDownloads:Path"] ?? 
+                var downloadDir = configuration["Assemblies:Path"] ?? 
                                  Path.Combine(Directory.GetCurrentDirectory(), "Downloads", "Datasets");
                 
                 // Expand ~ to home directory if present
@@ -403,7 +403,7 @@ namespace Ribosoft.Jobs
             }
             catch (UnauthorizedAccessException ex)
             {
-                var downloadDir = configuration["DatasetDownloads:Path"] ?? 
+                var downloadDir = configuration["Assemblies:Path"] ?? 
                                  Path.Combine(Directory.GetCurrentDirectory(), "Downloads", "Datasets");
                 downloadDir = ExpandPath(downloadDir);
                 return (false, $"Permission denied accessing download directory '{downloadDir}': {ex.Message}. " +
@@ -420,7 +420,7 @@ namespace Ribosoft.Jobs
          */
         private bool ShouldCreateBlastDatabase()
         {
-            return _configuration.GetValue<bool>("DatasetDownloads:AutoCreateBlastDatabase", true);
+            return _configuration.GetValue<bool>("Assemblies:AutoCreateBlastDatabase", true);
         }
 
         /*! \fn FormatBytes

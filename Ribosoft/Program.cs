@@ -279,7 +279,7 @@ public class Program
         }
         else
         {
-            var downloadDir = app.Configuration["DatasetDownloads:Path"] ?? 
+            var downloadDir = app.Configuration["Assemblies:Path"] ?? 
                              Path.Combine(Directory.GetCurrentDirectory(), "Downloads", "Datasets");
             Console.WriteLine($"INFO: Download directory validated successfully: {downloadDir}");
         }

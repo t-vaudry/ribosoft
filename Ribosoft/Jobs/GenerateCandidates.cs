@@ -725,12 +725,12 @@ namespace Ribosoft.Jobs
         {
             var blastParameters = new BlastParameters
             {
-                BlastDbPath = _configuration.GetValue("Blast:BLASTDB", string.Empty) ?? string.Empty,
+                BlastDbPath = _configuration.GetValue("Assemblies:Path", string.Empty) ?? string.Empty,
                 Database = database,
                 UseIndex = true,
                 LowercaseMasking = true,
                 OutputFormat = "6 qseqid saccver pident qcovs",
-                NumThreads = _configuration.GetValue("Blast:NumThreads", 4),
+                NumThreads = _configuration.GetValue("Assemblies:NumThreads", 4),
                 MaxTargetSequences = 200
             };
 
