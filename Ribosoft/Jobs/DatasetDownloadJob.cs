@@ -406,7 +406,7 @@ namespace Ribosoft.Jobs
                 var downloadDir = configuration["DatasetDownloads:Path"] ?? 
                                  Path.Combine(Directory.GetCurrentDirectory(), "Downloads", "Datasets");
                 downloadDir = ExpandPath(downloadDir);
-                return (false, $"Permission denied accessing download directory '{downloadDir}'. " +
+                return (false, $"Permission denied accessing download directory '{downloadDir}': {ex.Message}. " +
                               $"Run: sudo chmod 755 {downloadDir}");
             }
             catch (Exception ex)

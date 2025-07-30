@@ -200,8 +200,19 @@ namespace Ribosoft.Jobs
          */
         private async Task<string> ExtractDataset(DatasetDownload download, IJobCancellationToken cancellationToken)
         {
+            if (string.IsNullOrEmpty(download.LocalPath))
+            {
+                throw new InvalidOperationException("LocalPath is null or empty for dataset download");
+            }
+
+            var directoryName = Path.GetDirectoryName(download.LocalPath);
+            if (string.IsNullOrEmpty(directoryName))
+            {
+                throw new InvalidOperationException($"Unable to get directory name from LocalPath: {download.LocalPath}");
+            }
+
             var extractPath = Path.Combine(
-                Path.GetDirectoryName(download.LocalPath)!,
+                directoryName,
                 Path.GetFileNameWithoutExtension(download.LocalPath));
 
             if (Directory.Exists(extractPath))
@@ -216,6 +227,11 @@ namespace Ribosoft.Jobs
 
             await Task.Run(() =>
             {
+                if (string.IsNullOrEmpty(download.LocalPath))
+                {
+                    throw new InvalidOperationException("LocalPath is null or empty for ZIP extraction");
+                }
+
                 using var archive = ZipFile.OpenRead(download.LocalPath);
                 foreach (var entry in archive.Entries)
                 {
