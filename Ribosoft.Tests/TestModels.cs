@@ -54,7 +54,6 @@ namespace Ribosoft.Tests
         [Fact]
         public void TestJobDetailsViewModel()
         {
-            JobDetailsViewModel vm = new JobDetailsViewModel();
             JobDetailsViewModel.Filter filter = new JobDetailsViewModel.Filter();
             filter.param = "Rank";
             filter.condition = "eq";

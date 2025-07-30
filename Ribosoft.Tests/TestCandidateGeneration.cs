@@ -160,7 +160,7 @@ namespace Ribosoft.Tests
         {
             CandidateGeneration.CandidateGenerator candidateGenerator = new CandidateGeneration.CandidateGenerator();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => candidateGenerator.GenerateCandidates(
+            Assert.Throws<InvalidOperationException>(() => candidateGenerator.GenerateCandidates(
                 "CGUGGUUAGGGCCACGUUAAAUAGNNNNUUAAGCCCUAAGCGNNNNNN",
                 "((((.[[[[[..))))........0123.....]]]]]]...456789",
                 "NNNNNNGUNNNN",
