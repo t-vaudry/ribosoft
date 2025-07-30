@@ -610,15 +610,13 @@
         width: 100%;
     }
 
-    /* Column width constraints */
+    /* Only truncate the message column, not others */
     .logs-table-wrapper .table th,
     .logs-table-wrapper .table td {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        overflow: visible; /* Allow other columns to show full content */
     }
 
-    /* Allow message column to wrap if needed */
+    /* Specifically truncate only message column content */
     .logs-table-wrapper .table td .log-message {
         white-space: nowrap;
         overflow: hidden;
