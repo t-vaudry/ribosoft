@@ -67,8 +67,7 @@ namespace Ribosoft.Services
         {
             try
             {
-                _logger.LogInformation("Fetching available datasets from NCBI. Search term: {SearchTerm}, Limit: {Limit}", 
-                    SanitizeForLogging(searchTerm), limit);
+                _logger.LogInformation("Fetching available datasets from NCBI with search parameters, Limit: {Limit}", limit);
 
                 // Get existing downloads to mark already downloaded datasets
                 var existingDownloads = await _context.DatasetDownloads
@@ -88,19 +87,19 @@ namespace Ribosoft.Services
                 if (!string.IsNullOrEmpty(searchTerm))
                 {
                     // Use NCBI API to search for organisms
-                    _logger.LogDebug("Searching NCBI taxonomy for: {SearchTerm}", SanitizeForLogging(searchTerm));
+                    _logger.LogDebug("Searching NCBI taxonomy for organism search query");
                     
                     var taxonomyResponse = await _ncbiClient.GetTaxonomySuggestionsAsync(searchTerm, 20);
                     if (!taxonomyResponse.IsSuccess)
                     {
-                        _logger.LogWarning("Failed to get taxonomy suggestions for: {SearchTerm}. Error: {Error}", 
-                            searchTerm, taxonomyResponse.ErrorMessage);
+                        _logger.LogWarning("Failed to get taxonomy suggestions for search query. Error: {Error}", 
+                            taxonomyResponse.ErrorMessage);
                         return datasets; // Return empty list if taxonomy search fails
                     }
 
                     if (taxonomyResponse.Data?.Suggestions == null || !taxonomyResponse.Data.Suggestions.Any())
                     {
-                        _logger.LogInformation("No taxonomy suggestions found for: {SearchTerm}", SanitizeForLogging(searchTerm));
+                        _logger.LogInformation("No taxonomy suggestions found for search query");
                         return datasets; // Return empty list if no suggestions
                     }
 

@@ -136,7 +136,7 @@ public class NCBIDatasetsClient : INCBIDatasetsClient
             return ApiResponse<TaxonomySuggestionResponse>.Error("Taxon query cannot be null or empty", 400);
         }
 
-        _logger.LogDebug("Getting taxonomy suggestions for query: {Query}", SanitizeForLogging(taxonQuery));
+        _logger.LogDebug("Getting taxonomy suggestions for search query");
         return await _taxonomyService.GetTaxonomySuggestionsByQueryAsync(taxonQuery, limit);
     }
 

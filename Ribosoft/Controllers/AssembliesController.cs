@@ -127,8 +127,7 @@ namespace Ribosoft.Controllers
         {
             try
             {
-                _logger.LogInformation("BrowseDatasets called with searchTerm: {SearchTerm}, limit: {Limit}", 
-                    SanitizeForLogging(searchTerm), limit);
+                _logger.LogInformation("BrowseDatasets called with search parameters, limit: {Limit}", limit);
                 
                 var datasets = await _datasetDownloadService.GetAvailableDatasetsAsync(searchTerm, limit);
                 
@@ -141,7 +140,7 @@ namespace Ribosoft.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error browsing datasets with search term: {SearchTerm}", searchTerm);
+                _logger.LogError(ex, "Error browsing datasets with search parameters");
                 TempData["Error"] = "Error loading available datasets. Please try again later.";
                 return RedirectToAction(nameof(Index));
             }
@@ -158,8 +157,7 @@ namespace Ribosoft.Controllers
         {
             try
             {
-                _logger.LogInformation("AJAX SearchDatasets called with searchTerm: {SearchTerm}, limit: {Limit}", 
-                    SanitizeForLogging(request.SearchTerm), request.Limit);
+                _logger.LogInformation("AJAX SearchDatasets called with search parameters, limit: {Limit}", request.Limit);
                 
                 var datasets = await _datasetDownloadService.GetAvailableDatasetsAsync(request.SearchTerm, request.Limit);
                 
@@ -174,7 +172,7 @@ namespace Ribosoft.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in AJAX search with term: {SearchTerm}", request.SearchTerm);
+                _logger.LogError(ex, "Error in AJAX search with search parameters");
                 return Json(new { 
                     success = false, 
                     error = "Error loading datasets. Please try again later.",

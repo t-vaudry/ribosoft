@@ -275,8 +275,7 @@ namespace Ribosoft.Jobs
                         if (!fullDestinationPath.StartsWith(fullExtractPath + Path.DirectorySeparatorChar) &&
                             !fullDestinationPath.Equals(fullExtractPath, StringComparison.OrdinalIgnoreCase))
                         {
-                            _logger.LogWarning("Skipping potentially malicious archive entry: {EntryName} -> {DestinationPath}", 
-                                entry.FullName, destinationPath);
+                            _logger.LogWarning("Skipping potentially malicious archive entry - path traversal attempt detected");
                             continue;
                         }
                         
