@@ -192,7 +192,7 @@
                         <small class="text-muted" id="resultsCount">@Model.Count() dataset(s) found</small>
                     </div>
                     <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-success" id="downloadSelectedBtn" disabled>
+                        <button type="button" class="btn btn-success" id="downloadSelectedBtnTop" disabled>
                             <i class="fas fa-download me-1"></i>Download Selected
                         </button>
                     </div>
@@ -359,7 +359,7 @@
                                 </div>
                                 <div class="d-flex align-items-center gap-3">
                                     <span id="selectedCount" class="text-muted">0 selected</span>
-                                    <button type="button" class="btn btn-success" id="downloadSelectedBtn" disabled>
+                                    <button type="button" class="btn btn-success" id="downloadSelectedBtnBottom" disabled>
                                         <i class="fas fa-download me-1"></i>Download Selected
                                     </button>
                                 </div>
@@ -658,7 +658,8 @@
     document.addEventListener('DOMContentLoaded', function() {
         const selectAllCheckbox = document.getElementById('selectAll');
         const datasetCheckboxes = document.querySelectorAll('.dataset-checkbox');
-        const downloadBtn = document.getElementById('downloadSelectedBtn');
+        const downloadBtnTop = document.getElementById('downloadSelectedBtnTop');
+        const downloadBtnBottom = document.getElementById('downloadSelectedBtnBottom');
         const selectedCountSpan = document.getElementById('selectedCount');
         const downloadForm = document.getElementById('downloadForm');
 
@@ -666,7 +667,11 @@
         function updateSelectionState() {
             const selectedCount = document.querySelectorAll('.dataset-checkbox:checked').length;
             selectedCountSpan.textContent = selectedCount + ' selected';
-            downloadBtn.disabled = selectedCount === 0;
+            
+            // Update both buttons
+            const isDisabled = selectedCount === 0;
+            downloadBtnTop.disabled = isDisabled;
+            downloadBtnBottom.disabled = isDisabled;
             
             // Update select all checkbox state
             if (selectedCount === 0) {
@@ -695,8 +700,8 @@
             checkbox.addEventListener('change', updateSelectionState);
         });
 
-        // Handle download button
-        downloadBtn.addEventListener('click', function() {
+        // Handle download button clicks (both buttons)
+        function handleDownloadClick() {
             const selectedCount = document.querySelectorAll('.dataset-checkbox:checked').length;
             if (selectedCount === 0) {
                 showAlert('warning', 'Please select at least one dataset to download.');
@@ -711,6 +716,18 @@
             const includeSequence = document.getElementById('includeSequence');
             const modalIncludeAnnotations = document.getElementById('modalIncludeAnnotations');
             const modalIncludeSequence = document.getElementById('modalIncludeSequence');
+            
+            modalIncludeAnnotations.checked = includeAnnotations.checked;
+            modalIncludeSequence.checked = includeSequence.checked;
+            
+            // Show the modal
+            const modal = new bootstrap.Modal(document.getElementById('downloadModal'));
+            modal.show();
+        }
+
+        // Add click handlers to both buttons
+        downloadBtnTop.addEventListener('click', handleDownloadClick);
+        downloadBtnBottom.addEventListener('click', handleDownloadClick);
             
             if (includeAnnotations) modalIncludeAnnotations.checked = includeAnnotations.checked;
             if (includeSequence) modalIncludeSequence.checked = includeSequence.checked;
