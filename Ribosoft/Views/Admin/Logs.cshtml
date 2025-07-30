@@ -360,27 +360,27 @@
                         <table class="table table-hover mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th class="border-0 fw-semibold" style="width: 15%;">
+                                    <th class="border-0 fw-semibold" style="width: 140px; min-width: 140px;">
                                         <i class="fas fa-clock me-1 text-muted"></i>
                                         Timestamp
                                     </th>
-                                    <th class="border-0 fw-semibold" style="width: 10%;">
+                                    <th class="border-0 fw-semibold" style="width: 90px; min-width: 90px;">
                                         <i class="fas fa-layer-group me-1 text-muted"></i>
                                         Level
                                     </th>
-                                    <th class="border-0 fw-semibold" style="width: 12%;">
+                                    <th class="border-0 fw-semibold" style="width: 130px; min-width: 130px;">
                                         <i class="fas fa-tag me-1 text-muted"></i>
                                         Category
                                     </th>
-                                    <th class="border-0 fw-semibold" style="width: 40%;">
+                                    <th class="border-0 fw-semibold" style="width: auto;">
                                         <i class="fas fa-comment me-1 text-muted"></i>
                                         Message
                                     </th>
-                                    <th class="border-0 fw-semibold" style="width: 15%;">
+                                    <th class="border-0 fw-semibold" style="width: 150px; min-width: 150px;">
                                         <i class="fas fa-user me-1 text-muted"></i>
                                         User
                                     </th>
-                                    <th class="border-0 fw-semibold text-center" style="width: 8%;">
+                                    <th class="border-0 fw-semibold text-center" style="width: 80px; min-width: 80px;">
                                         <i class="fas fa-info-circle me-1 text-muted"></i>
                                         Details
                                     </th>
@@ -604,10 +604,11 @@
         overflow: hidden;
     }
 
-    /* Ensure table fits container */
+    /* Ensure table fits container with fixed layout */
     .logs-table-wrapper .table {
         table-layout: fixed;
         width: 100%;
+        min-width: 800px; /* Minimum width to accommodate all fixed columns */
     }
 
     /* Only truncate the message column, not others */
@@ -616,11 +617,20 @@
         overflow: visible; /* Allow other columns to show full content */
     }
 
+    /* Message column specific styling */
+    .logs-table-wrapper .table th:nth-child(4),
+    .logs-table-wrapper .table td:nth-child(4) {
+        width: auto; /* Takes remaining space */
+        min-width: 200px; /* Minimum space for readability */
+        max-width: none; /* No maximum, uses available space */
+    }
+
     /* Specifically truncate only message column content */
     .logs-table-wrapper .table td .log-message {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        width: 100%;
     }
 
     /* Badge improvements */
@@ -837,12 +847,12 @@
                         <table class="table table-hover mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th style="width: 140px;">Timestamp</th>
-                                    <th style="width: 80px;">Level</th>
-                                    <th style="width: 120px;">Category</th>
-                                    <th>Message</th>
-                                    <th style="width: 100px;">User</th>
-                                    <th style="width: 80px;">Actions</th>
+                                    <th style="width: 140px; min-width: 140px;">Timestamp</th>
+                                    <th style="width: 90px; min-width: 90px;">Level</th>
+                                    <th style="width: 130px; min-width: 130px;">Category</th>
+                                    <th style="width: auto;">Message</th>
+                                    <th style="width: 150px; min-width: 150px;">User</th>
+                                    <th style="width: 80px; min-width: 80px;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>`;
