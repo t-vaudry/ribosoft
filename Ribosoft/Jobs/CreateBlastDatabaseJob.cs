@@ -266,27 +266,43 @@ namespace Ribosoft.Jobs
                     
                     if (!string.IsNullOrEmpty(entry.Name))
                     {
-                        var destinationPath = Path.Combine(extractPath, entry.FullName);
-                        
                         // Security: Prevent Zip Slip attacks by validating the destination path
                         var fullExtractPath = Path.GetFullPath(extractPath);
+                        
+                        // Normalize the entry name to prevent path traversal
+                        var normalizedEntryName = entry.FullName.Replace('/', Path.DirectorySeparatorChar)
+                                                                .Replace('\\', Path.DirectorySeparatorChar);
+                        
+                        // Remove any leading path separators or relative path components
+                        normalizedEntryName = normalizedEntryName.TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                        
+                        // Reject entries with path traversal attempts
+                        if (normalizedEntryName.Contains("..") || Path.IsPathRooted(normalizedEntryName))
+                        {
+                            _logger.LogWarning("Skipping potentially malicious archive entry - path traversal attempt detected");
+                            continue;
+                        }
+                        
+                        var destinationPath = Path.Combine(extractPath, normalizedEntryName);
                         var fullDestinationPath = Path.GetFullPath(destinationPath);
                         
-                        if (!fullDestinationPath.StartsWith(fullExtractPath + Path.DirectorySeparatorChar) &&
+                        // Final validation: ensure the resolved path is within the extract directory
+                        if (!fullDestinationPath.StartsWith(fullExtractPath + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) &&
                             !fullDestinationPath.Equals(fullExtractPath, StringComparison.OrdinalIgnoreCase))
                         {
                             _logger.LogWarning("Skipping potentially malicious archive entry - path traversal attempt detected");
                             continue;
                         }
                         
-                        var destinationDir = Path.GetDirectoryName(destinationPath);
+                        // Use the validated path for all operations
+                        var destinationDir = Path.GetDirectoryName(fullDestinationPath);
                         
                         if (!string.IsNullOrEmpty(destinationDir))
                         {
                             Directory.CreateDirectory(destinationDir);
                         }
                         
-                        entry.ExtractToFile(destinationPath, true);
+                        entry.ExtractToFile(fullDestinationPath, true);
                     }
                 }
             });
