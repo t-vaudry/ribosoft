@@ -516,17 +516,35 @@ namespace Ribosoft.Controllers
                     }
                 }
 
+                // Clean up related DatasetDownload records to allow re-downloading
+                var relatedDownloads = await _context.DatasetDownloads
+                    .Where(d => d.TaxonomyId == id || d.AccessionId == assembly.AccessionId)
+                    .ToListAsync();
+
+                var removedDownloadCount = 0;
+                if (relatedDownloads.Any())
+                {
+                    removedDownloadCount = relatedDownloads.Count;
+                    _logger.LogInformation("Found {Count} related download records for assembly {AccessionId}", 
+                        removedDownloadCount, assembly.AccessionId);
+                    
+                    _context.DatasetDownloads.RemoveRange(relatedDownloads);
+                    _logger.LogInformation("Removed {Count} DatasetDownload records to allow re-downloading", 
+                        removedDownloadCount);
+                }
+
                 // Remove from database
                 _context.Assemblies.Remove(assembly);
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation("Assembly {TaxonomyId} ({OrganismName}) deleted successfully. Freed {Size} bytes.", 
-                    id, assembly.OrganismName, deletedSize);
+                _logger.LogInformation("Assembly {TaxonomyId} ({OrganismName}) deleted successfully. Freed {Size} bytes. Removed {DownloadCount} download records.", 
+                    id, assembly.OrganismName, deletedSize, removedDownloadCount);
 
                 return Json(new { 
                     success = true, 
-                    message = $"Assembly '{assembly.OrganismName}' deleted successfully. Freed {FormatFileSize(deletedSize)}.",
-                    deletedSize = deletedSize
+                    message = $"Assembly '{assembly.OrganismName}' deleted successfully. Freed {FormatFileSize(deletedSize)}. Dataset can now be re-downloaded if needed.",
+                    deletedSize = deletedSize,
+                    removedDownloads = removedDownloadCount
                 });
             }
             catch (Exception ex)
