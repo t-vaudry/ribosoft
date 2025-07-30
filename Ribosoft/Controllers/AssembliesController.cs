@@ -82,25 +82,35 @@ namespace Ribosoft.Controllers
             // Process assemblies to fix missing data and calculate sizes
             foreach (var assembly in assemblies)
             {
-                // Fix missing Type - determine actual assembly type
-                if (string.IsNullOrEmpty(assembly.Type))
-                {
-                    assembly.Type = DetermineAssemblyType(assembly.Path, assembly.AccessionId);
-                }
+                _logger.LogInformation("Processing assembly {AccessionId}: Type='{Type}', Path='{Path}'", 
+                    assembly.AccessionId, assembly.Type, assembly.Path);
 
-                // Fix missing or incorrect Path
+                // Fix missing or incorrect Path FIRST
+                var originalPath = assembly.Path;
                 if (string.IsNullOrEmpty(assembly.Path) || assembly.Path.StartsWith("~/"))
                 {
                     var blastDbPath = _configuration["Blast:BLASTDB"] ?? 
+                                     _configuration["DatasetDownloads:Path"] ??
                                      Path.Combine(Directory.GetCurrentDirectory(), "BlastDatabases");
                     blastDbPath = ExpandPath(blastDbPath);
                     
                     // Use organized path structure
                     assembly.Path = Path.Combine(blastDbPath, assembly.AccessionId);
+                    _logger.LogInformation("Updated path for {AccessionId}: '{OldPath}' -> '{NewPath}'", 
+                        assembly.AccessionId, originalPath, assembly.Path);
+                }
+
+                // Fix missing Type - determine actual assembly type (now with correct path)
+                if (string.IsNullOrEmpty(assembly.Type) || assembly.Type == "Downloaded")
+                {
+                    assembly.Type = DetermineAssemblyType(assembly.Path, assembly.AccessionId);
+                    _logger.LogInformation("Determined type for {AccessionId}: {Type}", assembly.AccessionId, assembly.Type);
                 }
 
                 // Calculate size
                 assembly.Size = CalculateAssemblySize(assembly.Path);
+                _logger.LogInformation("Assembly {AccessionId} final: Type='{Type}', Path='{Path}', Size={Size}", 
+                    assembly.AccessionId, assembly.Type, assembly.Path, assembly.Size);
             }
 
             ViewBag.RecentDownloads = recentDownloads;
@@ -602,22 +612,40 @@ namespace Ribosoft.Controllers
          */
         private string DetermineAssemblyType(string assemblyPath, string accessionId)
         {
-            if (string.IsNullOrEmpty(assemblyPath) || !Directory.Exists(assemblyPath))
+            if (string.IsNullOrEmpty(assemblyPath))
             {
                 return "Unknown";
             }
 
             try
             {
+                // If directory doesn't exist, try to infer from accession pattern
+                if (!Directory.Exists(assemblyPath))
+                {
+                    _logger.LogDebug("Assembly directory does not exist: {Path}, using accession-based detection", assemblyPath);
+                    return DetermineTypeFromAccession(accessionId);
+                }
+
                 var files = Directory.GetFiles(assemblyPath, "*", SearchOption.TopDirectoryOnly)
                     .Select(f => Path.GetFileName(f).ToLowerInvariant())
                     .ToList();
 
-                // Count different types of BLAST databases
+                _logger.LogDebug("Found {FileCount} files in {Path}: {Files}", 
+                    files.Count, assemblyPath, string.Join(", ", files.Take(5)));
+
+                if (files.Count == 0)
+                {
+                    return "Empty";
+                }
+
+                // Check for different types of BLAST databases
                 var hasGenome = files.Any(f => f.Contains("genomic") && (f.EndsWith(".nhr") || f.EndsWith(".phr")));
                 var hasProtein = files.Any(f => f.Contains("protein") && f.EndsWith(".phr"));
                 var hasRNA = files.Any(f => f.Contains("rna") && f.EndsWith(".nhr"));
                 var hasCDS = files.Any(f => f.Contains("cds") && f.EndsWith(".nhr"));
+
+                _logger.LogDebug("Assembly type detection for {AccessionId}: Genome={Genome}, Protein={Protein}, RNA={RNA}, CDS={CDS}", 
+                    accessionId, hasGenome, hasProtein, hasRNA, hasCDS);
 
                 // Determine primary type based on available databases
                 var types = new List<string>();
@@ -632,7 +660,16 @@ namespace Ribosoft.Controllers
                     // Fallback: check for any BLAST database files
                     var hasAnyBlastDb = files.Any(f => f.EndsWith(".nhr") || f.EndsWith(".phr") || 
                                                       f.EndsWith(".nin") || f.EndsWith(".pin"));
-                    return hasAnyBlastDb ? "Assembly" : "Unknown";
+                    
+                    if (hasAnyBlastDb)
+                    {
+                        return "Assembly";
+                    }
+                    
+                    // Check for FASTA files as another fallback
+                    var hasFasta = files.Any(f => f.EndsWith(".fna") || f.EndsWith(".faa") || 
+                                                 f.EndsWith(".fasta") || f.EndsWith(".fa"));
+                    return hasFasta ? "FASTA" : "Unknown";
                 }
 
                 // Return combined type or primary type
@@ -654,8 +691,41 @@ namespace Ribosoft.Controllers
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "Failed to determine assembly type for path: {Path}", assemblyPath);
+                return "Error";
+            }
+        }
+
+        /*! \fn DetermineTypeFromAccession
+         * \brief Determine assembly type from accession ID pattern when files aren't available
+         * \param accessionId Accession ID to analyze
+         * \return Assembly type string
+         */
+        private string DetermineTypeFromAccession(string accessionId)
+        {
+            if (string.IsNullOrEmpty(accessionId))
+            {
                 return "Unknown";
             }
+
+            // NCBI accession patterns
+            if (accessionId.StartsWith("GCF_") || accessionId.StartsWith("GCA_"))
+            {
+                return "Genome Assembly";
+            }
+            else if (accessionId.StartsWith("NC_"))
+            {
+                return "RefSeq Chromosome";
+            }
+            else if (accessionId.StartsWith("NM_"))
+            {
+                return "mRNA";
+            }
+            else if (accessionId.StartsWith("NP_"))
+            {
+                return "Protein";
+            }
+            
+            return "Assembly";
         }
     }
 }
