@@ -472,7 +472,9 @@ rect.background {
   }
 }
 
-// Dark mode support
+// Dark mode support (disabled until proper dark mode implementation)
+// TODO: Implement proper dark mode toggle instead of automatic detection
+/*
 @media (prefers-color-scheme: dark) {
   :root {
     --light-color: #2d3748;
@@ -483,6 +485,63 @@ rect.background {
   body {
     background-color: var(--light-color);
     color: var(--dark-color);
+  }
+}
+*/
+
+// Future dark mode implementation should use a class-based approach:
+// .dark-theme {
+//   --light-color: #2d3748;
+//   --dark-color: #f7fafc;
+//   --border-color: #4a5568;
+//   --text-color: #f7fafc;
+//   --bg-color: #2d3748;
+// }
+
+// Light mode fixes - ensure proper styling regardless of system preferences
+body {
+  background-color: #ffffff;
+  color: #212529;
+}
+
+// Fix title colors - ensure they use dark text in light mode
+h1, h2, h3, h4, h5, h6 {
+  color: #212529;
+}
+
+// Fix structures-container styling for light mode
+#structures-container {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  
+  // Ensure nested elements have proper colors
+  * {
+    color: #212529;
+  }
+}
+
+// Fix dropdown menu hover issues
+.dropdown-menu {
+  .dropdown-item {
+    color: #212529;
+    
+    &:hover, &:focus {
+      background-color: #f8f9fa;
+      color: #212529 !important;
+    }
+  }
+}
+
+// Fix password requirements text color
+.password-strength .password-requirements {
+  .requirement .requirement-text small {
+    color: #495057 !important;
+  }
+  
+  .requirement.requirement-met .requirement-text small {
+    color: var(--success-color) !important;
   }
 }
 
