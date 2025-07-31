@@ -12,7 +12,7 @@ networks:
 
 services:
   db:
-    image: postgres:16-alpine
+    image: postgres:latest
     container_name: ribosoft_db
     restart: unless-stopped
     ports:
@@ -39,7 +39,6 @@ services:
       - /var/run/postgresql
 
   ribosoft:
-    image: ghcr.io/t-vaudry/ribosoft:latest
     container_name: ribosoft_app
     restart: unless-stopped
     ports:

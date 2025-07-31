@@ -12,12 +12,22 @@ module.exports = (env, argv) => {
     return {
         mode: isDevBuild ? 'development' : 'production',
         stats: { 
-            modules: false,
-            children: false,
-            chunks: false,
-            chunkModules: false,
+            preset: 'minimal',
             colors: true,
-            timings: true
+            timings: false,
+            version: false,
+            hash: false,
+            builtAt: false,
+            assets: false,
+            chunks: false,
+            modules: false,
+            reasons: false,
+            children: false,
+            source: false,
+            errors: true,
+            errorDetails: true,
+            warnings: true,
+            publicPath: false
         },
         context: __dirname,
         resolve: {
@@ -108,9 +118,9 @@ module.exports = (env, argv) => {
         },
         output: {
             path: path.join(__dirname, bundleOutputDir),
-            filename: isDevBuild ? '[name].js' : '[name].[contenthash:8].js',
+            filename: isDevBuild ? '[name].js' : '[name].js',
             chunkFilename: isDevBuild ? '[name].chunk.js' : '[name].[contenthash:8].chunk.js',
-            publicPath: '../dist/',
+            publicPath: '/dist/',
             clean: {
                 keep: /vendor\.(js|css|map)$|vendor-manifest\.json$|assets\//
             },
@@ -132,24 +142,8 @@ module.exports = (env, argv) => {
                     extractComments: false
                 })
             ],
-            splitChunks: {
-                chunks: 'all',
-                cacheGroups: {
-                    vendor: {
-                        test: /[\\/]node_modules[\\/]/,
-                        name: 'vendors',
-                        chunks: 'all',
-                        priority: 10
-                    },
-                    common: {
-                        name: 'common',
-                        minChunks: 2,
-                        chunks: 'all',
-                        priority: 5,
-                        reuseExistingChunk: true
-                    }
-                }
-            },
+            // Disable splitChunks when using DLL - vendor libs are already bundled
+            splitChunks: false,
             runtimeChunk: {
                 name: 'runtime'
             },
@@ -160,32 +154,35 @@ module.exports = (env, argv) => {
             new webpack.DefinePlugin({
                 'process.env.NODE_ENV': JSON.stringify(isDevBuild ? 'development' : 'production')
             }),
-            // Only add DllReferencePlugin if vendor-manifest.json exists
-            ...((() => {
-                try {
-                    const manifestPath = path.join(__dirname, 'wwwroot/dist/vendor-manifest.json');
-                    require.resolve(manifestPath);
-                    return [new webpack.DllReferencePlugin({
-                        context: __dirname,
-                        manifest: require(manifestPath)
-                    })];
-                } catch (e) {
-                    console.warn('vendor-manifest.json not found. Run "npm run build:vendor:dev" first.');
-                    return [];
-                }
-            })()),
+            // Temporarily disable DLL Reference Plugin for testing
+            // ...((() => {
+            //     try {
+            //         const manifestPath = path.join(__dirname, 'wwwroot/dist/vendor-manifest.json');
+            //         const manifest = require(manifestPath);
+            //         console.log('Using DLL vendor bundle:', manifest.name);
+            //         return [new webpack.DllReferencePlugin({
+            //             context: __dirname,
+            //             manifest: manifest
+            //         })];
+            //     } catch (e) {
+            //         console.warn('vendor-manifest.json not found. Run "npm run build:vendor" first.');
+            //         return [];
+            //     }
+            // })()),
             ...(isDevBuild ? [
                 new webpack.HotModuleReplacementPlugin()
             ] : [
                 new MiniCssExtractPlugin({
-                    filename: '[name].[contenthash:8].css',
-                    chunkFilename: '[name].[contenthash:8].css'
+                    filename: '[name].css',
+                    chunkFilename: '[name].css'
                 })
             ]),
             new webpack.ProvidePlugin({
+                // jQuery comes from vendor DLL bundle
                 $: 'jquery',
-                jQuery: 'jquery',
-                'window.jQuery': 'jquery'
+                jQuery: 'jquery', 
+                'window.jQuery': 'jquery',
+                'window.$': 'jquery'
             })
         ],
         devtool: isDevBuild ? 'eval-source-map' : 'source-map',

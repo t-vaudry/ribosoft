@@ -13,12 +13,22 @@ module.exports = (env, argv) => {
   return {
     mode: isDevBuild ? 'development' : 'production',
     stats: {
-      modules: false,
-      children: false,
-      chunks: false,
-      chunkModules: false,
+      preset: 'minimal',
       colors: true,
-      timings: true
+      timings: false,
+      version: false,
+      hash: false,
+      builtAt: false,
+      assets: false,
+      chunks: false,
+      modules: false,
+      reasons: false,
+      children: false,
+      source: false,
+      errors: true,
+      errorDetails: true,
+      warnings: true,
+      publicPath: false
     },
     resolve: {
       extensions: ['.js', '.json'],
@@ -32,13 +42,14 @@ module.exports = (env, argv) => {
     },
     entry: {
       vendor: [
-        'event-source-polyfill',
         'jquery',
+        'bootstrap',
+        'event-source-polyfill',
         'jquery-validation',
         'jquery-validation-unobtrusive',
         'qrious',
         'axios',
-        '@fortawesome/fontawesome-free/css/all.css'
+        './ClientApp/vendor.js'
       ]
     },
     module: {
@@ -80,8 +91,9 @@ module.exports = (env, argv) => {
     output: {
       path: path.join(__dirname, 'wwwroot', 'dist'),
       publicPath: '/dist/',
-      filename: isDevBuild ? '[name].js' : '[name].[contenthash:8].js',
+      filename: '[name].js', // Always use simple name for DLL files
       library: '[name]_[fullhash]',
+      libraryTarget: 'var',
       clean: false, // Don't clean vendor files when main build runs
       assetModuleFilename: 'assets/[name].[hash:8][ext]'
     },
@@ -109,7 +121,10 @@ module.exports = (env, argv) => {
       new webpack.ProvidePlugin({
         $: 'jquery',
         jQuery: 'jquery',
-        'window.jQuery': 'jquery'
+        'window.jQuery': 'jquery',
+        'window.$': 'jquery',
+        bootstrap: 'bootstrap',
+        'window.bootstrap': 'bootstrap'
       }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(isDevBuild ? 'development' : 'production'),
@@ -117,10 +132,11 @@ module.exports = (env, argv) => {
         __VUE_PROD_DEVTOOLS__: JSON.stringify(isDevBuild),
         __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(isDevBuild)
       }),
-      new webpack.DllPlugin({
-        path: path.join(__dirname, 'wwwroot', 'dist', '[name]-manifest.json'),
-        name: '[name]_[fullhash]'
-      })
+      // Temporarily disable DLL plugin for testing
+      // new webpack.DllPlugin({
+      //   path: path.join(__dirname, 'wwwroot', 'dist', '[name]-manifest.json'),
+      //   name: '[name]_[fullhash]'
+      // })
     ],
     devtool: isDevBuild ? 'eval-source-map' : 'source-map',
     cache: {
