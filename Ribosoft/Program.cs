@@ -32,6 +32,12 @@ public class Program
 
             var builder = WebApplication.CreateBuilder(args);
 
+            // Configure Kestrel to use configuration (including environment variables)
+            builder.WebHost.UseKestrel((context, serverOptions) =>
+            {
+                serverOptions.Configure(context.Configuration.GetSection("Kestrel"));
+            });
+
             // Configure services
             ConfigureServices(builder.Services, builder.Configuration);
 
@@ -171,9 +177,6 @@ public class Program
         {
             options.Queues = new[] { "default", "blast", "downloads", "downloads-high", "downloads-low" };
         });
-
-        // Configure Kestrel for HTTPS certificates
-        services.Configure<KestrelServerOptions>(configuration.GetSection("Kestrel"));
     }
     
     private static void ConfigurePipeline(WebApplication app)
