@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using NLog;
 using NLog.Web;
 using Ribosoft.Configuration;
@@ -170,6 +171,9 @@ public class Program
         {
             options.Queues = new[] { "default", "blast", "downloads", "downloads-high", "downloads-low" };
         });
+
+        // Configure Kestrel for HTTPS certificates
+        services.Configure<KestrelServerOptions>(configuration.GetSection("Kestrel"));
     }
     
     private static void ConfigurePipeline(WebApplication app)
