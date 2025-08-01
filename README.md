@@ -61,7 +61,17 @@ git clone https://github.com/t-vaudry/ribosoft.git
 cd ribosoft/Ribosoft
 ```
 
-### 2. Install Dependencies
+### 2. Setup HTTPS (Optional)
+For development with HTTPS:
+```bash
+# Generate and trust development certificate
+dotnet dev-certs https --clean
+dotnet dev-certs https --trust
+```
+
+For production, see [HTTPS_SETUP.md](HTTPS_SETUP.md) for certificate configuration.
+
+### 3. Install Dependencies
 ```bash
 # Install Node.js dependencies
 npm install
@@ -71,7 +81,7 @@ pip install pipenv
 pipenv install
 ```
 
-### 3. Build C++ Algorithm Library
+### 4. Build C++ Algorithm Library
 ```bash
 cd ../RibosoftAlgo/build
 cmake .. -G "Unix Makefiles"
@@ -79,7 +89,7 @@ make
 cd ../../Ribosoft
 ```
 
-### 4. Build Frontend (Critical Step)
+### 5. Build Frontend (Critical Step)
 ```bash
 # Development build (recommended for local development)
 npm run build:all:dev
@@ -88,7 +98,7 @@ npm run build:all:dev
 npm run build:all
 ```
 
-### 5. Configure Database
+### 6. Configure Database
 Edit `appsettings.json` with your database connection:
 ```json
 {
@@ -99,13 +109,15 @@ Edit `appsettings.json` with your database connection:
 }
 ```
 
-### 6. Run Application
+### 7. Run Application
 ```bash
 # Build and run the .NET application
 dotnet build
 dotnet run
 
-# Application will be available at: http://localhost:50273/
+# Application will be available at:
+# HTTPS: https://localhost:5001/ (if certificate configured)
+# HTTP:  http://localhost:5000/ (redirects to HTTPS if available)
 ```
 
 ## Development Workflow
@@ -235,21 +247,23 @@ Ribosoft has been published as a docker application that can be used locally to 
 
 To achieve the proper configuration, Docker Compose is used.
 
-### Docker Compose
+### Docker Compose with HTTPS
 
-Below is an example docker-compose.yml file.
+Below is an example docker-compose.yml file with HTTPS support.
 
 ```yaml
 version: '3.8'
 
 volumes:
   pgdata:
+  ribosoft_logs:
+  ribosoft_certificates:
 
 services:
   db:
      image: postgres:latest
-     container_name: db
-     restart: always
+     container_name: ribosoft_db
+     restart: unless-stopped
      ports:
        - 5432:5432
      environment:
@@ -260,24 +274,56 @@ services:
        - pgdata:/var/lib/postgresql/data
 
   ribosoft:
-    image: tvaudryread/ribosoft:latest
-    container_name: ribosoft
+    container_name: ribosoft_app
+    restart: unless-stopped
     ports:
-      - 5001:80
+      - "5000:80"    # HTTP port (redirects to HTTPS)
+      - "5001:443"   # HTTPS port
+    build:
+      context: .
+      dockerfile: Ribosoft/Dockerfile
     environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: https://+:443;http://+:80
       ConnectionStrings__NpgsqlConnection: "Host=db;Port=5432;Username=postgres;Password=postgres;Database=ribosoft;Pooling=true;"
       DB_CONTEXT: NpgsqlDbContext
       EntityFrameworkProvider: Npgsql
       NODE_ENV: production
+    volumes:
+      - ribosoft_logs:/app/logs
+      - ribosoft_certificates:/app/certificates
+      # Mount your certificate directory:
+      # - ./certificates:/app/certificates:ro
     depends_on:
       - "db"
 ```
 
-The docker compose command to start the service is;
+### Quick Docker Setup
 
-`docker-compose up`
+```bash
+# Start the services
+docker-compose up -d
 
-The service will run at http://localhost:5001/
+# The service will run at:
+# HTTP:  http://localhost:5000 (redirects to HTTPS)
+# HTTPS: https://localhost:5001 (if certificate is provided)
+```
+
+### Production Deployment with Your Certificate
+
+1. **Place your certificate** (in .pfx format) in a `certificates` directory
+2. **Uncomment the certificate volume mount** in docker-compose.yml:
+   ```yaml
+   volumes:
+     - ./certificates:/app/certificates:ro
+   ```
+3. **Update certificate path** in `Ribosoft/.docker/appsettings.json`
+4. **Start the containers**:
+   ```bash
+   docker-compose up -d
+   ```
+
+**Note**: For production, use certificates from trusted Certificate Authorities (Let's Encrypt, etc.). See [HTTPS_SETUP.md](HTTPS_SETUP.md) for detailed instructions.
 
 ## Development Notes
 

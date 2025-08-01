@@ -70,6 +70,9 @@ RUN groupadd -r ribosoft && useradd -r -g ribosoft ribosoft
 
 WORKDIR /app
 
+# Create certificates directory for mounting
+RUN mkdir -p /app/certificates && chown ribosoft:ribosoft /app/certificates
+
 # Copy published application
 COPY --from=build /app/publish .
 
@@ -79,11 +82,12 @@ RUN chown -R ribosoft:ribosoft /app
 # Switch to non-root user
 USER ribosoft
 
-EXPOSE 80
+# Expose both HTTP and HTTPS ports
+EXPOSE 80 443
 
-# Health check
+# Health check (try HTTPS first, fallback to HTTP)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:80/health || exit 1
+    CMD curl -k -f https://localhost:443/health || curl -f http://localhost:80/health || exit 1
 
-# Start the application directly (migrations are handled automatically on startup)
-CMD ["dotnet", "Ribosoft.dll", "--urls", "http://*:80"]
+# Start the application
+CMD ["dotnet", "Ribosoft.dll"]

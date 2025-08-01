@@ -5,6 +5,8 @@ volumes:
     driver: local
   ribosoft_logs:
     driver: local
+  ribosoft_certificates:
+    driver: local
 
 networks:
   ribosoft_network:
@@ -42,29 +44,35 @@ services:
     container_name: ribosoft_app
     restart: unless-stopped
     ports:
-      - "5001:80"
+      - "5000:80"    # HTTP port
+      - "5001:443"   # HTTPS port
     build:
       context: .
       dockerfile: Ribosoft/Dockerfile
       target: runtime
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_URLS: http://+:80
+      ASPNETCORE_URLS: https://+:443;http://+:80
       ConnectionStrings__NpgsqlConnection: "Host=db;Port=5432;Username=postgres;Password=postgres;Database=ribosoft;Pooling=true;Timeout=30;Command Timeout=30;"
       DB_CONTEXT: NpgsqlDbContext
       EntityFrameworkProvider: Npgsql
       NODE_ENV: production
       ASPNETCORE_LOGGING__LOGLEVEL__DEFAULT: Information
       ASPNETCORE_LOGGING__LOGLEVEL__MICROSOFT: Warning
+      # HTTPS Configuration
+      ASPNETCORE_HTTPS_PORT: 443
     volumes:
       - ribosoft_logs:/app/logs
+      - ribosoft_certificates:/app/certificates
+      # Mount your certificate directory here:
+      # - ./certificates:/app/certificates:ro
     networks:
       - ribosoft_network
     depends_on:
       db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      test: ["CMD", "/bin/bash", "-c", "curl -k -f https://localhost:443/health || curl -f http://localhost:80/health"]
       interval: 30s
       timeout: 10s
       retries: 3
