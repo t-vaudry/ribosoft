@@ -1,0 +1,13 @@
+# Development override for docker-compose.yml
+# Uncomment the certificate volume mount below if you have certificates in ./certificates/
+
+version: '3.8'
+
+services:
+  ribosoft:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    # Uncomment to mount your certificate directory:
+    # volumes:
+    #   - ribosoft_logs:/app/logs
+    #   - ./certificates:/app/certificates:ro

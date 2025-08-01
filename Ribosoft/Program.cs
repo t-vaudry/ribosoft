@@ -6,6 +6,7 @@ using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Http;
 using NLog;
 using NLog.Web;
 using Ribosoft.Configuration;
@@ -148,6 +149,22 @@ public class Program
         services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>();
 
+        // HSTS configuration for production
+        services.AddHsts(options =>
+        {
+            options.Preload = true;
+            options.IncludeSubDomains = true;
+            options.MaxAge = TimeSpan.FromDays(365);
+        });
+
+        // HTTPS redirection
+        services.AddHttpsRedirection(options =>
+        {
+            options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+            options.HttpsPort = configuration.GetValue<int?>("HTTPS_PORT") ?? 
+                               configuration.GetValue<int?>("ASPNETCORE_HTTPS_PORT");
+        });
+
         // Hangfire server
         services.AddHangfireServer(options =>
         {
@@ -166,7 +183,12 @@ public class Program
         else
         {
             app.UseExceptionHandler("/Home/Error");
+            // Enable HSTS (HTTP Strict Transport Security) in production
+            app.UseHsts();
         }
+        
+        // Enable HTTPS redirection
+        app.UseHttpsRedirection();
         
         app.UseStaticFiles();
         app.UseRouting();
