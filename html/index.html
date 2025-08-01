@@ -172,44 +172,52 @@ Quick Start</h1>
 <div class="fragment"><div class="line">git clone https://github.com/t-vaudry/ribosoft.git</div>
 <div class="line">cd ribosoft/Ribosoft</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md9"></a>
-2. Install Dependencies</h2>
+2. Setup HTTPS (Optional)</h2>
+<p>For development with HTTPS: </p><div class="fragment"><div class="line"># Generate and trust development certificate</div>
+<div class="line">dotnet dev-certs https --clean</div>
+<div class="line">dotnet dev-certs https --trust</div>
+</div><!-- fragment --><p>For production, see HTTPS_SETUP.md for certificate configuration.</p>
+<h2><a class="anchor" id="autotoc_md10"></a>
+3. Install Dependencies</h2>
 <div class="fragment"><div class="line"># Install Node.js dependencies</div>
 <div class="line">npm install</div>
 <div class="line"> </div>
 <div class="line"># Install Python dependencies (optional, for advanced features)</div>
 <div class="line">pip install pipenv</div>
 <div class="line">pipenv install</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md10"></a>
-3. Build C++ Algorithm Library</h2>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md11"></a>
+4. Build C++ Algorithm Library</h2>
 <div class="fragment"><div class="line">cd ../RibosoftAlgo/build</div>
 <div class="line">cmake .. -G &quot;Unix Makefiles&quot;</div>
 <div class="line">make</div>
 <div class="line">cd ../../Ribosoft</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md11"></a>
-4. Build Frontend (Critical Step)</h2>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md12"></a>
+5. Build Frontend (Critical Step)</h2>
 <div class="fragment"><div class="line"># Development build (recommended for local development)</div>
 <div class="line">npm run build:all:dev</div>
 <div class="line"> </div>
 <div class="line"># OR Production build</div>
 <div class="line">npm run build:all</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md12"></a>
-5. Configure Database</h2>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md13"></a>
+6. Configure Database</h2>
 <p>Edit <code>appsettings.json</code> with your database connection: </p><div class="fragment"><div class="line">{</div>
 <div class="line">  &quot;ConnectionStrings&quot;: {</div>
 <div class="line">    &quot;NpgsqlConnection&quot;: &quot;Host=localhost;Port=5432;Database=ribosoft;Username=your_user;Password=your_password;Pooling=true;&quot;</div>
 <div class="line">  },</div>
 <div class="line">  &quot;EntityFrameworkProvider&quot;: &quot;Npgsql&quot;</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md13"></a>
-6. Run Application</h2>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md14"></a>
+7. Run Application</h2>
 <div class="fragment"><div class="line"># Build and run the .NET application</div>
 <div class="line">dotnet build</div>
 <div class="line">dotnet run</div>
 <div class="line"> </div>
-<div class="line"># Application will be available at: http://localhost:50273/</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md14"></a>
+<div class="line"># Application will be available at:</div>
+<div class="line"># HTTPS: https://localhost:5001/ (if certificate configured)</div>
+<div class="line"># HTTP:  http://localhost:5000/ (redirects to HTTPS if available)</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md15"></a>
 Development Workflow</h1>
-<h2><a class="anchor" id="autotoc_md15"></a>
+<h2><a class="anchor" id="autotoc_md16"></a>
 Frontend Development</h2>
 <div class="fragment"><div class="line"># Watch mode for continuous frontend rebuilding</div>
 <div class="line">npm run dev</div>
@@ -221,14 +229,14 @@ Frontend Development</h2>
 <div class="line"># Individual builds</div>
 <div class="line">npm run build:vendor:dev    # Build vendor libraries (Bootstrap, Vue, etc.)</div>
 <div class="line">npm run build:dev          # Build application code</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md16"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md17"></a>
 Backend Development</h2>
 <div class="fragment"><div class="line"># Run with hot reload</div>
 <div class="line">dotnet watch run</div>
 <div class="line"> </div>
 <div class="line"># Run tests</div>
 <div class="line">dotnet test</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md17"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md18"></a>
 Available npm Scripts</h2>
 <ul>
 <li><code>npm run dev</code> - Development watch mode</li>
@@ -242,24 +250,24 @@ Available npm Scripts</h2>
 <li><code>npm run lint</code> - ESLint code checking</li>
 <li><code>npm run format</code> - Prettier code formatting</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md18"></a>
+<h1><a class="anchor" id="autotoc_md19"></a>
 Testing</h1>
-<h2><a class="anchor" id="autotoc_md19"></a>
+<h2><a class="anchor" id="autotoc_md20"></a>
 C++ Unit Tests (Catch2)</h2>
 <div class="fragment"><div class="line">cd RibosoftAlgo/build</div>
 <div class="line">make tests</div>
 <div class="line">./bin/tests</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md20"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md21"></a>
 .NET Unit Tests (xUnit)</h2>
 <div class="fragment"><div class="line">dotnet test Ribosoft.Tests</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md21"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md22"></a>
 Integration Tests (Robot Framework)</h2>
 <div class="fragment"><div class="line">cd test</div>
 <div class="line">pipenv install</div>
 <div class="line">pipenv run robot --outputdir reports tests/startup.robot</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md22"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md23"></a>
 Troubleshooting</h1>
-<h2><a class="anchor" id="autotoc_md23"></a>
+<h2><a class="anchor" id="autotoc_md24"></a>
 Frontend Build Issues</h2>
 <div class="fragment"><div class="line"># If styles are missing or console errors occur</div>
 <div class="line">npm run clean</div>
@@ -267,29 +275,29 @@ Frontend Build Issues</h2>
 <div class="line"> </div>
 <div class="line"># Check that vendor-manifest.json exists</div>
 <div class="line">ls -la wwwroot/dist/vendor-manifest.json</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md24"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md25"></a>
 Database Connection Issues</h2>
 <ul>
 <li>Ensure PostgreSQL is running: <code>sudo systemctl status postgresql</code></li>
 <li>Verify connection string in <code>appsettings.json</code></li>
 <li>Check database exists and user has proper permissions</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md25"></a>
+<h2><a class="anchor" id="autotoc_md26"></a>
 C++ Library Issues</h2>
 <div class="fragment"><div class="line"># Rebuild C++ components</div>
 <div class="line">cd RibosoftAlgo/build</div>
 <div class="line">make clean</div>
 <div class="line">cmake .. &amp;&amp; make</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md26"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md27"></a>
 Port Conflicts</h2>
 <ul>
 <li>Default application port: <code>50273</code></li>
 <li>Check <code>Properties/launchSettings.json</code> for configuration</li>
 <li>Verify port availability: <code>ss -tlnp | grep :50273</code></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md27"></a>
+<h1><a class="anchor" id="autotoc_md28"></a>
 Architecture Overview</h1>
-<h2><a class="anchor" id="autotoc_md28"></a>
+<h2><a class="anchor" id="autotoc_md29"></a>
 Project Structure</h2>
 <div class="fragment"><div class="line">ribosoft/</div>
 <div class="line">├── Ribosoft/                    # Main ASP.NET Core web application</div>
@@ -308,7 +316,7 @@ Project Structure</h2>
 <div class="line">│   └── build/                   # CMake build directory</div>
 <div class="line">├── Ribosoft.Tests/              # xUnit test project</div>
 <div class="line">└── test/                        # Robot Framework integration tests</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md29"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md30"></a>
 Key Features</h2>
 <ul>
 <li><b>Ribozyme Design</b>: Template-based ribozyme generation</li>
@@ -320,23 +328,25 @@ Key Features</h2>
 <li><b>RNA Visualization</b>: Interactive structure visualization</li>
 <li><b>Enhanced Accessibility Scoring</b>: Section-based analysis of binding site accessibility (improved from binary approach)</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md30"></a>
+<h1><a class="anchor" id="autotoc_md31"></a>
 Docker Support</h1>
 <p><a class="el" href="dc/d09/namespaceRibosoft.html">Ribosoft</a> has been published as a docker application that can be used locally to run the service for larger jobs. This can help have control over the resources allocated to your service, and succeed in larger queries.</p>
 <p>To achieve the proper configuration, Docker Compose is used.</p>
-<h2><a class="anchor" id="autotoc_md31"></a>
-Docker Compose</h2>
-<p>Below is an example docker-compose.yml file.</p>
+<h2><a class="anchor" id="autotoc_md32"></a>
+Docker Compose with HTTPS</h2>
+<p>Below is an example docker-compose.yml file with HTTPS support.</p>
 <div class="fragment"><div class="line">version: &#39;3.8&#39;</div>
 <div class="line"> </div>
 <div class="line">volumes:</div>
 <div class="line">  pgdata:</div>
+<div class="line">  ribosoft_logs:</div>
+<div class="line">  ribosoft_certificates:</div>
 <div class="line"> </div>
 <div class="line">services:</div>
 <div class="line">  db:</div>
 <div class="line">     image: postgres:latest</div>
-<div class="line">     container_name: db</div>
-<div class="line">     restart: always</div>
+<div class="line">     container_name: ribosoft_db</div>
+<div class="line">     restart: unless-stopped</div>
 <div class="line">     ports:</div>
 <div class="line">       - 5432:5432</div>
 <div class="line">     environment:</div>
@@ -347,23 +357,51 @@ Docker Compose</h2>
 <div class="line">       - pgdata:/var/lib/postgresql/data</div>
 <div class="line"> </div>
 <div class="line">  ribosoft:</div>
-<div class="line">    image: tvaudryread/ribosoft:latest</div>
-<div class="line">    container_name: ribosoft</div>
+<div class="line">    container_name: ribosoft_app</div>
+<div class="line">    restart: unless-stopped</div>
 <div class="line">    ports:</div>
-<div class="line">      - 5001:80</div>
+<div class="line">      - &quot;5000:80&quot;    # HTTP port (redirects to HTTPS)</div>
+<div class="line">      - &quot;5001:443&quot;   # HTTPS port</div>
+<div class="line">    build:</div>
+<div class="line">      context: .</div>
+<div class="line">      dockerfile: Ribosoft/Dockerfile</div>
 <div class="line">    environment:</div>
+<div class="line">      ASPNETCORE_ENVIRONMENT: Production</div>
+<div class="line">      ASPNETCORE_URLS: https://+:443;http://+:80</div>
 <div class="line">      ConnectionStrings__NpgsqlConnection: &quot;Host=db;Port=5432;Username=postgres;Password=postgres;Database=ribosoft;Pooling=true;&quot;</div>
 <div class="line">      DB_CONTEXT: NpgsqlDbContext</div>
 <div class="line">      EntityFrameworkProvider: Npgsql</div>
 <div class="line">      NODE_ENV: production</div>
+<div class="line">    volumes:</div>
+<div class="line">      - ribosoft_logs:/app/logs</div>
+<div class="line">      - ribosoft_certificates:/app/certificates</div>
+<div class="line">      # Mount your certificate directory:</div>
+<div class="line">      # - ./certificates:/app/certificates:ro</div>
 <div class="line">    depends_on:</div>
 <div class="line">      - &quot;db&quot;</div>
-</div><!-- fragment --><p>The docker compose command to start the service is;</p>
-<p><code>docker-compose up</code></p>
-<p>The service will run at <a href="http://localhost:5001/">http://localhost:5001/</a></p>
-<h1><a class="anchor" id="autotoc_md32"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md33"></a>
+Quick Docker Setup</h2>
+<div class="fragment"><div class="line"># Start the services</div>
+<div class="line">docker-compose up -d</div>
+<div class="line"> </div>
+<div class="line"># The service will run at:</div>
+<div class="line"># HTTP:  http://localhost:5000 (redirects to HTTPS)</div>
+<div class="line"># HTTPS: https://localhost:5001 (if certificate is provided)</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md34"></a>
+Production Deployment with Your Certificate</h2>
+<ol type="1">
+<li><b>Place your certificate</b> (in .pfx format) in a <code>certificates</code> directory</li>
+<li><b>Uncomment the certificate volume mount</b> in docker-compose.yml: <div class="fragment"><div class="line">volumes:</div>
+<div class="line">  - ./certificates:/app/certificates:ro</div>
+</div><!-- fragment --></li>
+<li><b>Update certificate path</b> in <code>Ribosoft/.docker/appsettings.json</code></li>
+<li><b>Start the containers</b>: <div class="fragment"><div class="line">docker-compose up -d</div>
+</div><!-- fragment --></li>
+</ol>
+<p><b>Note</b>: For production, use certificates from trusted Certificate Authorities (Let's Encrypt, etc.). See HTTPS_SETUP.md for detailed instructions.</p>
+<h1><a class="anchor" id="autotoc_md35"></a>
 Development Notes</h1>
-<h2><a class="anchor" id="autotoc_md33"></a>
+<h2><a class="anchor" id="autotoc_md36"></a>
 Frontend Modernization</h2>
 <p>The frontend has been completely modernized with:</p><ul>
 <li><b>Vue.js 3.4.21</b>: Composition API, improved TypeScript support</li>
@@ -372,7 +410,7 @@ Frontend Modernization</h2>
 <li><b>ES2024</b>: Latest JavaScript features and syntax</li>
 <li><b>Modern Build Pipeline</b>: Separate vendor and application bundles for optimal loading</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md34"></a>
+<h2><a class="anchor" id="autotoc_md37"></a>
 C++23 Modernization</h2>
 <p>The core algorithm library has been updated to:</p><ul>
 <li><b>C++23 Standard</b>: Latest language features and improvements</li>
@@ -380,7 +418,7 @@ C++23 Modernization</h2>
 <li><b>Enhanced Testing</b>: Comprehensive Catch2 test suite</li>
 <li><b>Cross-platform</b>: Focus on Linux with planned macOS/Windows support</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md35"></a>
+<h2><a class="anchor" id="autotoc_md38"></a>
 Performance Optimizations</h2>
 <ul>
 <li><b>DLL-based Bundling</b>: Vendor libraries cached separately from application code</li>
@@ -388,7 +426,7 @@ Performance Optimizations</h2>
 <li><b>Modern Caching</b>: Webpack 5 persistent caching for faster rebuilds</li>
 <li><b>OpenMP Parallelization</b>: Multi-threaded C++ algorithm execution</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md36"></a>
+<h1><a class="anchor" id="autotoc_md39"></a>
 Contributing</h1>
 <ol type="1">
 <li>Fork the repository</li>
@@ -400,10 +438,10 @@ Contributing</h1>
 <li><code>Push to the branch (</code>git push origin feature/amazing-feature`)</li>
 <li>Open a Pull Request</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md37"></a>
+<h1><a class="anchor" id="autotoc_md40"></a>
 License</h1>
 <p><a href="https://choosealicense.com/licenses/gpl-3.0/">GNU General Public License v3.0</a></p>
-<h1><a class="anchor" id="autotoc_md38"></a>
+<h1><a class="anchor" id="autotoc_md41"></a>
 Acknowledgments</h1>
 <ul>
 <li>Built with modern web technologies for optimal performance</li>

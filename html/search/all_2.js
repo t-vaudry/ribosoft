@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['3_20build_20c_20algorithm_20library_0',['3. Build C++ Algorithm Library',['../index.html#autotoc_md10',1,'']]]
+  ['3_20install_20dependencies_0',['3. Install Dependencies',['../index.html#autotoc_md10',1,'']]]
 ];
