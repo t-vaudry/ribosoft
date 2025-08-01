@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.HttpOverrides;
 using NLog;
 using NLog.Web;
 using Ribosoft.Configuration;
@@ -172,6 +173,14 @@ public class Program
                                configuration.GetValue<int?>("ASPNETCORE_HTTPS_PORT");
         });
 
+        // Configure forwarded headers for reverse proxy support
+        services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
+        });
+
         // Hangfire server
         services.AddHangfireServer(options =>
         {
@@ -193,6 +202,9 @@ public class Program
             // Enable HSTS (HTTP Strict Transport Security) in production
             app.UseHsts();
         }
+        
+        // Use forwarded headers for reverse proxy support
+        app.UseForwardedHeaders();
         
         // Enable HTTPS redirection
         app.UseHttpsRedirection();
