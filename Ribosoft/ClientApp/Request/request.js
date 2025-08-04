@@ -14,6 +14,7 @@ class RequestApp {
   init() {
     this.bindEvents();
     this.initializeFormState();
+    this.initializeSequenceInput();
   }
 
   bindEvents() {
@@ -46,6 +47,90 @@ class RequestApp {
     // Initialize form state
     this.targetEnvironment();
     this.openReadingFrame();
+  }
+
+  initializeSequenceInput() {
+    const sequenceField = document.getElementById('inputSequence');
+    if (!sequenceField) return;
+
+    // Add real-time sequence processing
+    sequenceField.addEventListener('input', (e) => this.processSequenceInput(e));
+    sequenceField.addEventListener('paste', (e) => this.handleSequencePaste(e));
+  }
+
+  processSequenceInput(event) {
+    const field = event.target;
+    const originalValue = field.value;
+    
+    // Remove all whitespace and convert to uppercase
+    const cleanedValue = originalValue.replace(/\s/g, '').toUpperCase();
+    
+    // Only update if there was a change (to avoid cursor jumping)
+    if (originalValue !== cleanedValue) {
+      const cursorPosition = field.selectionStart;
+      field.value = cleanedValue;
+      
+      // Restore cursor position, accounting for removed characters
+      const removedChars = originalValue.length - cleanedValue.length;
+      field.setSelectionRange(cursorPosition - removedChars, cursorPosition - removedChars);
+      
+      // Show feedback if whitespace was removed
+      if (removedChars > 0) {
+        this.showSequenceFeedback(`Removed ${removedChars} whitespace character${removedChars > 1 ? 's' : ''}`, 'info');
+      }
+    }
+  }
+
+  handleSequencePaste(event) {
+    // Get pasted content
+    const pastedText = (event.clipboardData || window.clipboardData).getData('text');
+    
+    if (pastedText) {
+      // Count whitespace characters
+      const whitespaceCount = (pastedText.match(/\s/g) || []).length;
+      
+      if (whitespaceCount > 0) {
+        // Show feedback about whitespace removal
+        setTimeout(() => {
+          this.showSequenceFeedback(
+            `Pasted sequence cleaned: removed ${whitespaceCount} whitespace character${whitespaceCount > 1 ? 's' : ''}`, 
+            'success'
+          );
+        }, 100);
+      }
+    }
+  }
+
+  showSequenceFeedback(message, type = 'info') {
+    // Remove any existing feedback
+    const existingFeedback = document.getElementById('sequence-feedback');
+    if (existingFeedback) {
+      existingFeedback.remove();
+    }
+
+    // Create feedback element
+    const feedback = document.createElement('div');
+    feedback.id = 'sequence-feedback';
+    feedback.className = `alert alert-${type} alert-dismissible fade show mt-2`;
+    feedback.style.fontSize = '0.875rem';
+    feedback.innerHTML = `
+      <i class="fas fa-info-circle me-2"></i>${message}
+      <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+
+    // Insert after the sequence input
+    const sequenceField = document.getElementById('inputSequence');
+    const formGroup = sequenceField.closest('.mb-4');
+    if (formGroup) {
+      formGroup.appendChild(feedback);
+    }
+
+    // Auto-remove after 3 seconds
+    setTimeout(() => {
+      if (feedback && feedback.parentNode) {
+        feedback.remove();
+      }
+    }, 3000);
   }
 
   targetEnvironment() {
@@ -107,6 +192,9 @@ class RequestApp {
       const sequenceField = document.getElementById('inputSequence');
       if (sequenceField) {
         sequenceField.value = sequence;
+        
+        // Show feedback about FASTA processing
+        this.showSequenceFeedback('FASTA file processed and sequence extracted', 'success');
       }
     };
     reader.readAsText(file);
@@ -136,6 +224,9 @@ class RequestApp {
         const sequenceField = document.getElementById('inputSequence');
         if (sequenceField) {
           sequenceField.value = response.data.result.sequence.toUpperCase();
+          
+          // Show feedback about GenBank retrieval
+          this.showSequenceFeedback('Sequence retrieved from GenBank successfully', 'success');
         }
         this.genbankStatus = '';
       } else {

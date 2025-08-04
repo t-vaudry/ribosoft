@@ -96,6 +96,14 @@ public class Program
 
             // Register ApplicationDbContext to resolve to NpgsqlDbContext
             services.AddScoped<ApplicationDbContext>(provider => provider.GetRequiredService<NpgsqlDbContext>());
+            
+            // Register DbContextOptions<ApplicationDbContext> for Hangfire jobs
+            services.AddSingleton<DbContextOptions<ApplicationDbContext>>(provider =>
+            {
+                var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+                optionsBuilder.UseNpgsql(connectionString);
+                return optionsBuilder.Options;
+            });
 
             services.AddHangfire(x => x
                 .UsePostgreSqlStorage(options =>

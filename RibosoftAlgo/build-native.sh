@@ -47,7 +47,18 @@ LIBRARIES=(
 # Platform-specific compilation
 case $RUNTIME_ID in
     linux-x64)
-        COMPILER="g++-13"
+        # Try to find available g++ compiler
+        if command -v g++-13 &> /dev/null; then
+            COMPILER="g++-13"
+        elif command -v g++-11 &> /dev/null; then
+            COMPILER="g++-11"
+        elif command -v g++ &> /dev/null; then
+            COMPILER="g++"
+        else
+            echo "No suitable g++ compiler found. Please install g++."
+            exit 1
+        fi
+        
         CXXFLAGS="-std=c++23 -fPIC -shared -Wall -Wextra -fopenmp"
         LDFLAGS="-fopenmp"
         OUTPUT_NAME="libRibosoftAlgo.so"

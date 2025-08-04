@@ -59,9 +59,10 @@ RUN SkipNpmBuild=true dotnet publish "Ribosoft.csproj" --configuration Release -
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy AS runtime
 
-# Install minimal runtime dependencies
+# Install minimal runtime dependencies including OpenMP
 RUN apt-get update && apt-get install -y \
     curl \
+    libgomp1 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -72,6 +73,9 @@ WORKDIR /app
 
 # Create certificates directory for mounting
 RUN mkdir -p /app/certificates && chown ribosoft:ribosoft /app/certificates
+
+# Create BLAST database directory
+RUN mkdir -p /app/blastdb && chown ribosoft:ribosoft /app/blastdb
 
 # Copy published application
 COPY --from=build /app/publish .
