@@ -15,6 +15,6 @@ var searchData=
   ['healthcontroller_12',['HealthController',['../d3/d15/classRibosoft_1_1Controllers_1_1HealthController.html',1,'Ribosoft::Controllers']]],
   ['high_13',['High',['../d9/ddd/namespaceRibosoft_1_1Models_1_1ViewModels.html#ab0582ebddef9d16c7132d454f146142fa655d20c1ca69519ca647684edbb2db35',1,'Ribosoft::Models::ViewModels']]],
   ['homecontroller_14',['HomeController',['../d7/d6c/classRibosoft_1_1Controllers_1_1HomeController.html',1,'Ribosoft::Controllers']]],
-  ['https_15',['Docker Compose with HTTPS',['../index.html#autotoc_md32',1,'']]],
+  ['https_15',['Docker Compose with HTTPS',['../index.html#autotoc_md31',1,'']]],
   ['https_20optional_16',['2. Setup HTTPS (Optional)',['../index.html#autotoc_md9',1,'']]]
 ];

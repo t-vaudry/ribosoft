@@ -114,35 +114,37 @@ $(function(){ initResizable(false); });
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_README"></a></p>
 <p><a class="el" href="dc/d09/namespaceRibosoft.html">Ribosoft</a> is a web service to design different types of trans-acting conventional and allosteric ribozymes. <a class="el" href="dc/d09/namespaceRibosoft.html">Ribosoft</a> uses template secondary structures that can be submitted by users to design ribozymes in accordance with parameters provided by the user. The generated designs specifically target a transcript (or, generally, an RNA sequence) given by the user.</p>
-<p>URL : <a href="http://ribosoft2.fungalgenomics.ca">http://ribosoft2.fungalgenomics.ca</a></p>
-<p><img src="https://github.com/t-vaudry/ribosoft/workflows/Ribosoft2%20FungalGenomics%20Uptime/badge.svg" alt="Ribosoft2 FungalGenomics Uptime" style="pointer-events: none;" class="inline"/> <img src="https://github.com/t-vaudry/ribosoft/workflows/Deployment%20to%20FungalGenomics/badge.svg?branch=master" alt="Deployment to FungalGenomics" style="pointer-events: none;" class="inline"/> <a href="https://codecov.io/gh/t-vaudry/ribosoft"><img src="https://codecov.io/gh/t-vaudry/ribosoft/branch/develop/graph/badge.svg?token=nExWlRXew4" alt="codecov" style="pointer-events: none;" class="inline"/></a> <a href="https://www.codefactor.io/repository/github/t-vaudry/ribosoft"><img src="https://www.codefactor.io/repository/github/t-vaudry/ribosoft/badge?s=f9a38174a3b592c768d1bfefc6316c85fb6925d3" alt="CodeFactor" class="inline"/></a> <img src="https://github.com/t-vaudry/ribosoft/workflows/Publish%20Docker%20image%20to%20GitHub%20Packages/badge.svg" alt="Publish Docker image to GitHub Packages" style="pointer-events: none;" class="inline"/> <img src="https://github.com/t-vaudry/ribosoft/workflows/Publish%20RibosoftAlgo%20Nuget%20Package/badge.svg" alt="Publish RibosoftAlgo Nuget Package" style="pointer-events: none;" class="inline"/> <img src="https://github.com/t-vaudry/ribosoft/workflows/Ribosoft%20.NET%20Core%20Builds/badge.svg" alt="Ribosoft .NET Core Builds" style="pointer-events: none;" class="inline"/> <img src="https://github.com/t-vaudry/ribosoft/workflows/RibosoftAlgo%20CMake%20Builds/badge.svg" alt="RibosoftAlgo CMake Builds" style="pointer-events: none;" class="inline"/> <a href="https://github.com/t-vaudry/ribosoft/actions/workflows/robot.yml"><img src="https://github.com/t-vaudry/ribosoft/actions/workflows/robot.yml/badge.svg" alt="Robot Framework Testing" style="pointer-events: none;" class="inline"/></a></p>
+<p><b>Live URL</b>: <a href="https://ribosoft2.vaudryread.ca">https://ribosoft2.vaudryread.ca</a></p>
+<p><a href="https://github.com/t-vaudry/ribosoft/actions/workflows/github-code-scanning/codeql"><img src="https://github.com/t-vaudry/ribosoft/actions/workflows/github-code-scanning/codeql/badge.svg" alt="CodeQL" style="pointer-events: none;" class="inline"/></a> <a href="https://codecov.io/gh/t-vaudry/ribosoft"><img src="https://codecov.io/gh/t-vaudry/ribosoft/branch/develop/graph/badge.svg?token=nExWlRXew4" alt="codecov" style="pointer-events: none;" class="inline"/></a> <a href="https://www.codefactor.io/repository/github/t-vaudry/ribosoft"><img src="https://www.codefactor.io/repository/github/t-vaudry/ribosoft/badge?s=f9a38174a3b592c768d1bfefc6316c85fb6925d3" alt="CodeFactor" class="inline"/></a> <a href="https://github.com/t-vaudry/ribosoft/actions/workflows/docker-publish.yml"><img src="https://github.com/t-vaudry/ribosoft/actions/workflows/docker-publish.yml/badge.svg" alt="Publish Docker Image to GitHub Container Registry" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/t-vaudry/ribosoft/actions/workflows/publish-nuget.yml"><img src="https://github.com/t-vaudry/ribosoft/actions/workflows/publish-nuget.yml/badge.svg" alt="Publish RibosoftAlgo NuGet Package" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/t-vaudry/ribosoft/actions/workflows/dotnet-core.yml"><img src="https://github.com/t-vaudry/ribosoft/actions/workflows/dotnet-core.yml/badge.svg" alt="Ribosoft .NET 8 Build and Test (Ubuntu)" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/t-vaudry/ribosoft/actions/workflows/ribosoft-algo-build.yml"><img src="https://github.com/t-vaudry/ribosoft/actions/workflows/ribosoft-algo-build.yml/badge.svg" alt="RibosoftAlgo Build and Test" style="pointer-events: none;" class="inline"/></a></p>
 <h1><a class="anchor" id="autotoc_md1"></a>
-Technology Stack (Modernized)</h1>
+Technology Stack</h1>
 <h2><a class="anchor" id="autotoc_md2"></a>
 Backend (.NET 8)</h2>
 <ul>
 <li><b>Framework</b>: ASP.NET Core 8.0</li>
 <li><b>Language</b>: C# with Entity Framework Core</li>
 <li><b>Database</b>: PostgreSQL (primary) / SQL Server (alternative)</li>
-<li><b>Background Jobs</b>: Hangfire with PostgreSQL storage</li>
+<li><b>Background Jobs</b>: Hangfire with PostgreSQL/SQL Server storage</li>
 <li><b>Authentication</b>: ASP.NET Core Identity</li>
+<li><b>Logging</b>: NLog</li>
+<li><b>Email</b>: Mailgun integration</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md3"></a>
-Frontend (Modern)</h2>
+Frontend</h2>
 <ul>
-<li><b>Framework</b>: Vue.js 3.4.21 with Bootstrap 5.3.3</li>
-<li><b>Build Tools</b>: Webpack 5.99.9, Node.js ≥18.0.0, npm ≥9.0.0</li>
-<li><b>UI Components</b>: Bootstrap-Vue-Next, modern ES2024 support</li>
+<li><b>Framework</b>: Modern JavaScript with Bootstrap 5.3.3</li>
+<li><b>Build Tools</b>: Webpack 5.91.0, Node.js ≥20.19.0, npm ≥9.0.0</li>
+<li><b>UI Components</b>: Bootstrap, jQuery, jQuery UI</li>
 <li><b>Visualization</b>: fornac (RNA structure visualization)</li>
-<li><b>Bundling</b>: Modern DLL-based vendor/app bundle splitting</li>
+<li><b>Additional Libraries</b>: QR code generation (qrious), structured filtering</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md4"></a>
 Core Algorithm (C++23)</h2>
 <ul>
-<li><b>Language</b>: C++23 with CMake build system (≥3.5)</li>
+<li><b>Language</b>: C++23 with native build system</li>
 <li><b>Parallelization</b>: OpenMP support</li>
 <li><b>Testing</b>: Catch2 framework</li>
-<li><b>Distribution</b>: NuGet packages (RibosoftAlgo)</li>
+<li><b>Distribution</b>: NuGet packages (RibosoftAlgo 2.2.0)</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md5"></a>
 Platform Support</h1>
@@ -161,7 +163,7 @@ Prerequisites</h1>
 <li><b>.NET 8 SDK</b>: <a href="https://dotnet.microsoft.com/download/dotnet/8.0">https://dotnet.microsoft.com/download/dotnet/8.0</a></li>
 <li><b>Node.js ≥20.19.0</b>: <a href="https://nodejs.org/">https://nodejs.org/</a> (Node.js 24.4.0 recommended)</li>
 <li><b>npm ≥9.0.0</b>: Included with Node.js</li>
-<li><b>CMake ≥3.5</b>: <a href="https://cmake.org/download/">https://cmake.org/download/</a></li>
+<li><b>C++ Compiler</b>: g++ with C++23 support (g++-11 or newer)</li>
 <li><b>Python 3.5+</b>: For dependency management</li>
 <li><b>PostgreSQL</b>: Recommended database (or SQL Server)</li>
 </ul>
@@ -176,8 +178,7 @@ Quick Start</h1>
 <p>For development with HTTPS: </p><div class="fragment"><div class="line"># Generate and trust development certificate</div>
 <div class="line">dotnet dev-certs https --clean</div>
 <div class="line">dotnet dev-certs https --trust</div>
-</div><!-- fragment --><p>For production, see HTTPS_SETUP.md for certificate configuration.</p>
-<h2><a class="anchor" id="autotoc_md10"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md10"></a>
 3. Install Dependencies</h2>
 <div class="fragment"><div class="line"># Install Node.js dependencies</div>
 <div class="line">npm install</div>
@@ -186,11 +187,18 @@ Quick Start</h1>
 <div class="line">pip install pipenv</div>
 <div class="line">pipenv install</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md11"></a>
-4. Build C++ Algorithm Library</h2>
-<div class="fragment"><div class="line">cd ../RibosoftAlgo/build</div>
-<div class="line">cmake .. -G &quot;Unix Makefiles&quot;</div>
-<div class="line">make</div>
-<div class="line">cd ../../Ribosoft</div>
+4. Install C++ Dependencies and Build Algorithm Library</h2>
+<div class="fragment"><div class="line"># Install Python dependencies (required for C++ dependencies)</div>
+<div class="line">pip install pipenv</div>
+<div class="line">pipenv install</div>
+<div class="line"> </div>
+<div class="line"># Install C++ dependencies (ViennaRNA, etc.)</div>
+<div class="line">pipenv run python ribosoft.py deps install --yes</div>
+<div class="line"> </div>
+<div class="line"># Build C++ algorithm library</div>
+<div class="line">cd RibosoftAlgo</div>
+<div class="line">./build-native.sh linux-x64 Release</div>
+<div class="line">cd ../Ribosoft</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md12"></a>
 5. Build Frontend (Critical Step)</h2>
 <div class="fragment"><div class="line"># Development build (recommended for local development)</div>
@@ -254,20 +262,14 @@ Available npm Scripts</h2>
 Testing</h1>
 <h2><a class="anchor" id="autotoc_md20"></a>
 C++ Unit Tests (Catch2)</h2>
-<div class="fragment"><div class="line">cd RibosoftAlgo/build</div>
-<div class="line">make tests</div>
-<div class="line">./bin/tests</div>
+<div class="fragment"><div class="line"># C++ tests are run through the .NET test framework</div>
+<div class="line">dotnet test RibosoftAlgo.Tests/RibosoftAlgo.Tests.csproj --configuration Release</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md21"></a>
 .NET Unit Tests (xUnit)</h2>
 <div class="fragment"><div class="line">dotnet test Ribosoft.Tests</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md22"></a>
-Integration Tests (Robot Framework)</h2>
-<div class="fragment"><div class="line">cd test</div>
-<div class="line">pipenv install</div>
-<div class="line">pipenv run robot --outputdir reports tests/startup.robot</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md23"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md22"></a>
 Troubleshooting</h1>
-<h2><a class="anchor" id="autotoc_md24"></a>
+<h2><a class="anchor" id="autotoc_md23"></a>
 Frontend Build Issues</h2>
 <div class="fragment"><div class="line"># If styles are missing or console errors occur</div>
 <div class="line">npm run clean</div>
@@ -275,33 +277,32 @@ Frontend Build Issues</h2>
 <div class="line"> </div>
 <div class="line"># Check that vendor-manifest.json exists</div>
 <div class="line">ls -la wwwroot/dist/vendor-manifest.json</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md25"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md24"></a>
 Database Connection Issues</h2>
 <ul>
 <li>Ensure PostgreSQL is running: <code>sudo systemctl status postgresql</code></li>
 <li>Verify connection string in <code>appsettings.json</code></li>
 <li>Check database exists and user has proper permissions</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md26"></a>
+<h2><a class="anchor" id="autotoc_md25"></a>
 C++ Library Issues</h2>
 <div class="fragment"><div class="line"># Rebuild C++ components</div>
-<div class="line">cd RibosoftAlgo/build</div>
-<div class="line">make clean</div>
-<div class="line">cmake .. &amp;&amp; make</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md27"></a>
+<div class="line">cd RibosoftAlgo</div>
+<div class="line">./build-native.sh linux-x64 Release</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md26"></a>
 Port Conflicts</h2>
 <ul>
 <li>Default application port: <code>50273</code></li>
 <li>Check <code>Properties/launchSettings.json</code> for configuration</li>
 <li>Verify port availability: <code>ss -tlnp | grep :50273</code></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md28"></a>
+<h1><a class="anchor" id="autotoc_md27"></a>
 Architecture Overview</h1>
-<h2><a class="anchor" id="autotoc_md29"></a>
+<h2><a class="anchor" id="autotoc_md28"></a>
 Project Structure</h2>
 <div class="fragment"><div class="line">ribosoft/</div>
 <div class="line">├── Ribosoft/                    # Main ASP.NET Core web application</div>
-<div class="line">│   ├── ClientApp/               # Vue.js 3 frontend application</div>
+<div class="line">│   ├── ClientApp/               # Modern JavaScript frontend application</div>
 <div class="line">│   ├── Controllers/             # MVC controllers</div>
 <div class="line">│   ├── Models/                  # Data models and view models</div>
 <div class="line">│   ├── Views/                   # Razor views</div>
@@ -311,12 +312,13 @@ Project Structure</h2>
 <div class="line">│   └── wwwroot/dist/            # Built frontend assets</div>
 <div class="line">├── RibosoftAlgo/                # C++23 core algorithm library</div>
 <div class="line">│   ├── src/                     # C++ source files</div>
-<div class="line">│   ├── include/                 # Header files</div>
-<div class="line">│   ├── test/                    # Catch2 unit tests</div>
-<div class="line">│   └── build/                   # CMake build directory</div>
+<div class="line">│   ├── build/                   # Build directory</div>
+<div class="line">│   └── build-native.sh          # Native build script</div>
 <div class="line">├── Ribosoft.Tests/              # xUnit test project</div>
-<div class="line">└── test/                        # Robot Framework integration tests</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md30"></a>
+<div class="line">├── RibosoftAlgo.Tests/          # C++ algorithm test project</div>
+<div class="line">├── NCBI.Datasets.API/           # NCBI integration library</div>
+<div class="line">└── docs/                        # Documentation</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md29"></a>
 Key Features</h2>
 <ul>
 <li><b>Ribozyme Design</b>: Template-based ribozyme generation</li>
@@ -328,13 +330,13 @@ Key Features</h2>
 <li><b>RNA Visualization</b>: Interactive structure visualization</li>
 <li><b>Enhanced Accessibility Scoring</b>: Section-based analysis of binding site accessibility (improved from binary approach)</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md31"></a>
+<h1><a class="anchor" id="autotoc_md30"></a>
 Docker Support</h1>
 <p><a class="el" href="dc/d09/namespaceRibosoft.html">Ribosoft</a> has been published as a docker application that can be used locally to run the service for larger jobs. This can help have control over the resources allocated to your service, and succeed in larger queries.</p>
 <p>To achieve the proper configuration, Docker Compose is used.</p>
-<h2><a class="anchor" id="autotoc_md32"></a>
+<h2><a class="anchor" id="autotoc_md31"></a>
 Docker Compose with HTTPS</h2>
-<p>Below is an example docker-compose.yml file with HTTPS support.</p>
+<p>Below is an example docker-compose.yml file with HTTPS support and all required environment variables.</p>
 <div class="fragment"><div class="line">version: &#39;3.8&#39;</div>
 <div class="line"> </div>
 <div class="line">volumes:</div>
@@ -366,20 +368,59 @@ Docker Compose with HTTPS</h2>
 <div class="line">      context: .</div>
 <div class="line">      dockerfile: Ribosoft/Dockerfile</div>
 <div class="line">    environment:</div>
+<div class="line">      # ASP.NET Core Configuration</div>
 <div class="line">      ASPNETCORE_ENVIRONMENT: Production</div>
 <div class="line">      ASPNETCORE_URLS: https://+:443;http://+:80</div>
+<div class="line">      </div>
+<div class="line">      # Database Configuration</div>
 <div class="line">      ConnectionStrings__NpgsqlConnection: &quot;Host=db;Port=5432;Username=postgres;Password=postgres;Database=ribosoft;Pooling=true;&quot;</div>
 <div class="line">      DB_CONTEXT: NpgsqlDbContext</div>
 <div class="line">      EntityFrameworkProvider: Npgsql</div>
+<div class="line">      </div>
+<div class="line">      # Frontend Build Configuration</div>
 <div class="line">      NODE_ENV: production</div>
+<div class="line">      </div>
+<div class="line">      # Email Configuration (Mailgun)</div>
+<div class="line">      MailgunAPIKey: &quot;your-mailgun-api-key&quot;</div>
+<div class="line">      MailgunDomain: &quot;your-mailgun-domain.com&quot;</div>
+<div class="line">      SenderEmail: &quot;noreply@your-domain.com&quot;</div>
+<div class="line">      SenderName: &quot;Ribosoft&quot;</div>
+<div class="line">      </div>
+<div class="line">      # NCBI Datasets API Configuration</div>
+<div class="line">      NCBIDatasetsApi__ApiKey: &quot;your-ncbi-api-key&quot;</div>
+<div class="line">      NCBIDatasetsApi__BaseUrl: &quot;https://api.ncbi.nlm.nih.gov/datasets/v2&quot;</div>
+<div class="line">      NCBIDatasetsApi__TimeoutSeconds: &quot;30&quot;</div>
+<div class="line">      NCBIDatasetsApi__MaxRetryAttempts: &quot;3&quot;</div>
+<div class="line">      NCBIDatasetsApi__RetryDelaySeconds: &quot;1&quot;</div>
+<div class="line">      </div>
+<div class="line">      # BLAST Configuration</div>
+<div class="line">      Assemblies__Path: &quot;/app/blastdb&quot;</div>
+<div class="line">      Assemblies__NumThreads: &quot;4&quot;</div>
+<div class="line">      Assemblies__MakeBlastDbPath: &quot;makeblastdb&quot;</div>
+<div class="line">      Assemblies__AutoCreateBlastDatabase: &quot;true&quot;</div>
+<div class="line">      Assemblies__MaxBlastDbFileSizeMB: &quot;500&quot;</div>
+<div class="line">      Assemblies__SkipBlastDbForLargeFiles: &quot;false&quot;</div>
+<div class="line">      Assemblies__CleanupAfterProcessing: &quot;true&quot;</div>
+<div class="line">      Assemblies__CleanupZipFiles: &quot;true&quot;</div>
+<div class="line">      </div>
+<div class="line">      # Logging Configuration</div>
+<div class="line">      Logging__LogLevel__Default: &quot;Information&quot;</div>
+<div class="line">      Logging__LogLevel__Microsoft: &quot;Warning&quot;</div>
+<div class="line">      Logging__LogLevel__Microsoft.Hosting.Lifetime: &quot;Information&quot;</div>
+<div class="line">      </div>
+<div class="line">      # Security Configuration</div>
+<div class="line">      ASPNETCORE_HTTPS_PORT: &quot;443&quot;</div>
+<div class="line">      </div>
 <div class="line">    volumes:</div>
 <div class="line">      - ribosoft_logs:/app/logs</div>
 <div class="line">      - ribosoft_certificates:/app/certificates</div>
 <div class="line">      # Mount your certificate directory:</div>
 <div class="line">      # - ./certificates:/app/certificates:ro</div>
+<div class="line">      # Mount BLAST database directory:</div>
+<div class="line">      # - ./blastdb:/app/blastdb</div>
 <div class="line">    depends_on:</div>
 <div class="line">      - &quot;db&quot;</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md33"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md32"></a>
 Quick Docker Setup</h2>
 <div class="fragment"><div class="line"># Start the services</div>
 <div class="line">docker-compose up -d</div>
@@ -387,7 +428,7 @@ Quick Docker Setup</h2>
 <div class="line"># The service will run at:</div>
 <div class="line"># HTTP:  http://localhost:5000 (redirects to HTTPS)</div>
 <div class="line"># HTTPS: https://localhost:5001 (if certificate is provided)</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md34"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md33"></a>
 Production Deployment with Your Certificate</h2>
 <ol type="1">
 <li><b>Place your certificate</b> (in .pfx format) in a <code>certificates</code> directory</li>
@@ -398,55 +439,28 @@ Production Deployment with Your Certificate</h2>
 <li><b>Start the containers</b>: <div class="fragment"><div class="line">docker-compose up -d</div>
 </div><!-- fragment --></li>
 </ol>
-<p><b>Note</b>: For production, use certificates from trusted Certificate Authorities (Let's Encrypt, etc.). See HTTPS_SETUP.md for detailed instructions.</p>
-<h1><a class="anchor" id="autotoc_md35"></a>
-Development Notes</h1>
-<h2><a class="anchor" id="autotoc_md36"></a>
-Frontend Modernization</h2>
-<p>The frontend has been completely modernized with:</p><ul>
-<li><b>Vue.js 3.4.21</b>: Composition API, improved TypeScript support</li>
-<li><b>Bootstrap 5.3.3</b>: Modern CSS framework with improved accessibility</li>
-<li><b>Webpack 5.99.9</b>: Modern bundling with improved tree-shaking and caching</li>
-<li><b>ES2024</b>: Latest JavaScript features and syntax</li>
-<li><b>Modern Build Pipeline</b>: Separate vendor and application bundles for optimal loading</li>
-</ul>
-<h2><a class="anchor" id="autotoc_md37"></a>
-C++23 Modernization</h2>
-<p>The core algorithm library has been updated to:</p><ul>
-<li><b>C++23 Standard</b>: Latest language features and improvements</li>
-<li><b>Modern CMake</b>: Improved build system configuration</li>
-<li><b>Enhanced Testing</b>: Comprehensive Catch2 test suite</li>
-<li><b>Cross-platform</b>: Focus on Linux with planned macOS/Windows support</li>
-</ul>
-<h2><a class="anchor" id="autotoc_md38"></a>
-Performance Optimizations</h2>
-<ul>
-<li><b>DLL-based Bundling</b>: Vendor libraries cached separately from application code</li>
-<li><b>Code Splitting</b>: Lazy loading of route-specific components</li>
-<li><b>Modern Caching</b>: Webpack 5 persistent caching for faster rebuilds</li>
-<li><b>OpenMP Parallelization</b>: Multi-threaded C++ algorithm execution</li>
-</ul>
-<h1><a class="anchor" id="autotoc_md39"></a>
+<p><b>Note</b>: For production, use certificates from trusted Certificate Authorities (Let's Encrypt, etc.).</p>
+<h1><a class="anchor" id="autotoc_md34"></a>
 Contributing</h1>
 <ol type="1">
 <li>Fork the repository</li>
 <li>Create a feature branch (<code>git checkout -b feature/amazing-feature</code>)</li>
 <li>Make your changes following the modernized architecture</li>
-<li>Ensure all tests pass (<code>npm test</code>, <code>dotnet test</code>, <code>make tests</code>)</li>
+<li>Ensure all tests pass (<code>npm test</code>, <code>dotnet test</code>)</li>
 <li>Run code formatting (<code>npm run format</code>, <code>npm run lint</code>)</li>
 <li>Commit your changes (&lsquo;git commit -m 'Add amazing feature&rsquo;<code>)</code></li>
 <li><code>Push to the branch (</code>git push origin feature/amazing-feature`)</li>
 <li>Open a Pull Request</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md40"></a>
+<h1><a class="anchor" id="autotoc_md35"></a>
 License</h1>
 <p><a href="https://choosealicense.com/licenses/gpl-3.0/">GNU General Public License v3.0</a></p>
-<h1><a class="anchor" id="autotoc_md41"></a>
+<h1><a class="anchor" id="autotoc_md36"></a>
 Acknowledgments</h1>
 <ul>
 <li>Built with modern web technologies for optimal performance</li>
 <li>Scientific computing powered by C++23 algorithms</li>
-<li>Responsive design with Bootstrap 5 and Vue.js 3</li>
+<li>Responsive design with Bootstrap 5 and modern JavaScript</li>
 <li>Continuous integration and deployment via GitHub Actions </li>
 </ul>
 </div></div><!-- PageDoc -->

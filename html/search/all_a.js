@@ -10,8 +10,8 @@ var searchData=
   ['blastparametersforquery_7',['BlastParametersForQuery',['../da/dc2/classRibosoft_1_1Jobs_1_1GenerateCandidates.html#ac1611f05a5c4e68d6d2ca3e32a7f2ea3',1,'Ribosoft::Jobs::GenerateCandidates']]],
   ['blasttask_8',['BlastTask',['../d7/d7c/classRibosoft_1_1Blast_1_1BlastParameters.html#adb117bfc749c3c079333873eb36dbad4',1,'Ribosoft::Blast::BlastParameters']]],
   ['browsedatasets_9',['BrowseDatasets',['../dc/da6/classRibosoft_1_1Controllers_1_1AssembliesController.html#a237a7ace133fb4a08ea8a64506821a72',1,'Ribosoft::Controllers::AssembliesController']]],
-  ['build_20c_20algorithm_20library_10',['4. Build C++ Algorithm Library',['../index.html#autotoc_md11',1,'']]],
+  ['build_20algorithm_20library_10',['4. Install C++ Dependencies and Build Algorithm Library',['../index.html#autotoc_md11',1,'']]],
   ['build_20frontend_20critical_20step_11',['5. Build Frontend (Critical Step)',['../index.html#autotoc_md12',1,'']]],
-  ['build_20issues_12',['Frontend Build Issues',['../index.html#autotoc_md24',1,'']]],
+  ['build_20issues_12',['Frontend Build Issues',['../index.html#autotoc_md23',1,'']]],
   ['bytes_13',['Bytes',['../d9/d4a/classRibosoft_1_1Blast_1_1Database.html#a68f7fd9599b043f39bb08868ab4285d5',1,'Ribosoft::Blast::Database']]]
 ];

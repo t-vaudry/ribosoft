@@ -1,7 +1,7 @@
 var searchData=
 [
   ['failed_0',['Failed',['../d2/d21/namespaceRibosoft_1_1Models.html#a8708ea7595451ede6b19ca64d9fa303bad7c8c85bf79bbe1b7188497c32c3b0ca',1,'Ribosoft::Models']]],
-  ['features_1',['Key Features',['../index.html#autotoc_md30',1,'']]],
+  ['features_1',['Key Features',['../index.html#autotoc_md29',1,'']]],
   ['filesize_2',['FileSize',['../d7/d35/classRibosoft_1_1Models_1_1DatasetDownload.html#a5b97c676188122b321798f235ab0fcbc',1,'Ribosoft::Models::DatasetDownload']]],
   ['filter_3',['Filter',['../da/d16/structRibosoft_1_1Models_1_1JobsViewModels_1_1JobDetailsViewModel_1_1Filter.html',1,'Ribosoft::Models::JobsViewModels::JobDetailsViewModel']]],
   ['filterdesigns_4',['FilterDesigns',['../dd/d5b/classRibosoft_1_1Controllers_1_1JobsController.html#a8ce890bdf212d0cc855482fdbdfc70b3',1,'Ribosoft::Controllers::JobsController']]],
@@ -22,10 +22,8 @@ var searchData=
   ['formaterrormessage_19',['FormatErrorMessage',['../d9/d39/classRibosoft_1_1ValidationAttributes_1_1NucleotideAttribute.html#ab6c1fcd109825d036d0abeaa5c85d13b',1,'Ribosoft.ValidationAttributes.NucleotideAttribute.FormatErrorMessage()'],['../d0/d8e/classRibosoft_1_1ValidationAttributes_1_1OpenReadingFrameAttribute.html#a6c9ffe19e410f08ceac57316ca0448fb',1,'Ribosoft.ValidationAttributes.OpenReadingFrameAttribute.FormatErrorMessage()'],['../de/dd2/classRibosoft_1_1ValidationAttributes_1_1RepeatNotationsAttribute.html#a31b42864ba6ebbfe0c8fbe298f997d79',1,'Ribosoft.ValidationAttributes.RepeatNotationsAttribute.FormatErrorMessage()'],['../d7/d69/classRibosoft_1_1ValidationAttributes_1_1UniqueAlphaNumericStructureAttribute.html#ae78f77dc4f9dbfb624acbd50cf0f8b1e',1,'Ribosoft.ValidationAttributes.UniqueAlphaNumericStructureAttribute.FormatErrorMessage()'],['../da/d0b/classRibosoft_1_1ValidationAttributes_1_1ValidateRequestAttribute.html#a9b84c4f8b49e891bff3621b96b4dc8fb',1,'Ribosoft.ValidationAttributes.ValidateRequestAttribute.FormatErrorMessage()'],['../d8/d8d/classRibosoft_1_1ValidationAttributes_1_1ValidateRibozymeStructureAttribute.html#a207c616489e453c4599c0eaefd8c8485',1,'Ribosoft.ValidationAttributes.ValidateRibozymeStructureAttribute.FormatErrorMessage()'],['../d2/d7f/classRibosoft_1_1ValidationAttributes_1_1ValidStructureAttribute.html#ac9b962e14a18a4a79c03580ee050d14c',1,'Ribosoft.ValidationAttributes.ValidStructureAttribute.FormatErrorMessage()']]],
   ['formatfilesize_20',['FormatFileSize',['../dc/da6/classRibosoft_1_1Controllers_1_1AssembliesController.html#aab19c327faa4d886887aa0f0fdeac596',1,'Ribosoft::Controllers::AssembliesController']]],
   ['formatkey_21',['FormatKey',['../dd/d56/classRibosoft_1_1Controllers_1_1ManageController.html#ac50bf1d3b5383b34ba13a78412f193d0',1,'Ribosoft::Controllers::ManageController']]],
-  ['framework_22',['Integration Tests (Robot Framework)',['../index.html#autotoc_md22',1,'']]],
-  ['frontend_20build_20issues_23',['Frontend Build Issues',['../index.html#autotoc_md24',1,'']]],
+  ['frontend_22',['Frontend',['../index.html#autotoc_md3',1,'']]],
+  ['frontend_20build_20issues_23',['Frontend Build Issues',['../index.html#autotoc_md23',1,'']]],
   ['frontend_20critical_20step_24',['5. Build Frontend (Critical Step)',['../index.html#autotoc_md12',1,'']]],
-  ['frontend_20development_25',['Frontend Development',['../index.html#autotoc_md16',1,'']]],
-  ['frontend_20modern_26',['Frontend (Modern)',['../index.html#autotoc_md3',1,'']]],
-  ['frontend_20modernization_27',['Frontend Modernization',['../index.html#autotoc_md36',1,'']]]
+  ['frontend_20development_25',['Frontend Development',['../index.html#autotoc_md16',1,'']]]
 ];
