@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.HttpOverrides;
 using NLog;
 using NLog.Web;
 using Ribosoft.Configuration;
@@ -31,6 +32,12 @@ public class Program
             logger.Debug("Starting Ribosoft .NET 8 application");
 
             var builder = WebApplication.CreateBuilder(args);
+
+            // Configure Kestrel to use configuration (including environment variables)
+            builder.WebHost.UseKestrel((context, serverOptions) =>
+            {
+                serverOptions.Configure(context.Configuration.GetSection("Kestrel"));
+            });
 
             // Configure services
             ConfigureServices(builder.Services, builder.Configuration);
@@ -166,14 +173,19 @@ public class Program
                                configuration.GetValue<int?>("ASPNETCORE_HTTPS_PORT");
         });
 
+        // Configure forwarded headers for reverse proxy support
+        services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
+        });
+
         // Hangfire server
         services.AddHangfireServer(options =>
         {
             options.Queues = new[] { "default", "blast", "downloads", "downloads-high", "downloads-low" };
         });
-
-        // Configure Kestrel for HTTPS certificates
-        services.Configure<KestrelServerOptions>(configuration.GetSection("Kestrel"));
     }
     
     private static void ConfigurePipeline(WebApplication app)
@@ -190,6 +202,9 @@ public class Program
             // Enable HSTS (HTTP Strict Transport Security) in production
             app.UseHsts();
         }
+        
+        // Use forwarded headers for reverse proxy support
+        app.UseForwardedHeaders();
         
         // Enable HTTPS redirection
         app.UseHttpsRedirection();

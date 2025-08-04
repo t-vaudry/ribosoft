@@ -1,0 +1,107 @@
+version: '3.8'
+
+# Docker Compose configuration for use with Nginx Proxy Manager
+# This configuration exposes only HTTP port since HTTPS is handled by the proxy
+
+volumes:
+  pgdata:
+    driver: local
+  ribosoft_logs:
+    driver: local
+
+networks:
+  ribosoft_network:
+    driver: bridge
+  # Add this network if you want to connect to an external nginx-proxy-manager network
+  # nginx-proxy-manager:
+  #   external: true
+
+services:
+  db:
+    image: postgres:latest
+    container_name: ribosoft_db
+    restart: unless-stopped
+    # Remove external port mapping since we're behind a proxy
+    # ports:
+    #   - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ribosoft
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - ribosoft_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ribosoft"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+
+  ribosoft:
+    container_name: ribosoft_app
+    restart: unless-stopped
+    # Only expose HTTP port - HTTPS is handled by Nginx Proxy Manager
+    ports:
+      - "8080:80"  # Change to a different port to avoid conflicts
+    build:
+      context: .
+      dockerfile: Ribosoft/Dockerfile
+      target: runtime
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      # Only HTTP since HTTPS is terminated at the proxy
+      ASPNETCORE_URLS: "http://+:80"
+      
+      # Database connection
+      ConnectionStrings__NpgsqlConnection: "Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD:-postgres};Database=ribosoft;Pooling=true;Timeout=30;Command Timeout=30;"
+      DB_CONTEXT: NpgsqlDbContext
+      EntityFrameworkProvider: Npgsql
+      NODE_ENV: production
+      
+      # Logging
+      ASPNETCORE_LOGGING__LOGLEVEL__DEFAULT: Information
+      ASPNETCORE_LOGGING__LOGLEVEL__MICROSOFT: Warning
+      
+      # Reverse proxy configuration
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      
+      # Optional: Set the external HTTPS port for redirects (handled by proxy)
+      HTTPS_PORT: 443
+      
+    volumes:
+      - ribosoft_logs:/app/logs
+      # Certificate not needed since HTTPS is handled by Nginx Proxy Manager
+    networks:
+      - ribosoft_network
+      # Uncomment if connecting to external nginx-proxy-manager network
+      # - nginx-proxy-manager
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.25'
