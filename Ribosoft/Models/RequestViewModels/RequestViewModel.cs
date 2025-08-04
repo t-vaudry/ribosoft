@@ -36,7 +36,9 @@ namespace Ribosoft.Models.RequestViewModels
             }
             set
             {
-                this.inputSequence = value.Replace("\n", "").Replace("\r", "").ToUpper();
+                // Remove all whitespace characters (spaces, tabs, newlines, carriage returns, etc.)
+                // and convert to uppercase for consistency
+                this.inputSequence = System.Text.RegularExpressions.Regex.Replace(value ?? "", @"\s", "").ToUpper();
             }
         }
         /*! \property inputSequence
