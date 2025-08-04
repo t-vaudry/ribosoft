@@ -105,6 +105,7 @@ public class FlexibleNumberConvertersTests
         var result = JsonSerializer.Deserialize<TestAssemblyStats>(json, _options);
 
         // Assert
+        Assert.NotNull(result);
         Assert.Equal(12345678L, result.TotalSequenceLength);
         Assert.Equal(42, result.NumberOfContigs);
         Assert.Equal(45.67f, result.GcPercent, precision: 2);

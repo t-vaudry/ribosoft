@@ -22,6 +22,8 @@ public class ApiConnectivityTests : IDisposable
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", optional: false)
             .AddJsonFile("appsettings.Development.json", optional: true)
+            .AddJsonFile("appsettings.Test.json", optional: true)
+            .AddEnvironmentVariables()
             .Build();
 
         // Setup dependency injection
@@ -67,6 +69,8 @@ public class ApiConnectivityTests : IDisposable
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", optional: false)
             .AddJsonFile("appsettings.Development.json", optional: true)
+            .AddJsonFile("appsettings.Test.json", optional: true)
+            .AddEnvironmentVariables()
             .Build();
 
         var apiKey = configuration["NCBIDatasetsApi:ApiKey"];

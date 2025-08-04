@@ -22,6 +22,8 @@ public class TaxonomyAssemblyReportsTests : IDisposable
         var configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", optional: true)
             .AddJsonFile("appsettings.Development.json", optional: true)
+            .AddJsonFile("appsettings.Test.json", optional: true)
+            .AddEnvironmentVariables()
             .Build();
 
         // Setup dependency injection

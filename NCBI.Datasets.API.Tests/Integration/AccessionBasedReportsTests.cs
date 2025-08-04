@@ -18,10 +18,12 @@ public class AccessionBasedReportsTests : IDisposable
     {
         _output = output;
         
-        // Setup configuration
+        // Setup configuration - include environment variables for CI/CD scenarios
         var configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", optional: true)
             .AddJsonFile("appsettings.Development.json", optional: true)
+            .AddJsonFile("appsettings.Test.json", optional: true)
+            .AddEnvironmentVariables() // This will read NCBIDatasetsApi__ApiKey from environment
             .Build();
 
         // Setup dependency injection
@@ -34,6 +36,7 @@ public class AccessionBasedReportsTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "Integration")]
     public async Task GetAssemblyDatasetReportsAsync_WithEColiAccession_ReturnsCompleteData()
     {
         // Arrange - E. coli K-12 MG1655 reference genome accession
@@ -94,6 +97,7 @@ public class AccessionBasedReportsTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "Integration")]
     public async Task GetAssemblyDatasetReportsAsync_WithMultipleAccessions_ReturnsCompleteData()
     {
         // Arrange - Multiple well-known reference genomes
