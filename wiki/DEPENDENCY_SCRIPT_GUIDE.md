@@ -1,0 +1,501 @@
+# Ribosoft Dependency Script Guide
+
+This guide covers the usage of the `ribosoft.py` dependency management script, which handles C++ library dependencies for the Ribosoft bioinformatics application. The script is built with Python 3.13 for optimal performance and manages ViennaRNA and Melting library packages.
+
+## Overview
+
+The dependency script (`ribosoft.py`) is a cutting-edge dependency management tool that:
+
+- Downloads and installs C++ libraries (ViennaRNA, Melting) required for bioinformatics calculations
+- Manages package versions and updates automatically
+- Provides enhanced error reporting and debugging
+- Supports parallel downloads for improved performance
+- Uses atomic file operations for reliability
+
+## Prerequisites
+
+### Python Requirements
+
+The script requires **Python 3.13 or higher** for optimal performance and access to cutting-edge features:
+
+- Enhanced error messages and debugging
+- JIT compilation optimizations
+- Improved typing system with `Self` and `override`
+- Better memory management and startup time
+- Advanced match statements for better performance
+
+### Installation
+
+1. **Install Python dependencies using pipenv**:
+   ```bash
+   pip install pipenv
+   pipenv install
+   ```
+
+2. **Verify Python version**:
+   ```bash
+   pipenv run python --version
+   # Should show Python 3.13.x or higher
+   ```
+
+## Script Structure
+
+### Configuration Files
+
+The dependency script uses several configuration files:
+
+- **`deps.json`**: Main dependency configuration file
+- **`deps.lock`**: Lock file tracking installed versions
+- **`.deps/`**: Directory containing installed dependencies
+
+### Current Dependencies
+
+The script manages these C++ libraries:
+
+1. **ViennaRNA** (version 2.4.3-121e5f9): RNA secondary structure prediction
+2. **Melting** (version 4.3-87f0ff7): DNA/RNA melting temperature calculations
+
+## Basic Usage
+
+### Running the Script
+
+All commands should be run using pipenv to ensure proper Python environment:
+
+```bash
+# General syntax
+pipenv run python ribosoft.py [OPTIONS] COMMAND [ARGS]
+
+# Get help
+pipenv run python ribosoft.py --help
+```
+
+### Available Commands
+
+The script provides two main command groups:
+
+1. **Main CLI**: `ribosoft.py [OPTIONS] COMMAND`
+2. **Dependency Management**: `ribosoft.py deps [OPTIONS] COMMAND`
+
+## Command Reference
+
+### Main CLI Options
+
+```bash
+pipenv run python ribosoft.py --help
+```
+
+**Options:**
+- `-v, --verbosity LVL`: Set logging level (CRITICAL, ERROR, WARNING, INFO, DEBUG)
+- `--help`: Show help message
+
+**Available Commands:**
+- `deps`: Manage package dependencies for C++ libraries
+
+### Dependency Management Commands
+
+#### 1. Check Dependencies
+
+Check the status of locally installed packages against requirements:
+
+```bash
+pipenv run python ribosoft.py deps check
+```
+
+**What it does:**
+- Compares installed versions with required versions in `deps.json`
+- Shows installation status for each dependency
+- Provides color-coded status indicators
+
+**Example output:**
+```
+[OK] viennarna: installed = 2.4.3-121e5f9, wanted = 2.4.3-121e5f9 (up to date)
+[INSTALL] melting: installed = not installed, wanted = 4.3-87f0ff7 (install required)
+```
+
+**Status indicators:**
+- `[OK]` (green): Package is up to date
+- `[INSTALL]` (yellow): Package needs to be installed
+- `[UPDATE]` (green): Package update is available
+- `[REMOVE]` (red): Package needs to be removed
+
+#### 2. Install Dependencies
+
+Install or update packages according to the `deps.json` configuration:
+
+```bash
+# Interactive installation (prompts for confirmation)
+pipenv run python ribosoft.py deps install
+
+# Automatic installation (skip confirmation)
+pipenv run python ribosoft.py deps install --yes
+
+# Enable parallel downloads (experimental)
+pipenv run python ribosoft.py deps install --parallel
+```
+
+**Options:**
+- `-y, --yes`: Skip confirmation prompt and proceed automatically
+- `-p, --parallel`: Enable parallel downloads (experimental Python 3.13 feature)
+
+**What it does:**
+- Downloads required C++ libraries from the catalog
+- Installs packages to the `.deps/` directory
+- Updates the `deps.lock` file with installed versions
+- Provides progress feedback and error handling
+
+## Configuration Files
+
+### deps.json
+
+The main configuration file that specifies required dependencies:
+
+```json
+{
+  "catalog-url": "https://ribosoftdeps.blob.core.windows.net/catalog/catalog.json",
+  "packages": [
+    {
+      "name": "viennarna",
+      "version": "2.4.3-121e5f9"
+    },
+    {
+      "name": "melting",
+      "version": "4.3-87f0ff7"
+    }
+  ]
+}
+```
+
+**Fields:**
+- `catalog-url`: URL to the package catalog containing download information
+- `packages`: Array of required packages with name and version
+
+### deps.lock
+
+Lock file that tracks actually installed versions:
+
+```json
+{
+  "packages": [
+    {
+      "name": "viennarna",
+      "version": "2.4.3-121e5f9"
+    },
+    {
+      "name": "melting",
+      "version": "4.3-87f0ff7"
+    }
+  ]
+}
+```
+
+This file is automatically generated and updated by the script.
+
+### Installation Directory
+
+Dependencies are installed to the `.deps/` directory:
+
+```
+.deps/
+├── viennarna/
+│   ├── include/
+│   ├── lib/
+│   └── bin/
+└── melting/
+    ├── include/
+    ├── lib/
+    └── bin/
+```
+
+## Common Usage Scenarios
+
+### Initial Setup
+
+When setting up Ribosoft for the first time:
+
+```bash
+# 1. Check current status
+pipenv run python ribosoft.py deps check
+
+# 2. Install all required dependencies
+pipenv run python ribosoft.py deps install --yes
+```
+
+### Updating Dependencies
+
+To update to newer versions:
+
+1. **Update `deps.json`** with new version numbers
+2. **Run the install command**:
+   ```bash
+   pipenv run python ribosoft.py deps install
+   ```
+
+### Checking Installation Status
+
+Before building the C++ components:
+
+```bash
+# Check if all dependencies are properly installed
+pipenv run python ribosoft.py deps check
+```
+
+### Automated CI/CD Usage
+
+For continuous integration pipelines:
+
+```bash
+# Non-interactive installation for CI/CD
+pipenv run python ribosoft.py deps install --yes
+```
+
+## Advanced Features
+
+### Parallel Downloads
+
+Enable experimental parallel downloads for faster installation:
+
+```bash
+pipenv run python ribosoft.py deps install --parallel
+```
+
+**Benefits:**
+- Faster download times for multiple packages
+- Utilizes Python 3.13 performance optimizations
+- Concurrent download handling
+
+### Verbose Logging
+
+Enable detailed logging for troubleshooting:
+
+```bash
+# Debug level logging
+pipenv run python ribosoft.py --verbosity DEBUG deps install
+
+# Info level logging
+pipenv run python ribosoft.py --verbosity INFO deps check
+```
+
+**Log levels:**
+- `CRITICAL`: Only critical errors
+- `ERROR`: Error messages (default)
+- `WARNING`: Warnings and errors
+- `INFO`: Informational messages
+- `DEBUG`: Detailed debugging information
+
+## Troubleshooting
+
+### Common Issues
+
+#### Python Version Error
+
+**Error**: "This script requires Python 3.13 or higher"
+
+**Solution**:
+```bash
+# Check Python version in pipenv
+pipenv run python --version
+
+# If needed, update pipenv environment
+pipenv --python 3.13
+pipenv install
+```
+
+#### Missing Dependencies
+
+**Error**: "ModuleNotFoundError: No module named 'click_log'"
+
+**Solution**:
+```bash
+# Reinstall pipenv dependencies
+pipenv install --dev
+```
+
+#### Network Connection Issues
+
+**Error**: Download failures or timeout errors
+
+**Solutions**:
+```bash
+# Retry with verbose logging
+pipenv run python ribosoft.py --verbosity DEBUG deps install
+
+# Check network connectivity
+curl -I https://ribosoftdeps.blob.core.windows.net/catalog/catalog.json
+
+# Try without parallel downloads
+pipenv run python ribosoft.py deps install --yes
+```
+
+#### Permission Issues
+
+**Error**: Permission denied when writing to `.deps/` directory
+
+**Solutions**:
+```bash
+# Check directory permissions
+ls -la .deps/
+
+# Fix permissions if needed
+chmod -R 755 .deps/
+
+# Ensure directory exists
+mkdir -p .deps
+```
+
+#### Corrupted Installation
+
+**Error**: Packages appear installed but builds fail
+
+**Solutions**:
+```bash
+# Remove and reinstall dependencies
+rm -rf .deps/
+rm deps.lock
+pipenv run python ribosoft.py deps install --yes
+```
+
+### Debugging Steps
+
+1. **Check dependency status**:
+   ```bash
+   pipenv run python ribosoft.py deps check
+   ```
+
+2. **Enable verbose logging**:
+   ```bash
+   pipenv run python ribosoft.py --verbosity DEBUG deps install
+   ```
+
+3. **Verify configuration files**:
+   ```bash
+   # Check deps.json syntax
+   python -m json.tool deps.json
+
+   # Check if catalog is accessible
+   curl https://ribosoftdeps.blob.core.windows.net/catalog/catalog.json
+   ```
+
+4. **Clean installation**:
+   ```bash
+   # Remove all installed dependencies
+   rm -rf .deps/
+   rm -f deps.lock
+   
+   # Reinstall from scratch
+   pipenv run python ribosoft.py deps install --yes
+   ```
+
+## Integration with Build Process
+
+### In Building Workflow
+
+The dependency script is typically used as part of the build process:
+
+```bash
+# 1. Install Python dependencies
+pip install pipenv
+pipenv install
+
+# 2. Install C++ dependencies
+pipenv run python ribosoft.py deps install --yes
+
+# 3. Build C++ algorithm library
+cd RibosoftAlgo
+./build-native.sh linux-x64 Release
+cd ../Ribosoft
+
+# 4. Build .NET application
+dotnet build
+```
+
+### In Docker
+
+For containerized builds, the dependency script is used in the Dockerfile:
+
+```dockerfile
+# Install Python dependencies
+RUN pip install pipenv
+COPY Pipfile Pipfile.lock ./
+RUN pipenv install --system --deploy
+
+# Install C++ dependencies
+COPY deps.json ribosoft.py ./
+RUN python ribosoft.py deps install --yes
+```
+
+### In CI/CD Pipelines
+
+For GitHub Actions or other CI systems:
+
+```yaml
+- name: Install C++ Dependencies
+  run: |
+    pip install pipenv
+    pipenv install
+    pipenv run python ribosoft.py deps install --yes
+```
+
+## Performance Considerations
+
+### Python 3.13 Optimizations
+
+The script leverages Python 3.13 features for better performance:
+
+- **JIT compilation**: Faster execution of frequently used code paths
+- **Enhanced error messages**: Better debugging with detailed stack traces
+- **Improved memory management**: Reduced memory usage and faster startup
+- **Better typing system**: Runtime type checking with `Self` and `override`
+
+### Download Optimization
+
+- **Parallel downloads**: Use `--parallel` flag for concurrent downloads
+- **Atomic operations**: Ensures file integrity during downloads
+- **Resume capability**: Can resume interrupted downloads
+- **Checksum verification**: Validates downloaded files
+
+## Security Considerations
+
+### Package Integrity
+
+- All packages are downloaded from a trusted catalog URL
+- Checksums are verified for downloaded packages
+- Atomic file operations prevent corruption
+
+### Network Security
+
+- Uses HTTPS for all downloads
+- Implements retry logic with exponential backoff
+- Validates SSL certificates
+
+## Getting Help
+
+### Built-in Help
+
+```bash
+# Main help
+pipenv run python ribosoft.py --help
+
+# Dependency management help
+pipenv run python ribosoft.py deps --help
+
+# Specific command help
+pipenv run python ribosoft.py deps install --help
+```
+
+### Additional Resources
+
+- **GitHub Issues**: Report problems at https://github.com/t-vaudry/ribosoft/issues
+- **Documentation**: Check the main README.md for additional information
+- **Build Guide**: Refer to BUILDING.md for complete build instructions
+
+### Support Information
+
+If you encounter issues with the dependency script:
+
+1. **Check Python version**: Ensure you're using Python 3.13+
+2. **Verify network connectivity**: Test access to the catalog URL
+3. **Enable debug logging**: Use `--verbosity DEBUG` for detailed output
+4. **Clean installation**: Remove `.deps/` and `deps.lock` for fresh install
+5. **Check GitHub Issues**: Look for similar problems and solutions
+
+The dependency script is designed to be robust and self-healing, with comprehensive error handling and recovery mechanisms built-in.
