@@ -126,7 +126,7 @@ public class GenomeServiceTests
         var apiResponse = ApiResponse<AssemblyDatasetReport>.Success(expectedResponse);
 
         _mockHttpClient
-            .Setup(x => x.GetAsync<AssemblyDatasetReport>("genome/dataset_report/GCF_000001405.40", It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetAsync<AssemblyDatasetReport>("genome/accession/GCF_000001405.40/dataset_report", It.IsAny<CancellationToken>()))
             .ReturnsAsync(apiResponse);
 
         // Act
@@ -154,7 +154,7 @@ public class GenomeServiceTests
 
         _mockHttpClient
             .Setup(x => x.GetAsync<AssemblyDatasetReport>(
-                "genome/dataset_report/GCF_000001405.40?page_size=10&page_token=next_page_token&returned_content=Complete", 
+                "genome/accession/GCF_000001405.40/dataset_report?page_size=10&page_token=next_page_token&returned_content=Complete", 
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(apiResponse);
 
@@ -164,7 +164,7 @@ public class GenomeServiceTests
         // Assert
         Assert.True(result.IsSuccess);
         _mockHttpClient.Verify(x => x.GetAsync<AssemblyDatasetReport>(
-            "genome/dataset_report/GCF_000001405.40?page_size=10&page_token=next_page_token&returned_content=Complete", 
+            "genome/accession/GCF_000001405.40/dataset_report?page_size=10&page_token=next_page_token&returned_content=Complete", 
             It.IsAny<CancellationToken>()), Times.Once);
     }
 
